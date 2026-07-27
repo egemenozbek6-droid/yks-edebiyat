@@ -31,20 +31,20 @@ function karistir<T>(dizi: T[]): T[] {
 }
 
 function sorulariUret(havuz: Yazar[]): Soru[] {
-  const tumEserler = yazarlar.flatMap((y) => y.eserler)
-  const tumYazarlar = yazarlar.map((y) => y.ad)
+  const tumEserler = yazarlar.flatMap((y) => y.works || y.eserler || []);
+  const tumYazarlar = yazarlar.map((y) => y.author || y.ad);
 
   return karistir(havuz)
     .slice(0, SORU_SAYISI)
     .map((yazar, i): Soru => {
-      const dogruEser = karistir(yazar.eserler)[0]
+      const dogruEser = karistir(yazar.works || yazar.eserler || [])[0];
 
       if (i % 2 === 0) {
         // "Bu yazarın eseri hangisidir?"
-        const yanlislar = karistir(tumEserler.filter((e) => !yazar.eserler.includes(e))).slice(0, 3)
+        const yanlislar = karistir(tumEserler.filter((e) => !(yazar.works || yazar.eserler || []).includes(e))).slice(0, 3);
         return {
           metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
-          vurgu: yazar.ad,
+          vurgu: yazar.author || yazar.ad,
           secenekler: karistir([dogruEser, ...yanlislar]),
           dogru: dogruEser,
           donem: yazar.donem,
