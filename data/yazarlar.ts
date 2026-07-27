@@ -4,6 +4,28 @@ export const baslik = "YKS Edebiyat";
 export const amac = "Yazar & Eser Ezberi";
 export const notu = "";
 
+export const donemler = [
+  "İslamiyet Öncesi Türk Edebiyatı",
+  "Halk Edebiyatı",
+  "Divan Edebiyatı",
+  "Tanzimat Edebiyatı",
+  "Servet-i Fünun Edebiyatı",
+  "Fecr-i Âti Edebiyatı",
+  "Milli Edebiyat",
+  "Cumhuriyet Dönemi"
+];
+
+export const donemStil: Record<string, string> = {
+  "İslamiyet Öncesi Türk Edebiyatı": "bg-amber-900/40 text-amber-300 border-amber-700/50",
+  "Halk Edebiyatı": "bg-orange-900/40 text-orange-300 border-orange-700/50",
+  "Divan Edebiyatı": "bg-purple-900/40 text-purple-300 border-purple-700/50",
+  "Tanzimat Edebiyatı": "bg-blue-900/40 text-blue-300 border-blue-700/50",
+  "Servet-i Fünun Edebiyatı": "bg-cyan-900/40 text-cyan-300 border-cyan-700/50",
+  "Fecr-i Âti Edebiyatı": "bg-teal-900/40 text-teal-300 border-teal-700/50",
+  "Milli Edebiyat": "bg-red-900/40 text-red-300 border-red-700/50",
+  "Cumhuriyet Dönemi": "bg-emerald-900/40 text-emerald-300 border-emerald-700/50"
+};
+
 export const yazarlar = [
   
   {
