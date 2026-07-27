@@ -130,7 +130,7 @@ export default function Flashcard({
           aria-label={
             cevrildi
               ? `Cevap: ${yazar.ad}, ${yazar.donem}. Ön yüze dönmek için tıkla.`
-              : `Eserler: ${yazar.eserler.join(", ")}. Yazarı görmek için tıkla.`
+              : `Eserler: ${(yazar.works || yazar.eserler || []).join(", ")}. Yazarı görmek için tıkla.`
           }
           className={`relative touch-pan-y cursor-pointer ${
             surukleniyor ? "" : "transition-transform duration-300 ease-out"
@@ -160,13 +160,13 @@ export default function Flashcard({
                   Bu eserler kimin?
                 </span>
                 <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
-                  {yazar.eserler.length} eser
+                  {(yazar.works || yazar.eserler || []).length} eser
                 </span>
               </div>
 
               <div className="mt-5 flex-1 overflow-y-auto">
                 <ul className="space-y-2">
-                  {yazar.eserler.map((eser) => (
+                 {(yazar.works || yazar.eserler || []).map((eser) => (
                     <li
                       key={eser}
                       className="flex items-center gap-2.5 rounded-xl bg-muted/70 px-3.5 py-2.5 font-serif text-[15px] font-semibold text-card-foreground ring-1 ring-border"
