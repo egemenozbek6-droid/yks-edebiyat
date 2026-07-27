@@ -212,7 +212,7 @@ export default function Flashcard({
                   Cevap
                 </p>
                 <h2 className="font-serif text-3xl font-extrabold uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-4xl">
-                 ${yazar.author || yazar.ad}
+                 {yazar.author || yazar.ad}
                 </h2>
                 <p className="mt-4 inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-md">
                   {yazar.donem}
