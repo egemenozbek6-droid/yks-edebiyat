@@ -5,7 +5,7 @@ export const amac = "Yazar & Eser Ezberi";
 export const notu = "";
 
 export const yazarlar = [
-  [
+  
   {
     "id": 1,
     "author": "Anonim",
@@ -1246,5 +1246,5 @@ export const yazarlar = [
     "works": ["Babil'de Ölüm İstanbul'da Aşk", "Şah ve Sultan", "Katre-i Matem"],
     "hint": "Divan edebiyatı unsurlarını modern romanla birleştiren eserleriyle tanınır."
   }
-]
+
 ];
