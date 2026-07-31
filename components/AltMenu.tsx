@@ -1,14 +1,14 @@
-"use client"
+"use client";
 
-import { BarChart3, Brain, Layers } from "lucide-react"
+import { Brain, Flame, Layers } from "lucide-react";
 
-export type Mod = "kart" | "test" | "istatistik"
+export type Mod = "kart" | "test" | "osym";
 
 const ogeler: { mod: Mod; etiket: string; ikon: typeof Layers }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers },
   { mod: "test", etiket: "Test", ikon: Brain },
-  { mod: "istatistik", etiket: "İstatistik", ikon: BarChart3 },
-]
+  { mod: "osym", etiket: "ÖSYM Sever", ikon: Flame },
+];
 
 export default function AltMenu({ mod, setMod }: { mod: Mod; setMod: (m: Mod) => void }) {
   return (
@@ -18,7 +18,8 @@ export default function AltMenu({ mod, setMod }: { mod: Mod; setMod: (m: Mod) =>
     >
       <div className="mx-auto grid max-w-3xl grid-cols-3">
         {ogeler.map(({ mod: m, etiket, ikon: Ikon }) => {
-          const aktif = mod === m
+          const aktif = mod === m;
+          const aktifRenk = m === "osym" ? "text-orange-500 bg-orange-500/12" : "text-primary bg-primary/12";
           return (
             <button
               key={m}
@@ -29,24 +30,28 @@ export default function AltMenu({ mod, setMod }: { mod: Mod; setMod: (m: Mod) =>
               <span
                 className={`grid h-9 w-14 place-items-center rounded-2xl transition-all duration-300 ${
                   aktif
-                    ? "bg-primary/12 text-primary scale-100"
+                    ? `${aktifRenk} scale-100`
                     : "text-muted-foreground group-hover:text-foreground group-active:scale-95"
                 }`}
               >
                 <Ikon className="h-5 w-5" strokeWidth={aktif ? 2.4 : 1.8} />
               </span>
-              <span className={`text-[11px] font-semibold ${aktif ? "text-primary" : "text-muted-foreground"}`}>
+              <span
+                className={`text-[11px] font-semibold ${
+                  aktif ? (m === "osym" ? "text-orange-500" : "text-primary") : "text-muted-foreground"
+                }`}
+              >
                 {etiket}
               </span>
               <span
-                className={`absolute top-0 h-0.5 rounded-full bg-primary transition-all duration-300 ${
+                className={`absolute top-0 h-0.5 rounded-full transition-all duration-300 ${
                   aktif ? "w-10 opacity-100" : "w-0 opacity-0"
-                }`}
+                } ${m === "osym" ? "bg-orange-500" : "bg-primary"}`}
               />
             </button>
-          )
+          );
         })}
       </div>
     </nav>
-  )
+  );
 }

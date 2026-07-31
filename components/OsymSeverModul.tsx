@@ -1,42 +1,34 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ArrowRight, Brain, Check, RotateCcw, Target, X } from "lucide-react";
+import { ArrowRight, Check, Flame, RotateCcw, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
-import { donemler, yazarlar, type Donem } from "@/data/yazarlar";
-import { sorulariUret, type Soru } from "@/lib/soru";
+import { osymSeverSorulari, type Soru } from "@/lib/soru";
 
-type Props = {
-  onSonuc?: (dogruMu: boolean, donem: Donem) => void;
-};
+const SORU_SAYISI = 12;
 
-const SORU_SAYISI = 10;
-
-export default function TestModul({ onSonuc }: Props) {
-  const [secilenDonem, setSecilenDonem] = useState<Donem | "Tümü" | null>(null);
+export default function OsymSeverModul() {
+  const [basladi, setBasladi] = useState(false);
   const [sorular, setSorular] = useState<Soru[]>([]);
   const [aktif, setAktif] = useState(0);
   const [secim, setSecim] = useState<string | null>(null);
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  const basla = useCallback((donem: Donem | "Tümü") => {
-    const secilenHavuz = donem === "Tümü" ? yazarlar : yazarlar.filter((y) => y.donem === donem);
-    setSecilenDonem(donem);
-    setSorular(sorulariUret(secilenHavuz, SORU_SAYISI));
+  const basla = useCallback(() => {
+    setSorular(osymSeverSorulari(SORU_SAYISI));
     setAktif(0);
     setSecim(null);
     setDogruSayi(0);
     setBitti(false);
+    setBasladi(true);
   }, []);
 
   const cevapla = (secenek: string) => {
     if (secim) return;
     const soru = sorular[aktif];
-    const dogruMu = secenek === soru.dogru;
+    if (secenek === soru.dogru) setDogruSayi((s) => s + 1);
     setSecim(secenek);
-    if (dogruMu) setDogruSayi((s) => s + 1);
-    onSonuc?.(dogruMu, soru.donem);
   };
 
   const sonraki = () => {
@@ -48,43 +40,27 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // Dönem seçim ekranı
-  if (!secilenDonem || sorular.length === 0) {
-    const gosterilecekDonemler = donemler.filter((d) => yazarlar.some((y) => y.donem === d));
-
+  // Giriş ekranı
+  if (!basladi) {
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-[1.75rem] bg-card p-7 text-center ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
-            <Brain className="h-6 w-6" strokeWidth={1.5} />
+        <div className="mb-6 rounded-[1.75rem] bg-card p-8 text-center ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-orange-500/15 text-orange-500 ring-1 ring-orange-500/30 animate-pop">
+            <Flame className="h-7 w-7" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-xl font-bold text-balance text-card-foreground">Bir dönem seç</h2>
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            Seçtiğin dönemden {SORU_SAYISI} soruluk, 4 şıklı bir test hazırlanır.
+          <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
+          <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
+            ÖSYM'nin banko sorduğu yazar ve eserlerden karışık {SORU_SAYISI} soruluk mini deneme. Dönem
+            ayrımı yok — gerçek sınav gibi karışık gelir.
           </p>
         </div>
 
-        <div className="space-y-2.5">
-          <button
-            onClick={() => basla("Tümü")}
-            className="flex w-full items-center justify-between rounded-2xl bg-primary px-5 py-4 text-left text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.99]"
-          >
-            <span className="flex items-center gap-3">
-              <Target className="h-5 w-5" />
-              <span className="text-sm font-bold">Tüm Dönemler</span>
-            </span>
-          </button>
-
-          {gosterilecekDonemler.map((donem) => (
-            <button
-              key={donem}
-              onClick={() => basla(donem)}
-              className="flex w-full items-center rounded-2xl bg-card px-4 py-3.5 text-left ring-1 ring-border shadow-sm transition hover:ring-primary/40 active:scale-[0.99]"
-            >
-              <span className="text-sm font-semibold text-card-foreground">{donem}</span>
-            </button>
-          ))}
-        </div>
+        <button
+          onClick={basla}
+          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 py-4 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+        >
+          <Flame className="h-4 w-4" /> Denemeyi Başlat
+        </button>
       </div>
     );
   }
@@ -92,33 +68,31 @@ export default function TestModul({ onSonuc }: Props) {
   // Sonuç ekranı
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
+    const basari = oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
     return (
       <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20 animate-pop">
-          <Target className="h-9 w-9" strokeWidth={1.5} />
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-orange-500/15 text-orange-500 ring-1 ring-orange-500/30 animate-pop">
+          <Flame className="h-9 w-9" strokeWidth={1.5} />
         </div>
-        <h2 className="font-serif text-2xl font-bold text-card-foreground">Test bitti</h2>
+        <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {sorular.length} soruda <span className="font-bold text-primary">{dogruSayi}</span> doğru — %{oran}
+          {sorular.length} soruda <span className="font-bold text-orange-500">{dogruSayi}</span> doğru — %{oran}
         </p>
         <div className="mt-6">
           <IlerlemeBari mevcut={dogruSayi} toplam={sorular.length} etiket="Doğru cevap" />
         </div>
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
-            onClick={() => basla(secilenDonem)}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            onClick={basla}
+            className="flex items-center justify-center gap-2 rounded-2xl bg-orange-500 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
           <button
-            onClick={() => {
-              setSecilenDonem(null);
-              setSorular([]);
-            }}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground ring-1 ring-border shadow-sm transition hover:text-foreground hover:ring-primary/40 active:scale-[0.98]"
+            onClick={() => setBasladi(false)}
+            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground ring-1 ring-border shadow-sm transition hover:text-foreground hover:ring-orange-500/40 active:scale-[0.98]"
           >
-            Dönem Değiştir
+            Geri Dön
           </button>
         </div>
       </div>
@@ -138,15 +112,14 @@ export default function TestModul({ onSonuc }: Props) {
           sagEtiket={`${aktif + 1} / ${sorular.length} · ${dogruSayi} doğru`}
         />
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-muted-foreground">{soru.donem}</span>
+          <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-orange-500">
+            <Flame className="h-3.5 w-3.5" /> Banko soru
+          </span>
           <button
-            onClick={() => {
-              setSecilenDonem(null);
-              setSorular([]);
-            }}
+            onClick={() => setBasladi(false)}
             className="text-[11px] font-semibold text-muted-foreground transition hover:text-foreground"
           >
-            Dönemi değiştir
+            Çıkış
           </button>
         </div>
       </div>
@@ -168,7 +141,7 @@ export default function TestModul({ onSonuc }: Props) {
             const gosterYanlis = secildi && !dogruSecenek;
 
             let stil =
-              "bg-card ring-border text-card-foreground hover:ring-primary/40 hover:bg-muted/60";
+              "bg-card ring-border text-card-foreground hover:ring-orange-500/40 hover:bg-muted/60";
             if (gosterDogru) stil = "bg-emerald-500/15 ring-emerald-500/60 text-emerald-700 dark:text-emerald-300";
             else if (gosterYanlis) stil = "bg-destructive/15 ring-destructive/60 text-destructive";
             else if (secim !== null) stil = "bg-card ring-border text-muted-foreground opacity-60";
@@ -208,7 +181,7 @@ export default function TestModul({ onSonuc }: Props) {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-orange-500 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />

@@ -1,103 +1,76 @@
-"use client"
+"use client";
 
-import { useCallback, useMemo, useState } from "react"
-import { Brain, Info, Layers, X } from "lucide-react"
-import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard"
-import TestModul from "@/components/TestModul"
-import IstatistikModul, { type TestSayaci } from "@/components/IstatistikModul"
-import AltMenu, { type Mod } from "@/components/AltMenu"
-import TemaAnahtari from "@/components/TemaAnahtari"
-import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal"
-import { yazarlar, baslik, amac, notu, type Donem } from "@/data/yazarlar"
+import { useCallback, useState } from "react";
+import { Brain, Info, Layers, X } from "lucide-react";
+import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
+import TestModul from "@/components/TestModul";
+import OsymSeverModul from "@/components/OsymSeverModul";
+import AltMenu, { type Mod } from "@/components/AltMenu";
+import TemaAnahtari from "@/components/TemaAnahtari";
+import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
+import { yazarlar, baslik, amac, notu, type Donem } from "@/data/yazarlar";
 
 function karistir<T>(dizi: T[]): T[] {
-  const kopya = [...dizi]
+  const kopya = [...dizi];
   for (let i = kopya.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1))
-    ;[kopya[i], kopya[j]] = [kopya[j], kopya[i]]
+    const j = Math.floor(Math.random() * (i + 1));
+    [kopya[i], kopya[j]] = [kopya[j], kopya[i]];
   }
-  return kopya
+  return kopya;
 }
 
 export default function App() {
-  const [mod, setMod] = useState<Mod>("kart")
-  const [infoAcik, setInfoAcik] = useState(false)
+  const [mod, setMod] = useState<Mod>("kart");
+  const [infoAcik, setInfoAcik] = useState(false);
 
-  const [ruhHali, setRuhHali] = useState<RuhHali | null>(null)
+  const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
 
   // Kart destesi — her yüklendiğinde karışık gelir
-  const [deste, setDeste] = useState<number[]>(() => karistir(yazarlar.map((_, i) => i)))
-  const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set())
+  const [deste, setDeste] = useState<number[]>(() => karistir(yazarlar.map((_, i) => i)));
+  const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set());
 
-  const [testSayaci, setTestSayaci] = useState<TestSayaci>({ dogru: 0, yanlis: 0 })
-  const [donemSayaci, setDonemSayaci] = useState<Record<string, TestSayaci>>({})
-
-  const bitti = deste.length === 0
+  const bitti = deste.length === 0;
 
   const sifirla = useCallback(() => {
-    setDeste(karistir(yazarlar.map((_, i) => i)))
-    setOgrenilenler(new Set())
-  }, [])
-
-  const istatistikSifirla = useCallback(() => {
-    setDeste(karistir(yazarlar.map((_, i) => i)))
-    setOgrenilenler(new Set())
-    setTestSayaci({ dogru: 0, yanlis: 0 })
-    setDonemSayaci({})
-  }, [])
+    setDeste(karistir(yazarlar.map((_, i) => i)));
+    setOgrenilenler(new Set());
+  }, []);
 
   const onOgrenildi = useCallback(() => {
     setDeste((onceki) => {
-      if (onceki.length === 0) return onceki
-      const [ilk, ...geriKalan] = onceki
-      setOgrenilenler((s) => new Set(s).add(ilk))
-      return geriKalan
-    })
-  }, [])
+      if (onceki.length === 0) return onceki;
+      const [ilk, ...geriKalan] = onceki;
+      setOgrenilenler((s) => new Set(s).add(ilk));
+      return geriKalan;
+    });
+  }, []);
 
   const onTekrar = useCallback(() => {
     setDeste((onceki) => {
-      if (onceki.length <= 1) return onceki
-      const [ilk, ...geriKalan] = onceki
-      return [...geriKalan, ilk]
-    })
-  }, [])
+      if (onceki.length <= 1) return onceki;
+      const [ilk, ...geriKalan] = onceki;
+      return [...geriKalan, ilk];
+    });
+  }, []);
 
   const onPrev = useCallback(() => {
     setDeste((onceki) => {
-      if (onceki.length <= 1) return onceki
-      const son = onceki[onceki.length - 1]
-      return [son, ...onceki.slice(0, -1)]
-    })
-  }, [])
+      if (onceki.length <= 1) return onceki;
+      const son = onceki[onceki.length - 1];
+      return [son, ...onceki.slice(0, -1)];
+    });
+  }, []);
 
   const onNext = useCallback(() => {
     setDeste((onceki) => {
-      if (onceki.length <= 1) return onceki
-      const [ilk, ...geriKalan] = onceki
-      return [...geriKalan, ilk]
-    })
-  }, [])
+      if (onceki.length <= 1) return onceki;
+      const [ilk, ...geriKalan] = onceki;
+      return [...geriKalan, ilk];
+    });
+  }, []);
 
-  const onTestSonuc = useCallback((dogruMu: boolean, donem: Donem) => {
-    setTestSayaci((s) => ({
-      dogru: s.dogru + (dogruMu ? 1 : 0),
-      yanlis: s.yanlis + (dogruMu ? 0 : 1),
-    }))
-    setDonemSayaci((s) => {
-      const mevcut = s[donem] ?? { dogru: 0, yanlis: 0 }
-      return {
-        ...s,
-        [donem]: {
-          dogru: mevcut.dogru + (dogruMu ? 1 : 0),
-          yanlis: mevcut.yanlis + (dogruMu ? 0 : 1),
-        },
-      }
-    })
-  }, [])
-
-  const aktifIndex = deste[0] ?? 0
-  const aktifYazar = yazarlar[aktifIndex]
+  const aktifIndex = deste[0] ?? 0;
+  const aktifYazar = yazarlar[aktifIndex];
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
@@ -137,7 +110,7 @@ export default function App() {
 
         {/* Mod seçici (masaüstü) */}
         <div className="max-w-3xl mx-auto px-5 pb-3 hidden sm:block">
-          <div className="grid grid-cols-2 gap-1.5 p-1.5 bg-muted rounded-2xl ring-1 ring-border">
+          <div className="grid grid-cols-3 gap-1.5 p-1.5 bg-muted rounded-2xl ring-1 ring-border">
             <button
               onClick={() => setMod("kart")}
               className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition ${
@@ -146,7 +119,7 @@ export default function App() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Layers className="w-4 h-4" /> Kart Modu
+              <Layers className="w-4 h-4" /> Kartlar
             </button>
             <button
               onClick={() => setMod("test")}
@@ -156,7 +129,17 @@ export default function App() {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <Brain className="w-4 h-4" /> Test Modu
+              <Brain className="w-4 h-4" /> Test
+            </button>
+            <button
+              onClick={() => setMod("osym")}
+              className={`flex items-center justify-center gap-2 py-2.5 rounded-xl text-sm font-semibold transition ${
+                mod === "osym"
+                  ? "bg-card text-orange-500 shadow-sm"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="text-base leading-none">🔥</span> ÖSYM Sever
             </button>
           </div>
         </div>
@@ -199,15 +182,9 @@ export default function App() {
             />
           )
         ) : mod === "test" ? (
-          <TestModul onSonuc={onTestSonuc} />
+          <TestModul />
         ) : (
-          <IstatistikModul
-            ogrenilenler={ogrenilenler}
-            toplamKart={yazarlar.length}
-            testSayaci={testSayaci}
-            donemSayaci={donemSayaci}
-            onSifirla={istatistikSifirla}
-          />
+          <OsymSeverModul />
         )}
       </main>
 
@@ -247,20 +224,20 @@ export default function App() {
             )}
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <p>
-                <span className="font-semibold text-foreground">Kart Modu:</span> Sağa kaydır = Öğrendim, Sola kaydır =
+                <span className="font-semibold text-foreground">Kartlar:</span> Sağa kaydır = Öğrendim, Sola kaydır =
                 Tekrar Et. Tüm kartlar bitince tebrikler ekranı.
               </p>
               <p>
-                <span className="font-semibold text-foreground">Test Modu:</span> Dönem seç, 4 şıklı soruları çöz.
+                <span className="font-semibold text-foreground">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
+                aynı dönemden gelir.
               </p>
               <p>
-                <span className="font-semibold text-foreground">İstatistik:</span> Dönem bazlı öğrenme ve test başarı
-                oranların.
+                <span className="font-semibold text-foreground">ÖSYM Sever 🔥:</span> Banko sorulardan karışık mini deneme.
               </p>
             </div>
           </div>
         </div>
       )}
     </div>
-  )
+  );
 }

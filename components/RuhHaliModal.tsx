@@ -1,95 +1,125 @@
-"use client"
+"use client";
 
-import { useEffect, useState } from "react"
-import { Sparkles, X } from "lucide-react"
+import { useEffect, useState } from "react";
+import { X } from "lucide-react";
 
 export type RuhHali = {
-  id: string
-  emoji: string
-  etiket: string
-  mesaj: string
-}
+  id: string;
+  emoji: string;
+  etiket: string;
+  mesaj: string;
+};
 
-export const ruhHalleri: RuhHali[] = [
+type Duygu = {
+  id: string;
+  emoji: string;
+  etiket: string;
+  mesajlar: string[];
+};
+
+const duyguHavuzu: Duygu[] = [
   {
     id: "harika",
-    emoji: "🔥",
-    etiket: "Harika / Bomba Gibiyim",
-    mesaj: "O zaman bu enerjiyi kartlarda patlatıyoruz! Hedef 24'te 24! 🔥",
+    emoji: "🚀",
+    etiket: "Harika",
+    mesajlar: [
+      "Enerjin harika! Bu modla bugün soru kaçırmazsın, hadi dersin başına!",
+      "Harika hissetmen süper! Tam odaklanıp verim alma vakti.",
+    ],
   },
   {
-    id: "mukemmel",
-    emoji: "⚡",
-    etiket: "Mükemmel",
-    mesaj: "Mükemmel bir gün! Hadi edebiyatı da mükemmel yapalım! ⚡",
+    id: "notr",
+    emoji: "😐",
+    etiket: "Nötr",
+    mesajlar: [
+      "Sakin bir gün. Ne iyi ne kötü. Rutinini bozma, ufaktan başla gerisi gelir.",
+      "Nötr günler istikrar günüdür. Modun geldikçe tempoyu artırırsın.",
+    ],
   },
   {
     id: "ehiste",
-    emoji: "😐",
-    etiket: "Eh İşte / İdare Eder",
-    mesaj: "Sorun değil, kartları karıştırdıkça açılırsın. Başlamak bitirmenin yarısıdır! ⭐",
+    emoji: "🙃",
+    etiket: "Eh İşte",
+    mesajlar: [
+      "Bazen sadece günü kurtarmak gerekir. Kendini çok sıkma, azar azar ilerle.",
+      "Arada böyle modlar olur, sorun değil. Ufak bir kahve molası verip tekrar bak istersen.",
+    ],
   },
   {
-    id: "yorgun",
-    emoji: "🥱",
-    etiket: "Kötü / Yorgunum",
-    mesaj: "Anlıyorum, o zaman bugün sadece 10 kart bakalım, kendini çok yorma. 🧘",
+    id: "stresli",
+    emoji: "😰",
+    etiket: "Stresli",
+    mesajlar: [
+      "Derin bir nefes al. Sınav maratonunda bu baskı çok normal, sen elinden geleni yapıyorsun.",
+      "Kafan dolu ve gergin olabilirsin. Şöyle bir zihnini boşalt, tek bir karta odaklanıp adım adım gidelim.",
+    ],
   },
   {
     id: "bitik",
-    emoji: "😞",
-    etiket: "Bitik / Beynim Dönüştü",
-    mesaj: "Pes etmek yok! Gel sadece en önemli eserlere hızlıca bir göz atalım, beynin yerine gelir! 💪",
+    emoji: "🪫",
+    etiket: "Bitik",
+    mesajlar: [
+      "Pil bitmiş gibi mi? Bugün kendine yüklenme, sadece yapabildiğin kadarını yap.",
+      "Bazen dinlenmek de çalışmanın bir parçasıdır. Gerekirse biraz ara ver, dinlen.",
+    ],
   },
-]
+];
 
-const ANAHTAR = "yks-edebiyat-ruh-hali"
+const ANAHTAR = "yks-edebiyat-ruh-hali";
 
 function bugun() {
-  return new Date().toISOString().slice(0, 10)
+  return new Date().toISOString().slice(0, 10);
+}
+
+function rastgeleMesaj(havuz: string[]): string {
+  return havuz[Math.floor(Math.random() * havuz.length)];
 }
 
 type Props = {
-  /** Kullanıcı bir ruh hali seçtiğinde ana ekranda gösterilecek motivasyon mesajı */
-  onSecim: (ruhHali: RuhHali) => void
-}
+  onSecim: (ruhHali: RuhHali) => void;
+};
 
 export default function RuhHaliModal({ onSecim }: Props) {
-  const [acik, setAcik] = useState(false)
-  const [secilen, setSecilen] = useState<RuhHali | null>(null)
+  const [acik, setAcik] = useState(false);
+  const [secilen, setSecilen] = useState<RuhHali | null>(null);
 
-  // Günde bir kez: bugünün tarihi kayıtlı değilse aç
   useEffect(() => {
     try {
       if (window.localStorage.getItem(ANAHTAR) !== bugun()) {
-        setAcik(true)
+        setAcik(true);
       }
     } catch {
-      setAcik(true)
+      setAcik(true);
     }
-  }, [])
+  }, []);
 
   const kaydet = () => {
     try {
-      window.localStorage.setItem(ANAHTAR, bugun())
+      window.localStorage.setItem(ANAHTAR, bugun());
     } catch {
       /* localStorage kullanılamıyorsa sessizce geç */
     }
-  }
+  };
 
   const gec = () => {
-    kaydet()
-    setAcik(false)
-  }
+    kaydet();
+    setAcik(false);
+  };
 
-  const sec = (ruhHali: RuhHali) => {
-    kaydet()
-    setSecilen(ruhHali)
-    onSecim(ruhHali)
-    window.setTimeout(() => setAcik(false), 2400)
-  }
+  const sec = (duygu: Duygu) => {
+    kaydet();
+    const ruhHali: RuhHali = {
+      id: duygu.id,
+      emoji: duygu.emoji,
+      etiket: duygu.etiket,
+      mesaj: rastgeleMesaj(duygu.mesajlar),
+    };
+    setSecilen(ruhHali);
+    onSecim(ruhHali);
+    window.setTimeout(() => setAcik(false), 2600);
+  };
 
-  if (!acik) return null
+  if (!acik) return null;
 
   return (
     <div
@@ -100,7 +130,6 @@ export default function RuhHaliModal({ onSecim }: Props) {
     >
       <div className="w-full max-w-md animate-pop rounded-3xl bg-card p-7 ring-1 ring-border shadow-2xl">
         {secilen ? (
-          // Motivasyon mesajı
           <div className="py-4 text-center">
             <div className="mx-auto mb-5 grid h-20 w-20 animate-pop place-items-center rounded-3xl bg-primary/10 text-4xl ring-1 ring-primary/20">
               <span aria-hidden="true">{secilen.emoji}</span>
@@ -115,10 +144,9 @@ export default function RuhHaliModal({ onSecim }: Props) {
         ) : (
           <>
             <div className="flex items-start justify-between gap-3">
-              <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary ring-1 ring-primary/20">
-                <Sparkles className="h-3.5 w-3.5" strokeWidth={2} />
-                Günün ilk sorusu
-              </div>
+              <h2 className="font-serif text-2xl font-bold leading-tight text-balance text-card-foreground">
+                Bugün nasılsın?
+              </h2>
               <button
                 onClick={gec}
                 className="text-muted-foreground transition hover:text-foreground"
@@ -128,31 +156,24 @@ export default function RuhHaliModal({ onSecim }: Props) {
               </button>
             </div>
 
-            <h2 className="mt-4 font-serif text-2xl font-bold leading-tight text-balance text-card-foreground">
-              Naber? Bugün kendini nasıl hissediyorsun?
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">
-              YKS maratonu uzun; moduna göre çalışalım. Sadece bir dokunuş, sonra kartlara geçiyoruz.
-            </p>
-
-            <div className="mt-5 flex flex-col gap-2.5">
-              {ruhHalleri.map((rh) => (
+            <div className="mt-5 grid grid-cols-5 gap-2">
+              {duyguHavuzu.map((d) => (
                 <button
-                  key={rh.id}
-                  onClick={() => sec(rh)}
-                  className="flex items-center gap-3 rounded-2xl bg-muted/70 px-4 py-3 text-left ring-1 ring-border transition hover:bg-accent hover:ring-primary/40 active:scale-[0.98]"
+                  key={d.id}
+                  onClick={() => sec(d)}
+                  className="flex flex-col items-center gap-1.5 rounded-2xl bg-muted/70 px-1 py-3 ring-1 ring-border transition hover:bg-accent hover:ring-primary/40 active:scale-[0.96]"
                 >
-                  <span className="text-xl" aria-hidden="true">
-                    {rh.emoji}
+                  <span className="text-2xl" aria-hidden="true">
+                    {d.emoji}
                   </span>
-                  <span className="text-sm font-semibold text-card-foreground">{rh.etiket}</span>
+                  <span className="text-[10px] font-semibold text-muted-foreground">{d.etiket}</span>
                 </button>
               ))}
             </div>
 
             <button
               onClick={gec}
-              className="mt-4 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+              className="mt-5 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
             >
               Şimdi değil, direkt çalışmaya başla
             </button>
@@ -160,5 +181,5 @@ export default function RuhHaliModal({ onSecim }: Props) {
         )}
       </div>
     </div>
-  )
+  );
 }

@@ -6,6 +6,7 @@ export const notu = "";
 
 export const donemler = [
   "İslamiyet Öncesi Türk Edebiyatı",
+  "Geçiş Dönemi",
   "İslamiyet Etkisindeki Türk Edebiyatı",
   "Tekke ve Tasavvuf Edebiyatı",
   "Halk Edebiyatı",
@@ -24,6 +25,7 @@ export const donemler = [
 
 export const donemStil: Record<string, string> = {
   "İslamiyet Öncesi Türk Edebiyatı": "bg-amber-500/15 text-amber-700 dark:text-amber-300 border-amber-500/30",
+  "Geçiş Dönemi": "bg-lime-500/15 text-lime-700 dark:text-lime-300 border-lime-500/30",
   "İslamiyet Etkisindeki Türk Edebiyatı": "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30",
   "Tekke ve Tasavvuf Edebiyatı": "bg-rose-500/15 text-rose-700 dark:text-rose-300 border-rose-500/30",
   "Halk Edebiyatı": "bg-orange-500/15 text-orange-700 dark:text-orange-300 border-orange-500/30",
@@ -63,10 +65,10 @@ export const yazarlar: Yazar[] = [
   { "id": 11, "ad": "Türk", "donem": "İslamiyet Öncesi Türk Edebiyatı", "tur": "Sözlü Edebiyat", "eserler": ["Sav"], "ipucu": "Atasözü niteliğindeki özlü sözlerdir." },
   { "id": 12, "ad": "Türk", "donem": "İslamiyet Öncesi Türk Edebiyatı", "tur": "Sözlü Edebiyat", "eserler": ["Sagu"], "ipucu": "Ölen kişinin ardından söylenen ağıt türündeki şiirlerdir." },
   { "id": 13, "ad": "Türk", "donem": "İslamiyet Öncesi Türk Edebiyatı", "tur": "Sözlü Edebiyat", "eserler": ["Koşuk"], "ipucu": "Şölenlerde ve aşk, doğa, yiğitlik konularında söylenen şiirlerdir." },
-  { "id": 14, "ad": "Yusuf Has Hacip", "donem": "İslamiyet Etkisindeki Türk Edebiyatı", "tur": "Mesnevi / Siyasetname", "eserler": ["Kutadgu Bilig"], "ipucu": "Türk edebiyatındaki ilk mesnevi ve ilk siyasetname kabul edilir." },
-  { "id": 15, "ad": "Kaşgarlı Mahmut", "donem": "İslamiyet Etkisindeki Türk Edebiyatı", "tur": "Sözlük", "eserler": ["Divanü Lügati't-Türk"], "ipucu": "Türkçenin bilinen ilk sözlüğüdür. Araplara Türkçe öğretmek amacıyla yazılmıştır." },
-  { "id": 16, "ad": "Edip Ahmet Yükneki", "donem": "İslamiyet Etkisindeki Türk Edebiyatı", "tur": "Didaktik Eser", "eserler": ["Atabetü'l-Hakayık"], "ipucu": "Ahlak ve bilgi konusunda öğütler veren didaktik eserdir." },
-  { "id": 17, "ad": "Hoca Ahmet Yesevi", "donem": "İslamiyet Etkisindeki Türk Edebiyatı", "tur": "Tasavvuf / Tekke Edebiyatı", "eserler": ["Divan-ı Hikmet"], "ipucu": "Türk tasavvuf edebiyatının kurucusu kabul edilir. Hikmetleriyle tanınır." },
+  { "id": 14, "ad": "Yusuf Has Hacip", "donem": "Geçiş Dönemi", "tur": "Mesnevi / Siyasetname", "eserler": ["Kutadgu Bilig"], "ipucu": "Türk edebiyatındaki ilk mesnevi ve ilk siyasetname kabul edilir." },
+  { "id": 15, "ad": "Kaşgarlı Mahmut", "donem": "Geçiş Dönemi", "tur": "Sözlük", "eserler": ["Divanü Lügati't-Türk"], "ipucu": "Türkçenin bilinen ilk sözlüğüdür. Araplara Türkçe öğretmek amacıyla yazılmıştır." },
+  { "id": 16, "ad": "Edip Ahmet Yükneki", "donem": "Geçiş Dönemi", "tur": "Didaktik Eser", "eserler": ["Atabetü'l-Hakayık"], "ipucu": "Ahlak ve bilgi konusunda öğütler veren didaktik eserdir." },
+  { "id": 17, "ad": "Hoca Ahmet Yesevi", "donem": "Geçiş Dönemi", "tur": "Tasavvuf / Tekke Edebiyatı", "eserler": ["Divan-ı Hikmet"], "ipucu": "Türk tasavvuf edebiyatının kurucusu kabul edilir. Hikmetleriyle tanınır." },
   { "id": 18, "ad": "Yunus Emre", "donem": "Tekke ve Tasavvuf Edebiyatı", "tur": "Tasavvuf / Şiir", "eserler": ["Divan", "Risaletü'n-Nushiyye"], "ipucu": "Tasavvufu sade Türkçeyle halka anlatan en önemli şairlerdendir." },
   { "id": 19, "ad": "Mevlana Celaleddin Rumi", "donem": "Tekke ve Tasavvuf Edebiyatı", "tur": "Mesnevi / Tasavvuf", "eserler": ["Mesnevi", "Divan-ı Kebir", "Fihi Ma Fih"], "ipucu": "Mevleviliğin temel isimlerinden biridir. Eserlerinin çoğu Farsçadır." },
   { "id": 20, "ad": "Hacı Bektaş Veli", "donem": "Tekke ve Tasavvuf Edebiyatı", "tur": "Tasavvuf", "eserler": ["Makâlât"], "ipucu": "Bektaşiliğin öncüsü kabul edilir." },
@@ -169,7 +171,7 @@ export const yazarlar: Yazar[] = [
   { "id": 119, "ad": "Türk (Anonim)", "donem": "Halk Edebiyatı", "tur": "Anonim Halk Edebiyatı", "eserler": ["Mani", "Türkü", "Ninni", "Ağıt", "Bilmece", "Tekerleme"], "ipucu": "Sözlü kültür ürünleridir ve çoğunlukla anonimdir." },
   { "id": 120, "ad": "Türk (Anonim)", "donem": "Halk Edebiyatı", "tur": "Halk Hikâyesi", "eserler": ["Kerem ile Aslı", "Âşık Garip", "Tahir ile Zühre", "Arzu ile Kamber"], "ipucu": "Nazım-nesir karışık yapıya sahip halk anlatılarıdır." },
   { "id": 121, "ad": "Türk (Oğuz)", "donem": "Halk Edebiyatı", "tur": "Halk Hikâyesi", "eserler": ["Dede Korkut Hikâyeleri"], "ipucu": "Oğuz Türklerinin yaşamını anlatan, destandan halk hikâyesine geçiş özelliği gösteren eserdir." },
-  { "id": 122, "ad": "Dede Korkut", "donem": "İslamiyet Etkisindeki Türk Edebiyatı", "tur": "Destansı Halk Hikâyesi", "eserler": ["Dede Korkut Hikâyeleri", "Kitab-ı Dede Korkut"], "ipucu": "Oğuz Türklerinin destansı hikâyelerini içerir. 12 hikâyeden oluşur." },
+  { "id": 122, "ad": "Dede Korkut", "donem": "Geçiş Dönemi", "tur": "Destansı Halk Hikâyesi", "eserler": ["Dede Korkut Hikâyeleri", "Kitab-ı Dede Korkut"], "ipucu": "Oğuz Türklerinin destansı hikâyelerini içerir. 12 hikâyeden oluşur." },
   { "id": 123, "ad": "Türk (Anonim)", "donem": "Divan Edebiyatı", "tur": "Mesnevi", "eserler": ["Yusuf u Züleyha", "Hüsrev ü Şirin", "Leyla vü Mecnun"], "ipucu": "Klasik edebiyatta uzun aşk ve macera hikâyeleri mesnevi nazım şekliyle anlatılmıştır." },
   { "id": 124, "ad": "Mevlana Celaleddin Rumi", "donem": "Divan Edebiyatı", "tur": "Mesnevi", "eserler": ["Mesnevi"], "ipucu": "Altı ciltlik büyük tasavvufi mesnevidir." },
   { "id": 125, "ad": "Fuzuli", "donem": "Divan Edebiyatı", "tur": "Mesnevi", "eserler": ["Leyla vü Mecnun"], "ipucu": "Divan edebiyatının en önemli aşk mesnevilerinden biridir." },
@@ -204,3 +206,33 @@ export const yazarlar: Yazar[] = [
   { "id": 154, "ad": "Elif Şafak", "donem": "Cumhuriyet Dönemi", "tur": "Roman", "eserler": ["Aşk", "Baba ve Piç", "İskender"], "ipucu": "Çağdaş Türk romanının uluslararası alanda tanınan yazarlarındandır." },
   { "id": 155, "ad": "İskender Pala", "donem": "Cumhuriyet Dönemi", "tur": "Roman / Divan Edebiyatı", "eserler": ["Babil'de Ölüm İstanbul'da Aşk", "Şah ve Sultan", "Katre-i Matem"], "ipucu": "Divan edebiyatı unsurlarını modern romanla birleştiren eserleriyle tanınır." }
 ];
+
+// Dönem sırası — çeldiricilerin yakın dönemden seçilmesi için kullanılır
+export const donemSirasi: Donem[] = [
+  "İslamiyet Öncesi Türk Edebiyatı",
+  "Geçiş Dönemi",
+  "İslamiyet Etkisindeki Türk Edebiyatı",
+  "Tekke ve Tasavvuf Edebiyatı",
+  "Halk Edebiyatı",
+  "Divan Edebiyatı",
+  "Tanzimat I. Dönem",
+  "Tanzimat II. Dönem",
+  "Servet-i Fünun Edebiyatı",
+  "Fecr-i Âti Edebiyatı",
+  "Milli Edebiyat",
+  "Beş Hececiler",
+  "Garip Akımı",
+  "İkinci Yeni",
+  "Cumhuriyet Dönemi",
+  "Dünya Edebiyatı",
+];
+
+// Bir döneme "yakın" sayılan dönemleri döndürür (kendisi ± 2 pencere)
+export function yakinDonemler(donem: Donem, pencere = 2): Donem[] {
+  const idx = donemSirasi.indexOf(donem);
+  if (idx === -1) return donemSirasi;
+  const baslangic = Math.max(0, idx - pencere);
+  const bitis = Math.min(donemSirasi.length - 1, idx + pencere);
+  return donemSirasi.slice(baslangic, bitis + 1);
+}
+
