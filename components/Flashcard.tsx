@@ -40,7 +40,7 @@ export default function Flashcard({
     setCevrildi(false)
     setDx(0)
     setUcus(null)
-  }, [yazar.author || yazar.ad])
+  }, [yazar.id])
 
   const tamamla = useCallback(
     (yon: "sag" | "sol") => {
@@ -83,7 +83,6 @@ export default function Flashcard({
     setCevrildi((v) => !v)
   }
 
-  // Ön yüzde gösterilen ufak ipucu: dönem + tür (yazar adını asla vermez)
   const kisaIpucu = `${yazar.donem} · ${yazar.tur} türünde eser`
 
   const donus = Math.max(-12, Math.min(12, dx / 14))
@@ -92,8 +91,7 @@ export default function Flashcard({
 
   return (
     <div className="animate-rise">
-      {/* Şık ilerleme barı */}
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-sm backdrop-blur">
+      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] backdrop-blur">
         <IlerlemeBari mevcut={ogrenilenSayi} toplam={total} etiket="Öğrenilen kart" />
         <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
@@ -107,11 +105,9 @@ export default function Flashcard({
         </div>
       </div>
 
-      {/* Kart alanı */}
-      <div className="relative select-none" style={{ perspective: "1400px" }}>
-        {/* Arkadaki deste hissi */}
-        <div className="absolute inset-x-4 top-3 h-full rounded-3xl bg-card/60 ring-1 ring-border" aria-hidden="true" />
-        <div className="absolute inset-x-2 top-1.5 h-full rounded-3xl bg-card/80 ring-1 ring-border" aria-hidden="true" />
+      <div className="relative select-none" style={{ perspective: "1600px" }}>
+        <div className="absolute inset-x-4 top-3 h-full rounded-[1.75rem] bg-card/50 ring-1 ring-border/60" aria-hidden="true" />
+        <div className="absolute inset-x-2 top-1.5 h-full rounded-[1.75rem] bg-card/70 ring-1 ring-border/60" aria-hidden="true" />
 
         <div
           onPointerDown={basla}
@@ -129,11 +125,11 @@ export default function Flashcard({
           }}
           aria-label={
             cevrildi
-              ? `Cevap: ${yazar.author || yazar.ad}, ${yazar.donem}. Ön yüze dönmek için tıkla.`
-              : `Eserler: ${(yazar.works || yazar.eserler || []).join(", ")}. Yazarı görmek için tıkla.`
+              ? `Cevap: ${yazar.ad}, ${yazar.donem}. Ön yüze dönmek için tıkla.`
+              : `Eserler: ${yazar.eserler.join(", ")}. Yazarı görmek için tıkla.`
           }
           className={`relative touch-pan-y cursor-pointer ${
-            surukleniyor ? "" : "transition-transform duration-300 ease-out"
+            surukleniyor ? "" : "transition-all duration-300 ease-out"
           }`}
           style={{
             transform: `translateX(${dx}px) rotate(${donus}deg)`,
@@ -141,17 +137,16 @@ export default function Flashcard({
             transitionProperty: surukleniyor ? "none" : "transform, opacity",
           }}
         >
-          {/* Çevrilen iç yüzey */}
           <div
-            className="relative h-[420px] w-full transition-transform duration-500 ease-out sm:h-[440px]"
+            className="relative h-[440px] w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] sm:h-[460px]"
             style={{
               transformStyle: "preserve-3d",
               transform: cevrildi ? "rotateY(180deg)" : "rotateY(0deg)",
             }}
           >
-            {/* ÖN YÜZ — Eserler + ufak ipucu (yazar gizli) */}
+            {/* ÖN YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-3xl bg-card p-7 ring-1 ring-border shadow-xl shadow-foreground/5"
+              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
               <div className="flex items-start justify-between gap-3">
@@ -160,16 +155,16 @@ export default function Flashcard({
                   Bu eserler kimin?
                 </span>
                 <span className="rounded-full bg-muted px-2.5 py-1 text-[11px] font-semibold text-muted-foreground">
-                  {(yazar.works || yazar.eserler || []).length} eser
+                  {yazar.eserler.length} eser
                 </span>
               </div>
 
               <div className="mt-5 flex-1 overflow-y-auto">
                 <ul className="space-y-2">
-                 {(yazar.works || yazar.eserler || []).map((eser) => (
+                  {yazar.eserler.map((eser) => (
                     <li
                       key={eser}
-                      className="flex items-center gap-2.5 rounded-xl bg-muted/70 px-3.5 py-2.5 font-serif text-[15px] font-semibold text-card-foreground ring-1 ring-border"
+                      className="flex items-center gap-2.5 rounded-2xl bg-muted/60 px-3.5 py-2.5 font-serif text-[15px] font-semibold text-card-foreground ring-1 ring-border/60"
                     >
                       <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
                       {eser}
@@ -178,8 +173,7 @@ export default function Flashcard({
                 </ul>
               </div>
 
-              {/* Ufak ipucu */}
-              <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-accent/50 px-3.5 py-2.5 ring-1 ring-border">
+              <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-accent/50 px-3.5 py-2.5 ring-1 ring-border/60">
                 <Lightbulb className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={2} />
                 <p className="text-center text-[12px] font-medium italic leading-snug text-pretty text-accent-foreground">
                   {kisaIpucu}
@@ -191,9 +185,9 @@ export default function Flashcard({
               </p>
             </div>
 
-            {/* ARKA YÜZ — Yazar adı + dönem */}
+            {/* ARKA YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-3xl bg-card p-7 ring-1 ring-border shadow-xl shadow-foreground/5"
+              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -212,23 +206,24 @@ export default function Flashcard({
                   Cevap
                 </p>
                 <h2 className="font-serif text-3xl font-extrabold uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-4xl">
-                 {yazar.author || yazar.ad}
+                  {yazar.ad}
                 </h2>
                 <p className="mt-4 inline-flex items-center rounded-full bg-primary px-4 py-2 text-sm font-bold uppercase tracking-wide text-primary-foreground shadow-md">
                   {yazar.donem}
                 </p>
-              </div>
 
-              <div className="rounded-2xl bg-accent/60 p-3.5 ring-1 ring-border">
-                <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
-                  Bilgi Notu
-                </p>
-                <p className="text-xs leading-relaxed text-pretty text-muted-foreground">{yazar.ipucu}</p>
+                {/* İpucu / özet bilgi */}
+                <div className="mt-5 w-full rounded-2xl bg-accent/50 p-3.5 ring-1 ring-border/60">
+                  <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
+                    <Lightbulb className="h-3 w-3" strokeWidth={2} />
+                    Bilgi Notu
+                  </p>
+                  <p className="text-xs leading-relaxed text-pretty text-muted-foreground">{yazar.ipucu}</p>
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Kaydırma göstergeleri */}
           <div
             className="pointer-events-none absolute right-6 top-6 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-500 text-white shadow-lg"
             style={{ opacity: sagOran, transform: `scale(${0.6 + sagOran * 0.4})` }}
@@ -246,7 +241,6 @@ export default function Flashcard({
         </div>
       </div>
 
-      {/* Aksiyonlar */}
       <div className="mt-7 grid grid-cols-2 gap-3">
         <button
           onClick={() => tamamla("sol")}
@@ -288,7 +282,7 @@ export default function Flashcard({
 
 export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifirla: () => void }) {
   return (
-    <div className="animate-rise rounded-3xl bg-card p-9 text-center ring-1 ring-border shadow-xl shadow-foreground/5">
+    <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
       <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20 animate-pop">
         <Trophy className="h-9 w-9" strokeWidth={1.5} />
       </div>

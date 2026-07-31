@@ -1,6 +1,6 @@
 "use client"
 
-import { CheckCircle2, Layers, Target, XCircle } from "lucide-react"
+import { CircleCheck as CheckCircle2, Layers, Target, Circle as XCircle } from "lucide-react"
 import DonemRozeti from "@/components/DonemRozeti"
 import IlerlemeBari from "@/components/IlerlemeBari"
 import { donemler, yazarlar, type Donem } from "@/data/yazarlar"
@@ -31,6 +31,9 @@ export default function IstatistikModul({
     return { ogrenilen, toplam: indeksler.length }
   }
 
+  // Yalnızca yazar içeren dönemleri göster
+  const gosterilecekDonemler = donemler.filter((d) => yazarlar.some((y) => y.donem === d))
+
   return (
     <div className="animate-rise space-y-5">
       <div className="grid grid-cols-3 gap-3">
@@ -49,7 +52,7 @@ export default function IstatistikModul({
         <Kutu ikon={<XCircle className="h-4 w-4" />} etiket="Yanlış" deger={`${testSayaci.yanlis}`} alt="test cevabı" />
       </div>
 
-      <div className="rounded-3xl bg-card p-6 ring-1 ring-border shadow-sm">
+      <div className="rounded-[1.75rem] bg-card p-6 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
         <IlerlemeBari mevcut={ogrenilenler.size} toplam={toplamKart} etiket="Kart destesi" />
         <div className="mt-5">
           <IlerlemeBari
@@ -61,12 +64,12 @@ export default function IstatistikModul({
         </div>
       </div>
 
-      <div className="rounded-3xl bg-card p-6 ring-1 ring-border shadow-sm">
+      <div className="rounded-[1.75rem] bg-card p-6 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
         <p className="mb-4 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           <Target className="h-3.5 w-3.5 text-primary" /> Dönem bazlı durum
         </p>
         <div className="space-y-4">
-          {donemler.map((donem) => {
+          {gosterilecekDonemler.map((donem) => {
             const { ogrenilen, toplam } = donemOgrenilen(donem)
             const test = donemSayaci[donem] ?? { dogru: 0, yanlis: 0 }
             const testToplam = test.dogru + test.yanlis
@@ -113,7 +116,7 @@ function Kutu({
   alt: string
 }) {
   return (
-    <div className="rounded-2xl bg-card p-4 ring-1 ring-border shadow-sm">
+    <div className="rounded-2xl bg-card p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
       <span className="grid h-8 w-8 place-items-center rounded-xl bg-primary/10 text-primary ring-1 ring-primary/20">
         {ikon}
       </span>

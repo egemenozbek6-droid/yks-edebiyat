@@ -1,10 +1,10 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Inter, Playfair_Display } from 'next/font/google'
+import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
-const playfair = Playfair_Display({ subsets: ['latin'], variable: '--font-playfair' })
+const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans' })
+const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-serif', style: ['normal', 'italic'] })
 
 export const metadata: Metadata = {
   title: 'YKS Edebiyat — Yazar & Eser Ezberi',
@@ -33,8 +33,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#faf7f2' },
-    { media: '(prefers-color-scheme: dark)', color: '#1b1917' },
+    { media: '(prefers-color-scheme: light)', color: '#f5f3ee' },
+    { media: '(prefers-color-scheme: dark)', color: '#1a1d24' },
   ],
 }
 
@@ -56,7 +56,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="tr" className={`${inter.variable} ${playfair.variable} bg-background`} suppressHydrationWarning>
+    <html lang="tr" className={`${jakarta.variable} ${fraunces.variable} bg-background`} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: temaScripti }} />
       </head>

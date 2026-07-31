@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { Brain, Info, Layers, X } from "lucide-react"
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard"
 import TestModul from "@/components/TestModul"
@@ -10,30 +10,37 @@ import TemaAnahtari from "@/components/TemaAnahtari"
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal"
 import { yazarlar, baslik, amac, notu, type Donem } from "@/data/yazarlar"
 
+function karistir<T>(dizi: T[]): T[] {
+  const kopya = [...dizi]
+  for (let i = kopya.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1))
+    ;[kopya[i], kopya[j]] = [kopya[j], kopya[i]]
+  }
+  return kopya
+}
+
 export default function App() {
   const [mod, setMod] = useState<Mod>("kart")
   const [infoAcik, setInfoAcik] = useState(false)
 
-  // Günün ruh hali mesajı (pop-up seçiminden gelir)
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null)
 
-  // Kart destesi durumu
-  const [deste, setDeste] = useState<number[]>(() => yazarlar.map((_, i) => i))
+  // Kart destesi — her yüklendiğinde karışık gelir
+  const [deste, setDeste] = useState<number[]>(() => karistir(yazarlar.map((_, i) => i)))
   const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set())
 
-  // Test istatistikleri
   const [testSayaci, setTestSayaci] = useState<TestSayaci>({ dogru: 0, yanlis: 0 })
   const [donemSayaci, setDonemSayaci] = useState<Record<string, TestSayaci>>({})
 
   const bitti = deste.length === 0
 
   const sifirla = useCallback(() => {
-    setDeste(yazarlar.map((_, i) => i))
+    setDeste(karistir(yazarlar.map((_, i) => i)))
     setOgrenilenler(new Set())
   }, [])
 
   const istatistikSifirla = useCallback(() => {
-    setDeste(yazarlar.map((_, i) => i))
+    setDeste(karistir(yazarlar.map((_, i) => i)))
     setOgrenilenler(new Set())
     setTestSayaci({ dogru: 0, yanlis: 0 })
     setDonemSayaci({})
@@ -56,7 +63,6 @@ export default function App() {
     })
   }, [])
 
-  // Önizleme için önceki/sonraki (deste içinde dolaşma)
   const onPrev = useCallback(() => {
     setDeste((onceki) => {
       if (onceki.length <= 1) return onceki
@@ -95,9 +101,8 @@ export default function App() {
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
-      {/* Dekoratif arka plan dokusu */}
       <div
-        className="fixed inset-0 pointer-events-none opacity-[0.05] dark:opacity-[0.08]"
+        className="fixed inset-0 pointer-events-none opacity-[0.04] dark:opacity-[0.06]"
         style={{
           backgroundImage:
             "radial-gradient(circle at 20% 30%, currentColor 1px, transparent 1px), radial-gradient(circle at 80% 70%, currentColor 1px, transparent 1px)",
@@ -159,7 +164,6 @@ export default function App() {
 
       {/* İçerik */}
       <main className="relative max-w-3xl mx-auto px-5 py-8 pb-32">
-        {/* Ruh haline göre motivasyon bandı */}
         {ruhHali && (
           <div className="mb-6 flex items-start gap-3 rounded-3xl bg-accent/60 p-4 ring-1 ring-border shadow-sm animate-rise">
             <span className="text-2xl leading-none" aria-hidden="true">
@@ -210,7 +214,7 @@ export default function App() {
       {/* Mobil alt menü */}
       <AltMenu mod={mod} setMod={setMod} />
 
-      {/* İlk açılış / günün ilk girişi ruh hali pop-up'ı */}
+      {/* Ruh hali pop-up'ı */}
       <RuhHaliModal onSecim={setRuhHali} />
 
       {/* Bilgi modalı */}
@@ -220,7 +224,7 @@ export default function App() {
           onClick={() => setInfoAcik(false)}
         >
           <div
-            className="bg-card rounded-3xl shadow-2xl max-w-md w-full p-7 ring-1 ring-border animate-pop"
+            className="bg-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-7 ring-1 ring-border animate-pop"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-4">
@@ -235,10 +239,12 @@ export default function App() {
             </div>
             <p className="font-serif text-base text-primary font-semibold mb-1">{baslik}</p>
             <p className="text-sm text-muted-foreground mb-4">{amac}</p>
-            <div className="bg-accent/60 ring-1 ring-border rounded-2xl p-4">
-              <p className="text-xs font-semibold uppercase tracking-wider text-accent-foreground mb-1.5">Not</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{notu}</p>
-            </div>
+            {notu && (
+              <div className="bg-accent/60 ring-1 ring-border rounded-2xl p-4">
+                <p className="text-xs font-semibold uppercase tracking-wider text-accent-foreground mb-1.5">Not</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{notu}</p>
+              </div>
+            )}
             <div className="mt-4 space-y-2 text-sm text-muted-foreground">
               <p>
                 <span className="font-semibold text-foreground">Kart Modu:</span> Sağa kaydır = Öğrendim, Sola kaydır =

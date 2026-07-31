@@ -31,20 +31,19 @@ function karistir<T>(dizi: T[]): T[] {
 }
 
 function sorulariUret(havuz: Yazar[]): Soru[] {
-  const tumEserler = yazarlar.flatMap((y) => y.works || y.eserler || []);
-  const tumYazarlar = yazarlar.map((y) => y.author || y.ad);
+  const tumEserler = yazarlar.flatMap((y) => y.eserler)
+  const tumYazarlar = yazarlar.map((y) => y.ad)
 
   return karistir(havuz)
     .slice(0, SORU_SAYISI)
     .map((yazar, i): Soru => {
-      const dogruEser = karistir(yazar.works || yazar.eserler || [])[0];
+      const dogruEser = karistir(yazar.eserler)[0]
 
       if (i % 2 === 0) {
-        // "Bu yazarın eseri hangisidir?"
-        const yanlislar = karistir(tumEserler.filter((e) => !(yazar.works || yazar.eserler || []).includes(e))).slice(0, 3);
+        const yanlislar = karistir(tumEserler.filter((e) => !yazar.eserler.includes(e))).slice(0, 3)
         return {
           metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
-          vurgu: yazar.author || yazar.ad,
+          vurgu: yazar.ad,
           secenekler: karistir([dogruEser, ...yanlislar]),
           dogru: dogruEser,
           donem: yazar.donem,
@@ -52,7 +51,6 @@ function sorulariUret(havuz: Yazar[]): Soru[] {
         }
       }
 
-      // "Bu eser kime aittir?"
       const yanlislar = karistir(tumYazarlar.filter((a) => a !== yazar.ad)).slice(0, 3)
       return {
         metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
@@ -101,11 +99,14 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null)
   }
 
-  /* ——— Dönem seçim ekranı ——— */
+  // Dönem seçim ekranı
   if (!secilenDonem || sorular.length === 0) {
+    // Yalnızca içinde yazar bulunan dönemleri göster
+    const gosterilecekDonemler = donemler.filter((d) => yazarlar.some((y) => y.donem === d))
+
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-3xl bg-card p-7 text-center ring-1 ring-border shadow-sm">
+        <div className="mb-6 rounded-[1.75rem] bg-card p-7 text-center ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
           <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
             <Brain className="h-6 w-6" strokeWidth={1.5} />
           </div>
@@ -127,7 +128,7 @@ export default function TestModul({ onSonuc }: Props) {
             <span className="text-xs font-semibold opacity-80">{yazarlar.length} yazar</span>
           </button>
 
-          {donemler.map((donem) => {
+          {gosterilecekDonemler.map((donem) => {
             const adet = yazarlar.filter((y) => y.donem === donem).length
             return (
               <button
@@ -145,11 +146,11 @@ export default function TestModul({ onSonuc }: Props) {
     )
   }
 
-  /* ——— Sonuç ekranı ——— */
+  // Sonuç ekranı
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100)
     return (
-      <div className="animate-rise rounded-3xl bg-card p-9 text-center ring-1 ring-border shadow-xl shadow-foreground/5">
+      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
         <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20 animate-pop">
           <Target className="h-9 w-9" strokeWidth={1.5} />
         </div>
@@ -181,12 +182,12 @@ export default function TestModul({ onSonuc }: Props) {
     )
   }
 
-  /* ——— Soru ekranı ——— */
+  // Soru ekranı
   const soru = sorular[aktif]
 
   return (
     <div className="animate-rise">
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-sm backdrop-blur">
+      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] backdrop-blur">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -207,7 +208,7 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
       </div>
 
-      <div className="rounded-3xl bg-card p-7 ring-1 ring-border shadow-xl shadow-foreground/5">
+      <div className="rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
         </p>
