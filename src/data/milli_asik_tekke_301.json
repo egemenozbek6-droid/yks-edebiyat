@@ -1,0 +1,527 @@
+[
+  {
+    "id": 301,
+    "author": "Ziya Gökalp",
+    "work": "Türkçülüğün Esasları",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Fikri Eser (Deneme)",
+    "info": "Türkçülük akımının kuramsal temellerini; hars (millî kültür) ve medeniyet ayrımı üzerinden ortaya koyan, Milli Edebiyat'ın fikir zeminini oluşturan en önemli eserdir.",
+    "keywords": ["Türkçülük", "Hars-Medeniyet Ayrımı", "Milliyetçilik Kuramı"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 302,
+    "author": "Ziya Gökalp",
+    "work": "Kızılelma",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir",
+    "info": "Türk milliyetçiliği idealini, hece ölçüsüyle ve sade bir dille işleyen, didaktik nitelikli şiir kitabıdır.",
+    "keywords": ["Milliyetçi İdeal", "Hece Ölçüsü", "Didaktik Şiir"]
+  },
+  {
+    "id": 303,
+    "author": "Ziya Gökalp",
+    "work": "Türk Töresi",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Fikri Eser",
+    "info": "Eski Türklerdeki töre, hukuk ve gelenek anlayışını inceleyen, Türkçülük fikrini tarihsel temellendiren eserdir.",
+    "keywords": ["Töre", "Eski Türk Hukuku", "Türkçülük"]
+  },
+  {
+    "id": 304,
+    "author": "Ömer Seyfettin",
+    "work": "Forsa",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Ömer Seyfettin'in Osmanlı deniz tarihinden, kahramanlık ve millî değerleri işlediği hikayelerinden biridir.",
+    "keywords": ["Kahramanlık", "Osmanlı Deniz Tarihi"]
+  },
+  {
+    "id": 305,
+    "author": "Ömer Seyfettin",
+    "work": "Kaşağı",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Bir çocuğun yalan söylemesi ve bunun sonuçlarını, çocuk psikolojisiyle sade bir dille anlatan ünlü hikayedir.",
+    "keywords": ["Çocuk Psikolojisi", "Yalan", "Sade Dil"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 306,
+    "author": "Ömer Seyfettin",
+    "work": "Pembe İncili Kaftan",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Bir Osmanlı beyinin haksızlığa uğrayan bir tüccara verdiği sözü tutması etrafında dönen, tarihi bir hikayedir.",
+    "keywords": ["Söz Verme", "Adalet", "Tarihi Hikaye"]
+  },
+  {
+    "id": 307,
+    "author": "Ömer Seyfettin",
+    "work": "Bomba",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Balkanlar'daki Rum çetelerinin Türklere yönelik zulmünü ve bir bombalama girişimini konu alan hikayedir.",
+    "keywords": ["Balkanlar", "Çete", "Zulüm"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 308,
+    "author": "Ömer Seyfettin",
+    "work": "Falaka",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Eski usul eğitim sistemindeki dayak cezasını (falaka), yazarın kendi çocukluk anılarından yola çıkarak eleştirel bir dille anlattığı hikayedir.",
+    "keywords": ["Eski Eğitim Sistemi", "Dayak Cezası", "Eleştiri"]
+  },
+  {
+    "id": 309,
+    "author": "Halide Edip Adıvar",
+    "work": "Sinekli Bakkal",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "İstanbul'un bir mahallesinde geçen, Doğu-Batı çatışmasını ve II. Abdülhamit dönemi toplum yaşamını Rabia adlı kahraman üzerinden anlatan, yazarın en tanınmış romanıdır.",
+    "keywords": ["Rabia", "Doğu-Batı Çatışması", "II. Abdülhamit Dönemi"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 310,
+    "author": "Halide Edip Adıvar",
+    "work": "Ateşten Gömlek",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Kurtuluş Savaşı'nı, cephe gerisindeki halkın direnişini ve bir kadın kahraman olan Ayşe'nin mücadelesini konu alan millî mücadele romanıdır.",
+    "keywords": ["Kurtuluş Savaşı", "Ayşe", "Millî Mücadele"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 311,
+    "author": "Halide Edip Adıvar",
+    "work": "Vurun Kahpeye",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Anadolu'da öğretmenlik yapan Aliye'nin, cahillik ve gericilik yüzünden halk tarafından linç edilmesini konu alan; Kurtuluş Savaşı döneminin karanlık yüzünü eleştiren romandır.",
+    "keywords": ["Aliye", "Linç", "Cahillik Eleştirisi"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 312,
+    "author": "Halide Edip Adıvar",
+    "work": "Tatarcık",
+    "period": "Cumhuriyet Dönemi (Milli Edebiyat Sonrası)",
+    "genre": "Roman",
+    "info": "Cumhuriyet'in ilk yıllarında bir doktorun köyde görev yapmasını ve toplumsal değişimi konu alan romandır.",
+    "keywords": ["Köy Hekimi", "Toplumsal Değişim"]
+  },
+  {
+    "id": 313,
+    "author": "Yakup Kadri Karaosmanoğlu",
+    "work": "Yaban",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Kurtuluş Savaşı yıllarında Anadolu köylüsü ile aydın kesim arasındaki kopukluğu, İstanbullu sakat bir subay olan Ahmet Celal'in bir Anadolu köyündeki gözlemleri üzerinden anlatan önemli bir romandır.",
+    "keywords": ["Ahmet Celal", "Aydın-Köylü Kopukluğu", "Anadolu"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 314,
+    "author": "Yakup Kadri Karaosmanoğlu",
+    "work": "Kiralık Konak",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Üç kuşak (Naim Efendi, Servet Bey, Seniha) üzerinden Tanzimat'tan Cumhuriyet'e Türk toplumundaki Batılılaşma ve değer çatışmasını anlatan kuşak romanıdır.",
+    "keywords": ["Naim Efendi", "Seniha", "Kuşak Çatışması", "Batılılaşma"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 315,
+    "author": "Yakup Kadri Karaosmanoğlu",
+    "work": "Nur Baba",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Bir Bektaşi tekkesindeki çürümüşlüğü ve tekke istismarını eleştirel bir gözle ele alan romandır.",
+    "keywords": ["Tekke Eleştirisi", "Bektaşilik", "İstismar"]
+  },
+  {
+    "id": 316,
+    "author": "Yakup Kadri Karaosmanoğlu",
+    "work": "Hüküm Gecesi",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "II. Meşrutiyet dönemindeki siyasi çalkantıları ve İttihat Terakki'nin iktidara gelişini konu alan romandır.",
+    "keywords": ["II. Meşrutiyet", "İttihat ve Terakki", "Siyasi Roman"]
+  },
+  {
+    "id": 317,
+    "author": "Refik Halit Karay",
+    "work": "Memleket Hikayeleri",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Yazarın sürgün yıllarında Anadolu'yu gezerek gözlemlediği taşra hayatını, gerçekçi bir dille ve yerel unsurlarla anlattığı hikaye kitabıdır.",
+    "keywords": ["Taşra Hayatı", "Anadolu Gözlemleri", "Sürgün"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 318,
+    "author": "Refik Halit Karay",
+    "work": "Gurbet Hikayeleri",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Hikaye",
+    "info": "Yazarın Suriye, Lübnan gibi sürgün yerlerindeki gözlem ve deneyimlerine dayanan hikayelerden oluşan kitaptır.",
+    "keywords": ["Sürgün", "Gurbet", "Ortadoğu"]
+  },
+  {
+    "id": 319,
+    "author": "Refik Halit Karay",
+    "work": "Yezidin Kızı",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Ortadoğu coğrafyasında geçen, Yezidi inancına mensup bir kızın hikayesini anlatan romandır.",
+    "keywords": ["Yezidilik", "Ortadoğu Coğrafyası"]
+  },
+  {
+    "id": 320,
+    "author": "Mehmet Emin Yurdakul",
+    "work": "Türkçe Şiirler",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir",
+    "info": "'Ben bir Türküm dinim cinsim uludur' dizesiyle başlayan, hece ölçüsü ve sade Türkçeyle millî duyguları işleyen; milliyetçi şiirin öncü eseri kabul edilir.",
+    "keywords": ["Ben Bir Türküm", "Hece Ölçüsü", "Millî Duygu", "Öncü Eser"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 321,
+    "author": "Mehmet Emin Yurdakul",
+    "work": "Ey Türk Uyan",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir",
+    "info": "Millî bilinci uyandırmayı amaçlayan, doğrudan hitap ve öğüt içeren didaktik bir şiir kitabıdır.",
+    "keywords": ["Millî Bilinç", "Didaktik Şiir", "Hitap"]
+  },
+  {
+    "id": 322,
+    "author": "Ali Canip Yöntem",
+    "work": "Milli Edebiyat Meselesi ve Cenap Bey'le Münakaşalarım",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Eleştiri (Polemik)",
+    "info": "Genç Kalemler hareketinin dil ve edebiyat görüşlerini savunan, Cenap Şahabettin ile yapılan ünlü 'Yeni Lisan' tartışmasını içeren eleştiri eseridir.",
+    "keywords": ["Genç Kalemler", "Yeni Lisan Tartışması", "Cenap Şahabettin Polemiği"]
+  },
+  {
+    "id": 323,
+    "author": "Reşat Nuri Güntekin",
+    "work": "Çalıkuşu",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "İstanbullu genç öğretmen Feride'nin Anadolu'nun çeşitli köy ve kasabalarında öğretmenlik yaparken yaşadıklarını anlatan, Türk edebiyatının en çok okunan romanlarından biridir.",
+    "keywords": ["Feride", "Öğretmen", "Anadolu", "Çalıkuşu"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 324,
+    "author": "Reşat Nuri Güntekin",
+    "work": "Yaprak Dökümü",
+    "period": "Cumhuriyet Dönemi (Milli Edebiyat Sonrası)",
+    "genre": "Roman",
+    "info": "Batılılaşmanın olumsuz etkileri yüzünden dağılan bir ailenin, baba Ali Rıza Bey etrafında çöküşünü anlatan romandır.",
+    "keywords": ["Ali Rıza Bey", "Aile Çözülmesi", "Yanlış Batılılaşma"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 325,
+    "author": "Reşat Nuri Güntekin",
+    "work": "Acımak",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman",
+    "info": "Bir öğretmenin acımasızlığının çevresine ve kendisine verdiği zararları konu alan; merhamet temasının işlendiği romandır.",
+    "keywords": ["Merhamet Teması", "Öğretmen", "Katı Karakter"]
+  },
+  {
+    "id": 326,
+    "author": "Yahya Kemal Beyatlı",
+    "work": "Kendi Gök Kubbemiz",
+    "period": "Milli Edebiyat Dönemi (Bağımsızlar)",
+    "genre": "Şiir",
+    "info": "Yahya Kemal'in Türk-İslam tarihini, İstanbul sevgisini ve millî duyarlılığı aruzla işlediği, sağlığında yayımlanan tek şiir kitabıdır.",
+    "keywords": ["İstanbul Sevgisi", "Aruz", "Türk-İslam Tarihi", "Tek Sağlığında Basılan Kitap"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 327,
+    "author": "Yahya Kemal Beyatlı",
+    "work": "Eski Şiirin Rüzgarıyla",
+    "period": "Milli Edebiyat Dönemi (Bağımsızlar)",
+    "genre": "Şiir",
+    "info": "Divan şiiri biçim ve nazım şekillerini kullanarak yazılmış, klasik şiir zevkini modern bir duyarlılıkla birleştiren şiirlerden oluşur.",
+    "keywords": ["Divan Şiiri Biçimleri", "Klasik Zevk", "Aruz"]
+  },
+  {
+    "id": 328,
+    "author": "Yahya Kemal Beyatlı",
+    "work": "Aziz İstanbul",
+    "period": "Milli Edebiyat Dönemi (Bağımsızlar)",
+    "genre": "Deneme/Sohbet",
+    "info": "Yazarın İstanbul'a duyduğu derin sevgiyi ve şehrin tarihi-kültürel dokusunu anlattığı düzyazı eseridir.",
+    "keywords": ["İstanbul", "Deneme", "Kültürel Doku"]
+  },
+  {
+    "id": 329,
+    "author": "Faruk Nafiz Çamlıbel",
+    "work": "Han Duvarları",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Anadolu'yu memleketçi bir bakışla, hece ölçüsüyle anlatan; Beş Hececiler akımının ve memleket edebiyatının en tanınmış şiirlerinden biridir.",
+    "keywords": ["Beş Hececiler", "Memleketçi Şiir", "Anadolu", "Hece Ölçüsü"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 330,
+    "author": "Faruk Nafiz Çamlıbel",
+    "work": "Çoban Çeşmesi",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Anadolu doğasını ve halk hayatını hece ölçüsüyle işleyen, memleketçi şiir anlayışının önemli örneklerinden bir şiir kitabıdır.",
+    "keywords": ["Anadolu Doğası", "Hece Ölçüsü", "Memleket Edebiyatı"]
+  },
+  {
+    "id": 331,
+    "author": "Halit Fahri Ozansoy",
+    "work": "Efsaneler",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Beş Hececiler'den Halit Fahri'nin, hece ölçüsü ve halk edebiyatı motifleriyle yazdığı şiirlerini içeren kitaptır.",
+    "keywords": ["Beş Hececiler", "Halk Motifleri", "Hece Ölçüsü"]
+  },
+  {
+    "id": 332,
+    "author": "Enis Behiç Koryürek",
+    "work": "Miraciye",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Beş Hececiler'den Enis Behiç'in, dinî-mistik bir konuyu (Miraç) işlediği şiir eseridir.",
+    "keywords": ["Beş Hececiler", "Miraç", "Dini-Mistik Konu"]
+  },
+  {
+    "id": 333,
+    "author": "Yusuf Ziya Ortaç",
+    "work": "Akından Akına",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Beş Hececiler'den Yusuf Ziya Ortaç'ın hece ölçüsüyle yazdığı, millî ve tarihî temalar içeren şiir kitabıdır.",
+    "keywords": ["Beş Hececiler", "Millî Tema", "Hece Ölçüsü"]
+  },
+  {
+    "id": 334,
+    "author": "Orhon Seyfi Orhon",
+    "work": "Gönülden Sesler",
+    "period": "Milli Edebiyat Dönemi (Beş Hececiler)",
+    "genre": "Şiir",
+    "info": "Beş Hececiler'den Orhan Seyfi'nin aşk ve duygusal temaları hece ölçüsüyle işlediği şiir kitabıdır.",
+    "keywords": ["Beş Hececiler", "Aşk Teması", "Hece Ölçüsü"]
+  },
+  {
+    "id": 335,
+    "author": "Karacaoğlan",
+    "work": "Karacaoğlan Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Koşma/Divan",
+    "info": "17. yüzyıl saz şairidir. Doğa, aşk ve güzellik temalarını coşkulu bir dille, hece ölçüsü ve koşma nazım biçimiyle işleyen; âşık edebiyatının en tanınmış ismidir.",
+    "keywords": ["Koşma", "Aşk ve Doğa", "17. Yüzyıl Saz Şairi", "Hece Ölçüsü"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 336,
+    "author": "Köroğlu",
+    "work": "Köroğlu Destanı ve Koçaklamaları",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Koçaklama",
+    "info": "16. yüzyılda yaşadığı kabul edilen; kahramanlık, mertlik ve mücadele temalarını coşkulu bir üslupla işleyen koçaklamalarıyla tanınan yarı efsanevi âşıktır.",
+    "keywords": ["Koçaklama", "Kahramanlık", "16. Yüzyıl", "Mertlik"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 337,
+    "author": "Aşık Ömer",
+    "work": "Aşık Ömer Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma-Semai)",
+    "info": "17. yüzyıl âşıklarındandır; divan edebiyatı nazım şekillerini de kullanarak (divan şiiri ile halk şiirini harmanlayarak) şiirler yazmıştır.",
+    "keywords": ["Divan-Halk Şiiri Karışımı", "17. Yüzyıl"]
+  },
+  {
+    "id": 338,
+    "author": "Erzurumlu Emrah",
+    "work": "Emrah Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma)",
+    "info": "19. yüzyılda yaşamış, aşk ve tasavvufi temaları işleyen; Türk halk şiirinin usta isimlerindendir.",
+    "keywords": ["19. Yüzyıl", "Aşk ve Tasavvuf"]
+  },
+  {
+    "id": 339,
+    "author": "Dadaloğlu",
+    "work": "Dadaloğlu Şiirleri (Kalktı Göç Eyledi Avşar Elleri)",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Koçaklama",
+    "info": "19. yüzyılda yaşamış; Osmanlı'nın göçebe Türkmen aşiretlerini yerleşik hayata zorlaması karşısında direnişi ve aşiret hayatını coşkulu koçaklamalarıyla anlatan son büyük göçebe âşıklarındandır.",
+    "keywords": ["Göçebe Türkmenler", "Direniş", "Koçaklama", "Avşar Aşireti"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 340,
+    "author": "Gevheri",
+    "work": "Gevheri Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma-Semai)",
+    "info": "17. yüzyılda yaşamış; aşk konulu, akıcı ve ahenkli koşmalarıyla tanınan âşıktır.",
+    "keywords": ["17. Yüzyıl", "Aşk Konusu", "Akıcı Üslup"]
+  },
+  {
+    "id": 341,
+    "author": "Dertli",
+    "work": "Dertli Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma)",
+    "info": "19. yüzyılda yaşamış; hayattaki zorlukları, kaderi ve tasavvufi düşünceleri işleyen şiirleriyle tanınan âşıktır.",
+    "keywords": ["19. Yüzyıl", "Kader Teması", "Tasavvuf"]
+  },
+  {
+    "id": 342,
+    "author": "Bayburtlu Zihni",
+    "work": "Zihni Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma-Destan)",
+    "info": "19. yüzyıl âşıklarındandır; hem halk hem divan şiiri nazım şekillerini kullanmıştır. 'Seyahatname-i Zihni' adlı mensur bir eseri de bulunur.",
+    "keywords": ["19. Yüzyıl", "Divan-Halk Şiiri Karışımı", "Seyahatname-i Zihni"]
+  },
+  {
+    "id": 343,
+    "author": "Seyrani",
+    "work": "Seyrani Divanı",
+    "period": "Aşık Edebiyatı (Halk Edebiyatı)",
+    "genre": "Divan (Koşma-Taşlama)",
+    "info": "19. yüzyılda yaşamış; toplumsal aksaklıkları ve haksızlıkları taşlama (yergi) yoluyla eleştiren güçlü bir âşıktır.",
+    "keywords": ["19. Yüzyıl", "Taşlama", "Toplumsal Eleştiri"]
+  },
+  {
+    "id": 344,
+    "author": "Yunus Emre",
+    "work": "Divan",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "Divan (İlahi)",
+    "info": "13. yüzyılda yaşamış; Allah sevgisini, insan sevgisini ve tasavvufi düşünceyi son derece sade bir Türkçeyle işleyen; Türk tasavvuf edebiyatının en büyük ismidir.",
+    "keywords": ["İlahi", "Sade Türkçe", "Allah ve İnsan Sevgisi", "13. Yüzyıl"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 345,
+    "author": "Yunus Emre",
+    "work": "Risaletü'n-Nushiyye",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "Didaktik Mesnevi",
+    "info": "Yunus Emre'nin aruz ölçüsüyle yazdığı, nasihat ve ahlaki öğütler içeren mesnevi tarzındaki tek eseridir.",
+    "keywords": ["Aruz Ölçüsü", "Nasihat", "Mesnevi", "Ahlaki Öğüt"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 346,
+    "author": "Hacı Bektaş Veli",
+    "work": "Makalat",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "Dini-Tasavvufi Eser",
+    "info": "Bektaşiliğin kurucusu kabul edilen Hacı Bektaş Veli'nin, tasavvufun dört kapı kırk makam anlayışını anlattığı; önce Arapça yazılıp sonra Türkçeye çevrilen eseridir.",
+    "keywords": ["Bektaşilik", "Dört Kapı Kırk Makam", "Tasavvuf"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 347,
+    "author": "Pir Sultan Abdal",
+    "work": "Pir Sultan Abdal Deyişleri",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "Nefes/Deyiş",
+    "info": "16. yüzyılda yaşamış Alevi-Bektaşi geleneğinin en önemli şairlerindendir; şiirlerinde tasavvufi aşkın yanı sıra dönemin yönetimine yönelik başkaldırı ve toplumsal eleştiri de yer alır.",
+    "keywords": ["Alevi-Bektaşi Geleneği", "Nefes", "Başkaldırı", "16. Yüzyıl"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 348,
+    "author": "Kaygusuz Abdal",
+    "work": "Kaygusuz Abdal Şiirleri",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "İlahi/Nefes",
+    "info": "14-15. yüzyılda yaşamış; Alevi-Bektaşi edebiyatının kurucularından kabul edilir, tasavvufi neşe ve alaycı bir üslupla şiirler yazmıştır.",
+    "keywords": ["Alevi-Bektaşi Edebiyatı", "Tasavvufi Neşe", "Alaycı Üslup"]
+  },
+  {
+    "id": 349,
+    "author": "Niyazi Mısri",
+    "work": "Niyazi Mısri Divanı",
+    "period": "Tekke (Tasavvuf) Edebiyatı",
+    "genre": "Divan (İlahi)",
+    "info": "17. yüzyılda yaşamış; derin tasavvufi düşünceleri hem hece hem aruzla işleyen, Halvetiliğin önemli temsilcilerinden bir mutasavvıf şairdir.",
+    "keywords": ["Halvetilik", "17. Yüzyıl", "Tasavvufi Derinlik"]
+  }
+]
