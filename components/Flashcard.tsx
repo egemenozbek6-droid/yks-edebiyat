@@ -90,7 +90,7 @@ export default function Flashcard({
 
   return (
     <div className="animate-rise">
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] backdrop-blur">
+      <div className="mb-6 rounded-3xl bg-card/70 p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] backdrop-blur">
         <IlerlemeBari mevcut={ogrenilenSayi} toplam={total} etiket="Öğrenilen kart" />
         <div className="mt-3 flex items-center justify-between text-[11px] text-muted-foreground">
           <span className="inline-flex items-center gap-1.5">
@@ -105,8 +105,8 @@ export default function Flashcard({
       </div>
 
       <div className="relative select-none" style={{ perspective: "1600px" }}>
-        <div className="absolute inset-x-4 top-3 h-full rounded-[1.75rem] bg-card/50 ring-1 ring-border/60" aria-hidden="true" />
-        <div className="absolute inset-x-2 top-1.5 h-full rounded-[1.75rem] bg-card/70 ring-1 ring-border/60" aria-hidden="true" />
+        <div className="absolute inset-x-4 top-3 h-full rounded-[1.75rem] bg-card/40" aria-hidden="true" />
+        <div className="absolute inset-x-2 top-1.5 h-full rounded-[1.75rem] bg-card/60" aria-hidden="true" />
 
         <div
           onPointerDown={basla}
@@ -145,7 +145,7 @@ export default function Flashcard({
           >
             {/* ÖN YÜZ — Eser gösterilir */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]"
+              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
               <div className="flex items-start justify-between gap-3">
@@ -171,7 +171,7 @@ export default function Flashcard({
                 <p className="mt-3 text-sm font-medium text-muted-foreground">{item.genre}</p>
               </div>
 
-              <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-accent/50 px-3.5 py-2.5 ring-1 ring-border/60">
+              <div className="mt-4 flex items-center justify-center gap-2 rounded-2xl bg-accent/50 px-3.5 py-2.5">
                 <Lightbulb className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={2} />
                 <p className="text-center text-[12px] font-medium italic leading-snug text-pretty text-accent-foreground">
                   {kisaIpucu}
@@ -185,7 +185,7 @@ export default function Flashcard({
 
             {/* ARKA YÜZ — Yazar gösterilir */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]"
+              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -216,7 +216,7 @@ export default function Flashcard({
                 </p>
 
                 {/* Bilgi Notu */}
-                <div className="mt-5 w-full rounded-2xl bg-accent/50 p-3.5 ring-1 ring-border/60">
+                <div className="mt-5 w-full rounded-2xl bg-accent/50 p-3.5">
                   <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
                     <Lightbulb className="h-3 w-3" strokeWidth={2} />
                     Bilgi Notu
@@ -247,7 +247,7 @@ export default function Flashcard({
       <div className="mt-7 grid grid-cols-2 gap-3">
         <button
           onClick={() => tamamla("sol")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground ring-1 ring-border shadow-sm transition hover:text-destructive hover:ring-destructive/40 active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-destructive active:scale-[0.98]"
         >
           <RotateCcw className="h-4 w-4" /> Tekrar Et
         </button>
@@ -285,7 +285,7 @@ export default function Flashcard({
 
 export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifirla: () => void }) {
   return (
-    <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
+    <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
       <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20 animate-pop">
         <Trophy className="h-9 w-9" strokeWidth={1.5} />
       </div>

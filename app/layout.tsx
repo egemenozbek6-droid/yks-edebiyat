@@ -7,9 +7,8 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans' 
 const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-serif', style: ['normal', 'italic'] })
 
 export const metadata: Metadata = {
-  title: 'YKS Edebiyat — Yazar & Eser Ezberi',
-  description:
-    'Türk edebiyatı yazar - eser eşleştirmelerini dönem dönem kart ve test moduyla ezberle. YKS/AYT edebiyat çalışma uygulaması.',
+  title: 'EdebiKart: YKS Yazar Eser',
+  description: 'EZBERLEME, NOKTA ATIŞI YAP! 🎯 — YKS/AYT edebiyat yazar-eser ezber uygulaması.',
   generator: 'v0.app',
   icons: {
     icon: [
@@ -33,8 +32,8 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   colorScheme: 'light dark',
   themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f5f3ee' },
-    { media: '(prefers-color-scheme: dark)', color: '#1a1d24' },
+    { media: '(prefers-color-scheme: light)', color: '#f4f5f7' },
+    { media: '(prefers-color-scheme: dark)', color: '#1e2026' },
   ],
 }
 

@@ -3,7 +3,7 @@
 import { useCallback, useState } from "react";
 import { ArrowRight, Brain, Check, Flame, RotateCcw, Target, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
-import { gecerliYazarlar, type LiteratureItem } from "@/src/data";
+import { anaDonemler, anaDonemFiltrele, type AnaDonem } from "@/src/data";
 import { sorulariUret, type Soru } from "@/lib/soru";
 
 type Props = {
@@ -11,18 +11,15 @@ type Props = {
 };
 
 export default function TestModul({ onSonuc }: Props) {
-  const [secilenDonem, setSecilenDonem] = useState<string | "Tümü" | null>(null);
+  const [secilenDonem, setSecilenDonem] = useState<AnaDonem | null>(null);
   const [sorular, setSorular] = useState<Soru[]>([]);
   const [aktif, setAktif] = useState(0);
   const [secim, setSecim] = useState<string | null>(null);
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  const basla = useCallback((donem: string | "Tümü") => {
-    const havuz =
-      donem === "Tümü"
-        ? gecerliYazarlar()
-        : gecerliYazarlar().filter((y) => y.period === donem);
+  const basla = useCallback((donem: AnaDonem) => {
+    const havuz = anaDonemFiltrele(donem);
     setSecilenDonem(donem);
     setSorular(sorulariUret(havuz));
     setAktif(0);
@@ -51,40 +48,42 @@ export default function TestModul({ onSonuc }: Props) {
 
   // Dönem seçim ekranı
   if (!secilenDonem || sorular.length === 0) {
-    const tumDonemler = Array.from(new Set(gecerliYazarlar().map((y) => y.period)));
-
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-[1.75rem] bg-card p-7 text-center ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary ring-1 ring-primary/20">
+        <div className="mb-6 rounded-[1.75rem] bg-card p-7 text-center shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)]">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
             <Brain className="h-6 w-6" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-xl font-bold text-balance text-card-foreground">Bir dönem seç</h2>
+          <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">Bir dönem seç</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
             Seçtiğin dönemdeki tüm eserlerden soru gelir. Soru sayısı dönemdeki eser sayısına göre dinamiktir.
           </p>
         </div>
 
         <div className="space-y-2.5">
-          <button
-            onClick={() => basla("Tümü")}
-            className="flex w-full items-center justify-between rounded-2xl bg-primary px-5 py-4 text-left text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.99]"
-          >
-            <span className="flex items-center gap-3">
-              <Target className="h-5 w-5" />
-              <span className="text-sm font-bold">Tüm Dönemler</span>
-            </span>
-          </button>
-
-          {tumDonemler.map((donem) => (
-            <button
-              key={donem}
-              onClick={() => basla(donem)}
-              className="flex w-full items-center rounded-2xl bg-card px-4 py-3.5 text-left ring-1 ring-border shadow-sm transition hover:ring-primary/40 active:scale-[0.99]"
-            >
-              <span className="text-sm font-semibold text-card-foreground">{donem}</span>
-            </button>
-          ))}
+          {anaDonemler.map((donem, i) => {
+            const tumMu = donem === "Tüm Dönemler";
+            return (
+              <button
+                key={donem}
+                onClick={() => basla(donem)}
+                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.99] ${
+                  tumMu
+                    ? "bg-primary text-primary-foreground shadow-md hover:brightness-110"
+                    : "bg-card text-card-foreground shadow-sm hover:shadow-md"
+                }`}
+              >
+                {tumMu ? (
+                  <Target className="h-5 w-5 shrink-0" />
+                ) : (
+                  <span className="grid h-7 w-7 shrink-0 place-items-center rounded-lg bg-muted text-xs font-bold text-muted-foreground">
+                    {i}
+                  </span>
+                )}
+                <span className="text-sm font-semibold">{donem}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
     );
@@ -94,11 +93,11 @@ export default function TestModul({ onSonuc }: Props) {
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     return (
-      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary ring-1 ring-primary/20 animate-pop">
+      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)]">
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
           <Target className="h-9 w-9" strokeWidth={1.5} />
         </div>
-        <h2 className="font-serif text-2xl font-bold text-card-foreground">Test bitti</h2>
+        <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test bitti</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {sorular.length} soruda <span className="font-bold text-primary">{dogruSayi}</span> doğru — %{oran}
         </p>
@@ -117,7 +116,7 @@ export default function TestModul({ onSonuc }: Props) {
               setSecilenDonem(null);
               setSorular([]);
             }}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground ring-1 ring-border shadow-sm transition hover:text-foreground hover:ring-primary/40 active:scale-[0.98]"
+            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground active:scale-[0.98]"
           >
             Dönem Değiştir
           </button>
@@ -131,7 +130,7 @@ export default function TestModul({ onSonuc }: Props) {
 
   return (
     <div className="animate-rise">
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] backdrop-blur">
+      <div className="mb-6 rounded-3xl bg-card/70 p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] backdrop-blur">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -152,19 +151,19 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
       </div>
 
-      <div className="rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
+      <div className="rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)]">
         <div className="flex items-start justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
           </p>
           {soru.osymFreq && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/30">
+            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400">
               <Flame className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
           )}
         </div>
-        <h2 className="mt-2 font-serif text-2xl font-bold leading-snug text-balance text-card-foreground">
+        <h2 className="mt-2 font-serif text-2xl font-bold tracking-tight leading-snug text-balance text-card-foreground">
           {soru.vurgu}
         </h2>
         <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">{soru.metin}</p>
@@ -177,17 +176,17 @@ export default function TestModul({ onSonuc }: Props) {
             const gosterYanlis = secildi && !dogruSecenek;
 
             let stil =
-              "bg-card ring-border text-card-foreground hover:ring-primary/40 hover:bg-muted/60";
-            if (gosterDogru) stil = "bg-emerald-500/15 ring-emerald-500/60 text-emerald-700 dark:text-emerald-300";
-            else if (gosterYanlis) stil = "bg-destructive/15 ring-destructive/60 text-destructive";
-            else if (secim !== null) stil = "bg-card ring-border text-muted-foreground opacity-60";
+              "bg-card text-card-foreground hover:bg-muted/60";
+            if (gosterDogru) stil = "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
+            else if (gosterYanlis) stil = "bg-destructive/15 text-destructive";
+            else if (secim !== null) stil = "bg-card text-muted-foreground opacity-60";
 
             return (
               <button
                 key={secenek}
                 onClick={() => cevapla(secenek)}
                 disabled={secim !== null}
-                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-4 text-left text-sm font-semibold ring-1 transition-all duration-200 ${stil} ${
+                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-4 text-left text-sm font-semibold transition-all duration-200 ${stil} ${
                   gosterYanlis ? "animate-shake" : ""
                 } ${gosterDogru ? "animate-pop" : ""} ${secim === null ? "active:scale-[0.99]" : ""}`}
               >

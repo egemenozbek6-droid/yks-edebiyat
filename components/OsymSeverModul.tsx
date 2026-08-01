@@ -42,7 +42,7 @@ export default function OsymSeverModul() {
   if (!basladi) {
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-[1.75rem] bg-card p-8 text-center ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)]">
+        <div className="mb-6 rounded-[1.75rem] bg-card p-8 text-center shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)]">
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-orange-500/15 text-orange-500 ring-1 ring-orange-500/30 animate-pop">
             <Flame className="h-7 w-7" strokeWidth={1.5} />
           </div>
@@ -68,7 +68,7 @@ export default function OsymSeverModul() {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     const basari = oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
     return (
-      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
+      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
         <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-orange-500/15 text-orange-500 ring-1 ring-orange-500/30 animate-pop">
           <Flame className="h-9 w-9" strokeWidth={1.5} />
         </div>
@@ -88,7 +88,7 @@ export default function OsymSeverModul() {
           </button>
           <button
             onClick={() => setBasladi(false)}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground ring-1 ring-border shadow-sm transition hover:text-foreground hover:ring-orange-500/40 active:scale-[0.98]"
+            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground hover:ring-orange-500/40 active:scale-[0.98]"
           >
             Geri Dön
           </button>
@@ -102,7 +102,7 @@ export default function OsymSeverModul() {
 
   return (
     <div className="animate-rise">
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 ring-1 ring-border shadow-[0_4px_24px_-8px_rgba(0,0,0,0.08)] backdrop-blur">
+      <div className="mb-6 rounded-3xl bg-card/70 p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] backdrop-blur">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -122,7 +122,7 @@ export default function OsymSeverModul() {
         </div>
       </div>
 
-      <div className="rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
+      <div className="rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
         <div className="flex items-start justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
