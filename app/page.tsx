@@ -8,7 +8,11 @@ import OsymSeverModul from "@/components/OsymSeverModul";
 import AltMenu, { type Mod } from "@/components/AltMenu";
 import TemaAnahtari from "@/components/TemaAnahtari";
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
-import { yazarlar, baslik, amac, notu, type Donem } from "@/data/yazarlar";
+import { gecerliYazarlar } from "@/src/data";
+
+const baslik = "YKS Edebiyat";
+const amac = "Yazar - Eser Ezberi";
+const notu = "";
 
 function karistir<T>(dizi: T[]): T[] {
   const kopya = [...dizi];
@@ -25,14 +29,15 @@ export default function App() {
 
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
 
-  // Kart destesi — her yüklendiğinde karışık gelir
-  const [deste, setDeste] = useState<number[]>(() => karistir(yazarlar.map((_, i) => i)));
+  // Kart destesi — geçerli yazarlar (anonim filtreli), karışık
+  const kartVerisi = gecerliYazarlar();
+  const [deste, setDeste] = useState<number[]>(() => karistir(kartVerisi.map((_, i) => i)));
   const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set());
 
   const bitti = deste.length === 0;
 
   const sifirla = useCallback(() => {
-    setDeste(karistir(yazarlar.map((_, i) => i)));
+    setDeste(karistir(kartVerisi.map((_, i) => i)));
     setOgrenilenler(new Set());
   }, []);
 
@@ -70,7 +75,7 @@ export default function App() {
   }, []);
 
   const aktifIndex = deste[0] ?? 0;
-  const aktifYazar = yazarlar[aktifIndex];
+  const aktifItem = kartVerisi[aktifIndex];
 
   return (
     <div className="min-h-screen bg-background text-foreground font-sans">
@@ -150,7 +155,7 @@ export default function App() {
         {ruhHali && (
           <div className="mb-6 flex items-start gap-3 rounded-3xl bg-accent/60 p-4 ring-1 ring-border shadow-sm animate-rise">
             <span className="text-2xl leading-none" aria-hidden="true">
-              {ruhHali.emoji}
+              {ruhHali.emoji || "💬"}
             </span>
             <p className="flex-1 text-sm font-medium leading-relaxed text-pretty text-accent-foreground">
               {ruhHali.mesaj}
@@ -167,20 +172,19 @@ export default function App() {
 
         {mod === "kart" ? (
           bitti ? (
-            <TamamlamaEkrani toplam={yazarlar.length} onSifirla={sifirla} />
-          ) : (
+            <TamamlamaEkrani toplam={kartVerisi.length} onSifirla={sifirla} />
+          ) : aktifItem ? (
             <Flashcard
-              key={aktifIndex}
-              yazar={aktifYazar}
-              index={0}
-              total={yazarlar.length}
+              key={aktifItem.id}
+              item={aktifItem}
+              total={kartVerisi.length}
               ogrenilenSayi={ogrenilenler.size}
               onPrev={onPrev}
               onNext={onNext}
               onOgrenildi={onOgrenildi}
               onTekrar={onTekrar}
             />
-          )
+          ) : null
         ) : mod === "test" ? (
           <TestModul />
         ) : (
@@ -229,10 +233,11 @@ export default function App() {
               </p>
               <p>
                 <span className="font-semibold text-foreground">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
-                aynı dönemden gelir.
+                aynı dönemden gelir. Soru sayısı dinamiktir.
               </p>
               <p>
-                <span className="font-semibold text-foreground">ÖSYM Sever 🔥:</span> Banko sorulardan karışık mini deneme.
+                <span className="font-semibold text-foreground">ÖSYM Sever 🔥:</span> Sadece banko eserlerden karışık
+                mini deneme.
               </p>
             </div>
           </div>

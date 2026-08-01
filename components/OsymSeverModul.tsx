@@ -5,8 +5,6 @@ import { ArrowRight, Check, Flame, RotateCcw, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { osymSeverSorulari, type Soru } from "@/lib/soru";
 
-const SORU_SAYISI = 12;
-
 export default function OsymSeverModul() {
   const [basladi, setBasladi] = useState(false);
   const [sorular, setSorular] = useState<Soru[]>([]);
@@ -16,7 +14,7 @@ export default function OsymSeverModul() {
   const [bitti, setBitti] = useState(false);
 
   const basla = useCallback(() => {
-    setSorular(osymSeverSorulari(SORU_SAYISI));
+    setSorular(osymSeverSorulari());
     setAktif(0);
     setSecim(null);
     setDogruSayi(0);
@@ -50,8 +48,8 @@ export default function OsymSeverModul() {
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            ÖSYM'nin banko sorduğu yazar ve eserlerden karışık {SORU_SAYISI} soruluk mini deneme. Dönem
-            ayrımı yok — gerçek sınav gibi karışık gelir.
+            ÖSYM'nin banko sorduğu yazar ve eserlerden karışık mini deneme. Dönem ayrımı yok — gerçek sınav gibi
+            karışık gelir. Sadece "banko" olarak işaretlenmiş eserler kullanılır.
           </p>
         </div>
 
@@ -125,9 +123,17 @@ export default function OsymSeverModul() {
       </div>
 
       <div className="rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
+          </p>
+          {soru.osymFreq && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/30">
+              <Flame className="h-3 w-3" strokeWidth={2} />
+              {soru.osymFreq}
+            </span>
+          )}
+        </div>
         <h2 className="mt-2 font-serif text-2xl font-bold leading-snug text-balance text-card-foreground">
           {soru.vurgu}
         </h2>

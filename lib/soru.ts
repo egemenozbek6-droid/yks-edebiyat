@@ -1,12 +1,18 @@
-import { yazarlar, yakinDonemler, type Donem, type Yazar } from "@/data/yazarlar";
+import {
+  gecerliYazarlar,
+  yakinDonemler,
+  bankoVeriler,
+  type LiteratureItem,
+} from "@/src/data";
 
 export type Soru = {
   metin: string;
   vurgu: string;
   secenekler: string[];
   dogru: string;
-  donem: Donem;
+  donem: string;
   tip: "eser" | "yazar";
+  osymFreq?: string;
 };
 
 export function karistir<T>(dizi: T[]): T[] {
@@ -18,90 +24,103 @@ export function karistir<T>(dizi: T[]): T[] {
   return kopya;
 }
 
-function rastgele<T>(dizi: T[]): T | undefined {
-  return dizi[Math.floor(Math.random() * dizi.length)];
-}
-
 /**
- * Bir yazar için, sorunun ait olduğu döneme yakın dönemlerden
+ * Bir item için, sorunun ait olduğu döneme yakın dönemlerden
  * çeldirici (yanlış) seçenekler üretir. Uzak dönemlerden seçenek gelmez.
+ * Anonim/TÜRK veriler kesinlikle kullanılmaz.
  */
 function celdiriciUret(
-  yazar: Yazar,
+  item: LiteratureItem,
   tip: "eser" | "yazar",
   adet: number,
 ): string[] {
-  const yakinlar = yakinDonemler(yazar.donem, 2);
-  const havuz = yazarlar.filter((y) => yakinlar.includes(y.donem) && y.id !== yazar.id);
+  const yakinlar = yakinDonemler(item.period, 2);
+  // Aynı veya yakın dönemden, geçerli yazarlar
+  const havuz = gecerliYazarlar().filter(
+    (y) =>
+      yakinlar.includes(y.period) &&
+      y.id !== item.id &&
+      y.author !== item.author,
+  );
 
   if (tip === "eser") {
-    const tumEserler = havuz.flatMap((y) => y.eserler).filter((e) => !yazar.eserler.includes(e));
-    const karisik = karistir(tumEserler);
-    // Aynı eser adının tekrar etmemesi için benzersizleştir
-    const tek = Array.from(new Set(karisik));
-    return tek.slice(0, adet);
+    // Şıklarda yazarlar soruluyor — aynı döneme yakın yazar adları çek
+    const yazarAdlari = Array.from(new Set(havuz.map((y) => y.author)));
+    return karistir(yazarAdlari).slice(0, adet);
   }
 
-  const tumYazarlar = havuz.map((y) => y.ad).filter((a) => a !== yazar.ad);
-  const tek = Array.from(new Set(tumYazarlar));
+  // Şıklarda eserler soruluyor — aynı döneme yakın eserler çek
+  const eserler = havuz.map((y) => y.work).filter((w) => w !== item.work);
+  const tek = Array.from(new Set(eserler));
   return karistir(tek).slice(0, adet);
 }
 
-/** Belirli bir havuzdan test soruları üretir (eser/yazar karışık). */
-export function sorulariUret(havuz: Yazar[], soruSayisi: number): Soru[] {
+/** Belirli bir havuzdan test soruları üretir (eser/yazar %50 karışık). */
+export function sorulariUret(havuz: LiteratureItem[]): Soru[] {
+  // Dinamik soru sayısı: havuzun boyutu kadar (max 20)
+  const soruSayisi = Math.min(havuz.length, 20);
+
   return karistir(havuz)
     .slice(0, soruSayisi)
-    .map((yazar, i): Soru => {
-      const dogruEser = karistir(yazar.eserler)[0];
+    .map((item): Soru => {
+      // %50 ihtimalle yön belirle
+      const eserSoruluyor = Math.random() < 0.5;
 
-      if (i % 2 === 0) {
-        const yanlislar = celdiriciUret(yazar, "eser", 3);
-        // Yetersizse tüm havuzdan tamamla
-        const eksik = 3 - yanlislar.length;
-        let secenekYanlis = yanlislar;
+      if (eserSoruluyor) {
+        // Soruda eser verilsin, şıklarda yazarlar sorulsun
+        let yanlislar = celdiriciUret(item, "eser", 3);
+        let eksik = 3 - yanlislar.length;
         if (eksik > 0) {
           const yedek = karistir(
-            yazarlar
-              .flatMap((y) => y.eserler)
-              .filter((e) => !yazar.eserler.includes(e) && !yanlislar.includes(e)),
-          ).slice(0, eksik);
-          secenekYanlis = [...yanlislar, ...yedek];
+            Array.from(
+              new Set(
+                gecerliYazarlar()
+                  .filter((y) => y.author !== item.author)
+                  .map((y) => y.author),
+              ),
+            ),
+          ).filter((a) => !yanlislar.includes(a));
+          yanlislar = [...yanlislar, ...yedek.slice(0, eksik)];
         }
         return {
-          metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
-          vurgu: yazar.ad,
-          secenekler: karistir([dogruEser, ...secenekYanlis]),
-          dogru: dogruEser,
-          donem: yazar.donem,
-          tip: "eser",
+          metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
+          vurgu: item.work,
+          secenekler: karistir([item.author, ...yanlislar]),
+          dogru: item.author,
+          donem: item.period,
+          tip: "yazar",
+          osymFreq: item.osym_stats?.osym_freq,
         };
       }
 
-      const yanlislar = celdiriciUret(yazar, "yazar", 3);
-      const eksik = 3 - yanlislar.length;
-      let secenekYanlis = yanlislar;
+      // Soruda yazar verilsin, şıklarda eserler sorulsun
+      let yanlislar = celdiriciUret(item, "yazar", 3);
+      let eksik = 3 - yanlislar.length;
       if (eksik > 0) {
         const yedek = karistir(
-          yazarlar.map((y) => y.ad).filter((a) => a !== yazar.ad && !yanlislar.includes(a)),
-        ).slice(0, eksik);
-        secenekYanlis = [...yanlislar, ...yedek];
+          Array.from(
+            new Set(
+              gecerliYazarlar()
+                .filter((y) => y.work !== item.work)
+                .map((y) => y.work),
+            ),
+          ),
+        ).filter((w) => !yanlislar.includes(w));
+        yanlislar = [...yanlislar, ...yedek.slice(0, eksik)];
       }
       return {
-        metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
-        vurgu: dogruEser,
-        secenekler: karistir([yazar.ad, ...secenekYanlis]),
-        dogru: yazar.ad,
-        donem: yazar.donem,
-        tip: "yazar",
+        metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
+        vurgu: item.author,
+        secenekler: karistir([item.work, ...yanlislar]),
+        dogru: item.work,
+        donem: item.period,
+        tip: "eser",
+        osymFreq: item.osym_stats?.osym_freq,
       };
     });
 }
 
-/** ÖSYM Sever modu için "banko" sorular — en çok eseri olan yazarlardan seçilir. */
-export function osymSeverSorulari(soruSayisi: number): Soru[] {
-  // En az 2 eseri olan yazarları "banko" sayıyoruz
-  const banko = yazarlar.filter((y) => y.eserler.length >= 2);
-  return sorulariUret(banko, soruSayisi);
+/** ÖSYM Sever modu için "banko" sorular */
+export function osymSeverSorulari(): Soru[] {
+  return sorulariUret(bankoVeriler());
 }
-
-export { rastgele };

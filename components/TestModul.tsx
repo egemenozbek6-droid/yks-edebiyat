@@ -1,29 +1,30 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ArrowRight, Brain, Check, RotateCcw, Target, X } from "lucide-react";
+import { ArrowRight, Brain, Check, Flame, RotateCcw, Target, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
-import { donemler, yazarlar, type Donem } from "@/data/yazarlar";
+import { gecerliYazarlar, type LiteratureItem } from "@/src/data";
 import { sorulariUret, type Soru } from "@/lib/soru";
 
 type Props = {
-  onSonuc?: (dogruMu: boolean, donem: Donem) => void;
+  onSonuc?: (dogruMu: boolean, donem: string) => void;
 };
 
-const SORU_SAYISI = 10;
-
 export default function TestModul({ onSonuc }: Props) {
-  const [secilenDonem, setSecilenDonem] = useState<Donem | "Tümü" | null>(null);
+  const [secilenDonem, setSecilenDonem] = useState<string | "Tümü" | null>(null);
   const [sorular, setSorular] = useState<Soru[]>([]);
   const [aktif, setAktif] = useState(0);
   const [secim, setSecim] = useState<string | null>(null);
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  const basla = useCallback((donem: Donem | "Tümü") => {
-    const secilenHavuz = donem === "Tümü" ? yazarlar : yazarlar.filter((y) => y.donem === donem);
+  const basla = useCallback((donem: string | "Tümü") => {
+    const havuz =
+      donem === "Tümü"
+        ? gecerliYazarlar()
+        : gecerliYazarlar().filter((y) => y.period === donem);
     setSecilenDonem(donem);
-    setSorular(sorulariUret(secilenHavuz, SORU_SAYISI));
+    setSorular(sorulariUret(havuz));
     setAktif(0);
     setSecim(null);
     setDogruSayi(0);
@@ -50,7 +51,7 @@ export default function TestModul({ onSonuc }: Props) {
 
   // Dönem seçim ekranı
   if (!secilenDonem || sorular.length === 0) {
-    const gosterilecekDonemler = donemler.filter((d) => yazarlar.some((y) => y.donem === d));
+    const tumDonemler = Array.from(new Set(gecerliYazarlar().map((y) => y.period)));
 
     return (
       <div className="animate-rise">
@@ -60,7 +61,7 @@ export default function TestModul({ onSonuc }: Props) {
           </div>
           <h2 className="font-serif text-xl font-bold text-balance text-card-foreground">Bir dönem seç</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            Seçtiğin dönemden {SORU_SAYISI} soruluk, 4 şıklı bir test hazırlanır.
+            Seçtiğin dönemdeki tüm eserlerden soru gelir. Soru sayısı dönemdeki eser sayısına göre dinamiktir.
           </p>
         </div>
 
@@ -75,7 +76,7 @@ export default function TestModul({ onSonuc }: Props) {
             </span>
           </button>
 
-          {gosterilecekDonemler.map((donem) => (
+          {tumDonemler.map((donem) => (
             <button
               key={donem}
               onClick={() => basla(donem)}
@@ -152,9 +153,17 @@ export default function TestModul({ onSonuc }: Props) {
       </div>
 
       <div className="rounded-[1.75rem] bg-card p-7 ring-1 ring-border shadow-[0_12px_40px_-12px_rgba(0,0,0,0.15)]">
-        <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-          {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
-        </p>
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
+          </p>
+          {soru.osymFreq && (
+            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400 ring-1 ring-orange-500/30">
+              <Flame className="h-3 w-3" strokeWidth={2} />
+              {soru.osymFreq}
+            </span>
+          )}
+        </div>
         <h2 className="mt-2 font-serif text-2xl font-bold leading-snug text-balance text-card-foreground">
           {soru.vurgu}
         </h2>
