@@ -120,7 +120,62 @@ export function sorulariUret(havuz: LiteratureItem[]): Soru[] {
     });
 }
 
-/** ÖSYM Sever modu için "banko" sorular */
-export function osymSeverSorulari(): Soru[] {
-  return sorulariUret(bankoVeriler());
+/** ÖSYM Sever modu için "banko" sorular — her çağrıda tamamen rastgele 20 soru */
+export function osymSeverSorulari(soruSayisi = 20): Soru[] {
+  const banko = bankoVeriler();
+  const karisik = karistir(banko);
+  const secili = karisik.slice(0, Math.min(soruSayisi, banko.length));
+  return secili.map((item): Soru => {
+    const eserSoruluyor = Math.random() < 0.5;
+
+    if (eserSoruluyor) {
+      let yanlislar = celdiriciUret(item, "eser", 3);
+      let eksik = 3 - yanlislar.length;
+      if (eksik > 0) {
+        const yedek = karistir(
+          Array.from(
+            new Set(
+              gecerliYazarlar()
+                .filter((y) => y.author !== item.author)
+                .map((y) => y.author),
+            ),
+          ),
+        ).filter((a) => !yanlislar.includes(a));
+        yanlislar = [...yanlislar, ...yedek.slice(0, eksik)];
+      }
+      return {
+        metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
+        vurgu: item.work,
+        secenekler: karistir([item.author, ...yanlislar]),
+        dogru: item.author,
+        donem: item.period,
+        tip: "yazar",
+        osymFreq: item.osym_stats?.osym_freq,
+      };
+    }
+
+    let yanlislar = celdiriciUret(item, "yazar", 3);
+    let eksik = 3 - yanlislar.length;
+    if (eksik > 0) {
+      const yedek = karistir(
+        Array.from(
+          new Set(
+            gecerliYazarlar()
+              .filter((y) => y.work !== item.work)
+              .map((y) => y.work),
+          ),
+        ),
+      ).filter((w) => !yanlislar.includes(w));
+      yanlislar = [...yanlislar, ...yedek.slice(0, eksik)];
+    }
+    return {
+      metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
+      vurgu: item.author,
+      secenekler: karistir([item.work, ...yanlislar]),
+      dogru: item.work,
+      donem: item.period,
+      tip: "eser",
+      osymFreq: item.osym_stats?.osym_freq,
+    };
+  });
 }
