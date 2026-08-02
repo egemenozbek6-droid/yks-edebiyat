@@ -26,21 +26,22 @@ export const literatureData: LiteratureItem[] = [
   ...(cumhuriyet as LiteratureItem[]),
 ];
 
-// Anonim / "TÜRK" gibi belirsiz yazarları filtrele
+// Anonim / "TÜRK" gibi belirsiz yazarları ve jenerik "Divan"/"X Divanı" eserlerini filtrele
 const anonimKalip = /^(türk(\s*\([^)]*\))?|anonim)$/i;
+const jenerikDivanKalip = /^(divan|.+ divanı)$/i;
 
 export function gecerliYazarlar(): LiteratureItem[] {
   return literatureData.filter(
     (item) =>
       item.author &&
       item.author.trim() !== "" &&
-      !anonimKalip.test(item.author.trim()),
+      !anonimKalip.test(item.author.trim()) &&
+      !jenerikDivanKalip.test(item.work.trim().toLowerCase()),
   );
 }
 
 // ============================================================
-// 7 ANA DÖNEM KATEGORİSİ
-// Alt dönemleri ana kategorilere eşler
+// ANA DÖNEM KATEGORİLERİ (8)
 // ============================================================
 
 export type AnaDonem =
@@ -50,7 +51,8 @@ export type AnaDonem =
   | "Halk Edebiyatı (Âşık & Tekke)"
   | "Tanzimat Edebiyatı"
   | "Servet-i Fünun & Fecr-i Ati"
-  | "Milli Edebiyat & Cumhuriyet Dönemi";
+  | "Milli Edebiyat"
+  | "Cumhuriyet Dönemi";
 
 export const anaDonemler: AnaDonem[] = [
   "Tüm Dönemler",
@@ -59,7 +61,8 @@ export const anaDonemler: AnaDonem[] = [
   "Halk Edebiyatı (Âşık & Tekke)",
   "Tanzimat Edebiyatı",
   "Servet-i Fünun & Fecr-i Ati",
-  "Milli Edebiyat & Cumhuriyet Dönemi",
+  "Milli Edebiyat",
+  "Cumhuriyet Dönemi",
 ];
 
 // Alt dönem → ana dönem eşleştirme
@@ -82,50 +85,47 @@ const donemEslesme: Record<string, AnaDonem> = {
   "Tanzimat Edebiyatı (2. Dönem)": "Tanzimat Edebiyatı",
   "Servet-i Fünun Edebiyatı": "Servet-i Fünun & Fecr-i Ati",
   "Fecr-i Ati Edebiyatı": "Servet-i Fünun & Fecr-i Ati",
-  "Milli Edebiyat Dönemi": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Milli Edebiyat Dönemi (Bağımsızlar)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Milli Edebiyat Dönemi (Beş Hececiler)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Milli Edebiyat / Servet-i Fünun Sonrası": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi (Milli Edebiyat Sonrası)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Şiiri (Bağımsızlar)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Şiiri (İkinci Yeni)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı (Köy/Toplumcu Gerçekçi)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı (Köy Romanı)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı (Modernist)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Romanı (Mizah)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi (Deneme)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi (Hikaye)": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Tiyatrosu": "Milli Edebiyat & Cumhuriyet Dönemi",
-  "Cumhuriyet Dönemi Tiyatrosu (Epik Tiyatro)": "Milli Edebiyat & Cumhuriyet Dönemi",
+  "Milli Edebiyat Dönemi": "Milli Edebiyat",
+  "Milli Edebiyat Dönemi (Bağımsızlar)": "Milli Edebiyat",
+  "Milli Edebiyat Dönemi (Beş Hececiler)": "Milli Edebiyat",
+  "Milli Edebiyat / Servet-i Fünun Sonrası": "Milli Edebiyat",
+  "Cumhuriyet Dönemi (Milli Edebiyat Sonrası)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Şiiri (Bağımsızlar)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Şiiri (İkinci Yeni)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı (Köy/Toplumcu Gerçekçi)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı (Köy Romanı)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı (Modernist)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Romanı (Mizah)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi (Deneme)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi (Hikaye)": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Tiyatrosu": "Cumhuriyet Dönemi",
+  "Cumhuriyet Dönemi Tiyatrosu (Epik Tiyatro)": "Cumhuriyet Dönemi",
 };
 
-/** Bir alt dönemin hangi ana döneme ait olduğunu döndürür */
 export function anaDonemBul(altDonem: string): AnaDonem {
   return donemEslesme[altDonem] ?? "Tüm Dönemler";
 }
 
-/** Bir ana döneme ait tüm geçerli verileri filtreler */
 export function anaDonemFiltrele(anaDonem: AnaDonem): LiteratureItem[] {
   const gecerli = gecerliYazarlar();
   if (anaDonem === "Tüm Dönemler") return gecerli;
   return gecerli.filter((item) => anaDonemBul(item.period) === anaDonem);
 }
 
-// Dönem sırası — çeldiricilerin yakın dönemden seçilmesi için (ana döneme göre)
 export const anaDonemSirasi: AnaDonem[] = [
   "Geçiş Dönemi",
   "Divan Edebiyatı",
   "Halk Edebiyatı (Âşık & Tekke)",
   "Tanzimat Edebiyatı",
   "Servet-i Fünun & Fecr-i Ati",
-  "Milli Edebiyat & Cumhuriyet Dönemi",
+  "Milli Edebiyat",
+  "Cumhuriyet Dönemi",
 ];
 
-// Bir döneme "yakın" sayılan ana dönemleri döndürür (± pencere)
 export function yakinDonemler(donem: string, pencere = 1): string[] {
   const ana = anaDonemBul(donem);
   const idx = anaDonemSirasi.indexOf(ana);
@@ -135,7 +135,6 @@ export function yakinDonemler(donem: string, pencere = 1): string[] {
   const baslangic = Math.max(0, idx - pencere);
   const bitis = Math.min(anaDonemSirasi.length - 1, idx + pencere);
   const yakinAnaDonemler = anaDonemSirasi.slice(baslangic, bitis + 1);
-  // Ana döneme ait tüm alt dönemleri döndür
   return Array.from(
     new Set(
       literatureData
@@ -145,7 +144,6 @@ export function yakinDonemler(donem: string, pencere = 1): string[] {
   );
 }
 
-// Banko (ÖSYM Sever) veriler
 export function bankoVeriler(): LiteratureItem[] {
   return gecerliYazarlar().filter(
     (item) => item.osym_stats?.is_banko || item.osym_stats?.osym_freq,

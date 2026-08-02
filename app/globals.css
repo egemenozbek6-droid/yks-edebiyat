@@ -245,3 +245,44 @@
     opacity: 1;
   }
 }
+
+/* Kart açılış animasyonu: sağa-sola sallan + 360° dön */
+@keyframes v0-card-intro {
+  0% {
+    transform: translateX(0) rotateY(0deg);
+  }
+  10% {
+    transform: translateX(18px) rotateY(0deg);
+  }
+  20% {
+    transform: translateX(-18px) rotateY(0deg);
+  }
+  30% {
+    transform: translateX(12px) rotateY(0deg);
+  }
+  40% {
+    transform: translateX(-8px) rotateY(0deg);
+  }
+  50% {
+    transform: translateX(0) rotateY(0deg);
+  }
+  75% {
+    transform: translateX(0) rotateY(360deg);
+  }
+  100% {
+    transform: translateX(0) rotateY(360deg);
+  }
+}
+
+.animate-card-intro {
+  animation: v0-card-intro 1.8s ease-out;
+}
+
+/* Yatay scrollbar gizle */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
