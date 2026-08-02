@@ -39,23 +39,19 @@ export default function App() {
   // Intro animasyonu: ruh hali modalı kapanana kadar bekle, sonra 1 kez çalış
   const [introAktif, setIntroAktif] = useState(false);
   const [modalKapandi, setModalKapandi] = useState(false);
-  const introTimer = useRef<number | null>(null);
+  const introYapildi = useRef(false);
 
   useEffect(() => {
-    if (modalKapandi && !introAktif && !introTimer.current) {
-      introTimer.current = window.setTimeout(() => {
+    if (modalKapandi && !introYapildi.current) {
+      introYapildi.current = true;
+      const t1 = window.setTimeout(() => {
         setIntroAktif(true);
-        introTimer.current = null;
-        window.setTimeout(() => setIntroAktif(false), 1900);
+        const t2 = window.setTimeout(() => setIntroAktif(false), 1900);
+        return () => clearTimeout(t2);
       }, 200);
+      return () => clearTimeout(t1);
     }
-    return () => {
-      if (introTimer.current) {
-        clearTimeout(introTimer.current);
-        introTimer.current = null;
-      }
-    };
-  }, [modalKapandi, introAktif]);
+  }, [modalKapandi]);
 
   const [seciliAnaDonem, setSeciliAnaDonem] = useState<AnaDonem>("Tüm Dönemler");
   const kartVerisi = anaDonemFiltrele(seciliAnaDonem);
