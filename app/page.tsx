@@ -17,7 +17,7 @@ type Mod = "kart" | "test" | "osym" | "duelo";
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers },
   { mod: "test", etiket: "Test", ikon: Brain },
-  { mod: "osym", etiket: "ÖSYM Sever", ikon: Flame },
+  { mod: "osym", etiket: "ÖSYM", ikon: Flame },
   { mod: "duelo", etiket: "Düello", ikon: Swords },
 ];
 

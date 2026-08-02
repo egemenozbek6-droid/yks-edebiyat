@@ -15,6 +15,7 @@ type Props = {
   onTekrar: () => void
 }
 
+let ilkAcilisTamam = false
 const ESIK = 110
 
 export default function Flashcard({
@@ -30,18 +31,25 @@ export default function Flashcard({
   const [dx, setDx] = useState(0)
   const [surukleniyor, setSurukleniyor] = useState(false)
   const [ucus, setUcus] = useState<"sag" | "sol" | null>(null)
-  const [intro, setIntro] = useState(true)
-
-  const baslangic = useRef(0)
   const hareket = useRef(0)
+  const baslangic = useRef(0)
+
+  // Animasyon SADECE uygulama ilk açıldığında 1 kez çalışır
+  const [intro, setIntro] = useState(() => !ilkAcilisTamam)
+  useEffect(() => {
+    if (!ilkAcilisTamam) {
+      const t = window.setTimeout(() => {
+        ilkAcilisTamam = true
+        setIntro(false)
+      }, 1900)
+      return () => window.clearTimeout(t)
+    }
+  }, [])
 
   useEffect(() => {
     setCevrildi(false)
     setDx(0)
     setUcus(null)
-    setIntro(true)
-    const t = window.setTimeout(() => setIntro(false), 1900)
-    return () => window.clearTimeout(t)
   }, [item.id])
 
   const tamamla = useCallback(
@@ -133,7 +141,7 @@ export default function Flashcard({
           }}
         >
           <div
-            className="relative h-[min(56vh,420px)] w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="relative h-[min(44vh,340px)] w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               transformStyle: "preserve-3d",
               transform: cevrildi ? "rotateY(180deg)" : "rotateY(0deg)",
