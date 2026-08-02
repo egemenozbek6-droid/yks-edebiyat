@@ -1,12 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Brain, Flame, Info, Layers, Swords, Target, X } from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
 import TemaAnahtari from "@/components/TemaAnahtari";
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
+import DueloModulu from "@/components/DueloModulu";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
 
 const APP_NAME = "EdebiKart";
@@ -34,6 +35,27 @@ export default function App() {
   const [mod, setMod] = useState<Mod>("kart");
   const [infoAcik, setInfoAcik] = useState(false);
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
+
+  // Intro animasyonu: ruh hali modalı kapanana kadar bekle, sonra 1 kez çalış
+  const [introAktif, setIntroAktif] = useState(false);
+  const [modalKapandi, setModalKapandi] = useState(false);
+  const introTimer = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (modalKapandi && !introAktif && !introTimer.current) {
+      introTimer.current = window.setTimeout(() => {
+        setIntroAktif(true);
+        introTimer.current = null;
+        window.setTimeout(() => setIntroAktif(false), 1900);
+      }, 200);
+    }
+    return () => {
+      if (introTimer.current) {
+        clearTimeout(introTimer.current);
+        introTimer.current = null;
+      }
+    };
+  }, [modalKapandi, introAktif]);
 
   const [seciliAnaDonem, setSeciliAnaDonem] = useState<AnaDonem>("Tüm Dönemler");
   const kartVerisi = anaDonemFiltrele(seciliAnaDonem);
@@ -217,6 +239,7 @@ export default function App() {
               onNext={onNext}
               onOgrenildi={onOgrenildi}
               onTekrar={onTekrar}
+              introAktif={introAktif}
             />
           ) : null
         ) : mod === "test" ? (
@@ -224,11 +247,18 @@ export default function App() {
         ) : mod === "osym" ? (
           <OsymSeverModul />
         ) : (
-          <DueloModulu />
+          <DueloModulu onCikis={() => setMod("kart")} />
         )}
       </main>
 
-      <RuhHaliModal onSecim={setRuhHali} />
+      <RuhHaliModal
+        onSecim={(rh) => {
+          setRuhHali(rh);
+          // Modal kapanışını tetikle — intro animasyonu buradan sonra başlar
+          window.setTimeout(() => setModalKapandi(true), 2800);
+        }}
+        onKapat={() => setModalKapandi(true)}
+      />
 
       {infoAcik && (
         <div
@@ -269,7 +299,7 @@ export default function App() {
                 deneme.
               </p>
               <p>
-                <span className="font-semibold text-foreground">Düello:</span> Yakında gelecek!
+                <span className="font-semibold text-foreground">Düello:</span> Rakibinle 5 soruda yarış. Hız bonusu kazan, rövanş al!
               </p>
             </div>
           </div>
@@ -279,18 +309,4 @@ export default function App() {
   );
 }
 
-function DueloModulu() {
-  return (
-    <div className="flex-1 flex items-center justify-center">
-      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)] max-w-sm">
-        <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-rose-500/15 text-rose-500 animate-pop">
-          <Swords className="h-7 w-7" strokeWidth={1.5} />
-        </div>
-        <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Düello Modu</h2>
-        <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">
-          Çok yakında! Arkadaşlarınla veya yapay zekaya karşı yarışacağın hızlı tahmin modu hazırlanıyor.
-        </p>
-      </div>
-    </div>
-  );
-}
+

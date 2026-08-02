@@ -83,9 +83,10 @@ function rastgeleMesaj(havuz: string[]): string {
 
 type Props = {
   onSecim: (ruhHali: RuhHali) => void;
+  onKapat: () => void;
 };
 
-export default function RuhHaliModal({ onSecim }: Props) {
+export default function RuhHaliModal({ onSecim, onKapat }: Props) {
   const [acik, setAcik] = useState(false);
   const [secilen, setSecilen] = useState<RuhHali | null>(null);
 
@@ -93,6 +94,8 @@ export default function RuhHaliModal({ onSecim }: Props) {
     try {
       if (window.localStorage.getItem(ANAHTAR) !== bugun()) {
         setAcik(true);
+      } else {
+        onKapat();
       }
     } catch {
       setAcik(true);
@@ -110,6 +113,7 @@ export default function RuhHaliModal({ onSecim }: Props) {
   const gec = () => {
     kaydet();
     setAcik(false);
+    onKapat();
   };
 
   const sec = (duygu: Duygu) => {

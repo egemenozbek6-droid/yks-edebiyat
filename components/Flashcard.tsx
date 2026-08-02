@@ -9,19 +9,20 @@ type Props = {
   item: LiteratureItem
   total: number
   ogrenilenSayi: number
+  introAktif: boolean
   onPrev: () => void
   onNext: () => void
   onOgrenildi: () => void
   onTekrar: () => void
 }
 
-let ilkAcilisTamam = false
 const ESIK = 110
 
 export default function Flashcard({
   item,
   total,
   ogrenilenSayi,
+  introAktif,
   onPrev,
   onNext,
   onOgrenildi,
@@ -34,17 +35,7 @@ export default function Flashcard({
   const hareket = useRef(0)
   const baslangic = useRef(0)
 
-  // Animasyon SADECE uygulama ilk açıldığında 1 kez çalışır
-  const [intro, setIntro] = useState(() => !ilkAcilisTamam)
-  useEffect(() => {
-    if (!ilkAcilisTamam) {
-      const t = window.setTimeout(() => {
-        ilkAcilisTamam = true
-        setIntro(false)
-      }, 1900)
-      return () => window.clearTimeout(t)
-    }
-  }, [])
+  const intro = introAktif
 
   useEffect(() => {
     setCevrildi(false)
@@ -120,6 +111,7 @@ export default function Flashcard({
           onClick={tikla}
           role="button"
           tabIndex={0}
+          style={{ touchAction: "pan-y" }}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault()
@@ -138,6 +130,7 @@ export default function Flashcard({
             transform: intro ? undefined : `translateX(${dx}px) rotate(${donus}deg)`,
             opacity: ucus ? 0 : 1,
             transitionProperty: surukleniyor || intro ? "none" : "transform, opacity",
+            touchAction: "pan-y",
           }}
         >
           <div
@@ -193,12 +186,6 @@ export default function Flashcard({
                 <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
                   {item.period}
                 </span>
-                {osymFreq && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400">
-                    <Flame className="h-3 w-3" strokeWidth={2} />
-                    {osymFreq}
-                  </span>
-                )}
               </div>
 
               <div className="flex flex-1 flex-col items-center justify-center text-center">
