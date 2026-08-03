@@ -13,7 +13,6 @@ import {
   Swords,
   Trophy,
   UserCircle,
-  Users,
   X,
   Zap,
 } from "lucide-react";
@@ -29,9 +28,25 @@ import {
 } from "@/lib/user";
 import { rastgeleBot, botGecikme, botDogruMu, botBonus } from "@/lib/bots";
 import { avatarEmoji, rastgeleAvatarId } from "@/lib/avatars";
+import { firebaseAktif } from "@/lib/firebase";
+import {
+  rankedKuyrugaKatil,
+  rankedKuyruktanCik,
+  odaKurOnline,
+  odayaKatilOnline,
+  odaSil,
+  matchDinle,
+  cevapGonder,
+  sonrakiSoru,
+  matchBitir,
+  matchTerk,
+  kullaniciAdiKaydetOnline,
+  type OnlineMac,
+} from "@/lib/matchmaking";
+import type { Unsubscribe } from "firebase/firestore";
 import type { Istatistik, Kullanici, MacSonucu, Rakip } from "@/lib/types";
 
-type Adim = "nick" | "lobi" | "aratma" | "oda" | "duelo" | "sonuc";
+type Adim = "nick" | "lobi" | "aratma" | "oda" | "oda_bekleme" | "duelo" | "sonuc";
 type DueloModu = "ranked" | "friendly";
 
 const SORU_SAYISI = 10;
@@ -64,10 +79,13 @@ export default function DueloModulu({
 
   const [odaInput, setOdaInput] = useState("");
   const [olusturulanKod, setOlusturulanKod] = useState("");
+  const [odaHata, setOdaHata] = useState("");
   const [friendlySoruSayisi, setFriendlySoruSayisi] = useState(5);
 
   const [dueloModu, setDueloModu] = useState<DueloModu>("ranked");
   const [rakip, setRakip] = useState<Rakip | null>(null);
+  const [matchId, setMatchId] = useState<string>("");
+  const [oyuncuNum, setOyuncuNum] = useState<1 | 2>(1);
 
   const [sorular, setSorular] = useState<Soru[]>([]);
   const [soruIndex, setSoruIndex] = useState(0);
@@ -86,13 +104,21 @@ export default function DueloModulu({
   const rakipRef = useRef<Rakip | null>(null);
   const aktifSoruSayisiRef = useRef(SORU_SAYISI);
   const soruIndexRef = useRef(0);
+  const matchIdRef = useRef("");
+  const oyuncuNumRef = useRef<1 | 2>(1);
+  const kullaniciRef = useRef<Kullanici | null>(null);
+  const secimRef = useRef<string | null>(null);
 
   const aramaTimer = useRef<number | null>(null);
-  const odaTimer = useRef<number | null>(null);
   const rakipTimer = useRef<number | null>(null);
   const gecisTimer = useRef<number | null>(null);
   const sureTimer = useRef<number | null>(null);
   const botCevapZaman = useRef<number>(0);
+
+  // Firebase unsubscribe refs
+  const rankedUnsubRef = useRef<Unsubscribe | null>(null);
+  const odaUnsubRef = useRef<Unsubscribe | null>(null);
+  const matchUnsubRef = useRef<Unsubscribe | null>(null);
 
   // --- Sync refs ---
   useEffect(() => { oyuncuSkorRef.current = oyuncuSkor; }, [oyuncuSkor]);
@@ -101,12 +127,17 @@ export default function DueloModulu({
   useEffect(() => { rakipRef.current = rakip; }, [rakip]);
   useEffect(() => { aktifSoruSayisiRef.current = aktifSoruSayisi; }, [aktifSoruSayisi]);
   useEffect(() => { soruIndexRef.current = soruIndex; }, [soruIndex]);
+  useEffect(() => { matchIdRef.current = matchId; }, [matchId]);
+  useEffect(() => { oyuncuNumRef.current = oyuncuNum; }, [oyuncuNum]);
+  useEffect(() => { kullaniciRef.current = kullanici; }, [kullanici]);
+  useEffect(() => { secimRef.current = secim; }, [secim]);
 
   // --- Başlangıçta kullanıcı yükle ---
   useEffect(() => {
     const k = mevcutKullanici();
     if (k) {
       setKullanici(k);
+      kullaniciRef.current = k;
       setIstatistik(mevcutIstatistik());
       setAdim("lobi");
     } else {
@@ -123,17 +154,29 @@ export default function DueloModulu({
   useEffect(() => {
     return () => {
       if (aramaTimer.current) clearTimeout(aramaTimer.current);
-      if (odaTimer.current) clearTimeout(odaTimer.current);
       if (rakipTimer.current) clearTimeout(rakipTimer.current);
       if (gecisTimer.current) clearTimeout(gecisTimer.current);
       if (sureTimer.current) clearTimeout(sureTimer.current);
+      if (rankedUnsubRef.current) rankedUnsubRef.current();
+      if (odaUnsubRef.current) odaUnsubRef.current();
+      if (matchUnsubRef.current) matchUnsubRef.current();
+      // Kuyruk/oda temizliği
+      const k = kullaniciRef.current;
+      if (k) {
+        rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
+      }
+      if (olusturulanKodRef.current) {
+        odaSil(olusturulanKodRef.current).catch(() => {});
+      }
       onDueloAktifDegisti(false);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const olusturulanKodRef = useRef("");
+
   // --- Nick kaydetme ---
-  const nickKaydet = useCallback(() => {
+  const nickKaydet = useCallback(async () => {
     const kontrol = kullaniciAdiKontrol(nickInput);
     if (!kontrol.musait) {
       setNickHata(kontrol.mesaj);
@@ -144,8 +187,17 @@ export default function DueloModulu({
       avatar: rastgeleAvatarId(),
       olusturmaTarihi: Date.now(),
     };
+    // Online unique kontrol
+    if (firebaseAktif) {
+      const onlineTamam = await kullaniciAdiKaydetOnline(yeniKullanici.kullaniciAdi, yeniKullanici.kullaniciAdi);
+      if (!onlineTamam) {
+        setNickHata("Bu kullanıcı adı alınmış");
+        return;
+      }
+    }
     kullaniciKaydet(yeniKullanici);
     setKullanici(yeniKullanici);
+    kullaniciRef.current = yeniKullanici;
     setIstatistik(mevcutIstatistik());
     setAdim("lobi");
   }, [nickInput]);
@@ -165,15 +217,18 @@ export default function DueloModulu({
   // --- Tüm duel state'ini sıfırla ---
   const dueloSifirla = useCallback(() => {
     if (aramaTimer.current) { clearTimeout(aramaTimer.current); aramaTimer.current = null; }
-    if (odaTimer.current) { clearTimeout(odaTimer.current); odaTimer.current = null; }
     if (rakipTimer.current) { clearTimeout(rakipTimer.current); rakipTimer.current = null; }
     if (gecisTimer.current) { clearTimeout(gecisTimer.current); gecisTimer.current = null; }
     if (sureTimer.current) { clearTimeout(sureTimer.current); sureTimer.current = null; }
+    if (rankedUnsubRef.current) { rankedUnsubRef.current(); rankedUnsubRef.current = null; }
+    if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
+    if (matchUnsubRef.current) { matchUnsubRef.current(); matchUnsubRef.current = null; }
     setSorular([]);
     setSoruIndex(0);
     soruIndexRef.current = 0;
     setSure(SURE);
     setSecim(null);
+    secimRef.current = null;
     setRakipCevapladi(false);
     setOyuncuSkor(0);
     setRakipSkor(0);
@@ -182,12 +237,16 @@ export default function DueloModulu({
     setRakip(null);
     rakipRef.current = null;
     setSonuc(null);
+    setMatchId("");
+    matchIdRef.current = "";
     setOlusturulanKod("");
+    olusturulanKodRef.current = "";
+    setOdaHata("");
   }, []);
 
   // --- Duelo başlat ---
   const dueloBaslat = useCallback(
-    (mod: DueloModu, rakipBilgi: Rakip, soruSayisi: number) => {
+    (mod: DueloModu, rakipBilgi: Rakip, soruSayisi: number, mId: string, num: 1 | 2) => {
       const havuz = gecerliYazarlar();
       const uretilen = sorulariUret(havuz).slice(0, soruSayisi);
       setSorular(uretilen);
@@ -195,6 +254,7 @@ export default function DueloModulu({
       soruIndexRef.current = 0;
       setSure(SURE);
       setSecim(null);
+      secimRef.current = null;
       setRakipCevapladi(false);
       setOyuncuSkor(0);
       setRakipSkor(0);
@@ -207,21 +267,45 @@ export default function DueloModulu({
       setAktifSoruSayisi(soruSayisi);
       aktifSoruSayisiRef.current = soruSayisi;
       setSonuc(null);
+      setMatchId(mId);
+      matchIdRef.current = mId;
+      setOyuncuNum(num);
+      oyuncuNumRef.current = num;
       setAdim("duelo");
     },
     [],
   );
 
-  // --- Rastgele rakip bul (ranked) ---
+  // --- Rastgele rakip bul (ranked) — Firebase matchmaking ---
   const rastgeleRakip = useCallback(() => {
     setDueloModu("ranked");
     dueloModuRef.current = "ranked";
     setAdim("aratma");
-    const gecikme = ARAMA_SURESI_MIN + Math.random() * (ARAMA_SURESI_MAX - ARAMA_SURESI_MIN);
-    aramaTimer.current = window.setTimeout(() => {
-      const bot = rastgeleBot();
-      dueloBaslat("ranked", bot, SORU_SAYISI);
-    }, gecikme);
+
+    const k = kullaniciRef.current;
+    if (!k) return;
+
+    // Firebase aktifse online matchmaking
+    if (firebaseAktif) {
+      const unsub = rankedKuyrugaKatil(
+        { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+        (durum) => {
+          if (durum.durum === "eslesti") {
+            dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.matchId, 2);
+          } else if (durum.durum === "iptal") {
+            setAdim("lobi");
+          }
+        },
+      );
+      rankedUnsubRef.current = unsub;
+    } else {
+      // Fallback: bot ile eşle
+      const gecikme = ARAMA_SURESI_MIN + Math.random() * (ARAMA_SURESI_MAX - ARAMA_SURESI_MIN);
+      aramaTimer.current = window.setTimeout(() => {
+        const bot = rastgeleBot();
+        dueloBaslat("ranked", bot, SORU_SAYISI, "bot_" + Date.now(), 1);
+      }, gecikme);
+    }
   }, [dueloBaslat]);
 
   const aramaIptal = useCallback(() => {
@@ -229,45 +313,136 @@ export default function DueloModulu({
       clearTimeout(aramaTimer.current);
       aramaTimer.current = null;
     }
+    if (rankedUnsubRef.current) {
+      rankedUnsubRef.current();
+      rankedUnsubRef.current = null;
+    }
+    const k = kullaniciRef.current;
+    if (k) rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
     setAdim("lobi");
   }, []);
 
-  // --- Özel oda kur ---
+  // --- Özel oda kur — Gerçek online, bot yok ---
   const odaKur = useCallback(() => {
     const kod = Math.floor(1000 + Math.random() * 9000).toString();
     setOlusturulanKod(kod);
-    odaTimer.current = window.setTimeout(() => {
-      const bot = rastgeleBot();
-      dueloBaslat("friendly", bot, friendlySoruSayisi);
-    }, 3000);
+    olusturulanKodRef.current = kod;
+    setAdim("oda_bekleme");
+
+    const k = kullaniciRef.current;
+    if (!k) return;
+
+    const unsub = odaKurOnline(
+      kod,
+      { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+      friendlySoruSayisi,
+      (rakipBilgi, mId) => {
+        dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, mId, 1);
+      },
+    );
+    odaUnsubRef.current = unsub;
   }, [dueloBaslat, friendlySoruSayisi]);
 
-  const odaIptal = useCallback(() => {
-    if (odaTimer.current) {
-      clearTimeout(odaTimer.current);
-      odaTimer.current = null;
+  const odaBeklemeIptal = useCallback(() => {
+    if (odaUnsubRef.current) {
+      odaUnsubRef.current();
+      odaUnsubRef.current = null;
+    }
+    if (olusturulanKodRef.current) {
+      odaSil(olusturulanKodRef.current).catch(() => {});
     }
     setOlusturulanKod("");
+    olusturulanKodRef.current = "";
+    setAdim("oda");
   }, []);
 
-  // --- Odaya katıl ---
-  const odayaKatil = useCallback(() => {
+  // --- Odaya katıl — Gerçek online, bot yok ---
+  const odayaKatil = useCallback(async () => {
     if (odaInput.trim().length !== 4) return;
-    const bot = rastgeleBot();
-    dueloBaslat("friendly", bot, friendlySoruSayisi);
-  }, [odaInput, dueloBaslat, friendlySoruSayisi]);
+    const k = kullaniciRef.current;
+    if (!k) return;
+
+    const sonuc = await odayaKatilOnline(odaInput.trim(), {
+      id: k.kullaniciAdi,
+      ad: k.kullaniciAdi,
+      avatar: k.avatar,
+    });
+
+    if (!sonuc.tamam) {
+      setOdaHata(sonuc.hata ?? "Geçersiz oda kodu!");
+      return;
+    }
+
+    // Oda bulundu — kurucunun match oluşturmasını bekle
+    setOlusturulanKod(odaInput.trim());
+    olusturulanKodRef.current = odaInput.trim();
+    setAdim("oda_bekleme");
+
+    // Match belgesini dinle (kurucu oluşturacak)
+    const kod = odaInput.trim();
+    if (firebaseAktif) {
+      // Kurucu match'i oluşturduğunda oda "dolu" olur, match oluşur
+      // Katılan olarak oyuncu2 olur
+      const { matchDinle: _md } = await import("@/lib/matchmaking");
+      // Oda belgesini dinle — match oluşunca oradan matchId al
+      // Aslında kurucu zaten match oluşturdu, oda "dolu" olarak işaretlendi
+      // Match'i oyuncu2.id = bizim id olarak bul
+      const { collection, query, where, getDocs, doc, onSnapshot, limit } = await import("firebase/firestore");
+      const { db } = await import("@/lib/firebase");
+      if (db) {
+        const q = query(collection(db, "matches"), where("oyuncu2.id", "==", k.kullaniciAdi), limit(1));
+        const snap = await getDocs(q);
+        if (!snap.empty) {
+          const mDoc = snap.docs[0];
+          const mData = mDoc.data() as OnlineMac;
+          dueloBaslat("friendly",
+            { ad: mData.oyuncu1.ad, avatar: mData.oyuncu1.avatar, bot: false },
+            mData.soruSayisi, mDoc.id, 2,
+          );
+          return;
+        }
+        // Match henüz oluşmadıysa bekle
+        const unsub = onSnapshot(q, (snap2) => {
+          if (!snap2.empty) {
+            const mDoc = snap2.docs[0];
+            const mData = mDoc.data() as OnlineMac;
+            dueloBaslat("friendly",
+              { ad: mData.oyuncu1.ad, avatar: mData.oyuncu1.avatar, bot: false },
+              mData.soruSayisi, mDoc.id, 2,
+            );
+            if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
+          }
+        });
+        odaUnsubRef.current = () => unsub();
+      }
+    } else {
+      // Fallback modunda custom oda çalışmaz — hata göster
+      setOdaHata("Çevrimiçi mod kapalı. Firebase anahtarları gerekli.");
+      setAdim("oda");
+    }
+  }, [odaInput, dueloBaslat]);
 
   // --- Cevapla (oyuncu) ---
   const cevapla = useCallback(
     (secenek: string) => {
       if (secim !== null) return;
       setSecim(secenek);
+      secimRef.current = secenek;
       const soru = sorular[soruIndex];
-      if (secenek === soru.dogru) {
+      const dogruMu = secenek === soru.dogru;
+      if (dogruMu) {
         const bonus = Math.round((sure / SURE) * 50);
         const yeniSkor = oyuncuSkorRef.current + 100 + bonus;
         oyuncuSkorRef.current = yeniSkor;
         setOyuncuSkor(yeniSkor);
+      }
+      // Online: cevabı Firestore'a gönder
+      const sIdx = sorular.findIndex((s) => s === soru);
+      const secenekIndex = soru.secenekler.indexOf(secenek);
+      const mId = matchIdRef.current;
+      const num = oyuncuNumRef.current;
+      if (mId && !mId.startsWith("bot_")) {
+        cevapGonder(mId, num, sIdx, secenekIndex, dogruMu, Math.round((sure / SURE) * 50)).catch(() => {});
       }
     },
     [secim, sorular, soruIndex, sure],
@@ -278,6 +453,7 @@ export default function DueloModulu({
     if (adim !== "duelo" || secim !== null) return;
     if (sure <= 0) {
       setSecim(ZAMAN_ASIMI);
+      secimRef.current = ZAMAN_ASIMI;
       return;
     }
     sureTimer.current = window.setTimeout(() => setSure((s) => s - 1), 1000);
@@ -286,9 +462,12 @@ export default function DueloModulu({
     };
   }, [sure, secim, adim]);
 
-  // --- Bot cevap simülasyonu (senkron) ---
+  // --- Bot cevap simülasyonu (sadece bot fallback modunda) ---
   useEffect(() => {
     if (adim !== "duelo" || rakipCevapladi) return;
+    const mId = matchIdRef.current;
+    if (!mId.startsWith("bot_")) return; // sadece bot modu
+
     const gecikme = botGecikme();
     botCevapZaman.current = gecikme / 1000;
     rakipTimer.current = window.setTimeout(() => {
@@ -306,11 +485,73 @@ export default function DueloModulu({
     };
   }, [soruIndex, adim, rakipCevapladi]);
 
-  // --- Senkron geçiş: her iki taraf da cevapladıysa ---
+  // --- Online match dinleyici (gerçek online maç) ---
+  useEffect(() => {
+    if (adim !== "duelo") return;
+    const mId = matchIdRef.current;
+    if (mId.startsWith("bot_")) return;
+
+    const unsub = matchDinle(mId, oyuncuNum, (mac) => {
+      if (!mac) return;
+      // Rakip cevapladıysa
+      const rakipNum = oyuncuNumRef.current === 1 ? 2 : 1;
+      const rakip = rakipNum === 1 ? mac.oyuncu1 : mac.oyuncu2;
+      if (rakip && rakip.cevap !== null) {
+        setRakipCevapladi(true);
+        rakipSkorRef.current = rakip.skor;
+        setRakipSkor(rakip.skor);
+      }
+      // Soru ilerlediyse
+      if (mac.soruIndex !== soruIndexRef.current) {
+        // Senkron geçiş
+        setSoruIndex(mac.soruIndex);
+        soruIndexRef.current = mac.soruIndex;
+        setSecim(null);
+        secimRef.current = null;
+        setRakipCevapladi(false);
+        setSure(SURE);
+      }
+      // Maç bittiyse
+      if (mac.durum === "bitti" || mac.durum === "terk") {
+        const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
+        const rS = rakipNum === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
+        const hukmen = mac.durum === "terk";
+        const kazandi = hukmen ? mac.kazananId === kullaniciRef.current?.kullaniciAdi : oS > rS;
+        const berabere = !hukmen && oS === rS;
+        const puanKazandi = kazanilanPuan(oS, rS, hukmen);
+        const sonucObj: MacSonucu = {
+          kazandi,
+          berabere,
+          hukmenGalibiyet: hukmen && kazandi,
+          oyuncuSkor: oS,
+          rakipSkor: rS,
+          rakipAdi: rakipRef.current?.ad ?? "",
+          puanKazandi: dueloModuRef.current === "ranked" ? (kazandi ? puanKazandi : 0) : 0,
+          seri: 0,
+          ranked: dueloModuRef.current === "ranked",
+        };
+        const guncel = istatistikGuncelle(sonucObj);
+        sonucObj.seri = guncel.seri;
+        setIstatistik(guncel);
+        setSonuc(sonucObj);
+        setAdim("sonuc");
+      }
+    });
+    matchUnsubRef.current = unsub;
+    return () => {
+      if (unsub) unsub();
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [adim]);
+
+  // --- Senkron geçiş: her iki taraf da cevapladıysa (bot veya online) ---
   const herIkiTarafHazir = secim !== null && rakipCevapladi;
 
   useEffect(() => {
     if (!herIkiTarafHazir || adim !== "duelo") return;
+    const mId = matchIdRef.current;
+    const isBot = mId.startsWith("bot_");
+
     gecisTimer.current = window.setTimeout(() => {
       const sIdx = soruIndexRef.current;
       const toplam = aktifSoruSayisiRef.current;
@@ -320,6 +561,7 @@ export default function DueloModulu({
       const rak = rakipRef.current;
 
       if (sIdx + 1 >= toplam) {
+        // Maç bitti
         const kazandi = oS > rS;
         const berabere = oS === rS;
         const puanKazandi = kazanilanPuan(oS, rS, false);
@@ -339,10 +581,19 @@ export default function DueloModulu({
         setIstatistik(guncel);
         setSonuc(sonucObj);
         setAdim("sonuc");
+        // Online: match belgesini "bitti" olarak işaretle
+        if (!isBot) {
+          matchBitir(mId, kazandi ? kullaniciRef.current?.kullaniciAdi ?? null : null).catch(() => {});
+        }
       } else {
+        // Sonraki soru
+        if (!isBot) {
+          sonrakiSoru(mId).catch(() => {});
+        }
         setSoruIndex((i) => i + 1);
         soruIndexRef.current = sIdx + 1;
         setSecim(null);
+        secimRef.current = null;
         setRakipCevapladi(false);
         setSure(SURE);
       }
@@ -352,12 +603,13 @@ export default function DueloModulu({
     };
   }, [herIkiTarafHazir, adim]);
 
-  // --- Çıkış (navigation guard ile) ---
+  // --- Çıkış (navigation guard ile) + FORFEIT TRACKING ---
   const cikisIste = useCallback(() => {
     if (adim === "duelo") {
       onCikisOnayGerekir(
         "Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız!",
         () => {
+          // FORFEIT: ranked maçtan ayrılırsa kayıp yaz
           if (dueloModuRef.current === "ranked") {
             const sonucObj: MacSonucu = {
               kazandi: false,
@@ -372,6 +624,14 @@ export default function DueloModulu({
             };
             const guncel = istatistikGuncelle(sonucObj);
             setIstatistik(guncel);
+          }
+          // Online: rakibe hükmen galibiyet ver
+          const mId = matchIdRef.current;
+          if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
+            const digerId = oyuncuNumRef.current === 1
+              ? rakipRef.current?.ad ?? ""
+              : kullaniciRef.current.kullaniciAdi;
+            matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
           }
           dueloSifirla();
           onCikis();
@@ -580,7 +840,7 @@ export default function DueloModulu({
     );
   }
 
-  // --- ODA ---
+  // --- ODA (kurma / katılma ekranı) ---
   if (adim === "oda") {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -590,83 +850,95 @@ export default function DueloModulu({
           </div>
           <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Özel Oda</h2>
 
-          {olusturulanKod ? (
-            <div className="mt-5 text-center">
-              <p className="text-xs text-muted-foreground mb-2">Oda kodun</p>
-              <div className="rounded-2xl bg-muted py-4 text-3xl font-bold tracking-[0.4em] text-foreground">
-                {olusturulanKod}
-              </div>
-              <p className="mt-3 text-sm text-muted-foreground">Rakip bekleniyor...</p>
-              <div className="mt-4 flex justify-center">
-                <div className="h-5 w-5 animate-spin rounded-full border-2 border-muted border-t-primary" />
-              </div>
-              <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
-                <span>Soru sayısı: {friendlySoruSayisi}</span>
-              </div>
-              <button
-                onClick={odaIptal}
-                className="mt-5 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
-              >
-                Geri Dön
-              </button>
+          <p className="mt-2 text-sm text-center text-pretty text-muted-foreground">
+            Bir oda kur ve 4 haneli kodunu arkadaşınla paylaş, ya da elindeki koda katıl.
+          </p>
+
+          <div className="mt-4">
+            <p className="mb-2 text-xs font-semibold text-muted-foreground">Soru sayısı</p>
+            <div className="flex gap-2">
+              {[5, 10, 15].map((n) => (
+                <button
+                  key={n}
+                  onClick={() => setFriendlySoruSayisi(n)}
+                  className={`flex-1 rounded-xl py-2 text-sm font-semibold transition ${
+                    friendlySoruSayisi === n
+                      ? "bg-primary text-primary-foreground shadow-sm"
+                      : "bg-muted text-muted-foreground hover:text-foreground"
+                  }`}
+                >
+                  {n}
+                </button>
+              ))}
             </div>
-          ) : (
-            <>
-              <p className="mt-2 text-sm text-center text-pretty text-muted-foreground">
-                Bir oda kur ve 4 haneli kodunu arkadaşınla paylaş, ya da elindeki koda katıl.
-              </p>
+          </div>
 
-              <div className="mt-4">
-                <p className="mb-2 text-xs font-semibold text-muted-foreground">Soru sayısı</p>
-                <div className="flex gap-2">
-                  {[5, 10, 15].map((n) => (
-                    <button
-                      key={n}
-                      onClick={() => setFriendlySoruSayisi(n)}
-                      className={`flex-1 rounded-xl py-2 text-sm font-semibold transition ${
-                        friendlySoruSayisi === n
-                          ? "bg-primary text-primary-foreground shadow-sm"
-                          : "bg-muted text-muted-foreground hover:text-foreground"
-                      }`}
-                    >
-                      {n}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <input
-                type="text"
-                value={odaInput}
-                onChange={(e) => setOdaInput(e.target.value.replace(/\D/g, "").slice(0, 4))}
-                onKeyDown={(e) => e.key === "Enter" && odayaKatil()}
-                placeholder="4 haneli kod..."
-                maxLength={4}
-                className="mt-4 w-full rounded-2xl bg-muted px-4 py-3 text-sm font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-primary/40 transition"
-              />
-              <div className="mt-4 grid grid-cols-2 gap-3">
-                <button
-                  onClick={odayaKatil}
-                  disabled={odaInput.length !== 4}
-                  className="rounded-2xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
-                >
-                  Koda Katıl
-                </button>
-                <button
-                  onClick={odaKur}
-                  className="rounded-2xl bg-card py-3 text-sm font-semibold text-foreground shadow-sm transition hover:shadow-md active:scale-[0.98]"
-                >
-                  Oda Kur
-                </button>
-              </div>
-              <button
-                onClick={() => setAdim("lobi")}
-                className="mt-4 w-full text-xs font-semibold text-muted-foreground transition hover:text-foreground"
-              >
-                Geri Dön
-              </button>
-            </>
+          <input
+            type="text"
+            value={odaInput}
+            onChange={(e) => {
+              setOdaInput(e.target.value.replace(/\D/g, "").slice(0, 4));
+              setOdaHata("");
+            }}
+            onKeyDown={(e) => e.key === "Enter" && odayaKatil()}
+            placeholder="4 haneli kod..."
+            maxLength={4}
+            className="mt-4 w-full rounded-2xl bg-muted px-4 py-3 text-sm font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-primary/40 transition"
+          />
+          {odaHata && (
+            <p className="mt-2 text-xs font-semibold text-destructive text-center">{odaHata}</p>
           )}
+          <div className="mt-4 grid grid-cols-2 gap-3">
+            <button
+              onClick={odayaKatil}
+              disabled={odaInput.length !== 4}
+              className="rounded-2xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+            >
+              Koda Katıl
+            </button>
+            <button
+              onClick={odaKur}
+              className="rounded-2xl bg-card py-3 text-sm font-semibold text-foreground shadow-sm transition hover:shadow-md active:scale-[0.98]"
+            >
+              Oda Kur
+            </button>
+          </div>
+          <button
+            onClick={() => setAdim("lobi")}
+            className="mt-4 w-full text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+          >
+            Geri Dön
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- ODA BEKLEME (kurucu, rakip bekliyor) ---
+  if (adim === "oda_bekleme") {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="animate-rise rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] max-w-sm w-full text-center">
+          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
+            <div className="h-6 w-6 animate-spin rounded-full border-2 border-primary/20 border-t-primary" />
+          </div>
+          <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip bekleniyor...</h2>
+          <p className="mt-2 text-xs text-muted-foreground">Oda kodun</p>
+          <div className="mt-2 rounded-2xl bg-muted py-4 text-3xl font-bold tracking-[0.4em] text-foreground">
+            {olusturulanKod}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Bu kodu arkadaşınla paylaş. Rakip katılınca maç otomatik başlar.
+          </p>
+          <div className="mt-3 flex items-center justify-center gap-2 text-xs text-muted-foreground">
+            <span>Soru sayısı: {friendlySoruSayisi}</span>
+          </div>
+          <button
+            onClick={odaBeklemeIptal}
+            className="mt-5 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+          >
+            Geri Dön
+          </button>
         </div>
       </div>
     );
