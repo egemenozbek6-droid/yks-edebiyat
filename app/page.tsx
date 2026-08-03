@@ -99,7 +99,10 @@ export default function App() {
       if (dueloAktif && yeniMod !== "duelo") {
         cikisOnayGerekir(
           "Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız!",
-          () => setMod(yeniMod),
+          () => {
+            setDueloAktif(false);
+            setMod(yeniMod);
+          },
         );
         return;
       }
@@ -303,7 +306,10 @@ export default function App() {
           <OsymSeverModul />
         ) : (
           <DueloModulu
-            onCikis={() => setMod("kart")}
+            onCikis={() => {
+              setDueloAktif(false);
+              setMod("kart");
+            }}
             onDueloAktifDegisti={setDueloAktif}
             onProfilAc={() => setProfilAcik(true)}
             onCikisOnayGerekir={cikisOnayGerekir}

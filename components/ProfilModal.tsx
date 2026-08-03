@@ -7,6 +7,7 @@ import {
   mevcutIstatistik,
   kullaniciAdiGuncelle,
   kullaniciAdiKontrol,
+  kullaniciKaydet,
 } from "@/lib/user";
 import { AVATARLAR, avatarEmoji } from "@/lib/avatars";
 import type { Istatistik, Kullanici } from "@/lib/types";
@@ -56,10 +57,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
     }
     // Avatar güncelle
     const guncel = { ...kullanici, kullaniciAdi: temiz, avatar: seciliAvatar };
-    localStorage.setItem(
-      "edebikart-kullanici",
-      JSON.stringify(guncel),
-    );
+    kullaniciKaydet(guncel);
     setKullanici(guncel);
     setKaydedildi(true);
     setTimeout(() => setKaydedildi(false), 2000);
