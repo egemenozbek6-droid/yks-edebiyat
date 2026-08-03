@@ -1,21 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import {
-  Check,
-  ChevronRight,
-  Clock,
-  Flame,
-  Home,
-  KeyRound,
-  Lock,
-  Search,
-  Swords,
-  Trophy,
-  UserCircle,
-  X,
-  Zap,
-} from "lucide-react";
+import { Check, ChevronRight, Clock, Flame, Hop as Home, KeyRound, Lock, Search, Swords, Trophy, CircleUser as UserCircle, X, Zap } from "lucide-react";
 import { sorulariUret, type Soru } from "@/lib/soru";
 import { gecerliYazarlar } from "@/src/data";
 import {
