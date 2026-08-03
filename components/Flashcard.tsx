@@ -16,6 +16,7 @@ type Props = {
   onTekrar: () => void
 }
 
+
 const ESIK = 110
 
 export default function Flashcard({
@@ -111,7 +112,6 @@ export default function Flashcard({
           onClick={tikla}
           role="button"
           tabIndex={0}
-          style={{ touchAction: "pan-y" }}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault()

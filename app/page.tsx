@@ -1,14 +1,16 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Brain, Flame, Info, Layers, Swords, Target, X } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Brain, Flame, Info, Layers, Swords, Target, X } from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
 import TemaAnahtari from "@/components/TemaAnahtari";
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
+import ProfilModal from "@/components/ProfilModal";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
+import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
 
 const APP_NAME = "EdebiKart";
 const APP_SUBTITLE = "YKS Yazar Eser";
@@ -35,6 +37,13 @@ export default function App() {
   const [mod, setMod] = useState<Mod>("kart");
   const [infoAcik, setInfoAcik] = useState(false);
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
+  const [profilAcik, setProfilAcik] = useState(false);
+
+  // Navigation guard
+  const [dueloAktif, setDueloAktif] = useState(false);
+  const [cikisOnayAcik, setCikisOnayAcik] = useState(false);
+  const [cikisMesaj, setCikisMesaj] = useState("");
+  const cikisOnayCallback = useRef<(() => void) | null>(null);
 
   // Intro animasyonu: ruh hali modalı kapanana kadar bekle, sonra 1 kez çalış
   const [introAktif, setIntroAktif] = useState(false);
@@ -53,10 +62,58 @@ export default function App() {
     }
   }, [modalKapandi]);
 
+  // beforeunload guard — düello aktifken pencere kapatmayı uyar
+  useEffect(() => {
+    const handler = (e: BeforeUnloadEvent) => {
+      if (dueloAktif) {
+        e.preventDefault();
+        e.returnValue = "";
+      }
+    };
+    window.addEventListener("beforeunload", handler);
+    return () => window.removeEventListener("beforeunload", handler);
+  }, [dueloAktif]);
+
+  const cikisOnayGerekir = useCallback((mesaj: string, onOnayla: () => void) => {
+    setCikisMesaj(mesaj);
+    cikisOnayCallback.current = onOnayla;
+    setCikisOnayAcik(true);
+  }, []);
+
+  const cikisOnayla = useCallback(() => {
+    setCikisOnayAcik(false);
+    if (cikisOnayCallback.current) {
+      cikisOnayCallback.current();
+      cikisOnayCallback.current = null;
+    }
+  }, []);
+
+  const cikisReddet = useCallback(() => {
+    setCikisOnayAcik(false);
+    cikisOnayCallback.current = null;
+  }, []);
+
+  // Navigation guard: düello aktifken mod değiştirmeyi engelle
+  const modDegistir = useCallback(
+    (yeniMod: Mod) => {
+      if (dueloAktif && yeniMod !== "duelo") {
+        cikisOnayGerekir(
+          "Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız!",
+          () => setMod(yeniMod),
+        );
+        return;
+      }
+      setMod(yeniMod);
+    },
+    [dueloAktif, cikisOnayGerekir],
+  );
+
   const [seciliAnaDonem, setSeciliAnaDonem] = useState<AnaDonem>("Tüm Dönemler");
   const kartVerisi = anaDonemFiltrele(seciliAnaDonem);
   const [deste, setDeste] = useState<number[]>(() => karistir(kartVerisi.map((_, i) => i)));
   const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set());
+
+  const { seviyeler, ogren, tekrar } = useKartSeviyeleri();
 
   const bitti = deste.length === 0;
 
@@ -70,24 +127,26 @@ export default function App() {
   const sifirla = useCallback(() => {
     setDeste(karistir(kartVerisi.map((_, i) => i)));
     setOgrenilenler(new Set());
-  }, []);
+  }, [kartVerisi]);
 
   const onOgrenildi = useCallback(() => {
     setDeste((onceki) => {
       if (onceki.length === 0) return onceki;
       const [ilk, ...geriKalan] = onceki;
       setOgrenilenler((s) => new Set(s).add(ilk));
+      ogren(ilk);
       return geriKalan;
     });
-  }, []);
+  }, [ogren]);
 
   const onTekrar = useCallback(() => {
     setDeste((onceki) => {
       if (onceki.length <= 1) return onceki;
       const [ilk, ...geriKalan] = onceki;
+      tekrar(ilk);
       return [...geriKalan, ilk];
     });
-  }, []);
+  }, [tekrar]);
 
   const onPrev = useCallback(() => {
     setDeste((onceki) => {
@@ -158,7 +217,7 @@ export default function App() {
               return (
                 <button
                   key={m}
-                  onClick={() => setMod(m)}
+                  onClick={() => modDegistir(m)}
                   aria-current={aktif ? "page" : undefined}
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
                     aktif
@@ -243,18 +302,61 @@ export default function App() {
         ) : mod === "osym" ? (
           <OsymSeverModul />
         ) : (
-          <DueloModulu onCikis={() => setMod("kart")} />
+          <DueloModulu
+            onCikis={() => setMod("kart")}
+            onDueloAktifDegisti={setDueloAktif}
+            onProfilAc={() => setProfilAcik(true)}
+            onCikisOnayGerekir={cikisOnayGerekir}
+          />
         )}
       </main>
 
       <RuhHaliModal
         onSecim={(rh) => {
           setRuhHali(rh);
-          // Modal kapanışını tetikle — intro animasyonu buradan sonra başlar
           window.setTimeout(() => setModalKapandi(true), 2800);
         }}
         onKapat={() => setModalKapandi(true)}
       />
+
+      {/* Profil modalı */}
+      {profilAcik && (
+        <ProfilModal onKapat={() => setProfilAcik(false)} onGuncellendi={() => {}} />
+      )}
+
+      {/* Navigation guard onay modalı */}
+      {cikisOnayAcik && (
+        <div
+          className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-sm flex items-center justify-center p-5"
+          onClick={cikisReddet}
+        >
+          <div
+            className="bg-card rounded-[1.75rem] shadow-2xl max-w-sm w-full p-6 animate-pop"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/15 text-destructive">
+              <AlertTriangle className="h-7 w-7" strokeWidth={1.5} />
+            </div>
+            <p className="text-center text-sm font-semibold text-pretty text-card-foreground">
+              {cikisMesaj}
+            </p>
+            <div className="mt-5 grid grid-cols-2 gap-3">
+              <button
+                onClick={cikisReddet}
+                className="rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
+              >
+                İptal
+              </button>
+              <button
+                onClick={cikisOnayla}
+                className="rounded-2xl bg-destructive py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+              >
+                Ayrıl
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {infoAcik && (
         <div
@@ -284,7 +386,7 @@ export default function App() {
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>
                 <span className="font-semibold text-foreground">Kartlar:</span> Dönem seç, sağa kaydır = Öğrendim, sola
-                kaydır = Tekrar Et.
+                kaydır = Tekrar Et. Leitner sistemi ile kart seviyelerin takip edilir.
               </p>
               <p>
                 <span className="font-semibold text-foreground">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
@@ -295,7 +397,8 @@ export default function App() {
                 deneme.
               </p>
               <p>
-                <span className="font-semibold text-foreground">Düello:</span> Rakibinle 5 soruda yarış. Hız bonusu kazan, rövanş al!
+                <span className="font-semibold text-foreground">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
+                Senkron soru geçişi — rakibini bekle, sonra birlikte geçin.
               </p>
             </div>
           </div>
@@ -304,5 +407,3 @@ export default function App() {
     </div>
   );
 }
-
-
