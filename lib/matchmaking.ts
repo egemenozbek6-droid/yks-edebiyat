@@ -1,8 +1,8 @@
 // ============================================================
 // EdebiKart — Online matchmaking servisi (Firestore)
-// Tek bir "rooms" koleksiyonu: ranked + özel oda + oyun içi sync
-// Sorular oda oluşturulurken üretilir ve room.questions'a kaydedilir.
-// Her iki oyuncu room.questions[currentIndex]'ten okur.
+// matches koleksiyonu: ranked + özel oda + oyun içi sync
+// Sorular maç oluşturulurken üretilir ve match.sorular'a kaydedilir.
+// Her iki oyuncu match.sorular[soruIndex]'ten okur.
 // ============================================================
 
 import {
@@ -30,28 +30,21 @@ import type { Rakip } from "./types";
 
 export const RANKED_BOT_FALLBACK_SURESI = 5000;
 
-export type OdaDurumu = "waiting" | "in_progress" | "finished" | "forfeited";
-export type OdaModu = "ranked" | "friendly";
+export type MacDurumu = "bekliyor" | "aktif" | "bitti" | "terk";
 
-export type OdaOyuncu = {
-  id: string;
-  username: string;
-  avatar: string;
-  score: number;
-  answer: number | null;
-};
-
-export type OnlineOda = {
-  code: string;
-  mode: OdaModu;
-  status: OdaDurumu;
-  player1: OdaOyuncu;
-  player2: OdaOyuncu | null;
-  questions: Soru[];
-  currentIndex: number;
-  winnerId: string | null;
+export type OnlineMac = {
+  matchId: string;
+  mod: "ranked" | "friendly";
+  durum: MacDurumu;
+  oyuncu1: { id: string; ad: string; avatar: string; skor: number; cevap: number | null };
+  oyuncu2: { id: string; ad: string; avatar: string; skor: number; cevap: number | null } | null;
+  odaKodu: string | null;
+  soruSayisi: number;
+  sorular: Soru[];
+  soruIndex: number;
+  kazananId: string | null;
   forfeitedBy: string | null;
-  createdAt: number;
+  olusturmaZamani: number;
 };
 
 export type SiradakiOyuncu = {
@@ -98,7 +91,7 @@ export async function kullaniciAdiKaydetOnline(
 
 export type KuyrukDurumu =
   | { durum: "bekliyor" }
-  | { durum: "eslesti"; rakip: Rakip; roomId: string; sorular: Soru[] }
+  | { durum: "eslesti"; rakip: Rakip; matchId: string; sorular: Soru[] }
   | { durum: "iptal" };
 
 export function rankedKuyrugaKatil(
@@ -109,7 +102,7 @@ export function rankedKuyrugaKatil(
     const t = setTimeout(() => {
       const bot = rastgeleBot();
       const sorular = soruUret(10);
-      onSonuc({ durum: "eslesti", rakip: bot, roomId: "bot_" + Date.now(), sorular });
+      onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
     }, 3000 + Math.random() * 2000);
     return () => clearTimeout(t);
   }
@@ -124,38 +117,38 @@ export function rankedKuyrugaKatil(
     if (kuyrukUnsub) { kuyrukUnsub(); kuyrukUnsub = null; }
     const bot = rastgeleBot();
     const sorular = soruUret(10);
-    onSonuc({ durum: "eslesti", rakip: bot, roomId: "bot_" + Date.now(), sorular });
+    onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
   }, RANKED_BOT_FALLBACK_SURESI);
 
   (async () => {
     const q = query(
-      collection(db!, "rooms"),
-      where("mode", "==", "ranked"),
-      where("status", "==", "waiting"),
+      collection(db!, "matches"),
+      where("mod", "==", "ranked"),
+      where("durum", "==", "bekliyor"),
       limit(1),
     );
     const snap = await getDocs(q);
 
     if (!snap.empty) {
-      const odaDoc = snap.docs[0];
-      const odaId = odaDoc.id;
-      const odaData = odaDoc.data() as OnlineOda;
+      const macDoc = snap.docs[0];
+      const macId = macDoc.id;
+      const macData = macDoc.data() as OnlineMac;
 
       try {
         await runTransaction(db!, async (tx) => {
-          const ref = doc(db!, "rooms", odaId);
+          const ref = doc(db!, "matches", macId);
           const cur = await tx.get(ref);
           if (!cur.exists()) throw new Error("kayboldu");
           const data = cur.data();
-          if (data.status !== "waiting") throw new Error("zaten alındı");
+          if (data.durum !== "bekliyor") throw new Error("zaten alındı");
           tx.update(ref, {
-            status: "in_progress",
-            player2: {
+            durum: "aktif",
+            oyuncu2: {
               id: oyuncu.id,
-              username: oyuncu.ad,
+              ad: oyuncu.ad,
               avatar: oyuncu.avatar,
-              score: 0,
-              answer: null,
+              skor: 0,
+              cevap: null,
             },
           });
         });
@@ -164,9 +157,9 @@ export function rankedKuyrugaKatil(
         if (!iptalEdildi) {
           onSonuc({
             durum: "eslesti",
-            rakip: { ad: odaData.player1.username, avatar: odaData.player1.avatar, bot: false },
-            roomId: odaId,
-            sorular: odaData.questions ?? [],
+            rakip: { ad: macData.oyuncu1.ad, avatar: macData.oyuncu1.avatar, bot: false },
+            matchId: macId,
+            sorular: macData.sorular ?? [],
           });
         }
       } catch {
@@ -204,40 +197,41 @@ async function kuyrugaEkleVeBekle(
   botTimerTemizle: () => void,
 ) {
   if (!db) return;
-  const roomId = "ranked_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+  const matchId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
   const uretilenSorular = soruUret(10);
-  await setDoc(doc(db, "rooms", roomId), {
-    code: roomId,
-    mode: "ranked",
-    status: "waiting",
-    player1: {
+  await setDoc(doc(db, "matches", matchId), {
+    mod: "ranked",
+    durum: "bekliyor",
+    oyuncu1: {
       id: oyuncu.id,
-      username: oyuncu.ad,
+      ad: oyuncu.ad,
       avatar: oyuncu.avatar,
-      score: 0,
-      answer: null,
+      skor: 0,
+      cevap: null,
     },
-    player2: null,
-    questions: uretilenSorular,
-    currentIndex: 0,
-    winnerId: null,
+    oyuncu2: null,
+    odaKodu: null,
+    soruSayisi: 10,
+    sorular: uretilenSorular,
+    soruIndex: 0,
+    kazananId: null,
     forfeitedBy: null,
-    createdAt: Date.now(),
+    olusturmaZamani: serverTimestamp(),
   });
 
   const unsub = onSnapshot(
-    doc(db, "rooms", roomId),
+    doc(db, "matches", matchId),
     (snap) => {
       if (!snap.exists()) return;
-      const data = snap.data() as OnlineOda;
-      if (data.status === "in_progress" && data.player2) {
+      const data = snap.data() as OnlineMac;
+      if (data.durum === "aktif" && data.oyuncu2) {
         if (!iptalEdildiRef()) {
           botTimerTemizle();
           onSonuc({
             durum: "eslesti",
-            rakip: { ad: data.player2.username, avatar: data.player2.avatar, bot: false },
-            roomId,
-            sorular: data.questions ?? [],
+            rakip: { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false },
+            matchId,
+            sorular: data.sorular ?? [],
           });
         }
         unsub();
@@ -251,10 +245,10 @@ export async function rankedKuyruktanCik(oyuncuId: string): Promise<void> {
   if (!firebaseAktif || !db) return;
   try {
     const q = query(
-      collection(db, "rooms"),
-      where("mode", "==", "ranked"),
-      where("status", "==", "waiting"),
-      where("player1.id", "==", oyuncuId),
+      collection(db, "matches"),
+      where("mod", "==", "ranked"),
+      where("durum", "==", "bekliyor"),
+      where("oyuncu1.id", "==", oyuncuId),
       limit(1),
     );
     const snap = await getDocs(q);
@@ -270,42 +264,43 @@ export function odaKurOnline(
   odaKodu: string,
   oyuncu: SiradakiOyuncu,
   soruSayisi: number,
-  onRakipKatildi: (rakip: Rakip, roomId: string, sorular: Soru[]) => void,
+  onRakipKatildi: (rakip: Rakip, matchId: string, sorular: Soru[]) => void,
 ): Unsubscribe | null {
   if (!firebaseAktif || !db) return null;
 
-  const odaRef = doc(db!, "rooms", odaKodu);
+  const macRef = doc(db!, "matches", odaKodu);
 
   (async () => {
     const uretilenSorular = soruUret(soruSayisi);
-    await setDoc(odaRef, {
-      code: odaKodu,
-      mode: "friendly",
-      status: "waiting",
-      player1: {
+    await setDoc(macRef, {
+      mod: "friendly",
+      durum: "bekliyor",
+      oyuncu1: {
         id: oyuncu.id,
-        username: oyuncu.ad,
+        ad: oyuncu.ad,
         avatar: oyuncu.avatar,
-        score: 0,
-        answer: null,
+        skor: 0,
+        cevap: null,
       },
-      player2: null,
-      questions: uretilenSorular,
-      currentIndex: 0,
-      winnerId: null,
+      oyuncu2: null,
+      odaKodu,
+      soruSayisi,
+      sorular: uretilenSorular,
+      soruIndex: 0,
+      kazananId: null,
       forfeitedBy: null,
-      createdAt: Date.now(),
+      olusturmaZamani: serverTimestamp(),
     });
   })();
 
-  const unsub = onSnapshot(odaRef, (snap) => {
+  const unsub = onSnapshot(macRef, (snap) => {
     if (!snap.exists()) return;
-    const data = snap.data() as OnlineOda;
-    if (data.status === "in_progress" && data.player2) {
+    const data = snap.data() as OnlineMac;
+    if (data.durum === "aktif" && data.oyuncu2) {
       onRakipKatildi(
-        { ad: data.player2.username, avatar: data.player2.avatar, bot: false },
+        { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false },
         odaKodu,
-        data.questions ?? [],
+        data.sorular ?? [],
       );
       unsub();
     }
@@ -322,36 +317,41 @@ export async function odayaKatilOnline(
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 
-  const odaRef = doc(db!, "rooms", odaKodu);
-  const snap = await getDoc(odaRef);
+  const q = query(
+    collection(db!, "matches"),
+    where("odaKodu", "==", odaKodu),
+    where("durum", "==", "bekliyor"),
+    limit(1),
+  );
+  const snap = await getDocs(q);
 
-  if (!snap.exists()) {
+  if (snap.empty) {
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 
-  const data = snap.data() as OnlineOda;
-  if (data.status !== "waiting") {
-    return { tamam: false, hata: "Geçersiz oda kodu!" };
-  }
+  const macDoc = snap.docs[0];
+  const macId = macDoc.id;
+  const data = macDoc.data() as OnlineMac;
 
-  if (data.player1?.id === oyuncu.id) {
+  if (data.oyuncu1?.id === oyuncu.id) {
     return { tamam: false, hata: "Kendi odana katılamazsın!" };
   }
 
   try {
     await runTransaction(db!, async (tx) => {
-      const cur = await tx.get(odaRef);
+      const ref = doc(db!, "matches", macId);
+      const cur = await tx.get(ref);
       if (!cur.exists()) throw new Error("oda yok");
-      const curData = cur.data() as OnlineOda;
-      if (curData.status !== "waiting") throw new Error("dolu");
-      tx.update(odaRef, {
-        status: "in_progress",
-        player2: {
+      const curData = cur.data() as OnlineMac;
+      if (curData.durum !== "bekliyor") throw new Error("dolu");
+      tx.update(ref, {
+        durum: "aktif",
+        oyuncu2: {
           id: oyuncu.id,
-          username: oyuncu.ad,
+          ad: oyuncu.ad,
           avatar: oyuncu.avatar,
-          score: 0,
-          answer: null,
+          skor: 0,
+          cevap: null,
         },
       });
     });
@@ -364,189 +364,144 @@ export async function odayaKatilOnline(
 export async function odaSil(odaKodu: string): Promise<void> {
   if (!firebaseAktif || !db) return;
   try {
-    await deleteDoc(doc(db, "rooms", odaKodu));
+    await deleteDoc(doc(db, "matches", odaKodu));
   } catch {
     // sessiz
   }
 }
 
-// --- Room real-time sync ---
+// --- Match real-time sync ---
 
-export function roomDinle(
-  roomId: string,
-  onGuncelle: (oda: OnlineOda | null) => void,
+export function matchDinle(
+  matchId: string,
+  onGuncelle: (mac: OnlineMac | null) => void,
 ): Unsubscribe | null {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return null;
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return null;
 
-  return onSnapshot(doc(db!, "rooms", roomId), (snap) => {
+  return onSnapshot(doc(db!, "matches", matchId), (snap) => {
     if (!snap.exists()) {
       onGuncelle(null);
       return;
     }
-    const data = snap.data() as Omit<OnlineOda, "createdAt"> & {
-      createdAt?: number | Timestamp;
+    const data = snap.data() as Omit<OnlineMac, "olusturmaZamani"> & {
+      olusturmaZamani: Timestamp;
     };
     onGuncelle({
       ...data,
-      createdAt: typeof data.createdAt === "number"
-        ? data.createdAt
-        : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
-    } as OnlineOda);
+      olusturmaZamani: data.olusturmaZamani?.toMillis?.() ?? 0,
+    } as OnlineMac);
   });
 }
 
-export async function roomGetir(roomId: string): Promise<OnlineOda | null> {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return null;
-  const snap = await getDoc(doc(db!, "rooms", roomId));
+export async function matchGetir(matchId: string): Promise<OnlineMac | null> {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return null;
+  const snap = await getDoc(doc(db!, "matches", matchId));
   if (!snap.exists()) return null;
-  const data = snap.data() as Omit<OnlineOda, "createdAt"> & {
-    createdAt?: number | Timestamp;
+  const data = snap.data() as Omit<OnlineMac, "olusturmaZamani"> & {
+    olusturmaZamani: Timestamp;
   };
   return {
     ...data,
-    createdAt: typeof data.createdAt === "number"
-      ? data.createdAt
-      : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
-  } as OnlineOda;
-}
-
-export function katilanRoomBekle(
-  oyuncuId: string,
-  onBulundu: (roomId: string, oda: OnlineOda) => void,
-): Unsubscribe | null {
-  if (!firebaseAktif || !db) return null;
-
-  const q = query(
-    collection(db, "rooms"),
-    where("player2.id", "==", oyuncuId),
-    where("status", "==", "in_progress"),
-    limit(1),
-  );
-
-  return onSnapshot(q, (snap) => {
-    if (snap.empty) return;
-    const d = snap.docs[0];
-    const data = d.data() as Omit<OnlineOda, "createdAt"> & {
-      createdAt?: number | Timestamp;
-    };
-    const oda: OnlineOda = {
-      ...data,
-      createdAt: typeof data.createdAt === "number"
-        ? data.createdAt
-        : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
-    } as OnlineOda;
-    onBulundu(d.id, oda);
-  });
-}
-
-// --- Cevap gönder & soru ilerlet ---
-
-export async function cevapGonder(
-  roomId: string,
-  oyuncuNum: 1 | 2,
-  secenekIndex: number,
-  dogruMu: boolean,
-  bonus: number,
-): Promise<void> {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
-
-  const ref = doc(db!, "rooms", roomId);
-  const alan = oyuncuNum === 1 ? "player1" : "player2";
-
-  await runTransaction(db!, async (tx) => {
-    const snap = await tx.get(ref);
-    if (!snap.exists()) return;
-    const data = snap.data() as OnlineOda;
-
-    const oyuncu = oyuncuNum === 1 ? data.player1 : data.player2;
-    if (!oyuncu) return;
-    if (oyuncu.answer !== null) return;
-    const yeniSkor = dogruMu ? oyuncu.score + 100 + bonus : oyuncu.score;
-
-    const guncelleme: Record<string, number | null> = {};
-    guncelleme[`${alan}.score`] = yeniSkor;
-    guncelleme[`${alan}.answer`] = secenekIndex;
-
-    tx.update(ref, guncelleme as Record<string, never>);
-  });
-}
-
-export async function sonrakiSoru(roomId: string): Promise<void> {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
-  const ref = doc(db!, "rooms", roomId);
-  await runTransaction(db!, async (tx) => {
-    const snap = await tx.get(ref);
-    if (!snap.exists()) return;
-    const data = snap.data() as OnlineOda;
-    const o1Cevap = data.player1.answer;
-    const o2Cevap = data.player2?.answer ?? null;
-    if (o1Cevap === null || o2Cevap === null) return;
-    tx.update(ref, {
-      currentIndex: data.currentIndex + 1,
-      "player1.answer": null,
-      "player2.answer": null,
-    });
-  });
-}
-
-export async function roomBitir(
-  roomId: string,
-  kazananId: string | null,
-): Promise<void> {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
-  const ref = doc(db!, "rooms", roomId);
-  await updateDoc(ref, { status: "finished", winnerId: kazananId });
-}
-
-export async function roomTerk(
-  roomId: string,
-  terkEdenId: string,
-  digerOyuncuId: string,
-): Promise<void> {
-  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
-  const ref = doc(db!, "rooms", roomId);
-  await updateDoc(ref, {
-    status: "forfeited",
-    winnerId: digerOyuncuId,
-    forfeitedBy: terkEdenId,
-  });
-}
-
-// --- Legacy compat exports (for any remaining callers) ---
-
-export type MacDurumu = "aktif" | "bitti" | "terk";
-
-export type OnlineMac = OnlineOda;
-
-export function matchDinle(
-  roomId: string,
-  onGuncelle: (mac: OnlineMac | null) => void,
-): Unsubscribe | null {
-  return roomDinle(roomId, onGuncelle);
-}
-
-export async function matchGetir(roomId: string): Promise<OnlineMac | null> {
-  return roomGetir(roomId);
+    olusturmaZamani: data.olusturmaZamani?.toMillis?.() ?? 0,
+  } as OnlineMac;
 }
 
 export function katilanMatchBekle(
   oyuncuId: string,
   onBulundu: (matchId: string, mac: OnlineMac) => void,
 ): Unsubscribe | null {
-  return katilanRoomBekle(oyuncuId, onBulundu);
+  if (!firebaseAktif || !db) return null;
+
+  const q = query(
+    collection(db, "matches"),
+    where("oyuncu2.id", "==", oyuncuId),
+    where("durum", "==", "aktif"),
+    limit(1),
+  );
+
+  return onSnapshot(q, (snap) => {
+    if (snap.empty) return;
+    const mDoc = snap.docs[0];
+    const mData = mDoc.data() as Omit<OnlineMac, "olusturmaZamani"> & {
+      olusturmaZamani: Timestamp;
+    };
+    const mac: OnlineMac = {
+      ...mData,
+      olusturmaZamani: mData.olusturmaZamani?.toMillis?.() ?? 0,
+    } as OnlineMac;
+    onBulundu(mDoc.id, mac);
+  });
+}
+
+// --- Cevap gönder & soru ilerlet ---
+
+export async function cevapGonder(
+  matchId: string,
+  oyuncuNum: 1 | 2,
+  secenekIndex: number,
+  dogruMu: boolean,
+  bonus: number,
+): Promise<void> {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+
+  const ref = doc(db!, "matches", matchId);
+  const alan = oyuncuNum === 1 ? "oyuncu1" : "oyuncu2";
+
+  await runTransaction(db!, async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) return;
+    const data = snap.data() as OnlineMac;
+
+    const oyuncu = oyuncuNum === 1 ? data.oyuncu1 : data.oyuncu2;
+    if (!oyuncu) return;
+    if (oyuncu.cevap !== null) return;
+    const yeniSkor = dogruMu ? oyuncu.skor + 100 + bonus : oyuncu.skor;
+
+    const guncelleme: Record<string, number | null> = {};
+    guncelleme[`${alan}.skor`] = yeniSkor;
+    guncelleme[`${alan}.cevap`] = secenekIndex;
+
+    tx.update(ref, guncelleme as Record<string, never>);
+  });
+}
+
+export async function sonrakiSoru(matchId: string): Promise<void> {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+  const ref = doc(db!, "matches", matchId);
+  await runTransaction(db!, async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) return;
+    const data = snap.data() as OnlineMac;
+    const o1Cevap = data.oyuncu1.cevap;
+    const o2Cevap = data.oyuncu2?.cevap ?? null;
+    if (o1Cevap === null || o2Cevap === null) return;
+    tx.update(ref, {
+      soruIndex: data.soruIndex + 1,
+      "oyuncu1.cevap": null,
+      "oyuncu2.cevap": null,
+    });
+  });
 }
 
 export async function matchBitir(
-  roomId: string,
+  matchId: string,
   kazananId: string | null,
 ): Promise<void> {
-  return roomBitir(roomId, kazananId);
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+  const ref = doc(db!, "matches", matchId);
+  await updateDoc(ref, { durum: "bitti", kazananId });
 }
 
 export async function matchTerk(
-  roomId: string,
+  matchId: string,
   terkEdenId: string,
   digerOyuncuId: string,
 ): Promise<void> {
-  return roomTerk(roomId, terkEdenId, digerOyuncuId);
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+  const ref = doc(db!, "matches", matchId);
+  await updateDoc(ref, {
+    durum: "terk",
+    kazananId: digerOyuncuId,
+    forfeitedBy: terkEdenId,
+  });
 }
