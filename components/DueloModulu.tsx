@@ -1239,10 +1239,10 @@ export default function DueloModulu({
               <Trophy className="h-9 w-9" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
-              Rakip Düellodan Çekildi!
+              Rakip Düellodan Çekildi! Hükmen Kazandın! 🎉
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Hükmen Kazandın!
+              Rakibiniz oyundan ayrıldı ve maçı hükmen kazandınız.
             </p>
             <button
               onClick={() => {

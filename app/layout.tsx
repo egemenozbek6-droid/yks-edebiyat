@@ -7,7 +7,7 @@ const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans' 
 const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-serif', style: ['normal', 'italic'] })
 
 export const metadata: Metadata = {
-  title: 'EdebiKart: YKS Yazar Eser',
+  title: 'EdebiKart: YKS Yazar Eser & Düello',
   description: 'EZBERLEME, NOKTA ATIŞI YAP! 🎯 — YKS/AYT edebiyat yazar-eser ezber uygulaması.',
   generator: 'v0.app',
   icons: {

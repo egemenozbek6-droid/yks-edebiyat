@@ -13,7 +13,7 @@ import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
 import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
 
 const APP_NAME = "EdebiKart";
-const APP_SUBTITLE = "YKS Yazar Eser";
+const APP_SUBTITLE = "YKS Yazar Eser & Düello";
 
 type Mod = "kart" | "test" | "osym" | "duelo";
 
