@@ -1,54 +1,36 @@
 // ============================================================
-// EdebiKart — Firebase yapılandırması
-// Firestore & Auth için temel init. Gerçek API anahtarları
-// .env dosyasındaki NEXT_PUBLIC_FIREBASE_* değişkenlerinden okunur.
-// Anahtarlar boşsa uygulama "offline fallback" modunda çalışır
-// (bot tabanlı simülasyon) ve normal şekilde derler/çalışır.
+// EdebiKart — Firebase yapılandırması (hardcoded)
+// Firestore bağlantısı doğrudan buradan yapılır.
 // ============================================================
 
 import { initializeApp, type FirebaseApp } from "firebase/app";
 import { getFirestore, type Firestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY ?? "",
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN ?? "",
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID ?? "",
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET ?? "",
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID ?? "",
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID ?? "",
+  apiKey: "AIzaSyBTIZ40tegC1RidklH58XVv7aRkrs0vMb8",
+  authDomain: "edebikart-yks-yazareser.firebaseapp.com",
+  projectId: "edebikart-yks-yazareser",
+  storageBucket: "edebikart-yks-yazareser.firebasestorage.app",
+  messagingSenderId: "116357634453",
+  appId: "1:116357634453:web:1e38118a8a6d879fabbe9c",
+  measurementId: "G-5ZKLBGCXH7",
 };
 
-// Debug: Firebase config'i konsola yazdır (anahtarların varlığını doğrula)
-console.log("[Firebase] Config:", {
-  apiKey: firebaseConfig.apiKey ? "✓ mevcut" : "✗ EKSİK",
-  authDomain: firebaseConfig.authDomain || "✗ EKSİK",
-  projectId: firebaseConfig.projectId ? "✓ mevcut" : "✗ EKSİK",
-  storageBucket: firebaseConfig.storageBucket || "✗ EKSİK",
-  messagingSenderId: firebaseConfig.messagingSenderId || "✗ EKSİK",
-  appId: firebaseConfig.appId ? "✓ mevcut" : "✗ EKSİK",
-});
+export const firebaseAktif = true;
 
-// Firebase yapılandırması eksikse offline fallback moduna geç
-export const firebaseAktif = Boolean(firebaseConfig.apiKey && firebaseConfig.projectId);
-
-console.log("[Firebase] firebaseAktif:", firebaseAktif);
+console.log("[Firebase] Config yüklendi, projectId:", firebaseConfig.projectId);
 
 let app: FirebaseApp | null = null;
 let db: Firestore | null = null;
 
-if (firebaseAktif) {
-  try {
-    app = initializeApp(firebaseConfig);
-    db = getFirestore(app);
-    console.log("[Firebase] Başarıyla başlatıldı, projectId:", firebaseConfig.projectId);
-  } catch (e) {
-    // Init hatası: ekrana ve konsola yaz
-    const msg = e instanceof Error ? e.message : String(e);
-    console.error("[Firebase] Başlatılamadı, offline mod kullanılacak:", e);
-    alert("Firebase başlatılamadı!\nHata: " + msg);
-    app = null;
-    db = null;
-  }
+try {
+  app = initializeApp(firebaseConfig);
+  db = getFirestore(app);
+  console.log("[Firebase] Başarıyla başlatıldı, projectId:", firebaseConfig.projectId);
+} catch (e) {
+  const msg = e instanceof Error ? e.message : String(e);
+  console.error("[Firebase] Başlatılamadı:", e);
+  alert("Firebase başlatılamadı!\nHata: " + msg);
 }
 
 export { app, db };
