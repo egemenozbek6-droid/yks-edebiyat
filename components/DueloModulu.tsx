@@ -386,6 +386,8 @@ export default function DueloModulu({
 
   // --- Özel oda kur — Gerçek online, bot yok ---
   const odaKur = useCallback(() => {
+    // Tüm duel state'ini sıfırla ki önceki maçtan kalma veri kalmasın
+    dueloSifirla();
     const kod = Math.floor(1000 + Math.random() * 9000).toString();
     setOlusturulanKod(kod);
     olusturulanKodRef.current = kod;
@@ -411,7 +413,7 @@ export default function DueloModulu({
       },
     );
     odaUnsubRef.current = unsub;
-  }, [dueloBaslat, friendlySoruSayisi]);
+  }, [dueloBaslat, friendlySoruSayisi, dueloSifirla]);
 
   const odaBeklemeIptal = useCallback(() => {
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
@@ -425,7 +427,8 @@ export default function DueloModulu({
 
   // --- Odaya katıl — Gerçek online, bot yok ---
   const odayaKatil = useCallback(async () => {
-    if (odaInput.trim().length !== 4) return;
+    const trimmedInput = odaInput.trim();
+    if (trimmedInput.length !== 4) return;
     const k = kullaniciRef.current;
     if (!k) return;
 
@@ -434,7 +437,10 @@ export default function DueloModulu({
       return;
     }
 
-    const sonuc = await odayaKatilOnline(odaInput.trim(), {
+    // Tüm duel state'ini sıfırla
+    dueloSifirla();
+
+    const sonuc = await odayaKatilOnline(trimmedInput, {
       id: k.kullaniciAdi,
       ad: k.kullaniciAdi,
       avatar: k.avatar,
@@ -446,8 +452,8 @@ export default function DueloModulu({
     }
 
     // Oda bulundu — kurucu match oluşturacak, biz onu dinleriz
-    setOlusturulanKod(odaInput.trim());
-    olusturulanKodRef.current = odaInput.trim();
+    setOlusturulanKod(trimmedInput);
+    olusturulanKodRef.current = trimmedInput;
     setAdim("oda_bekleme");
     adimRef.current = "oda_bekleme";
 
@@ -465,7 +471,7 @@ export default function DueloModulu({
       if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
     });
     katilanMatchUnsubRef.current = unsub;
-  }, [odaInput, dueloBaslat]);
+  }, [odaInput, dueloBaslat, dueloSifirla]);
 
   // --- Cevapla (oyuncu) ---
   const cevapla = useCallback(
@@ -1036,7 +1042,10 @@ export default function DueloModulu({
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
-              onClick={() => rastgeleRakip()}
+              onClick={() => {
+                dueloSifirla();
+                rastgeleRakip();
+              }}
               className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
             >
               <Swords className="h-4 w-4" /> Yeni Düello

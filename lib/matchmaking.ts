@@ -272,8 +272,13 @@ export function odaKurOnline(
     return null;
   }
 
-  // odaKodu her zaman string olarak kaydedilir
-  const kodStr = String(odaKodu);
+  // odaKodu her zaman trim'lenmiş string olarak kaydedilir
+  const kodStr = String(odaKodu ?? "").trim();
+  if (!kodStr) {
+    console.error("[odaKurOnline] Geçersiz oda kodu (boş)");
+    alert("Oda kodu boş!");
+    return null;
+  }
   const macRef = doc(db!, "matches", kodStr);
 
   (async () => {
@@ -340,8 +345,11 @@ export async function odayaKatilOnline(
     return { tamam: false, hata: "Firebase bağlantısı yok! .env anahtarlarını kontrol edin." };
   }
 
-  // odaKodu her zaman string olarak karşılaştırılır
-  const kodStr = String(odaKodu);
+  // odaKodu her zaman trim'lenmiş string olarak karşılaştırılır
+  const kodStr = String(odaKodu ?? "").trim();
+  if (!kodStr) {
+    return { tamam: false, hata: "Oda kodu boş!" };
+  }
 
   try {
     console.log("[odayaKatilOnline] Sorgulanıyor: odaKodu ==", kodStr, "AND durum == bekliyor");
@@ -491,8 +499,8 @@ export async function cevapGonder(
     const yeniSkor = dogruMu ? oyuncu.skor + 100 + bonus : oyuncu.skor;
 
     const guncelleme: Record<string, number | null> = {};
-    guncelleme[`${alan}.skor`] = yeniSkor;
-    guncelleme[`${alan}.cevap`] = secenekIndex;
+    guncelleme[`${alan}.skor`] = yeniSkor ?? 0;
+    guncelleme[`${alan}.cevap`] = secenekIndex ?? null;
 
     tx.update(ref, guncelleme as Record<string, never>);
   });
@@ -509,7 +517,7 @@ export async function sonrakiSoru(matchId: string): Promise<void> {
     const o2Cevap = data.oyuncu2?.cevap ?? null;
     if (o1Cevap === null || o2Cevap === null) return;
     tx.update(ref, {
-      soruIndex: data.soruIndex + 1,
+      soruIndex: (data.soruIndex ?? 0) + 1,
       "oyuncu1.cevap": null,
       "oyuncu2.cevap": null,
     });
@@ -522,7 +530,7 @@ export async function matchBitir(
 ): Promise<void> {
   if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
   const ref = doc(db!, "matches", matchId);
-  await updateDoc(ref, { durum: "bitti", kazananId });
+  await updateDoc(ref, { durum: "bitti", kazananId: kazananId ?? null });
 }
 
 export async function matchTerk(
@@ -534,7 +542,7 @@ export async function matchTerk(
   const ref = doc(db!, "matches", matchId);
   await updateDoc(ref, {
     durum: "terk",
-    kazananId: digerOyuncuId,
-    forfeitedBy: terkEdenId,
+    kazananId: digerOyuncuId ?? null,
+    forfeitedBy: terkEdenId ?? null,
   });
 }
