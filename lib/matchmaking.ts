@@ -1,9 +1,8 @@
 // ============================================================
 // EdebiKart — Online matchmaking servisi (Firestore)
-// ranked_queue, custom_rooms, matches koleksiyonları
-// firebaseAktif=false ise bot tabanlı fallback döner.
-// Maç oluşturulurken sorular OLUŞTURULUR ve match belgesine
-// kaydedilir — her iki oyuncu AYNI soruları AYNI sırayla görür.
+// Tek bir "rooms" koleksiyonu: ranked + özel oda + oyun içi sync
+// Sorular oda oluşturulurken üretilir ve room.questions'a kaydedilir.
+// Her iki oyuncu room.questions[currentIndex]'ten okur.
 // ============================================================
 
 import {
@@ -29,24 +28,30 @@ import { sorulariUret, type Soru } from "./soru";
 import { gecerliYazarlar } from "@/src/data";
 import type { Rakip } from "./types";
 
-// Ranked matchmaking'de gerçek oyuncu için maksimum bekleme süresi (ms).
-// Bu süre dolunca bot fallback devreye girer.
 export const RANKED_BOT_FALLBACK_SURESI = 5000;
 
-export type MacDurumu = "aktif" | "bitti" | "terk";
+export type OdaDurumu = "waiting" | "in_progress" | "finished" | "forfeited";
+export type OdaModu = "ranked" | "friendly";
 
-export type OnlineMac = {
-  matchId: string;
-  mod: "ranked" | "friendly";
-  soruSayisi: number;
-  sorular: Soru[];
-  durum: MacDurumu;
-  oyuncu1: { id: string; ad: string; avatar: string; skor: number; cevap: number | null };
-  oyuncu2: { id: string; ad: string; avatar: string; skor: number; cevap: number | null } | null;
-  soruIndex: number;
-  kazananId: string | null;
+export type OdaOyuncu = {
+  id: string;
+  username: string;
+  avatar: string;
+  score: number;
+  answer: number | null;
+};
+
+export type OnlineOda = {
+  code: string;
+  mode: OdaModu;
+  status: OdaDurumu;
+  player1: OdaOyuncu;
+  player2: OdaOyuncu | null;
+  questions: Soru[];
+  currentIndex: number;
+  winnerId: string | null;
   forfeitedBy: string | null;
-  olusturmaZamani: number;
+  createdAt: number;
 };
 
 export type SiradakiOyuncu = {
@@ -55,7 +60,7 @@ export type SiradakiOyuncu = {
   avatar: string;
 };
 
-// --- Soru üret (match oluşturulurken bir kez çağrılır) ---
+// --- Soru üret ---
 
 function soruUret(soruSayisi: number): Soru[] {
   const havuz = gecerliYazarlar();
@@ -89,30 +94,22 @@ export async function kullaniciAdiKaydetOnline(
   }
 }
 
-// --- Ranked matchmaking (ranked_queue) ---
+// --- Ranked matchmaking ---
 
 export type KuyrukDurumu =
   | { durum: "bekliyor" }
-  | { durum: "eslesti"; rakip: Rakip; matchId: string; sorular: Soru[] }
+  | { durum: "eslesti"; rakip: Rakip; roomId: string; sorular: Soru[] }
   | { durum: "iptal" };
 
-/**
- * Ranked kuyruğa katılır. Önce boşta bekleyen bir oyuncu arar;
- * bulursa onunla eşleşir, bulamazsa kendisi kuyruğa eklenir ve
- * bir başkasının onunla eşleşmesini bekler.
- * RANKED_BOT_FALLBACK_SURESI ms sonra gerçek oyuncu bulunamazsa
- * bot fallback devreye girer.
- */
 export function rankedKuyrugaKatil(
   oyuncu: SiradakiOyuncu,
   onSonuc: (durum: KuyrukDurumu) => void,
 ): Unsubscribe | null {
   if (!firebaseAktif || !db) {
-    // Fallback: bot ile eşle
     const t = setTimeout(() => {
       const bot = rastgeleBot();
       const sorular = soruUret(10);
-      onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
+      onSonuc({ durum: "eslesti", rakip: bot, roomId: "bot_" + Date.now(), sorular });
     }, 3000 + Math.random() * 2000);
     return () => clearTimeout(t);
   }
@@ -121,75 +118,58 @@ export function rankedKuyrugaKatil(
   let kuyrukUnsub: Unsubscribe | null = null;
   let botFallbackTimer: ReturnType<typeof setTimeout> | null = null;
 
-  // 5 saniye sonra bot fallback
   botFallbackTimer = setTimeout(() => {
     if (iptalEdildi) return;
-    // Kuyruktan çık
     rankedKuyruktanCik(oyuncu.id).catch(() => {});
     if (kuyrukUnsub) { kuyrukUnsub(); kuyrukUnsub = null; }
     const bot = rastgeleBot();
     const sorular = soruUret(10);
-    onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
+    onSonuc({ durum: "eslesti", rakip: bot, roomId: "bot_" + Date.now(), sorular });
   }, RANKED_BOT_FALLBACK_SURESI);
 
   (async () => {
-    // Boşta bekleyen bir oyuncu bul
     const q = query(
-      collection(db!, "ranked_queue"),
-      where("durum", "==", "bekliyor"),
+      collection(db!, "rooms"),
+      where("mode", "==", "ranked"),
+      where("status", "==", "waiting"),
       limit(1),
     );
     const snap = await getDocs(q);
 
     if (!snap.empty) {
-      // Mevcut kuyruk belgesiyle eşleş
-      const kuyrukDoc = snap.docs[0];
-      const kuyrukId = kuyrukDoc.id;
-      const kuyrukData = kuyrukDoc.data() as {
-        id: string;
-        ad: string;
-        avatar: string;
-      };
+      const odaDoc = snap.docs[0];
+      const odaId = odaDoc.id;
+      const odaData = odaDoc.data() as OnlineOda;
 
       try {
         await runTransaction(db!, async (tx) => {
-          const ref = doc(db!, "ranked_queue", kuyrukId);
+          const ref = doc(db!, "rooms", odaId);
           const cur = await tx.get(ref);
           if (!cur.exists()) throw new Error("kayboldu");
           const data = cur.data();
-          if (data.durum !== "bekliyor") throw new Error("zaten alındı");
-          tx.update(ref, { durum: "eslesti", eslesenId: oyuncu.id });
+          if (data.status !== "waiting") throw new Error("zaten alındı");
+          tx.update(ref, {
+            status: "in_progress",
+            player2: {
+              id: oyuncu.id,
+              username: oyuncu.ad,
+              avatar: oyuncu.avatar,
+              score: 0,
+              answer: null,
+            },
+          });
         });
-
-        // Match oluştur — sorular BURADA üretilir ve kaydedilir
-        const matchId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
-        const uretilenSorular = soruUret(10);
-        await setDoc(doc(db!, "matches", matchId), {
-          mod: "ranked",
-          soruSayisi: 10,
-          sorular: uretilenSorular,
-          durum: "aktif",
-          oyuncu1: { id: kuyrukData.id, ad: kuyrukData.ad, avatar: kuyrukData.avatar, skor: 0, cevap: null },
-          oyuncu2: { id: oyuncu.id, ad: oyuncu.ad, avatar: oyuncu.avatar, skor: 0, cevap: null },
-          soruIndex: 0,
-          kazananId: null,
-          forfeitedBy: null,
-          olusturmaZamani: serverTimestamp(),
-        });
-        // Kuyruk belgesini temizle
-        await deleteDoc(doc(db!, "ranked_queue", kuyrukId));
 
         if (botFallbackTimer) { clearTimeout(botFallbackTimer); botFallbackTimer = null; }
         if (!iptalEdildi) {
           onSonuc({
             durum: "eslesti",
-            rakip: { ad: kuyrukData.ad, avatar: kuyrukData.avatar, bot: false },
-            matchId,
-            sorular: uretilenSorular,
+            rakip: { ad: odaData.player1.username, avatar: odaData.player1.avatar, bot: false },
+            roomId: odaId,
+            sorular: odaData.questions ?? [],
           });
         }
       } catch {
-        // Eşleşme yarışı kaybedildi — kuyruğa kendini ekle
         await kuyrugaEkleVeBekle(
           oyuncu,
           onSonuc,
@@ -199,7 +179,6 @@ export function rankedKuyrugaKatil(
         );
       }
     } else {
-      // Kuyrukta kimse yok — kendini ekle ve bekle
       await kuyrugaEkleVeBekle(
         oyuncu,
         onSonuc,
@@ -225,43 +204,41 @@ async function kuyrugaEkleVeBekle(
   botTimerTemizle: () => void,
 ) {
   if (!db) return;
-  const kuyrukId = "q_" + oyuncu.id;
-  await setDoc(doc(db, "ranked_queue", kuyrukId), {
-    id: oyuncu.id,
-    ad: oyuncu.ad,
-    avatar: oyuncu.avatar,
-    durum: "bekliyor",
-    olusturmaZamani: serverTimestamp(),
+  const roomId = "ranked_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
+  const uretilenSorular = soruUret(10);
+  await setDoc(doc(db, "rooms", roomId), {
+    code: roomId,
+    mode: "ranked",
+    status: "waiting",
+    player1: {
+      id: oyuncu.id,
+      username: oyuncu.ad,
+      avatar: oyuncu.avatar,
+      score: 0,
+      answer: null,
+    },
+    player2: null,
+    questions: uretilenSorular,
+    currentIndex: 0,
+    winnerId: null,
+    forfeitedBy: null,
+    createdAt: Date.now(),
   });
 
-  // Kendi kuyruk belgesini dinle — biri eşleşince durum "eslesti" olur
   const unsub = onSnapshot(
-    doc(db, "ranked_queue", kuyrukId),
-    async (snap) => {
+    doc(db, "rooms", roomId),
+    (snap) => {
       if (!snap.exists()) return;
-      const data = snap.data();
-      if (data.durum === "eslesti" && data.eslesenId) {
-        // Eşleşme tamam — match belgesini bul (oyuncu1 = biziz)
-        const mq = query(
-          collection(db!, "matches"),
-          where("oyuncu1.id", "==", oyuncu.id),
-          limit(1),
-        );
-        const mSnap = await getDocs(mq);
-        if (!mSnap.empty) {
-          const m = mSnap.docs[0];
-          const mData = m.data() as OnlineMac;
-          const rakipAd = mData.oyuncu2?.ad ?? "";
-          const rakipAvatar = mData.oyuncu2?.avatar ?? "";
-          if (rakipAd && !iptalEdildiRef()) {
-            botTimerTemizle();
-            onSonuc({
-              durum: "eslesti",
-              rakip: { ad: rakipAd, avatar: rakipAvatar, bot: false },
-              matchId: m.id,
-              sorular: mData.sorular ?? [],
-            });
-          }
+      const data = snap.data() as OnlineOda;
+      if (data.status === "in_progress" && data.player2) {
+        if (!iptalEdildiRef()) {
+          botTimerTemizle();
+          onSonuc({
+            durum: "eslesti",
+            rakip: { ad: data.player2.username, avatar: data.player2.avatar, bot: false },
+            roomId,
+            sorular: data.questions ?? [],
+          });
         }
         unsub();
       }
@@ -273,62 +250,62 @@ async function kuyrugaEkleVeBekle(
 export async function rankedKuyruktanCik(oyuncuId: string): Promise<void> {
   if (!firebaseAktif || !db) return;
   try {
-    await deleteDoc(doc(db, "ranked_queue", "q_" + oyuncuId));
+    const q = query(
+      collection(db, "rooms"),
+      where("mode", "==", "ranked"),
+      where("status", "==", "waiting"),
+      where("player1.id", "==", oyuncuId),
+      limit(1),
+    );
+    const snap = await getDocs(q);
+    snap.forEach((d) => deleteDoc(d.ref).catch(() => {}));
   } catch {
     // sessiz
   }
 }
 
-// --- Özel oda (custom_rooms) ---
-
-export type OdaDurum = "bekliyor" | "dolu" | "iptal";
+// --- Özel oda (friendly) ---
 
 export function odaKurOnline(
   odaKodu: string,
   oyuncu: SiradakiOyuncu,
   soruSayisi: number,
-  onRakipKatildi: (rakip: Rakip, matchId: string, sorular: Soru[]) => void,
+  onRakipKatildi: (rakip: Rakip, roomId: string, sorular: Soru[]) => void,
 ): Unsubscribe | null {
-  if (!firebaseAktif || !db) {
-    // Fallback modunda custom oda bot atmaz — sadece bekle
-    return null;
-  }
+  if (!firebaseAktif || !db) return null;
 
-  const odaRef = doc(db!, "custom_rooms", odaKodu);
+  const odaRef = doc(db!, "rooms", odaKodu);
 
   (async () => {
+    const uretilenSorular = soruUret(soruSayisi);
     await setDoc(odaRef, {
-      odaKodu,
-      kurucu: { id: oyuncu.id, ad: oyuncu.ad, avatar: oyuncu.avatar },
-      soruSayisi,
-      durum: "bekliyor",
-      olusturmaZamani: serverTimestamp(),
+      code: odaKodu,
+      mode: "friendly",
+      status: "waiting",
+      player1: {
+        id: oyuncu.id,
+        username: oyuncu.ad,
+        avatar: oyuncu.avatar,
+        score: 0,
+        answer: null,
+      },
+      player2: null,
+      questions: uretilenSorular,
+      currentIndex: 0,
+      winnerId: null,
+      forfeitedBy: null,
+      createdAt: Date.now(),
     });
   })();
 
-  const unsub = onSnapshot(odaRef, async (snap) => {
+  const unsub = onSnapshot(odaRef, (snap) => {
     if (!snap.exists()) return;
-    const data = snap.data();
-    if (data.durum === "dolu" && data.katilanId) {
-      // Match oluştur — sorular BURADA üretilir ve kaydedilir
-      const matchId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
-      const uretilenSorular = soruUret(soruSayisi);
-      await setDoc(doc(db!, "matches", matchId), {
-        mod: "friendly",
-        soruSayisi,
-        sorular: uretilenSorular,
-        durum: "aktif",
-        oyuncu1: { id: oyuncu.id, ad: oyuncu.ad, avatar: oyuncu.avatar, skor: 0, cevap: null },
-        oyuncu2: { id: data.katilanId, ad: data.katilanAd, avatar: data.katilanAvatar, skor: 0, cevap: null },
-        soruIndex: 0,
-        kazananId: null,
-        forfeitedBy: null,
-        olusturmaZamani: serverTimestamp(),
-      });
+    const data = snap.data() as OnlineOda;
+    if (data.status === "in_progress" && data.player2) {
       onRakipKatildi(
-        { ad: data.katilanAd, avatar: data.katilanAvatar, bot: false },
-        matchId,
-        uretilenSorular,
+        { ad: data.player2.username, avatar: data.player2.avatar, bot: false },
+        odaKodu,
+        data.questions ?? [],
       );
       unsub();
     }
@@ -345,19 +322,19 @@ export async function odayaKatilOnline(
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 
-  const odaRef = doc(db!, "custom_rooms", odaKodu);
+  const odaRef = doc(db!, "rooms", odaKodu);
   const snap = await getDoc(odaRef);
 
   if (!snap.exists()) {
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 
-  const data = snap.data();
-  if (data.durum !== "bekliyor") {
+  const data = snap.data() as OnlineOda;
+  if (data.status !== "waiting") {
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 
-  if (data.kurucu?.id === oyuncu.id) {
+  if (data.player1?.id === oyuncu.id) {
     return { tamam: false, hata: "Kendi odana katılamazsın!" };
   }
 
@@ -365,13 +342,17 @@ export async function odayaKatilOnline(
     await runTransaction(db!, async (tx) => {
       const cur = await tx.get(odaRef);
       if (!cur.exists()) throw new Error("oda yok");
-      const curData = cur.data();
-      if (curData.durum !== "bekliyor") throw new Error("dolu");
+      const curData = cur.data() as OnlineOda;
+      if (curData.status !== "waiting") throw new Error("dolu");
       tx.update(odaRef, {
-        durum: "dolu",
-        katilanId: oyuncu.id,
-        katilanAd: oyuncu.ad,
-        katilanAvatar: oyuncu.avatar,
+        status: "in_progress",
+        player2: {
+          id: oyuncu.id,
+          username: oyuncu.ad,
+          avatar: oyuncu.avatar,
+          score: 0,
+          answer: null,
+        },
       });
     });
     return { tamam: true };
@@ -383,152 +364,189 @@ export async function odayaKatilOnline(
 export async function odaSil(odaKodu: string): Promise<void> {
   if (!firebaseAktif || !db) return;
   try {
-    await deleteDoc(doc(db, "custom_rooms", odaKodu));
+    await deleteDoc(doc(db, "rooms", odaKodu));
   } catch {
     // sessiz
   }
 }
 
-// --- Match real-time sync ---
+// --- Room real-time sync ---
 
-export function matchDinle(
-  matchId: string,
-  onGuncelle: (mac: OnlineMac | null) => void,
+export function roomDinle(
+  roomId: string,
+  onGuncelle: (oda: OnlineOda | null) => void,
 ): Unsubscribe | null {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return null;
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return null;
 
-  return onSnapshot(doc(db!, "matches", matchId), (snap) => {
+  return onSnapshot(doc(db!, "rooms", roomId), (snap) => {
     if (!snap.exists()) {
       onGuncelle(null);
       return;
     }
-    const data = snap.data() as Omit<OnlineMac, "olusturmaZamani"> & {
-      olusturmaZamani: Timestamp;
+    const data = snap.data() as Omit<OnlineOda, "createdAt"> & {
+      createdAt?: number | Timestamp;
     };
     onGuncelle({
       ...data,
-      olusturmaZamani: data.olusturmaZamani?.toMillis?.() ?? 0,
-    } as OnlineMac);
+      createdAt: typeof data.createdAt === "number"
+        ? data.createdAt
+        : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
+    } as OnlineOda);
   });
 }
 
-/** Match belgesini tek seferlik okur (katılan oyuncu için). */
-export async function matchGetir(matchId: string): Promise<OnlineMac | null> {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return null;
-  const snap = await getDoc(doc(db!, "matches", matchId));
+export async function roomGetir(roomId: string): Promise<OnlineOda | null> {
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return null;
+  const snap = await getDoc(doc(db!, "rooms", roomId));
   if (!snap.exists()) return null;
-  const data = snap.data() as Omit<OnlineMac, "olusturmaZamani"> & {
-    olusturmaZamani: Timestamp;
+  const data = snap.data() as Omit<OnlineOda, "createdAt"> & {
+    createdAt?: number | Timestamp;
   };
   return {
     ...data,
-    olusturmaZamani: data.olusturmaZamani?.toMillis?.() ?? 0,
-  } as OnlineMac;
+    createdAt: typeof data.createdAt === "number"
+      ? data.createdAt
+      : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
+  } as OnlineOda;
 }
 
-/**
- * Katılan oyuncu, kendi match belgesini bulur (oyuncu2.id = kendi id).
- * Kurucu match'i oluşturduktan sonra bu görünür hale gelir.
- */
-export function katilanMatchBekle(
+export function katilanRoomBekle(
   oyuncuId: string,
-  onBulundu: (matchId: string, mac: OnlineMac) => void,
+  onBulundu: (roomId: string, oda: OnlineOda) => void,
 ): Unsubscribe | null {
   if (!firebaseAktif || !db) return null;
 
   const q = query(
-    collection(db, "matches"),
-    where("oyuncu2.id", "==", oyuncuId),
+    collection(db, "rooms"),
+    where("player2.id", "==", oyuncuId),
+    where("status", "==", "in_progress"),
     limit(1),
   );
 
   return onSnapshot(q, (snap) => {
     if (snap.empty) return;
-    const mDoc = snap.docs[0];
-    const mData = mDoc.data() as Omit<OnlineMac, "olusturmaZamani"> & {
-      olusturmaZamani: Timestamp;
+    const d = snap.docs[0];
+    const data = d.data() as Omit<OnlineOda, "createdAt"> & {
+      createdAt?: number | Timestamp;
     };
-    const mac: OnlineMac = {
-      ...mData,
-      olusturmaZamani: mData.olusturmaZamani?.toMillis?.() ?? 0,
-    } as OnlineMac;
-    onBulundu(mDoc.id, mac);
+    const oda: OnlineOda = {
+      ...data,
+      createdAt: typeof data.createdAt === "number"
+        ? data.createdAt
+        : (data.createdAt as Timestamp)?.toMillis?.() ?? 0,
+    } as OnlineOda;
+    onBulundu(d.id, oda);
   });
 }
 
+// --- Cevap gönder & soru ilerlet ---
+
 export async function cevapGonder(
-  matchId: string,
+  roomId: string,
   oyuncuNum: 1 | 2,
   secenekIndex: number,
   dogruMu: boolean,
   bonus: number,
 ): Promise<void> {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
 
-  const ref = doc(db!, "matches", matchId);
-  const alan = oyuncuNum === 1 ? "oyuncu1" : "oyuncu2";
+  const ref = doc(db!, "rooms", roomId);
+  const alan = oyuncuNum === 1 ? "player1" : "player2";
 
   await runTransaction(db!, async (tx) => {
     const snap = await tx.get(ref);
     if (!snap.exists()) return;
-    const data = snap.data() as OnlineMac;
+    const data = snap.data() as OnlineOda;
 
-    const oyuncu = oyuncuNum === 1 ? data.oyuncu1 : data.oyuncu2;
+    const oyuncu = oyuncuNum === 1 ? data.player1 : data.player2;
     if (!oyuncu) return;
-    // Aynı soruda tekrar cevaplamayı engelle
-    if (oyuncu.cevap !== null) return;
-    const yeniSkor = dogruMu ? oyuncu.skor + 100 + bonus : oyuncu.skor;
+    if (oyuncu.answer !== null) return;
+    const yeniSkor = dogruMu ? oyuncu.score + 100 + bonus : oyuncu.score;
 
     const guncelleme: Record<string, number | null> = {};
-    guncelleme[`${alan}.skor`] = yeniSkor;
-    guncelleme[`${alan}.cevap`] = secenekIndex;
+    guncelleme[`${alan}.score`] = yeniSkor;
+    guncelleme[`${alan}.answer`] = secenekIndex;
 
     tx.update(ref, guncelleme as Record<string, never>);
   });
 }
 
-/**
- * Her iki oyuncu cevapladıktan sonra soruIndex'i ilerlet.
- * Sadece her iki cevap da null değilse ilerletir.
- */
-export async function sonrakiSoru(matchId: string): Promise<void> {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
-  const ref = doc(db!, "matches", matchId);
+export async function sonrakiSoru(roomId: string): Promise<void> {
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
+  const ref = doc(db!, "rooms", roomId);
   await runTransaction(db!, async (tx) => {
     const snap = await tx.get(ref);
     if (!snap.exists()) return;
-    const data = snap.data() as OnlineMac;
-    // Her iki oyuncu da cevaplamış olmalı
-    const o1Cevap = data.oyuncu1.cevap;
-    const o2Cevap = data.oyuncu2?.cevap ?? null;
+    const data = snap.data() as OnlineOda;
+    const o1Cevap = data.player1.answer;
+    const o2Cevap = data.player2?.answer ?? null;
     if (o1Cevap === null || o2Cevap === null) return;
     tx.update(ref, {
-      soruIndex: data.soruIndex + 1,
-      "oyuncu1.cevap": null,
-      "oyuncu2.cevap": null,
+      currentIndex: data.currentIndex + 1,
+      "player1.answer": null,
+      "player2.answer": null,
     });
   });
 }
 
-export async function matchBitir(
-  matchId: string,
+export async function roomBitir(
+  roomId: string,
   kazananId: string | null,
 ): Promise<void> {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
-  const ref = doc(db!, "matches", matchId);
-  await updateDoc(ref, { durum: "bitti", kazananId });
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
+  const ref = doc(db!, "rooms", roomId);
+  await updateDoc(ref, { status: "finished", winnerId: kazananId });
 }
 
-export async function matchTerk(
-  matchId: string,
+export async function roomTerk(
+  roomId: string,
   terkEdenId: string,
   digerOyuncuId: string,
 ): Promise<void> {
-  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
-  const ref = doc(db!, "matches", matchId);
+  if (!firebaseAktif || !db || roomId.startsWith("bot_")) return;
+  const ref = doc(db!, "rooms", roomId);
   await updateDoc(ref, {
-    durum: "terk",
-    kazananId: digerOyuncuId,
+    status: "forfeited",
+    winnerId: digerOyuncuId,
     forfeitedBy: terkEdenId,
   });
+}
+
+// --- Legacy compat exports (for any remaining callers) ---
+
+export type MacDurumu = "aktif" | "bitti" | "terk";
+
+export type OnlineMac = OnlineOda;
+
+export function matchDinle(
+  roomId: string,
+  onGuncelle: (mac: OnlineMac | null) => void,
+): Unsubscribe | null {
+  return roomDinle(roomId, onGuncelle);
+}
+
+export async function matchGetir(roomId: string): Promise<OnlineMac | null> {
+  return roomGetir(roomId);
+}
+
+export function katilanMatchBekle(
+  oyuncuId: string,
+  onBulundu: (matchId: string, mac: OnlineMac) => void,
+): Unsubscribe | null {
+  return katilanRoomBekle(oyuncuId, onBulundu);
+}
+
+export async function matchBitir(
+  roomId: string,
+  kazananId: string | null,
+): Promise<void> {
+  return roomBitir(roomId, kazananId);
+}
+
+export async function matchTerk(
+  roomId: string,
+  terkEdenId: string,
+  digerOyuncuId: string,
+): Promise<void> {
+  return roomTerk(roomId, terkEdenId, digerOyuncuId);
 }

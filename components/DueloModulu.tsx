@@ -35,14 +35,14 @@ import {
   odaKurOnline,
   odayaKatilOnline,
   odaSil,
-  matchDinle,
-  katilanMatchBekle,
+  roomDinle,
+  katilanRoomBekle,
   cevapGonder,
   sonrakiSoru,
-  matchBitir,
-  matchTerk,
+  roomBitir,
+  roomTerk,
   kullaniciAdiKaydetOnline,
-  type OnlineMac,
+  type OnlineOda,
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
 import type { Istatistik, Kullanici, MacSonucu, Rakip } from "@/lib/types";
@@ -83,7 +83,7 @@ export default function DueloModulu({
 
   const [dueloModu, setDueloModu] = useState<DueloModu>("ranked");
   const [rakip, setRakip] = useState<Rakip | null>(null);
-  const [matchId, setMatchId] = useState<string>("");
+  const [roomId, setRoomId] = useState<string>("");
   const [oyuncuNum, setOyuncuNum] = useState<1 | 2>(1);
 
   const [sorular, setSorular] = useState<Soru[]>([]);
@@ -106,7 +106,7 @@ export default function DueloModulu({
   const rakipRef = useRef<Rakip | null>(null);
   const aktifSoruSayisiRef = useRef(SORU_SAYISI);
   const soruIndexRef = useRef(0);
-  const matchIdRef = useRef("");
+  const roomIdRef = useRef("");
   const oyuncuNumRef = useRef<1 | 2>(1);
   const kullaniciRef = useRef<Kullanici | null>(null);
   const secimRef = useRef<string | null>(null);
@@ -123,8 +123,8 @@ export default function DueloModulu({
   // Firebase unsubscribe refs
   const rankedUnsubRef = useRef<Unsubscribe | null>(null);
   const odaUnsubRef = useRef<Unsubscribe | null>(null);
-  const matchUnsubRef = useRef<Unsubscribe | null>(null);
-  const katilanMatchUnsubRef = useRef<Unsubscribe | null>(null);
+  const roomUnsubRef = useRef<Unsubscribe | null>(null);
+  const katilanRoomUnsubRef = useRef<Unsubscribe | null>(null);
 
   // --- Sync refs ---
   useEffect(() => { oyuncuSkorRef.current = oyuncuSkor; }, [oyuncuSkor]);
@@ -133,24 +133,29 @@ export default function DueloModulu({
   useEffect(() => { rakipRef.current = rakip; }, [rakip]);
   useEffect(() => { aktifSoruSayisiRef.current = aktifSoruSayisi; }, [aktifSoruSayisi]);
   useEffect(() => { soruIndexRef.current = soruIndex; }, [soruIndex]);
-  useEffect(() => { matchIdRef.current = matchId; }, [matchId]);
+  useEffect(() => { roomIdRef.current = roomId; }, [roomId]);
   useEffect(() => { oyuncuNumRef.current = oyuncuNum; }, [oyuncuNum]);
   useEffect(() => { kullaniciRef.current = kullanici; }, [kullanici]);
   useEffect(() => { secimRef.current = secim; }, [secim]);
   useEffect(() => { rakipCevapladiRef.current = rakipCevapladi; }, [rakipCevapladi]);
   useEffect(() => { adimRef.current = adim; }, [adim]);
 
-  // --- Başlangıçta kullanıcı yükle ---
+  // --- Başlangıçta kullanıcı yükle + profileUpdated listener ---
   useEffect(() => {
-    const k = mevcutKullanici();
-    if (k) {
-      setKullanici(k);
-      kullaniciRef.current = k;
-      setIstatistik(mevcutIstatistik());
-      setAdim("lobi");
-    } else {
-      setAdim("nick");
-    }
+    const kullaniciYukle = () => {
+      const k = mevcutKullanici();
+      if (k) {
+        setKullanici(k);
+        kullaniciRef.current = k;
+        setIstatistik(mevcutIstatistik());
+        setAdim("lobi");
+      } else {
+        setAdim("nick");
+      }
+    };
+    kullaniciYukle();
+    window.addEventListener("profileUpdated", kullaniciYukle);
+    return () => window.removeEventListener("profileUpdated", kullaniciYukle);
   }, []);
 
   // --- Duelo aktiflik durumunu parent'a bildir ---
@@ -165,12 +170,12 @@ export default function DueloModulu({
         e.preventDefault();
         e.returnValue = "";
         // Online: rakibe hükmen galibiyet ver
-        const mId = matchIdRef.current;
+        const mId = roomIdRef.current;
         if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
           const digerId = oyuncuNumRef.current === 1
             ? rakipRef.current?.ad ?? ""
             : kullaniciRef.current.kullaniciAdi;
-          matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
+          roomTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
         }
       }
     };
@@ -187,8 +192,8 @@ export default function DueloModulu({
       if (sureTimer.current) clearTimeout(sureTimer.current);
       if (rankedUnsubRef.current) rankedUnsubRef.current();
       if (odaUnsubRef.current) odaUnsubRef.current();
-      if (matchUnsubRef.current) matchUnsubRef.current();
-      if (katilanMatchUnsubRef.current) katilanMatchUnsubRef.current();
+      if (roomUnsubRef.current) roomUnsubRef.current();
+      if (katilanRoomUnsubRef.current) katilanRoomUnsubRef.current();
       const k = kullaniciRef.current;
       if (k) rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
       if (olusturulanKodRef.current) odaSil(olusturulanKodRef.current).catch(() => {});
@@ -243,8 +248,8 @@ export default function DueloModulu({
     if (sureTimer.current) { clearTimeout(sureTimer.current); sureTimer.current = null; }
     if (rankedUnsubRef.current) { rankedUnsubRef.current(); rankedUnsubRef.current = null; }
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
-    if (matchUnsubRef.current) { matchUnsubRef.current(); matchUnsubRef.current = null; }
-    if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
+    if (roomUnsubRef.current) { roomUnsubRef.current(); roomUnsubRef.current = null; }
+    if (katilanRoomUnsubRef.current) { katilanRoomUnsubRef.current(); katilanRoomUnsubRef.current = null; }
     setSorular([]);
     setSoruIndex(0);
     soruIndexRef.current = 0;
@@ -263,8 +268,8 @@ export default function DueloModulu({
     setHukmenGalibiyet(false);
     setForfeitModal(false);
     setForfeitConfirm(false);
-    setMatchId("");
-    matchIdRef.current = "";
+    setRoomId("");
+    roomIdRef.current = "";
     setOlusturulanKod("");
     olusturulanKodRef.current = "";
     setOdaHata("");
@@ -323,8 +328,8 @@ export default function DueloModulu({
       setHukmenGalibiyet(false);
       setForfeitModal(false);
       setForfeitConfirm(false);
-      setMatchId(mId);
-      matchIdRef.current = mId;
+      setRoomId(mId);
+      roomIdRef.current = mId;
       setOyuncuNum(num);
       oyuncuNumRef.current = num;
       setAdim("duelo");
@@ -348,7 +353,7 @@ export default function DueloModulu({
         { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
         (durum) => {
           if (durum.durum === "eslesti") {
-            dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.matchId, 2, durum.sorular);
+            dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.roomId, 2, durum.sorular);
           } else if (durum.durum === "iptal") {
             setAdim("lobi");
             adimRef.current = "lobi";
@@ -361,7 +366,6 @@ export default function DueloModulu({
       const gecikme = 3000 + Math.random() * 2000;
       aramaTimer.current = window.setTimeout(() => {
         const bot = rastgeleBot();
-        // Bot fallback'te sorular yerel üretilir
         const { sorulariUret } = require("@/lib/soru") as typeof import("@/lib/soru");
         const { gecerliYazarlar } = require("@/src/data") as typeof import("@/src/data");
         const havuz = gecerliYazarlar();
@@ -402,8 +406,8 @@ export default function DueloModulu({
       kod,
       { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
       friendlySoruSayisi,
-      (rakipBilgi, mId, soruListesi) => {
-        dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, mId, 1, soruListesi);
+      (rakipBilgi, rId, soruListesi) => {
+        dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, rId, 1, soruListesi);
       },
     );
     odaUnsubRef.current = unsub;
@@ -411,7 +415,7 @@ export default function DueloModulu({
 
   const odaBeklemeIptal = useCallback(() => {
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
-    if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
+    if (katilanRoomUnsubRef.current) { katilanRoomUnsubRef.current(); katilanRoomUnsubRef.current = null; }
     if (olusturulanKodRef.current) odaSil(olusturulanKodRef.current).catch(() => {});
     setOlusturulanKod("");
     olusturulanKodRef.current = "";
@@ -447,20 +451,20 @@ export default function DueloModulu({
     setAdim("oda_bekleme");
     adimRef.current = "oda_bekleme";
 
-    // Match belgesini dinle (oyuncu2.id = bizim id)
-    const unsub = katilanMatchBekle(k.kullaniciAdi, (mId, mac) => {
+    // Room belgesini dinle (player2.id = bizim id)
+    const unsub = katilanRoomBekle(k.kullaniciAdi, (rId, oda) => {
       // Kurucu oluşturdu — maça başla (oyuncu2 olarak)
       dueloBaslat(
         "friendly",
-        { ad: mac.oyuncu1.ad, avatar: mac.oyuncu1.avatar, bot: false },
-        mac.soruSayisi,
-        mId,
+        { ad: oda.player1.username, avatar: oda.player1.avatar, bot: false },
+        oda.questions.length,
+        rId,
         2,
-        mac.sorular ?? [],
+        oda.questions ?? [],
       );
-      if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
+      if (katilanRoomUnsubRef.current) { katilanRoomUnsubRef.current(); katilanRoomUnsubRef.current = null; }
     });
-    katilanMatchUnsubRef.current = unsub;
+    katilanRoomUnsubRef.current = unsub;
   }, [odaInput, dueloBaslat]);
 
   // --- Cevapla (oyuncu) ---
@@ -480,10 +484,10 @@ export default function DueloModulu({
       }
       // Online: cevabı Firestore'a gönder
       const secenekIndex = soru.secenekler.indexOf(secenek);
-      const mId = matchIdRef.current;
+      const rId = roomIdRef.current;
       const num = oyuncuNumRef.current;
-      if (mId && !mId.startsWith("bot_")) {
-        cevapGonder(mId, num, secenekIndex, dogruMu, Math.round((sure / SURE) * 50)).catch(() => {});
+      if (rId && !rId.startsWith("bot_")) {
+        cevapGonder(rId, num, secenekIndex, dogruMu, Math.round((sure / SURE) * 50)).catch(() => {});
       }
     },
     [sorular, sure],
@@ -496,10 +500,10 @@ export default function DueloModulu({
       setSecim(ZAMAN_ASIMI);
       secimRef.current = ZAMAN_ASIMI;
       // Online: süre dolduğunda boş cevap gönder (skor değişmez)
-      const mId = matchIdRef.current;
+      const rId = roomIdRef.current;
       const num = oyuncuNumRef.current;
-      if (mId && !mId.startsWith("bot_")) {
-        cevapGonder(mId, num, -1, false, 0).catch(() => {});
+      if (rId && !rId.startsWith("bot_")) {
+        cevapGonder(rId, num, -1, false, 0).catch(() => {});
       }
       return;
     }
@@ -512,7 +516,7 @@ export default function DueloModulu({
   // --- Bot cevap simülasyonu (sadece bot fallback modunda) ---
   useEffect(() => {
     if (adim !== "duelo" || rakipCevapladi) return;
-    const mId = matchIdRef.current;
+    const mId = roomIdRef.current;
     if (!mId.startsWith("bot_")) return;
 
     const gecikme = botGecikme();
@@ -533,29 +537,29 @@ export default function DueloModulu({
     };
   }, [soruIndex, adim, rakipCevapladi]);
 
-  // --- Online match dinleyici (gerçek online maç) ---
+  // --- Online room dinleyici (gerçek online maç) ---
   useEffect(() => {
     if (adim !== "duelo") return;
-    const mId = matchIdRef.current;
-    if (mId.startsWith("bot_")) return;
+    const rId = roomIdRef.current;
+    if (rId.startsWith("bot_")) return;
 
-    const unsub = matchDinle(mId, (mac) => {
-      if (!mac) return;
+    const unsub = roomDinle(rId, (oda) => {
+      if (!oda) return;
       const rakipNum = oyuncuNumRef.current === 1 ? 2 : 1;
-      const rakip = rakipNum === 1 ? mac.oyuncu1 : mac.oyuncu2;
+      const rakip = rakipNum === 1 ? oda.player1 : oda.player2;
 
       // Rakip cevapladıysa
-      if (rakip && rakip.cevap !== null) {
+      if (rakip && rakip.answer !== null) {
         rakipCevapladiRef.current = true;
         setRakipCevapladi(true);
-        rakipSkorRef.current = rakip.skor;
-        setRakipSkor(rakip.skor);
+        rakipSkorRef.current = rakip.score;
+        setRakipSkor(rakip.score);
       }
 
       // Soru ilerlediyse — senkron geçiş
-      if (mac.soruIndex > soruIndexRef.current) {
-        setSoruIndex(mac.soruIndex);
-        soruIndexRef.current = mac.soruIndex;
+      if (oda.currentIndex > soruIndexRef.current) {
+        setSoruIndex(oda.currentIndex);
+        soruIndexRef.current = oda.currentIndex;
         setSecim(null);
         secimRef.current = null;
         setRakipCevapladi(false);
@@ -564,23 +568,23 @@ export default function DueloModulu({
       }
 
       // Maç bittiyse
-      if (mac.durum === "bitti" || mac.durum === "terk") {
-        const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
-        const rS = rakipNum === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
-        const hukmen = mac.durum === "terk";
+      if (oda.status === "finished" || oda.status === "forfeited") {
+        const oS = oyuncuNumRef.current === 1 ? oda.player1.score : oda.player2?.score ?? 0;
+        const rS = rakipNum === 1 ? oda.player1.score : oda.player2?.score ?? 0;
+        const hukmen = oda.status === "forfeited";
         const kazandi = hukmen
-          ? mac.kazananId === kullaniciRef.current?.kullaniciAdi
+          ? oda.winnerId === kullaniciRef.current?.kullaniciAdi
           : oS > rS;
         const berabere = !hukmen && oS === rS;
-        // Eğer rakip terk ettiyse ve biz kazanmadıysak popup göster
-        if (hukmen && kazandi && mac.forfeitedBy && mac.forfeitedBy !== kullaniciRef.current?.kullaniciAdi) {
+        // Eğer rakip terk ettiyse ve biz kazandıysak popup göster
+        if (hukmen && kazandi && oda.forfeitedBy && oda.forfeitedBy !== kullaniciRef.current?.kullaniciAdi) {
           setForfeitModal(true);
         } else {
           maciBitir(kazandi, berabere, hukmen, oS, rS);
         }
       }
     });
-    matchUnsubRef.current = unsub;
+    roomUnsubRef.current = unsub;
     return () => {
       if (unsub) unsub();
     };
@@ -592,7 +596,7 @@ export default function DueloModulu({
 
   useEffect(() => {
     if (!herIkiTarafHazir || adim !== "duelo") return;
-    const mId = matchIdRef.current;
+    const mId = roomIdRef.current;
     const isBot = mId.startsWith("bot_");
 
     gecisTimer.current = window.setTimeout(() => {
@@ -606,7 +610,7 @@ export default function DueloModulu({
         const kazandi = oS > rS;
         const berabere = oS === rS;
         if (!isBot) {
-          matchBitir(mId, kazandi ? kullaniciRef.current?.kullaniciAdi ?? null : null).catch(() => {});
+          roomBitir(mId, kazandi ? kullaniciRef.current?.kullaniciAdi ?? null : null).catch(() => {});
         }
         maciBitir(kazandi, berabere, false, oS, rS);
       } else {
@@ -640,12 +644,12 @@ export default function DueloModulu({
       maciBitir(false, false, false, oyuncuSkorRef.current, rakipSkorRef.current);
     }
     // Online: rakibe hükmen galibiyet ver
-    const mId = matchIdRef.current;
+    const mId = roomIdRef.current;
     if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
       const digerId = oyuncuNumRef.current === 1
         ? rakipRef.current?.ad ?? ""
         : kullaniciRef.current.kullaniciAdi;
-      matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
+      roomTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
     }
     dueloSifirla();
     onCikis();

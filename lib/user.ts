@@ -19,6 +19,9 @@ export function mevcutKullanici(): Kullanici | null {
 export function kullaniciKaydet(kullanici: Kullanici): void {
   yaz(KULLANICI_YOLU, kullanici);
   kullaniciAdiKaydet(kullanici.kullaniciAdi);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("profileUpdated"));
+  }
 }
 
 export function kullaniciAdiGuncelle(yeniAd: string): { tamam: boolean; hata?: string } {
