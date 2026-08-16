@@ -98,6 +98,8 @@ export default function DueloModulu({
   const [hukmenGalibiyet, setHukmenGalibiyet] = useState(false);
   const [forfeitModal, setForfeitModal] = useState(false);
   const [forfeitConfirm, setForfeitConfirm] = useState(false);
+  const [cooldownAktif, setCooldownAktif] = useState(false);
+  const cooldownTimer = useRef<number | null>(null);
 
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
@@ -190,6 +192,7 @@ export default function DueloModulu({
       if (rakipTimer.current) clearTimeout(rakipTimer.current);
       if (gecisTimer.current) clearTimeout(gecisTimer.current);
       if (sureTimer.current) clearTimeout(sureTimer.current);
+      if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
       if (rankedUnsubRef.current) rankedUnsubRef.current();
       if (odaUnsubRef.current) odaUnsubRef.current();
       if (matchUnsubRef.current) matchUnsubRef.current();
@@ -246,6 +249,7 @@ export default function DueloModulu({
     if (rakipTimer.current) { clearTimeout(rakipTimer.current); rakipTimer.current = null; }
     if (gecisTimer.current) { clearTimeout(gecisTimer.current); gecisTimer.current = null; }
     if (sureTimer.current) { clearTimeout(sureTimer.current); sureTimer.current = null; }
+    if (cooldownTimer.current) { clearTimeout(cooldownTimer.current); cooldownTimer.current = null; }
     if (rankedUnsubRef.current) { rankedUnsubRef.current(); rankedUnsubRef.current = null; }
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
     if (matchUnsubRef.current) { matchUnsubRef.current(); matchUnsubRef.current = null; }
@@ -338,8 +342,17 @@ export default function DueloModulu({
     [],
   );
 
+  // --- Anti-spam cooldown (2 saniye) ---
+  const cooldownBaslat = useCallback(() => {
+    setCooldownAktif(true);
+    if (cooldownTimer.current) clearTimeout(cooldownTimer.current);
+    cooldownTimer.current = window.setTimeout(() => setCooldownAktif(false), 2000);
+  }, []);
+
   // --- Rastgele rakip bul (ranked) — Firebase matchmaking + 5s bot fallback ---
   const rastgeleRakip = useCallback(() => {
+    if (cooldownAktif) return;
+    cooldownBaslat();
     setDueloModu("ranked");
     dueloModuRef.current = "ranked";
     setAdim("aratma");
@@ -373,7 +386,7 @@ export default function DueloModulu({
         dueloBaslat("ranked", bot, SORU_SAYISI, "bot_" + Date.now(), 1, s);
       }, gecikme);
     }
-  }, [dueloBaslat]);
+  }, [dueloBaslat, cooldownAktif, cooldownBaslat]);
 
   const aramaIptal = useCallback(() => {
     if (aramaTimer.current) { clearTimeout(aramaTimer.current); aramaTimer.current = null; }
@@ -386,6 +399,8 @@ export default function DueloModulu({
 
   // --- Özel oda kur — Gerçek online, bot yok ---
   const odaKur = useCallback(() => {
+    if (cooldownAktif) return;
+    cooldownBaslat();
     // Tüm duel state'ini sıfırla ki önceki maçtan kalma veri kalmasın
     dueloSifirla();
     const kod = Math.floor(1000 + Math.random() * 9000).toString();
@@ -413,7 +428,7 @@ export default function DueloModulu({
       },
     );
     odaUnsubRef.current = unsub;
-  }, [dueloBaslat, friendlySoruSayisi, dueloSifirla]);
+  }, [dueloBaslat, friendlySoruSayisi, dueloSifirla, cooldownAktif, cooldownBaslat]);
 
   const odaBeklemeIptal = useCallback(() => {
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
@@ -788,7 +803,8 @@ export default function DueloModulu({
           <div className="grid gap-3 sm:grid-cols-2">
             <button
               onClick={rastgeleRakip}
-              className="group relative overflow-hidden rounded-[1.5rem] glass-card p-5 text-left ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98]"
+              disabled={cooldownAktif}
+              className="group relative overflow-hidden rounded-[1.5rem] glass-card p-5 text-left ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="absolute -right-6 -top-6 h-24 w-24 rounded-full bg-duello/10 blur-2xl transition group-hover:bg-duello/20" />
               <div className="relative">
@@ -920,7 +936,8 @@ export default function DueloModulu({
             </button>
             <button
               onClick={odaKur}
-              className="rounded-2xl glass-card py-3 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98]"
+              disabled={cooldownAktif}
+              className="rounded-2xl glass-card py-3 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
             >
               Oda Kur
             </button>
