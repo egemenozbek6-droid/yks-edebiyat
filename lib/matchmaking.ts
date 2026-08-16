@@ -30,6 +30,16 @@ import type { Rakip } from "./types";
 
 export const RANKED_BOT_FALLBACK_SURESI = 5000;
 
+// --- Payload sanitizer: undefined -> null ---
+// Firestore, undefined alan değerlerini reddeder. Bu yardımcı,
+// bir objenin tüm iç içe geçmiş alanlarındaki undefined değerlerini
+// null'a dönüştürür.
+function sanitizePayload<T>(obj: T): T {
+  return JSON.parse(
+    JSON.stringify(obj, (_key, value) => (value === undefined ? null : value)),
+  ) as T;
+}
+
 export type MacDurumu = "bekliyor" | "aktif" | "bitti" | "terk";
 
 export type OnlineMac = {
@@ -141,15 +151,16 @@ export function rankedKuyrugaKatil(
           if (!cur.exists()) throw new Error("kayboldu");
           const data = cur.data();
           if (data.durum !== "bekliyor") throw new Error("zaten alındı");
+          const oyuncu2Payload = sanitizePayload({
+            id: oyuncu.id,
+            ad: oyuncu.ad,
+            avatar: oyuncu.avatar,
+            skor: 0,
+            cevap: null,
+          });
           tx.update(ref, {
             durum: "aktif",
-            oyuncu2: {
-              id: oyuncu.id,
-              ad: oyuncu.ad,
-              avatar: oyuncu.avatar,
-              skor: 0,
-              cevap: null,
-            },
+            oyuncu2: oyuncu2Payload,
           });
         });
 
@@ -199,7 +210,7 @@ async function kuyrugaEkleVeBekle(
   if (!db) return;
   const matchId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
   const uretilenSorular = soruUret(10);
-  await setDoc(doc(db, "matches", matchId), {
+  const payload = sanitizePayload({
     mod: "ranked",
     durum: "bekliyor",
     oyuncu1: {
@@ -218,6 +229,7 @@ async function kuyrugaEkleVeBekle(
     forfeitedBy: null,
     olusturmaZamani: serverTimestamp(),
   });
+  await setDoc(doc(db, "matches", matchId), payload);
 
   const unsub = onSnapshot(
     doc(db, "matches", matchId),
@@ -284,13 +296,7 @@ export function odaKurOnline(
   (async () => {
     try {
       const uretilenSorular = soruUret(soruSayisi);
-      console.log("[odaKurOnline] Firestore'a yazılıyor... matches/" + kodStr, {
-        mod: "friendly",
-        durum: "bekliyor",
-        odaKodu: kodStr,
-        soruSayisi,
-      });
-      await setDoc(macRef, {
+      const payload = sanitizePayload({
         mod: "friendly",
         durum: "bekliyor",
         oyuncu1: {
@@ -302,13 +308,20 @@ export function odaKurOnline(
         },
         oyuncu2: null,
         odaKodu: kodStr,
-        soruSayisi,
+        soruSayisi: Number(soruSayisi) || 5,
         sorular: uretilenSorular,
         soruIndex: 0,
         kazananId: null,
         forfeitedBy: null,
         olusturmaZamani: serverTimestamp(),
       });
+      console.log("[odaKurOnline] Firestore'a yazılıyor... matches/" + kodStr, {
+        mod: "friendly",
+        durum: "bekliyor",
+        odaKodu: kodStr,
+        soruSayisi: Number(soruSayisi) || 5,
+      });
+      await setDoc(macRef, payload);
       console.log("[odaKurOnline] ✓ Firestore'a yazıldı: matches/" + kodStr);
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
@@ -381,15 +394,16 @@ export async function odayaKatilOnline(
       if (!cur.exists()) throw new Error("oda yok");
       const curData = cur.data() as OnlineMac;
       if (curData.durum !== "bekliyor") throw new Error("dolu");
+      const oyuncu2Payload = sanitizePayload({
+        id: oyuncu.id,
+        ad: oyuncu.ad,
+        avatar: oyuncu.avatar,
+        skor: 0,
+        cevap: null,
+      });
       tx.update(ref, {
         durum: "aktif",
-        oyuncu2: {
-          id: oyuncu.id,
-          ad: oyuncu.ad,
-          avatar: oyuncu.avatar,
-          skor: 0,
-          cevap: null,
-        },
+        oyuncu2: oyuncu2Payload,
       });
     });
     console.log("[odayaKatilOnline] ✓ Oyuncu2 eklendi, durum=aktif: " + macId);
@@ -502,7 +516,7 @@ export async function cevapGonder(
     guncelleme[`${alan}.skor`] = yeniSkor ?? 0;
     guncelleme[`${alan}.cevap`] = secenekIndex ?? null;
 
-    tx.update(ref, guncelleme as Record<string, never>);
+    tx.update(ref, sanitizePayload(guncelleme) as Record<string, never>);
   });
 }
 
@@ -516,11 +530,11 @@ export async function sonrakiSoru(matchId: string): Promise<void> {
     const o1Cevap = data.oyuncu1.cevap;
     const o2Cevap = data.oyuncu2?.cevap ?? null;
     if (o1Cevap === null || o2Cevap === null) return;
-    tx.update(ref, {
+    tx.update(ref, sanitizePayload({
       soruIndex: (data.soruIndex ?? 0) + 1,
       "oyuncu1.cevap": null,
       "oyuncu2.cevap": null,
-    });
+    }) as Record<string, never>);
   });
 }
 
@@ -530,7 +544,7 @@ export async function matchBitir(
 ): Promise<void> {
   if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
   const ref = doc(db!, "matches", matchId);
-  await updateDoc(ref, { durum: "bitti", kazananId: kazananId ?? null });
+  await updateDoc(ref, sanitizePayload({ durum: "bitti", kazananId: kazananId ?? null }));
 }
 
 export async function matchTerk(
@@ -540,9 +554,9 @@ export async function matchTerk(
 ): Promise<void> {
   if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
   const ref = doc(db!, "matches", matchId);
-  await updateDoc(ref, {
+  await updateDoc(ref, sanitizePayload({
     durum: "terk",
     kazananId: digerOyuncuId ?? null,
     forfeitedBy: terkEdenId ?? null,
-  });
+  }));
 }
