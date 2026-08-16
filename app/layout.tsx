@@ -30,21 +30,16 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  colorScheme: 'light dark',
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#f4f5f7' },
-    { media: '(prefers-color-scheme: dark)', color: '#1e2026' },
-  ],
+  colorScheme: 'dark',
+  themeColor: '#0F172A',
 }
 
 const temaScripti = `
 (function () {
   try {
-    var kayit = localStorage.getItem('yks-tema');
-    var koyu = kayit ? kayit === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
-    document.documentElement.classList.add(koyu ? 'dark' : 'light');
+    document.documentElement.classList.add('dark');
   } catch (e) {
-    document.documentElement.classList.add('light');
+    document.documentElement.classList.add('dark');
   }
 })();
 `

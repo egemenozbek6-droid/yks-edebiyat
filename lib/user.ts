@@ -24,29 +24,12 @@ export function kullaniciKaydet(kullanici: Kullanici): void {
   }
 }
 
-export function kullaniciAdiGuncelle(yeniAd: string): { tamam: boolean; hata?: string } {
-  const mevcut = mevcutKullanici();
-  if (!mevcut) return { tamam: false, hata: "Oturum yok" };
-  // Kullanıcı adı sadece bir kez değiştirilebilir
-  if (mevcut.hasChangedUsername) {
-    return { tamam: false, hata: "Kullanıcı adını zaten bir kez değiştirdin" };
-  }
-  const temiz = yeniAd.trim();
-  if (!temiz) return { tamam: false, hata: "Kullanıcı adı boş olamaz" };
-  if (temiz.toLowerCase() !== mevcut.kullaniciAdi.toLowerCase()) {
-    if (!kullaniciAdiMusaitMi(temiz)) {
-      return { tamam: false, hata: "Bu kullanıcı adı alınmış" };
-    }
-  }
-  // Eski adı serbest bırak, yeni adı kaydet
-  kullaniciAdiSil(mevcut.kullaniciAdi);
-  kullaniciKaydet({ ...mevcut, kullaniciAdi: temiz, hasChangedUsername: true });
-  return { tamam: true };
+export function kullaniciAdiGuncelle(_yeniAd: string): { tamam: boolean; hata?: string } {
+  return { tamam: false, hata: "Rumuz kalıcıdır ve değiştirilemez" };
 }
 
 export function kullaniciAdiDegistirebilirMi(): boolean {
-  const mevcut = mevcutKullanici();
-  return !mevcut?.hasChangedUsername;
+  return false;
 }
 
 export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: string } {

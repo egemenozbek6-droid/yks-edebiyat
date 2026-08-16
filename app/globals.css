@@ -46,9 +46,8 @@
 }
 
 /* ============================================================
-   EdebiKart — Slate/Zinc nötr paleti
-   Light: yumuşak zinc gri, soft gölgeler
-   Dark:  soft koyu slate, cam efektli
+   EdebiKart — E-Sports Premium Theme
+   Deep matte charcoal/black with premium gold & burgundy accents
    ============================================================ */
 
 @theme inline {
@@ -57,143 +56,65 @@
   --animate-shake: v0-shake 0.4s ease-in-out;
   --animate-pop: v0-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
   --animate-rise: v0-rise 0.4s ease-out both;
+  --animate-glow: v0-glow 2s ease-in-out infinite;
+  --animate-slide-in: v0-slide-in 0.5s ease-out both;
 }
 
 :root {
-  color-scheme: light;
+  color-scheme: dark;
   --radius: 0.9rem;
 
-  /* Yumuşak zinc gri zemin */
-  --background: oklch(0.98 0.002 240);
-  --foreground: oklch(0.22 0.01 240);
+  /* Deep matte charcoal background (#0F172A) */
+  --background: oklch(0.14 0.02 255);
+  --foreground: oklch(0.93 0.01 60);
 
-  /* Kart: neredeyse beyaz, hafif gölgeyle ayrılır */
-  --card: oklch(1 0 0 240);
-  --card-foreground: oklch(0.22 0.01 240);
+  /* Glassmorphic card: slightly lighter charcoal (#1E293B) */
+  --card: oklch(0.20 0.025 255);
+  --card-foreground: oklch(0.93 0.01 60);
 
-  --popover: oklch(1 0 0 240);
-  --popover-foreground: oklch(0.22 0.01 240);
+  --popover: oklch(0.20 0.025 255);
+  --popover-foreground: oklch(0.93 0.01 60);
 
-  /* Slate mavi — odak rengi */
-  --primary: oklch(0.48 0.04 240);
-  --primary-foreground: oklch(0.99 0 0 240);
+  /* Premium gold (#F59E0B) */
+  --primary: oklch(0.76 0.16 75);
+  --primary-foreground: oklch(0.14 0.02 255);
 
-  /* İkincil: açık slate */
-  --secondary: oklch(0.95 0.005 240);
-  --secondary-foreground: oklch(0.35 0.01 240);
+  /* Muted burgundy accent */
+  --secondary: oklch(0.28 0.05 350);
+  --secondary-foreground: oklch(0.90 0.01 60);
 
-  /* Muted: yumuşak gri */
-  --muted: oklch(0.96 0.004 240);
-  --muted-foreground: oklch(0.5 0.01 240);
+  --muted: oklch(0.25 0.02 255);
+  --muted-foreground: oklch(0.65 0.02 60);
 
-  /* Accent: çok açık slate mavi */
-  --accent: oklch(0.95 0.008 240);
-  --accent-foreground: oklch(0.35 0.01 240);
+  --accent: oklch(0.30 0.06 350);
+  --accent-foreground: oklch(0.90 0.01 60);
 
-  /* Destructive: yumuşak kırmızı */
-  --destructive: oklch(0.55 0.2 25);
+  /* Burgundy-tinted destructive */
+  --destructive: oklch(0.55 0.18 15);
 
-  /* İnce, zarif kenarlıklar */
-  --border: oklch(0.9 0.004 240);
-  --input: oklch(0.9 0.004 240);
-  --ring: oklch(0.55 0.04 240);
+  /* Subtle gold-tinted borders */
+  --border: oklch(0.76 0.05 75 / 12%);
+  --input: oklch(0.76 0.05 75 / 18%);
+  --ring: oklch(0.76 0.16 75);
 
-  --chart-1: oklch(0.55 0.05 240);
-  --chart-2: oklch(0.6 0.08 160);
-  --chart-3: oklch(0.65 0.08 60);
-  --chart-4: oklch(0.6 0.1 30);
-  --chart-5: oklch(0.55 0.08 300);
+  --chart-1: oklch(0.76 0.16 75);
+  --chart-2: oklch(0.65 0.10 160);
+  --chart-3: oklch(0.70 0.12 60);
+  --chart-4: oklch(0.55 0.18 15);
+  --chart-5: oklch(0.60 0.08 300);
 
-  --sidebar: oklch(0.98 0.002 240);
-  --sidebar-foreground: oklch(0.22 0.01 240);
-  --sidebar-primary: oklch(0.48 0.04 240);
-  --sidebar-primary-foreground: oklch(0.99 0 0 240);
-  --sidebar-accent: oklch(0.95 0.008 240);
-  --sidebar-accent-foreground: oklch(0.35 0.01 240);
-  --sidebar-border: oklch(0.9 0.004 240);
-  --sidebar-ring: oklch(0.55 0.04 240);
+  --sidebar: oklch(0.16 0.02 255);
+  --sidebar-foreground: oklch(0.93 0.01 60);
+  --sidebar-primary: oklch(0.76 0.16 75);
+  --sidebar-primary-foreground: oklch(0.14 0.02 255);
+  --sidebar-accent: oklch(0.30 0.06 350);
+  --sidebar-accent-foreground: oklch(0.90 0.01 60);
+  --sidebar-border: oklch(0.76 0.05 75 / 12%);
+  --sidebar-ring: oklch(0.76 0.16 75);
 }
 
 .dark {
   color-scheme: dark;
-
-  /* Soft koyu slate zemin */
-  --background: oklch(0.16 0.01 240);
-  --foreground: oklch(0.92 0.005 240);
-
-  /* Kart: bir ton açık, cam efekti */
-  --card: oklch(0.21 0.012 240);
-  --card-foreground: oklch(0.92 0.005 240);
-
-  --popover: oklch(0.21 0.012 240);
-  --popover-foreground: oklch(0.92 0.005 240);
-
-  /* Slate mavi — koyu temada daha parlak */
-  --primary: oklch(0.68 0.05 240);
-  --primary-foreground: oklch(0.16 0.01 240);
-
-  --secondary: oklch(0.25 0.01 240);
-  --secondary-foreground: oklch(0.92 0.005 240);
-
-  --muted: oklch(0.25 0.008 240);
-  --muted-foreground: oklch(0.68 0.008 240);
-
-  --accent: oklch(0.28 0.012 240);
-  --accent-foreground: oklch(0.9 0.005 240);
-
-  --destructive: oklch(0.65 0.19 25);
-
-  /* İnce, zarif kenarlıklar */
-  --border: oklch(1 0 0 / 8%);
-  --input: oklch(1 0 0 / 12%);
-  --ring: oklch(0.55 0.04 240);
-
-  --chart-1: oklch(0.68 0.05 240);
-  --chart-2: oklch(0.65 0.08 160);
-  --chart-3: oklch(0.7 0.08 60);
-  --chart-4: oklch(0.65 0.1 30);
-  --chart-5: oklch(0.6 0.08 300);
-
-  --sidebar: oklch(0.21 0.012 240);
-  --sidebar-foreground: oklch(0.92 0.005 240);
-  --sidebar-primary: oklch(0.68 0.05 240);
-  --sidebar-primary-foreground: oklch(0.16 0.01 240);
-  --sidebar-accent: oklch(0.28 0.012 240);
-  --sidebar-accent-foreground: oklch(0.9 0.005 240);
-  --sidebar-border: oklch(1 0 0 / 8%);
-  --sidebar-ring: oklch(0.55 0.04 240);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-    --background: oklch(0.16 0.01 240);
-    --foreground: oklch(0.92 0.005 240);
-    --card: oklch(0.21 0.012 240);
-    --card-foreground: oklch(0.92 0.005 240);
-    --popover: oklch(0.21 0.012 240);
-    --popover-foreground: oklch(0.92 0.005 240);
-    --primary: oklch(0.68 0.05 240);
-    --primary-foreground: oklch(0.16 0.01 240);
-    --secondary: oklch(0.25 0.01 240);
-    --secondary-foreground: oklch(0.92 0.005 240);
-    --muted: oklch(0.25 0.008 240);
-    --muted-foreground: oklch(0.68 0.008 240);
-    --accent: oklch(0.28 0.012 240);
-    --accent-foreground: oklch(0.9 0.005 240);
-    --destructive: oklch(0.65 0.19 25);
-    --border: oklch(1 0 0 / 8%);
-    --input: oklch(1 0 0 / 12%);
-    --ring: oklch(0.55 0.04 240);
-    --sidebar: oklch(0.21 0.012 240);
-    --sidebar-foreground: oklch(0.92 0.005 240);
-    --sidebar-primary: oklch(0.68 0.05 240);
-    --sidebar-primary-foreground: oklch(0.16 0.01 240);
-    --sidebar-accent: oklch(0.28 0.012 240);
-    --sidebar-accent-foreground: oklch(0.9 0.005 240);
-    --sidebar-border: oklch(1 0 0 / 8%);
-    --sidebar-ring: oklch(0.55 0.04 240);
-  }
 }
 
 @layer base {
@@ -206,72 +127,47 @@
 }
 
 @keyframes v0-shake {
-  0%,
-  100% {
-    transform: translateX(0);
-  }
-  20% {
-    transform: translateX(-6px);
-  }
-  40% {
-    transform: translateX(6px);
-  }
-  60% {
-    transform: translateX(-4px);
-  }
-  80% {
-    transform: translateX(3px);
-  }
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-6px); }
+  40% { transform: translateX(6px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(3px); }
 }
 
 @keyframes v0-pop {
-  0% {
-    transform: scale(0.6);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
+  0% { transform: scale(0.6); opacity: 0; }
+  100% { transform: scale(1); opacity: 1; }
 }
 
 @keyframes v0-rise {
-  0% {
-    transform: translateY(10px);
-    opacity: 0;
-  }
-  100% {
-    transform: translateY(0);
-    opacity: 1;
-  }
+  0% { transform: translateY(10px); opacity: 0; }
+  100% { transform: translateY(0); opacity: 1; }
+}
+
+@keyframes v0-glow {
+  0%, 100% { box-shadow: 0 0 8px oklch(0.76 0.16 75 / 30%); }
+  50% { box-shadow: 0 0 20px oklch(0.76 0.16 75 / 50%); }
+}
+
+@keyframes v0-slide-in {
+  0% { transform: translateX(-20px); opacity: 0; }
+  100% { transform: translateX(0); opacity: 1; }
+}
+
+.animate-glow {
+  animation: v0-glow 2s ease-in-out infinite;
 }
 
 /* Kart açılış animasyonu: sağa-sola sallan + 360° dön */
 @keyframes v0-card-intro {
-  0% {
-    transform: translateX(0) rotateY(0deg);
-  }
-  10% {
-    transform: translateX(18px) rotateY(0deg);
-  }
-  20% {
-    transform: translateX(-18px) rotateY(0deg);
-  }
-  30% {
-    transform: translateX(12px) rotateY(0deg);
-  }
-  40% {
-    transform: translateX(-8px) rotateY(0deg);
-  }
-  50% {
-    transform: translateX(0) rotateY(0deg);
-  }
-  75% {
-    transform: translateX(0) rotateY(360deg);
-  }
-  100% {
-    transform: translateX(0) rotateY(360deg);
-  }
+  0% { transform: translateX(0) rotateY(0deg); }
+  10% { transform: translateX(18px) rotateY(0deg); }
+  20% { transform: translateX(-18px) rotateY(0deg); }
+  30% { transform: translateX(12px) rotateY(0deg); }
+  40% { transform: translateX(-8px) rotateY(0deg); }
+  50% { transform: translateX(0) rotateY(0deg); }
+  75% { transform: translateX(0) rotateY(360deg); }
+  100% { transform: translateX(0) rotateY(360deg); }
 }
 
 .animate-card-intro {
@@ -285,4 +181,11 @@
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* Glassmorphic card utility */
+.glass-card {
+  background: oklch(0.20 0.025 255 / 60%);
+  backdrop-filter: blur(12px);
+  border: 1px solid oklch(0.76 0.05 75 / 12%);
 }

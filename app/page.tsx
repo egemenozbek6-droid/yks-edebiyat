@@ -173,7 +173,7 @@ export default function App() {
   return (
     <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col">
       <div
-        className="fixed inset-0 pointer-events-none opacity-[0.03] dark:opacity-[0.05]"
+        className="fixed inset-0 pointer-events-none opacity-[0.04]"
         style={{
           backgroundImage:
             "radial-gradient(circle at 20% 30%, currentColor 1px, transparent 1px), radial-gradient(circle at 80% 70%, currentColor 1px, transparent 1px)",
@@ -185,7 +185,7 @@ export default function App() {
       <header className="relative z-30 backdrop-blur-xl bg-background/75 border-b border-border shrink-0">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-primary flex items-center justify-center shadow-md shrink-0">
+            <div className="w-9 h-9 rounded-2xl bg-primary flex items-center justify-center shadow-md shrink-0 ring-1 ring-primary/30">
               <Layers className="w-4.5 h-4.5 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div className="leading-tight">
@@ -198,7 +198,7 @@ export default function App() {
             <TemaAnahtari />
             <button
               onClick={() => setInfoAcik(true)}
-              className="w-8 h-8 rounded-full bg-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0"
+              className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"
               aria-label="Bilgi"
             >
               <Info className="w-4 h-4" />
@@ -208,15 +208,9 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 bg-muted rounded-2xl">
+          <div className="grid grid-cols-4 gap-1 p-1 glass-card rounded-2xl ring-1 ring-border">
             {modOeleri.map(({ mod: m, etiket, ikon: Ikon }) => {
               const aktif = mod === m;
-              const aktifRenk =
-                m === "osym"
-                  ? "text-orange-500"
-                  : m === "duelo"
-                    ? "text-rose-500"
-                    : "text-primary";
               return (
                 <button
                   key={m}
@@ -224,7 +218,7 @@ export default function App() {
                   aria-current={aktif ? "page" : undefined}
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
                     aktif
-                      ? `bg-card shadow-sm ${aktifRenk}`
+                      ? `bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30`
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -240,7 +234,7 @@ export default function App() {
       {/* İçerik — kart modu no-scroll, diğer modlar gerektiğinde scroll */}
       <main className="relative flex-1 overflow-y-auto no-scrollbar max-w-3xl mx-auto w-full px-4 py-3 flex flex-col">
         {ruhHali && (
-          <div className="mb-3 flex items-start gap-3 rounded-2xl bg-accent/60 p-3 shadow-sm animate-rise shrink-0">
+          <div className="mb-3 flex items-start gap-3 rounded-2xl glass-card p-3 ring-1 ring-border animate-rise shrink-0">
             <span className="text-xl leading-none" aria-hidden="true">
               {ruhHali.emoji || "💬"}
             </span>
@@ -249,7 +243,7 @@ export default function App() {
             </p>
             <button
               onClick={() => setRuhHali(null)}
-              className="text-muted-foreground transition hover:text-foreground shrink-0"
+              className="text-muted-foreground transition hover:text-primary shrink-0"
               aria-label="Mesajı kapat"
             >
               <X className="w-3.5 h-3.5" />
@@ -270,7 +264,7 @@ export default function App() {
                     className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition shrink-0 ${
                       aktif
                         ? "bg-primary text-primary-foreground shadow-sm"
-                        : "bg-muted text-muted-foreground hover:text-foreground"
+                        : "glass-card text-muted-foreground hover:text-foreground ring-1 ring-border"
                     }`}
                   >
                     {donem}
@@ -333,14 +327,14 @@ export default function App() {
       {/* Navigation guard onay modalı */}
       {cikisOnayAcik && (
         <div
-          className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-sm flex items-center justify-center p-5"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-5"
           onClick={cikisReddet}
         >
           <div
-            className="bg-card rounded-[1.75rem] shadow-2xl max-w-sm w-full p-6 animate-pop"
+            className="glass-card rounded-[1.75rem] shadow-2xl max-w-sm w-full p-6 animate-pop ring-1 ring-destructive/20"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/15 text-destructive">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/15 text-destructive ring-1 ring-destructive/30">
               <AlertTriangle className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <p className="text-center text-sm font-semibold text-pretty text-card-foreground">
@@ -349,13 +343,13 @@ export default function App() {
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 onClick={cikisReddet}
-                className="rounded-2xl bg-muted py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
+                className="rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
               >
                 İptal
               </button>
               <button
                 onClick={cikisOnayla}
-                className="rounded-2xl bg-destructive py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+                className="rounded-2xl bg-destructive py-3 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
               >
                 Ayrıl
               </button>
@@ -366,11 +360,11 @@ export default function App() {
 
       {infoAcik && (
         <div
-          className="fixed inset-0 z-50 bg-foreground/40 backdrop-blur-sm flex items-center justify-center p-5"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-5"
           onClick={() => setInfoAcik(false)}
         >
           <div
-            className="bg-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-7 animate-pop"
+            className="glass-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-7 animate-pop ring-1 ring-border"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-4">
@@ -380,7 +374,7 @@ export default function App() {
               </div>
               <button
                 onClick={() => setInfoAcik(false)}
-                className="text-muted-foreground hover:text-foreground transition"
+                className="text-muted-foreground hover:text-primary transition"
                 aria-label="Kapat"
               >
                 <X className="w-5 h-5" />
@@ -391,19 +385,19 @@ export default function App() {
             </p>
             <div className="space-y-2 text-sm text-muted-foreground">
               <p>
-                <span className="font-semibold text-foreground">Kartlar:</span> Dönem seç, sağa kaydır = Öğrendim, sola
+                <span className="font-semibold text-primary">Kartlar:</span> Dönem seç, sağa kaydır = Öğrendim, sola
                 kaydır = Tekrar Et. Leitner sistemi ile kart seviyelerin takip edilir.
               </p>
               <p>
-                <span className="font-semibold text-foreground">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
+                <span className="font-semibold text-primary">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
                 aynı dönemden gelir.
               </p>
               <p>
-                <span className="font-semibold text-foreground">ÖSYM Sever:</span> Sadece banko eserlerden karışık mini
+                <span className="font-semibold text-primary">ÖSYM Sever:</span> Sadece banko eserlerden karışık mini
                 deneme.
               </p>
               <p>
-                <span className="font-semibold text-foreground">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
+                <span className="font-semibold text-primary">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
                 Senkron soru geçişi — rakibini bekle, sonra birlikte geçin.
               </p>
             </div>
