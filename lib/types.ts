@@ -9,6 +9,7 @@ export type Kullanici = {
   kullaniciAdi: string;
   avatar: AvatarId;
   olusturmaTarihi: number;
+  hasChangedUsername?: boolean;
 };
 
 export type Istatistik = {

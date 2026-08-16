@@ -45,6 +45,7 @@ export type OnlineMac = {
   oyuncu2: { id: string; ad: string; avatar: string; skor: number; cevap: number | null } | null;
   soruIndex: number;
   kazananId: string | null;
+  forfeitedBy: string | null;
   olusturmaZamani: number;
 };
 
@@ -172,6 +173,7 @@ export function rankedKuyrugaKatil(
           oyuncu2: { id: oyuncu.id, ad: oyuncu.ad, avatar: oyuncu.avatar, skor: 0, cevap: null },
           soruIndex: 0,
           kazananId: null,
+          forfeitedBy: null,
           olusturmaZamani: serverTimestamp(),
         });
         // Kuyruk belgesini temizle
@@ -320,6 +322,7 @@ export function odaKurOnline(
         oyuncu2: { id: data.katilanId, ad: data.katilanAd, avatar: data.katilanAvatar, skor: 0, cevap: null },
         soruIndex: 0,
         kazananId: null,
+        forfeitedBy: null,
         olusturmaZamani: serverTimestamp(),
       });
       onRakipKatildi(
@@ -526,5 +529,6 @@ export async function matchTerk(
   await updateDoc(ref, {
     durum: "terk",
     kazananId: digerOyuncuId,
+    forfeitedBy: terkEdenId,
   });
 }

@@ -5,6 +5,9 @@ import { Check, Flame, Lock, Trophy, X, Zap } from "lucide-react";
 import {
   mevcutKullanici,
   mevcutIstatistik,
+  kullaniciAdiGuncelle,
+  kullaniciAdiKontrol,
+  kullaniciAdiDegistirebilirMi,
   kullaniciKaydet,
 } from "@/lib/user";
 import { AVATARLAR, avatarEmoji } from "@/lib/avatars";
@@ -18,21 +21,59 @@ type Props = {
 export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const [kullanici, setKullanici] = useState<Kullanici | null>(null);
   const [istatistik, setIstatistik] = useState<Istatistik | null>(null);
+  const [adInput, setAdInput] = useState("");
+  const [adHata, setAdHata] = useState("");
+  const [adKontrol, setAdKontrol] = useState<{ musait: boolean; mesaj: string } | null>(null);
   const [seciliAvatar, setSeciliAvatar] = useState<string>("");
   const [kaydedildi, setKaydedildi] = useState(false);
+  const [degistirebilir, setDegistirebilir] = useState(false);
 
   useEffect(() => {
     const k = mevcutKullanici();
     if (k) {
       setKullanici(k);
+      setAdInput(k.kullaniciAdi);
       setSeciliAvatar(k.avatar);
+      setDegistirebilir(kullaniciAdiDegistirebilirMi());
     }
     setIstatistik(mevcutIstatistik());
   }, []);
 
+  // Avatar seçildiğinde anında kaydet
+  const avatarSec = (avatarId: string) => {
+    setSeciliAvatar(avatarId);
+    if (!kullanici) return;
+    const guncel = { ...kullanici, avatar: avatarId };
+    kullaniciKaydet(guncel);
+    setKullanici(guncel);
+    onGuncellendi();
+  };
+
+  useEffect(() => {
+    if (!adInput.trim() || adInput === kullanici?.kullaniciAdi) {
+      setAdKontrol(null);
+      return;
+    }
+    const t = setTimeout(() => setAdKontrol(kullaniciAdiKontrol(adInput)), 300);
+    return () => clearTimeout(t);
+  }, [adInput, kullanici]);
+
   const kaydet = () => {
     if (!kullanici) return;
-    const guncel = { ...kullanici, avatar: seciliAvatar };
+    const temiz = adInput.trim();
+    if (temiz !== kullanici.kullaniciAdi) {
+      if (!degistirebilir) {
+        setAdHata("Kullanıcı adını zaten bir kez değiştirdin");
+        return;
+      }
+      const sonuc = kullaniciAdiGuncelle(temiz);
+      if (!sonuc.tamam) {
+        setAdHata(sonuc.hata ?? "Hata");
+        return;
+      }
+      setDegistirebilir(false);
+    }
+    const guncel = { ...kullanici, kullaniciAdi: temiz, avatar: seciliAvatar };
     kullaniciKaydet(guncel);
     setKullanici(guncel);
     setKaydedildi(true);
@@ -78,18 +119,48 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
           </button>
         </div>
 
-        {/* Kullanıcı adı — kilitli, düzenlenemez */}
+        {/* Kullanıcı adı */}
         <div className="mb-5">
           <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
             Kullanıcı Adı
           </label>
-          <div className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
-            <Lock className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{kullanici.kullaniciAdi}</span>
-          </div>
-          <p className="mt-1.5 text-[11px] text-muted-foreground">
-            Kullanıcı adı kilitlidir ve değiştirilemez.
-          </p>
+          {degistirebilir ? (
+            <>
+              <input
+                type="text"
+                value={adInput}
+                onChange={(e) => {
+                  setAdInput(e.target.value);
+                  setAdHata("");
+                }}
+                maxLength={20}
+                className="w-full rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-primary/40 transition"
+              />
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Dikkat: Kullanıcı adını yalnızca bir kez değiştirebilirsin.
+              </p>
+            </>
+          ) : (
+            <>
+              <div className="flex items-center gap-2 rounded-2xl bg-muted px-4 py-3 text-sm font-medium text-muted-foreground">
+                <Lock className="h-3.5 w-3.5 shrink-0" />
+                <span className="truncate">{kullanici.kullaniciAdi}</span>
+              </div>
+              <p className="mt-1.5 text-[11px] text-muted-foreground">
+                Kullanıcı adı değiştirme hakkın kullanıldı.
+              </p>
+            </>
+          )}
+          {adHata && (
+            <p className="mt-1.5 text-xs font-semibold text-destructive">{adHata}</p>
+          )}
+          {adKontrol && !adHata && degistirebilir && (
+            <p
+              className={`mt-1.5 text-xs font-semibold ${adKontrol.musait ? "text-emerald-500" : "text-destructive"}`}
+            >
+              {adKontrol.musait ? "✓ Bu ad uygun" : adKontrol.mesaj}
+            </p>
+          )}
         </div>
 
         {/* Avatar seçimi */}
@@ -101,7 +172,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             {AVATARLAR.map((a) => (
               <button
                 key={a.id}
-                onClick={() => setSeciliAvatar(a.id)}
+                onClick={() => avatarSec(a.id)}
                 className={`grid aspect-square place-items-center rounded-xl text-lg transition ${
                   seciliAvatar === a.id
                     ? "bg-primary/20 ring-2 ring-primary"

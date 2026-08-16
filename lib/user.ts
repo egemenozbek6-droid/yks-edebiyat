@@ -2,7 +2,7 @@
 // EdebiKart — Kullanıcı & istatistik yönetimi
 // ============================================================
 
-import { oku, yaz, kullaniciAdiMusaitMi, kullaniciAdiKaydet, kayitliKullaniciAdlari } from "./storage";
+import { oku, yaz, kullaniciAdiMusaitMi, kullaniciAdiKaydet, kullaniciAdiSil, kayitliKullaniciAdlari } from "./storage";
 import { rastgeleAvatarId } from "./avatars";
 import type { Istatistik, Kullanici, MacSonucu } from "./types";
 
@@ -24,6 +24,10 @@ export function kullaniciKaydet(kullanici: Kullanici): void {
 export function kullaniciAdiGuncelle(yeniAd: string): { tamam: boolean; hata?: string } {
   const mevcut = mevcutKullanici();
   if (!mevcut) return { tamam: false, hata: "Oturum yok" };
+  // Kullanıcı adı sadece bir kez değiştirilebilir
+  if (mevcut.hasChangedUsername) {
+    return { tamam: false, hata: "Kullanıcı adını zaten bir kez değiştirdin" };
+  }
   const temiz = yeniAd.trim();
   if (!temiz) return { tamam: false, hata: "Kullanıcı adı boş olamaz" };
   if (temiz.toLowerCase() !== mevcut.kullaniciAdi.toLowerCase()) {
@@ -31,8 +35,15 @@ export function kullaniciAdiGuncelle(yeniAd: string): { tamam: boolean; hata?: s
       return { tamam: false, hata: "Bu kullanıcı adı alınmış" };
     }
   }
-  kullaniciKaydet({ ...mevcut, kullaniciAdi: temiz });
+  // Eski adı serbest bırak, yeni adı kaydet
+  kullaniciAdiSil(mevcut.kullaniciAdi);
+  kullaniciKaydet({ ...mevcut, kullaniciAdi: temiz, hasChangedUsername: true });
   return { tamam: true };
+}
+
+export function kullaniciAdiDegistirebilirMi(): boolean {
+  const mevcut = mevcutKullanici();
+  return !mevcut?.hasChangedUsername;
 }
 
 export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: string } {

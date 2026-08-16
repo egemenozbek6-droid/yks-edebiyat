@@ -9,6 +9,7 @@ import {
   Hop as Home,
   KeyRound,
   Lock,
+  LogOut,
   Search,
   Swords,
   Trophy,
@@ -41,7 +42,6 @@ import {
   matchBitir,
   matchTerk,
   kullaniciAdiKaydetOnline,
-  RANKED_BOT_FALLBACK_SURESI,
   type OnlineMac,
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
@@ -96,6 +96,8 @@ export default function DueloModulu({
   const [aktifSoruSayisi, setAktifSoruSayisi] = useState(SORU_SAYISI);
   const [sonuc, setSonuc] = useState<MacSonucu | null>(null);
   const [hukmenGalibiyet, setHukmenGalibiyet] = useState(false);
+  const [forfeitModal, setForfeitModal] = useState(false);
+  const [forfeitConfirm, setForfeitConfirm] = useState(false);
 
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
@@ -259,6 +261,8 @@ export default function DueloModulu({
     rakipRef.current = null;
     setSonuc(null);
     setHukmenGalibiyet(false);
+    setForfeitModal(false);
+    setForfeitConfirm(false);
     setMatchId("");
     matchIdRef.current = "";
     setOlusturulanKod("");
@@ -317,6 +321,8 @@ export default function DueloModulu({
       aktifSoruSayisiRef.current = soruSayisi;
       setSonuc(null);
       setHukmenGalibiyet(false);
+      setForfeitModal(false);
+      setForfeitConfirm(false);
       setMatchId(mId);
       matchIdRef.current = mId;
       setOyuncuNum(num);
@@ -566,7 +572,12 @@ export default function DueloModulu({
           ? mac.kazananId === kullaniciRef.current?.kullaniciAdi
           : oS > rS;
         const berabere = !hukmen && oS === rS;
-        maciBitir(kazandi, berabere, hukmen, oS, rS);
+        // Eğer rakip terk ettiyse ve biz kazanmadıysak popup göster
+        if (hukmen && kazandi && mac.forfeitedBy && mac.forfeitedBy !== kullaniciRef.current?.kullaniciAdi) {
+          setForfeitModal(true);
+        } else {
+          maciBitir(kazandi, berabere, hukmen, oS, rS);
+        }
       }
     });
     matchUnsubRef.current = unsub;
@@ -619,26 +630,26 @@ export default function DueloModulu({
 
   // --- Forfeit (oyundan çekil) ---
   const forfeitYap = useCallback(() => {
-    onCikisOnayGerekir(
-      "Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız!",
-      () => {
-        // FORFEIT: ranked maçtan ayrılırsa kayıp yaz
-        if (dueloModuRef.current === "ranked") {
-          maciBitir(false, false, false, oyuncuSkorRef.current, rakipSkorRef.current);
-        }
-        // Online: rakibe hükmen galibiyet ver
-        const mId = matchIdRef.current;
-        if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
-          const digerId = oyuncuNumRef.current === 1
-            ? rakipRef.current?.ad ?? ""
-            : kullaniciRef.current.kullaniciAdi;
-          matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
-        }
-        dueloSifirla();
-        onCikis();
-      },
-    );
-  }, [onCikis, onCikisOnayGerekir, dueloSifirla, maciBitir]);
+    setForfeitConfirm(true);
+  }, []);
+
+  const forfeitOnayla = useCallback(() => {
+    setForfeitConfirm(false);
+    // FORFEIT: ranked maçtan ayrılırsa kayıp yaz
+    if (dueloModuRef.current === "ranked") {
+      maciBitir(false, false, false, oyuncuSkorRef.current, rakipSkorRef.current);
+    }
+    // Online: rakibe hükmen galibiyet ver
+    const mId = matchIdRef.current;
+    if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
+      const digerId = oyuncuNumRef.current === 1
+        ? rakipRef.current?.ad ?? ""
+        : kullaniciRef.current.kullaniciAdi;
+      matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
+    }
+    dueloSifirla();
+    onCikis();
+  }, [onCikis, dueloSifirla, maciBitir]);
 
   // --- Çıkış (lobi/sonuç ekranlarından) ---
   const cikisIste = useCallback(() => {
@@ -831,9 +842,6 @@ export default function DueloModulu({
             <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-rose-500/20 border-t-rose-500" />
           </div>
           <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip aranıyor...</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {firebaseAktif ? `${RANKED_BOT_FALLBACK_SURESI / 1000} sn içinde bulunmazsa bot rakip` : "Bot rakip hazırlanıyor..."}
-          </p>
           <button
             onClick={aramaIptal}
             className="mt-6 rounded-2xl bg-card px-6 py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground active:scale-[0.98]"
@@ -1052,7 +1060,7 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* Skor barı + forfeit butonu */}
+      {/* Skor barı */}
       <div className="mb-3 rounded-2xl bg-card/70 p-3 shadow-sm backdrop-blur shrink-0">
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-1 items-center gap-2">
@@ -1064,17 +1072,7 @@ export default function DueloModulu({
               <p className="text-lg font-bold text-primary">{oyuncuSkor}</p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
-            <span className="text-xs font-bold text-muted-foreground">VS</span>
-            {/* Forfeit (×) butonu — sadece aktif maçta */}
-            <button
-              onClick={forfeitYap}
-              className="grid h-7 w-7 place-items-center rounded-full bg-destructive/10 text-destructive transition hover:bg-destructive/20 active:scale-95"
-              aria-label="Oyundan çekil"
-            >
-              <X className="h-4 w-4" strokeWidth={2.5} />
-            </button>
-          </div>
+          <span className="text-xs font-bold text-muted-foreground">VS</span>
           <div className="flex flex-1 items-center justify-end gap-2">
             <div className="min-w-0 text-right">
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
@@ -1107,7 +1105,15 @@ export default function DueloModulu({
       </div>
 
       {/* Soru kartı */}
-      <div className="flex min-h-0 flex-1 flex-col rounded-[1.75rem] bg-card p-5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)]">
+      <div className="relative flex min-h-0 flex-1 flex-col rounded-[1.75rem] bg-card p-5 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)]">
+        {/* Terk Et butonu — sağ üst köşe */}
+        <button
+          onClick={forfeitYap}
+          className="absolute right-4 top-4 z-10 inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-3 py-1.5 text-xs font-semibold text-destructive transition hover:bg-destructive/20 active:scale-95"
+          aria-label="Maçı terk et"
+        >
+          <LogOut className="h-3.5 w-3.5" /> Terk Et
+        </button>
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
           {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
         </p>
@@ -1181,6 +1187,69 @@ export default function DueloModulu({
           </div>
         )}
       </div>
+
+      {/* Forfeit onay modalı — oyuncu Terk Et'e bastığında */}
+      {forfeitConfirm && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-5 backdrop-blur-sm">
+          <div className="animate-pop max-w-sm w-full rounded-[1.75rem] bg-card p-7 text-center shadow-2xl">
+            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-destructive/15 text-destructive animate-pop">
+              <LogOut className="h-7 w-7" strokeWidth={1.5} />
+            </div>
+            <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
+              Maçı Terk Et
+            </h2>
+            <p className="mt-2 text-sm text-pretty text-muted-foreground">
+              Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız. Emin misiniz?
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                onClick={() => setForfeitConfirm(false)}
+                className="rounded-2xl bg-muted py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/70 active:scale-[0.98]"
+              >
+                Vazgeç
+              </button>
+              <button
+                onClick={forfeitOnayla}
+                className="rounded-2xl bg-destructive py-3.5 text-sm font-semibold text-destructive-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+              >
+                Terk Et
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Forfeit popup — rakip oyundan çekildi */}
+      {forfeitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/40 p-5 backdrop-blur-sm">
+          <div className="animate-pop max-w-sm w-full rounded-[1.75rem] bg-card p-8 text-center shadow-2xl">
+            <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-emerald-500/15 text-emerald-500 animate-pop">
+              <Trophy className="h-9 w-9" strokeWidth={1.5} />
+            </div>
+            <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
+              Rakibin Düellodan Kaçtı!
+            </h2>
+            <p className="mt-2 text-sm text-pretty text-muted-foreground">
+              Rakibiniz oyunu terk ettiği için galibiyet sizin oldu!
+            </p>
+            <button
+              onClick={() => {
+                setForfeitModal(false);
+                if (dueloModuRef.current === "ranked") {
+                  maciBitir(true, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
+                } else {
+                  maciBitir(true, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
+                }
+                dueloSifirla();
+                onCikis();
+              }}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            >
+              <Home className="h-4 w-4" /> Ana Sayfaya Dön
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
