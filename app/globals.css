@@ -36,6 +36,12 @@
   --color-card: var(--card);
   --color-foreground: var(--foreground);
   --color-background: var(--background);
+  --color-osym: var(--color-osym);
+  --color-osym-foreground: var(--color-osym-foreground);
+  --color-duello: var(--color-duello);
+  --color-duello-foreground: var(--color-duello-foreground);
+  --color-teal: var(--color-teal);
+  --color-teal-foreground: var(--color-teal-foreground);
   --radius-sm: calc(var(--radius) * 0.6);
   --radius-md: calc(var(--radius) * 0.8);
   --radius-lg: var(--radius);
@@ -46,8 +52,11 @@
 }
 
 /* ============================================================
-   EdebiKart — E-Sports Premium Theme
-   Deep matte charcoal/black with premium gold & burgundy accents
+   EdebiKart — Minimalist Study Theme
+   Deep soft slate dark mode with section-specific accents:
+   - Kartlar & Test: soft teal (#0E7490)
+   - ÖSYM Sever: vibrant orange (#EA580C)
+   - Düello: intense red (#DC2626)
    ============================================================ */
 
 @theme inline {
@@ -75,42 +84,50 @@
   --popover: oklch(0.20 0.025 255);
   --popover-foreground: oklch(0.93 0.01 60);
 
-  /* Premium gold (#F59E0B) */
-  --primary: oklch(0.76 0.16 75);
-  --primary-foreground: oklch(0.14 0.02 255);
+  /* Soft teal (#0E7490) — base primary for Kartlar & Test */
+  --primary: oklch(0.60 0.09 220);
+  --primary-foreground: oklch(0.97 0.01 220);
 
-  /* Muted burgundy accent */
-  --secondary: oklch(0.28 0.05 350);
+  /* Muted slate secondary */
+  --secondary: oklch(0.28 0.02 255);
   --secondary-foreground: oklch(0.90 0.01 60);
 
   --muted: oklch(0.25 0.02 255);
   --muted-foreground: oklch(0.65 0.02 60);
 
-  --accent: oklch(0.30 0.06 350);
+  --accent: oklch(0.30 0.03 220);
   --accent-foreground: oklch(0.90 0.01 60);
 
-  /* Burgundy-tinted destructive */
-  --destructive: oklch(0.55 0.18 15);
+  /* Intense red destructive (#DC2626) */
+  --destructive: oklch(0.58 0.22 27);
 
-  /* Subtle gold-tinted borders */
-  --border: oklch(0.76 0.05 75 / 12%);
-  --input: oklch(0.76 0.05 75 / 18%);
-  --ring: oklch(0.76 0.16 75);
+  /* Subtle teal-tinted borders */
+  --border: oklch(0.60 0.05 220 / 12%);
+  --input: oklch(0.60 0.05 220 / 18%);
+  --ring: oklch(0.60 0.09 220);
 
-  --chart-1: oklch(0.76 0.16 75);
-  --chart-2: oklch(0.65 0.10 160);
-  --chart-3: oklch(0.70 0.12 60);
-  --chart-4: oklch(0.55 0.18 15);
+  --chart-1: oklch(0.60 0.09 220);
+  --chart-2: oklch(0.70 0.15 55);
+  --chart-3: oklch(0.65 0.10 160);
+  --chart-4: oklch(0.58 0.22 27);
   --chart-5: oklch(0.60 0.08 300);
 
   --sidebar: oklch(0.16 0.02 255);
   --sidebar-foreground: oklch(0.93 0.01 60);
-  --sidebar-primary: oklch(0.76 0.16 75);
-  --sidebar-primary-foreground: oklch(0.14 0.02 255);
-  --sidebar-accent: oklch(0.30 0.06 350);
+  --sidebar-primary: oklch(0.60 0.09 220);
+  --sidebar-primary-foreground: oklch(0.97 0.01 220);
+  --sidebar-accent: oklch(0.30 0.03 220);
   --sidebar-accent-foreground: oklch(0.90 0.01 60);
-  --sidebar-border: oklch(0.76 0.05 75 / 12%);
-  --sidebar-ring: oklch(0.76 0.16 75);
+  --sidebar-border: oklch(0.60 0.05 220 / 12%);
+  --sidebar-ring: oklch(0.60 0.09 220);
+
+  /* Section-specific accent colors */
+  --color-osym: oklch(0.65 0.15 45);       /* vibrant orange #EA580C */
+  --color-osym-foreground: oklch(0.97 0.01 60);
+  --color-duello: oklch(0.58 0.22 27);     /* intense red #DC2626 */
+  --color-duello-foreground: oklch(0.97 0.01 60);
+  --color-teal: oklch(0.60 0.09 220);      /* soft teal #0E7490 */
+  --color-teal-foreground: oklch(0.97 0.01 220);
 }
 
 .dark {
@@ -145,8 +162,8 @@
 }
 
 @keyframes v0-glow {
-  0%, 100% { box-shadow: 0 0 8px oklch(0.76 0.16 75 / 30%); }
-  50% { box-shadow: 0 0 20px oklch(0.76 0.16 75 / 50%); }
+  0%, 100% { box-shadow: 0 0 8px oklch(0.60 0.09 220 / 30%); }
+  50% { box-shadow: 0 0 20px oklch(0.60 0.09 220 / 50%); }
 }
 
 @keyframes v0-slide-in {
@@ -187,5 +204,5 @@
 .glass-card {
   background: oklch(0.20 0.025 255 / 60%);
   backdrop-filter: blur(12px);
-  border: 1px solid oklch(0.76 0.05 75 / 12%);
+  border: 1px solid oklch(0.60 0.05 220 / 12%);
 }

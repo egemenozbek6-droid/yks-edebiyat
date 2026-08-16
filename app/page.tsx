@@ -17,11 +17,11 @@ const APP_SUBTITLE = "YKS Yazar Eser";
 
 type Mod = "kart" | "test" | "osym" | "duelo";
 
-const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers }[] = [
-  { mod: "kart", etiket: "Kartlar", ikon: Layers },
-  { mod: "test", etiket: "Test", ikon: Brain },
-  { mod: "osym", etiket: "ÖSYM", ikon: Flame },
-  { mod: "duelo", etiket: "Düello", ikon: Swords },
+const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
+  { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
+  { mod: "test", etiket: "Test", ikon: Brain, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
+  { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
+  { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello/15 shadow-sm text-duello ring-1 ring-duello/30" },
 ];
 
 function karistir<T>(dizi: T[]): T[] {
@@ -209,7 +209,7 @@ export default function App() {
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
           <div className="grid grid-cols-4 gap-1 p-1 glass-card rounded-2xl ring-1 ring-border">
-            {modOeleri.map(({ mod: m, etiket, ikon: Ikon }) => {
+            {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
               const aktif = mod === m;
               return (
                 <button
@@ -218,7 +218,7 @@ export default function App() {
                   aria-current={aktif ? "page" : undefined}
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
                     aktif
-                      ? `bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30`
+                      ? aktifKlass
                       : "text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -393,11 +393,11 @@ export default function App() {
                 aynı dönemden gelir.
               </p>
               <p>
-                <span className="font-semibold text-primary">ÖSYM Sever:</span> Sadece banko eserlerden karışık mini
+                <span className="font-semibold text-osym">ÖSYM Sever:</span> Sadece banko eserlerden karışık mini
                 deneme.
               </p>
               <p>
-                <span className="font-semibold text-primary">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
+                <span className="font-semibold text-duello">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
                 Senkron soru geçişi — rakibini bekle, sonra birlikte geçin.
               </p>
             </div>
