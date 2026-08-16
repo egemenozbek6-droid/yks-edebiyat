@@ -266,31 +266,50 @@ export function odaKurOnline(
   soruSayisi: number,
   onRakipKatildi: (rakip: Rakip, matchId: string, sorular: Soru[]) => void,
 ): Unsubscribe | null {
-  if (!firebaseAktif || !db) return null;
+  if (!firebaseAktif || !db) {
+    console.error("[odaKurOnline] Firebase aktif değil! Oda kurulamıyor.");
+    alert("Firebase bağlantısı yok!\n.env dosyasındaki NEXT_PUBLIC_FIREBASE_* anahtarlarını kontrol edin.");
+    return null;
+  }
 
-  const macRef = doc(db!, "matches", odaKodu);
+  // odaKodu her zaman string olarak kaydedilir
+  const kodStr = String(odaKodu);
+  const macRef = doc(db!, "matches", kodStr);
 
   (async () => {
-    const uretilenSorular = soruUret(soruSayisi);
-    await setDoc(macRef, {
-      mod: "friendly",
-      durum: "bekliyor",
-      oyuncu1: {
-        id: oyuncu.id,
-        ad: oyuncu.ad,
-        avatar: oyuncu.avatar,
-        skor: 0,
-        cevap: null,
-      },
-      oyuncu2: null,
-      odaKodu,
-      soruSayisi,
-      sorular: uretilenSorular,
-      soruIndex: 0,
-      kazananId: null,
-      forfeitedBy: null,
-      olusturmaZamani: serverTimestamp(),
-    });
+    try {
+      const uretilenSorular = soruUret(soruSayisi);
+      console.log("[odaKurOnline] Firestore'a yazılıyor... matches/" + kodStr, {
+        mod: "friendly",
+        durum: "bekliyor",
+        odaKodu: kodStr,
+        soruSayisi,
+      });
+      await setDoc(macRef, {
+        mod: "friendly",
+        durum: "bekliyor",
+        oyuncu1: {
+          id: oyuncu.id,
+          ad: oyuncu.ad,
+          avatar: oyuncu.avatar,
+          skor: 0,
+          cevap: null,
+        },
+        oyuncu2: null,
+        odaKodu: kodStr,
+        soruSayisi,
+        sorular: uretilenSorular,
+        soruIndex: 0,
+        kazananId: null,
+        forfeitedBy: null,
+        olusturmaZamani: serverTimestamp(),
+      });
+      console.log("[odaKurOnline] ✓ Firestore'a yazıldı: matches/" + kodStr);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.error("[odaKurOnline] ✗ Firestore yazma hatası:", e);
+      alert("Oda kurma hatası!\nFirestore'a yazılamadı.\n\nHata: " + msg);
+    }
   })();
 
   const unsub = onSnapshot(macRef, (snap) => {
@@ -299,11 +318,14 @@ export function odaKurOnline(
     if (data.durum === "aktif" && data.oyuncu2) {
       onRakipKatildi(
         { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false },
-        odaKodu,
+        kodStr,
         data.sorular ?? [],
       );
       unsub();
     }
+  }, (err) => {
+    console.error("[odaKurOnline] onSnapshot hatası:", err);
+    alert("Oda dinleme hatası!\n\nHata: " + (err instanceof Error ? err.message : String(err)));
   });
 
   return unsub;
@@ -314,30 +336,37 @@ export async function odayaKatilOnline(
   oyuncu: SiradakiOyuncu,
 ): Promise<{ tamam: boolean; hata?: string }> {
   if (!firebaseAktif || !db) {
-    return { tamam: false, hata: "Geçersiz oda kodu!" };
+    console.error("[odayaKatilOnline] Firebase aktif değil!");
+    return { tamam: false, hata: "Firebase bağlantısı yok! .env anahtarlarını kontrol edin." };
   }
 
-  const q = query(
-    collection(db!, "matches"),
-    where("odaKodu", "==", odaKodu),
-    where("durum", "==", "bekliyor"),
-    limit(1),
-  );
-  const snap = await getDocs(q);
-
-  if (snap.empty) {
-    return { tamam: false, hata: "Geçersiz oda kodu!" };
-  }
-
-  const macDoc = snap.docs[0];
-  const macId = macDoc.id;
-  const data = macDoc.data() as OnlineMac;
-
-  if (data.oyuncu1?.id === oyuncu.id) {
-    return { tamam: false, hata: "Kendi odana katılamazsın!" };
-  }
+  // odaKodu her zaman string olarak karşılaştırılır
+  const kodStr = String(odaKodu);
 
   try {
+    console.log("[odayaKatilOnline] Sorgulanıyor: odaKodu ==", kodStr, "AND durum == bekliyor");
+    const q = query(
+      collection(db!, "matches"),
+      where("odaKodu", "==", kodStr),
+      where("durum", "==", "bekliyor"),
+      limit(1),
+    );
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+      console.warn("[odayaKatilOnline] Oda bulunamadı: " + kodStr);
+      return { tamam: false, hata: "Geçersiz oda kodu!" };
+    }
+
+    const macDoc = snap.docs[0];
+    const macId = macDoc.id;
+    const data = macDoc.data() as OnlineMac;
+    console.log("[odayaKatilOnline] Oda bulundu: " + macId, { durum: data.durum, odaKodu: data.odaKodu });
+
+    if (data.oyuncu1?.id === oyuncu.id) {
+      return { tamam: false, hata: "Kendi odana katılamazsın!" };
+    }
+
     await runTransaction(db!, async (tx) => {
       const ref = doc(db!, "matches", macId);
       const cur = await tx.get(ref);
@@ -355,8 +384,12 @@ export async function odayaKatilOnline(
         },
       });
     });
+    console.log("[odayaKatilOnline] ✓ Oyuncu2 eklendi, durum=aktif: " + macId);
     return { tamam: true };
-  } catch {
+  } catch (e) {
+    const msg = e instanceof Error ? e.message : String(e);
+    console.error("[odayaKatilOnline] ✗ Hata:", e);
+    alert("Odaya katılma hatası!\n\nHata: " + msg);
     return { tamam: false, hata: "Geçersiz oda kodu!" };
   }
 }
