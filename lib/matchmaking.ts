@@ -510,7 +510,8 @@ export async function cevapGonder(
     const oyuncu = oyuncuNum === 1 ? data.oyuncu1 : data.oyuncu2;
     if (!oyuncu) return;
     if (oyuncu.cevap !== null) return;
-    const yeniSkor = dogruMu ? oyuncu.skor + bonus : oyuncu.skor;
+    const capliBonus = Math.min(20, Math.max(0, bonus));
+    const yeniSkor = dogruMu ? oyuncu.skor + capliBonus : oyuncu.skor;
 
     const guncelleme: Record<string, number | null> = {};
     guncelleme[`${alan}.skor`] = yeniSkor ?? 0;

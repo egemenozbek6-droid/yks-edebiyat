@@ -87,10 +87,10 @@ export function kazanilanPuan(oyuncuSkor: number, rakipSkor: number, hukmen: boo
   return -20;
 }
 
-// Soru başına EP: 10-20 arası, hıza göre
+// Soru başına EP: 10-20 arası, hıza göre (hard cap)
 export function soruPuani(kalanSure: number, toplamSure: number): number {
   const oran = Math.max(0, Math.min(1, kalanSure / toplamSure));
-  return Math.round(10 + oran * 10);
+  return Math.min(20, Math.max(10, Math.round(10 + oran * 10)));
 }
 
 // --- Leitner kart seviyeleri ---

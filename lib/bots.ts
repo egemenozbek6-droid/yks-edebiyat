@@ -48,7 +48,7 @@ export function botDogruMu(accuracy: number = 0.7): boolean {
 }
 
 export function botBonus(): number {
-  return Math.round(Math.random() * 50);
+  return 0;
 }
 
 // Bot'un bu soruyu kaç saniyede cevapladığını simüle et (hız bonusu için)
