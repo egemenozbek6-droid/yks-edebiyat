@@ -374,42 +374,79 @@ export default function App() {
           onClick={() => setInfoAcik(false)}
         >
           <div
-            className="glass-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-7 animate-pop ring-1 ring-border"
+            className="glass-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-6 animate-pop ring-1 ring-border max-h-[90vh] overflow-y-auto no-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="flex items-start justify-between mb-4">
+            <div className="flex items-start justify-between mb-5">
               <div>
-                <h2 className="font-serif font-bold text-xl text-card-foreground">{APP_NAME}</h2>
-                <p className="text-xs text-muted-foreground mt-0.5">{APP_SUBTITLE}</p>
+                <h2 className="font-serif font-bold text-lg text-card-foreground">
+                  Edebikart Nasıl Kullanılır?
+                </h2>
+                <p className="text-[11px] text-muted-foreground mt-0.5">
+                  YKS/AYT edebiyat yazar-eser ezber & düello uygulaması
+                </p>
               </div>
               <button
                 onClick={() => setInfoAcik(false)}
-                className="text-muted-foreground hover:text-primary transition"
+                className="text-muted-foreground hover:text-primary transition shrink-0"
                 aria-label="Kapat"
               >
                 <X className="w-5 h-5" />
               </button>
             </div>
-            <p className="text-sm text-muted-foreground mb-4">
-              YKS/AYT edebiyat yazar-eser ezber uygulaması. 8 ana dönem, yüzlerce eser.
-            </p>
-            <div className="space-y-2 text-sm text-muted-foreground">
-              <p>
-                <span className="font-semibold text-primary">Kartlar:</span> Dönem seç, sağa kaydır = Öğrendim, sola
-                kaydır = Tekrar Et. Leitner sistemi ile kart seviyelerin takip edilir.
-              </p>
-              <p>
-                <span className="font-semibold text-primary">Test:</span> Dönem seç, 4 şıklı soruları çöz. Çeldiriciler
-                aynı dönemden gelir.
-              </p>
-              <p>
-                <span className="font-semibold text-osym">ÖSYM Sever:</span> Sadece banko eserlerden karışık mini
-                deneme.
-              </p>
-              <p>
-                <span className="font-semibold text-duello">Düello:</span> Rakibinle 10 soruda yarış. Hız bonusu kazan!
-                Senkron soru geçişi — rakibini bekle, sonra birlikte geçin.
-              </p>
+
+            <div className="space-y-2.5">
+              {/* Kartlar */}
+              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/20">
+                  <Layers className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-card-foreground">Kartlar</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    Dönem seç, kartları sağa/sola kaydırarak ezberle. Leitner akıllı tekrar sistemiyle öğren.
+                  </p>
+                </div>
+              </div>
+
+              {/* Test */}
+              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/20">
+                  <Brain className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-card-foreground">Test</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    Dönemlere özel 4 şıklı sorularla kendini sına.
+                  </p>
+                </div>
+              </div>
+
+              {/* ÖSYM Sever */}
+              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/20">
+                  <Flame className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-card-foreground">ÖSYM Sever</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    YKS'de çıkma ihtimali en yüksek banko eserlerden oluşan özel denemeler.
+                  </p>
+                </div>
+              </div>
+
+              {/* Düello & Rank */}
+              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-duello/15 text-duello ring-1 ring-duello/20">
+                  <Swords className="h-5 w-5" strokeWidth={1.8} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-bold text-card-foreground">Düello & Rank</p>
+                  <p className="text-[11px] leading-relaxed text-muted-foreground">
+                    Gerçek zamanlı rakiplerle yarış, EP kazan, lig atla ve Günlük Görevleri tamamlayarak prestij avatarlarını aç!
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
         </div>
