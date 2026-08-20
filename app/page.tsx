@@ -11,6 +11,8 @@ import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
 import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
+import { sfxMuted, sfxMuteToggle } from "@/lib/sfx";
+import { Volume2, VolumeX } from "lucide-react";
 
 const APP_NAME = "EdebiKart";
 const APP_SUBTITLE = "YKS Yazar Eser & Düello";
@@ -38,6 +40,7 @@ export default function App() {
   const [infoAcik, setInfoAcik] = useState(false);
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
   const [profilAcik, setProfilAcik] = useState(false);
+  const [sfxSesli, setSfxSesli] = useState(!sfxMuted());
 
   // Navigation guard
   const [dueloAktif, setDueloAktif] = useState(false);
@@ -196,6 +199,13 @@ export default function App() {
 
           <div className="flex items-center gap-2">
             <TemaAnahtari />
+            <button
+              onClick={() => setSfxSesli(!sfxMuteToggle())}
+              className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"
+              aria-label={sfxSesli ? "Sesi kapat" : "Sesi aç"}
+            >
+              {sfxSesli ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
+            </button>
             <button
               onClick={() => setInfoAcik(true)}
               className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"

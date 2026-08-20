@@ -22,6 +22,7 @@ import {
   mevcutKullanici,
   mevcutIstatistik,
   istatistikGuncelle,
+  istatistikYaz,
   kazanilanPuan,
   soruPuani,
   kullaniciKaydet,
@@ -48,7 +49,14 @@ import {
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
 import type { Istatistik, Kullanici, MacSonucu, Rakip } from "@/lib/types";
-import { Pencil } from "lucide-react";
+import { Pencil, Target } from "lucide-react";
+import { sfxCorrect, sfxWrong, sfxTick, sfxVictory, sfxDefeat } from "@/lib/sfx";
+import {
+  gunlukGorevleriGetir,
+  gorevOdulAl,
+  macOlayiKaydet,
+  type GunlukGorevState,
+} from "@/lib/gunlukGorevler";
 
 type Adim = "nick" | "lobi" | "aratma" | "oda_katil" | "oda_kur" | "oda_bekleme" | "duelo" | "sonuc";
 type DueloModu = "ranked" | "friendly";
@@ -110,6 +118,12 @@ export default function DueloModulu({
   // Ertelenmiş skor (her iki taraf cevaplayana kadar beklet)
   const ertelenmisSkor = useRef<number>(0);
 
+  // Günlük görev takibi (maç içi)
+  const dogruSeriRef = useRef(0);
+  const toplamDogruRef = useRef(0);
+  const toplamMatchScoreRef = useRef(0);
+  const [gorevler, setGorevler] = useState<GunlukGorevState | null>(null);
+
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
   const rakipSkorRef = useRef(0);
@@ -168,6 +182,13 @@ export default function DueloModulu({
     window.addEventListener("profileUpdated", kullaniciYukle);
     return () => window.removeEventListener("profileUpdated", kullaniciYukle);
   }, []);
+
+  // --- Günlük görevleri yükle ---
+  useEffect(() => {
+    if (adim === "lobi" && !gorevler) {
+      setGorevler(gunlukGorevleriGetir());
+    }
+  }, [adim, gorevler]);
 
   // --- Duelo aktiflik durumunu parent'a bildir ---
   useEffect(() => {
@@ -316,6 +337,20 @@ export default function DueloModulu({
       setHukmenGalibiyet(hukmen && kazandi);
       setAdim("sonuc");
       adimRef.current = "sonuc";
+
+      // SFX
+      if (kazandi || hukmen) sfxVictory();
+      else if (!berabere) sfxDefeat();
+
+      // Günlük görevleri güncelle
+      macOlayiKaydet({
+        rankedWin: mod === "ranked" && (kazandi || hukmen),
+        streak3: dogruSeriRef.current >= 3,
+        duelTamamlandi: true,
+        matchScore: oS,
+        correctCount: toplamDogruRef.current,
+      });
+      setGorevler(gunlukGorevleriGetir());
     },
     [],
   );
@@ -351,6 +386,10 @@ export default function DueloModulu({
       oyuncuNumRef.current = num;
       setAdim("duelo");
       adimRef.current = "duelo";
+      // Günlük görev takibini sıfırla
+      dogruSeriRef.current = 0;
+      toplamDogruRef.current = 0;
+      toplamMatchScoreRef.current = 0;
     },
     [],
   );
@@ -513,8 +552,13 @@ export default function DueloModulu({
       if (dogruMu) {
         const rp = soruPuani(sure, SURE);
         ertelenmisSkor.current = rp;
+        sfxCorrect();
+        dogruSeriRef.current += 1;
+        toplamDogruRef.current += 1;
       } else {
         ertelenmisSkor.current = 0;
+        sfxWrong();
+        dogruSeriRef.current = 0;
       }
       // Online: cevabı Firestore'a gönder
       const secenekIndex = soru.secenekler.indexOf(secenek);
@@ -541,6 +585,7 @@ export default function DueloModulu({
       }
       return;
     }
+    if (sure <= 3 && sure > 0) sfxTick();
     sureTimer.current = window.setTimeout(() => setSure((s) => s - 1), 1000);
     return () => {
       if (sureTimer.current) clearTimeout(sureTimer.current);
@@ -772,6 +817,20 @@ export default function DueloModulu({
       : 100;
     const hedefeKalan = hedefRank ? hedefRank.min - rp : 0;
 
+    // Günlük görevler
+    const gorevState = gorevler ?? gunlukGorevleriGetir();
+    const gorevOduluAl = (tur: string) => {
+      const { odul } = gorevOdulAl(tur as any);
+      if (odul > 0) {
+        // EP'yi profile ekle
+        const guncelIstatistik = mevcutIstatistik();
+        const yeniIstatistik = { ...guncelIstatistik, puan: guncelIstatistik.puan + odul };
+        istatistikYaz(yeniIstatistik);
+        setIstatistik(yeniIstatistik);
+      }
+      setGorevler(gunlukGorevleriGetir());
+    };
+
     return (
       <div className="flex-1 flex flex-col justify-center py-2">
         <div className="animate-rise w-full max-w-3xl mx-auto grid gap-4 md:grid-cols-2">
@@ -846,6 +905,65 @@ export default function DueloModulu({
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Toplam EP</p>
                 <p className="mt-0.5 text-lg font-bold text-teal">{rp}</p>
               </div>
+            </div>
+          </div>
+
+          {/* Günlük Görevler — tam genişlik */}
+          <div className="glass-card rounded-[1.75rem] p-5 ring-1 ring-border md:col-span-2">
+            <div className="mb-3 flex items-center gap-2">
+              <div className="grid h-9 w-9 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/20">
+                <Target className="h-4 w-4" strokeWidth={2} />
+              </div>
+              <div>
+                <p className="font-serif text-sm font-bold text-card-foreground">Günlük Görevler</p>
+                <p className="text-[10px] text-muted-foreground">Her gün yenilenir · {gorevState.tarih}</p>
+              </div>
+            </div>
+            <div className="grid gap-3 sm:grid-cols-2">
+              {gorevState.gorevler.map((g) => {
+                const durum = gorevState.durumlar[g.tur];
+                if (!durum) return null;
+                const yuzde = Math.min(100, Math.round((durum.ilerleme / g.hedef) * 100));
+                return (
+                  <div key={g.tur} className="rounded-2xl bg-muted/40 p-3 ring-1 ring-border">
+                    <div className="mb-2 flex items-start justify-between gap-2">
+                      <div className="flex items-center gap-2">
+                        <span className="text-lg">{g.ikon}</span>
+                        <div>
+                          <p className="text-xs font-bold text-card-foreground">{g.etiket}</p>
+                          <p className="text-[10px] text-muted-foreground">{g.aciklama}</p>
+                        </div>
+                      </div>
+                      <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-500">
+                        +{g.odul} EP
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
+                      <div
+                        className={`h-full rounded-full transition-[width] duration-500 ${
+                          durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"
+                        }`}
+                        style={{ width: `${yuzde}%` }}
+                      />
+                    </div>
+                    <div className="mt-1.5 flex items-center justify-between">
+                      <span className="text-[10px] text-muted-foreground">
+                        {durum.ilerleme} / {g.hedef}
+                      </span>
+                      {durum.tamamlandi && !durum.odulAlindi ? (
+                        <button
+                          onClick={() => gorevOduluAl(g.tur)}
+                          className="rounded-lg bg-emerald-500 px-3 py-1 text-[10px] font-bold text-white transition hover:brightness-110 active:scale-95"
+                        >
+                          Ödülü Al
+                        </button>
+                      ) : durum.odulAlindi ? (
+                        <span className="text-[10px] font-bold text-emerald-500">✓ Alındı</span>
+                      ) : null}
+                    </div>
+                  </div>
+                );
+              })}
             </div>
           </div>
 

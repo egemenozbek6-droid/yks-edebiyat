@@ -4,9 +4,10 @@ import { useEffect, useState } from "react";
 import { Check, Lock, X } from "lucide-react";
 import {
   mevcutKullanici,
+  mevcutIstatistik,
   kullaniciKaydet,
 } from "@/lib/user";
-import { AVATARLAR, avatarEmoji } from "@/lib/avatars";
+import { AVATARLAR, avatarEmoji, avatarKilitli } from "@/lib/avatars";
 import type { Kullanici } from "@/lib/types";
 
 type Props = {
@@ -17,16 +18,19 @@ type Props = {
 export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const [kullanici, setKullanici] = useState<Kullanici | null>(null);
   const [seciliAvatar, setSeciliAvatar] = useState<string>("");
+  const [mevcutEP, setMevcutEP] = useState(0);
 
   useEffect(() => {
     const k = mevcutKullanici();
     if (k) {
       setKullanici(k);
       setSeciliAvatar(k.avatar);
+      setMevcutEP(mevcutIstatistik().puan);
     }
   }, []);
 
-  const avatarSec = (avatarId: string) => {
+  const avatarSec = (avatarId: string, kilitli: boolean) => {
+    if (kilitli) return;
     setSeciliAvatar(avatarId);
     if (!kullanici) return;
     const guncel = { ...kullanici, avatar: avatarId };
@@ -89,25 +93,50 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
 
         {/* Avatar seçimi */}
         <div className="mb-5">
-          <label className="mb-2 block text-xs font-semibold text-muted-foreground">
-            Avatar Seç
-          </label>
-          <div className="grid grid-cols-8 gap-1.5">
-            {AVATARLAR.map((a) => (
-              <button
-                key={a.id}
-                onClick={() => avatarSec(a.id)}
-                className={`grid aspect-square place-items-center rounded-xl text-lg transition ${
-                  seciliAvatar === a.id
-                    ? "bg-primary/20 ring-2 ring-primary"
-                    : "bg-muted hover:bg-muted/70"
-                }`}
-                aria-label={a.etiket}
-              >
-                {a.emoji}
-              </button>
-            ))}
+          <div className="mb-2 flex items-center justify-between">
+            <label className="block text-xs font-semibold text-muted-foreground">
+              Avatar Seç
+            </label>
+            <span className="text-[10px] text-muted-foreground">{mevcutEP} EP</span>
           </div>
+          <div className="grid grid-cols-8 gap-1.5">
+            {AVATARLAR.map((a) => {
+              const kilitli = avatarKilitli(a.minEP, mevcutEP);
+              const secili = seciliAvatar === a.id;
+              return (
+                <button
+                  key={a.id}
+                  onClick={() => avatarSec(a.id, kilitli)}
+                  disabled={kilitli}
+                  className={`relative grid aspect-square place-items-center rounded-xl text-lg transition ${
+                    secili
+                      ? "bg-primary/20 ring-2 ring-primary"
+                      : kilitli
+                        ? "bg-muted/40 opacity-50 cursor-not-allowed"
+                        : "bg-muted hover:bg-muted/70"
+                  }`}
+                  aria-label={a.etiket}
+                  title={kilitli ? `${a.etiket} — ${a.minEP} EP gerekli` : a.etiket}
+                >
+                  {kilitli ? (
+                    <>
+                      <span className="opacity-30 grayscale">{a.emoji}</span>
+                      <span className="absolute inset-0 grid place-items-center">
+                        <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                      </span>
+                    </>
+                  ) : (
+                    a.emoji
+                  )}
+                </button>
+              );
+            })}
+          </div>
+          {AVATARLAR.some((a) => avatarKilitli(a.minEP, mevcutEP)) && (
+            <p className="mt-2 text-[10px] text-muted-foreground">
+              🔒 simgeli avatarlar belirli EP seviyelerine ulaşınca açılır
+            </p>
+          )}
         </div>
 
         {/* Bilgi */}

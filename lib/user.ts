@@ -80,6 +80,13 @@ export function istatistikGuncelle(sonuc: MacSonucu): Istatistik {
   return yeni;
 }
 
+export function istatistikYaz(yeni: Istatistik): void {
+  yaz(ISTATISTIK_YOLU, yeni);
+  if (typeof window !== "undefined") {
+    window.dispatchEvent(new Event("profileUpdated"));
+  }
+}
+
 export function kazanilanPuan(oyuncuSkor: number, rakipSkor: number, hukmen: boolean): number {
   if (hukmen) return 50;
   if (oyuncuSkor > rakipSkor) return 50;
