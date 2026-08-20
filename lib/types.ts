@@ -26,15 +26,17 @@ export type RankKademe = {
   min: number;
   max: number;
   ikon: string;
+  renk: string;
 };
 
 export const RANK_KADEMELERI: RankKademe[] = [
-  { ad: "Toy Çırak", min: 0, max: 100, ikon: "🌱" },
-  { ad: "Çömez Şair", min: 101, max: 350, ikon: "✍️" },
-  { ad: "Edebiyat Müdavimi", min: 351, max: 800, ikon: "📚" },
-  { ad: "Servet-i Fünuncu", min: 801, max: 1500, ikon: "🖋️" },
-  { ad: "Üstat", min: 1501, max: 2500, ikon: "🎓" },
-  { ad: "Edebiyat Ordusu Kaptanı", min: 2501, max: 999999, ikon: "👑" },
+  { ad: "YKS Adayı", min: 0, max: 99, ikon: "🎓", renk: "#64748b" },
+  { ad: "Eser Çırağı", min: 100, max: 249, ikon: "📖", renk: "#10b981" },
+  { ad: "Banko Avcısı", min: 250, max: 499, ikon: "🎯", renk: "#f59e0b" },
+  { ad: "Düello Ustası", min: 500, max: 749, ikon: "⚔️", renk: "#dc2626" },
+  { ad: "Derece Adayı", min: 750, max: 999, ikon: "🏆", renk: "#a855f7" },
+  { ad: "Edebiyat Üstadı", min: 1000, max: 1499, ikon: "👑", renk: "#eab308" },
+  { ad: "Edebiyat Efsanesi", min: 1500, max: 999999, ikon: "⚡", renk: "#06b6d4" },
 ];
 
 export function rankBul(puan: number): RankKademe {

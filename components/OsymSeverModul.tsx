@@ -1,9 +1,13 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { ArrowRight, Check, Flame, RotateCcw, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { osymSeverSorulari, type Soru } from "@/lib/soru";
+import { sfxCorrect, sfxWrong } from "@/lib/sfx";
+
+const OSYM_EN_IYI_KEY = "edebikart-osym-eniyi";
+const OSYM_SORU_SAYISI = 20;
 
 export default function OsymSeverModul() {
   const [basladi, setBasladi] = useState(false);
@@ -12,6 +16,12 @@ export default function OsymSeverModul() {
   const [secim, setSecim] = useState<string | null>(null);
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
+  const [enIyiSkor, setEnIyiSkor] = useState(0);
+
+  useEffect(() => {
+    const kayitli = localStorage.getItem(OSYM_EN_IYI_KEY);
+    setEnIyiSkor(kayitli ? parseInt(kayitli, 10) : 0);
+  }, []);
 
   const basla = useCallback(() => {
     setSorular(osymSeverSorulari());
@@ -25,12 +35,17 @@ export default function OsymSeverModul() {
   const cevapla = (secenek: string) => {
     if (secim) return;
     const soru = sorular[aktif];
-    if (secenek === soru.dogru) setDogruSayi((s) => s + 1);
+    if (secenek === soru.dogru) { sfxCorrect(); setDogruSayi((s) => s + 1); } else sfxWrong();
     setSecim(secenek);
   };
 
   const sonraki = () => {
     if (aktif + 1 >= sorular.length) {
+      // En iyi skoru kaydet
+      if (dogruSayi > enIyiSkor) {
+        localStorage.setItem(OSYM_EN_IYI_KEY, String(dogruSayi));
+        setEnIyiSkor(dogruSayi);
+      }
       setBitti(true);
       return;
     }
@@ -48,8 +63,7 @@ export default function OsymSeverModul() {
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            ÖSYM'nin banko sorduğu yazar ve eserlerden karışık mini deneme. Dönem ayrımı yok — gerçek sınav gibi
-            karışık gelir. Sadece "banko" olarak işaretlenmiş eserler kullanılır.
+            YKS'de fark yaratan banko sorular burada. Dönem sınırlarını kaldır, ÖSYM'nin en çok sevdiği yazar ve eserlerle kendini tam sınav ayarında test et.
           </p>
         </div>
 
@@ -59,6 +73,19 @@ export default function OsymSeverModul() {
         >
           <Flame className="h-4 w-4" /> Denemeyi Başlat
         </button>
+
+        {/* Mikro rozetler */}
+        <div className="mt-3 flex items-center justify-center gap-2">
+          <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/20" style={{ background: "rgba(234, 88, 12, 0.15)" }}>
+            🎯 100+ Banko Eser
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/20" style={{ background: "rgba(234, 88, 12, 0.15)" }}>
+            ⚡ {OSYM_SORU_SAYISI} Soru Karma
+          </span>
+          <span className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/20" style={{ background: "rgba(234, 88, 12, 0.15)" }}>
+            🏆 En İyi: {enIyiSkor}/{OSYM_SORU_SAYISI}
+          </span>
+        </div>
       </div>
     );
   }
@@ -67,6 +94,7 @@ export default function OsymSeverModul() {
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     const basari = oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
+    const yeniRekor = dogruSayi >= enIyiSkor;
     return (
       <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
         <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-osym/15 text-osym ring-1 ring-osym/30 animate-pop">
@@ -76,6 +104,9 @@ export default function OsymSeverModul() {
         <p className="mt-2 text-sm text-muted-foreground">
           {sorular.length} soruda <span className="font-bold text-osym">{dogruSayi}</span> doğru — %{oran}
         </p>
+        {yeniRekor && (
+          <p className="mt-2 text-xs font-bold text-amber-500">Yeni Rekor!</p>
+        )}
         <div className="mt-6">
           <IlerlemeBari mevcut={dogruSayi} toplam={sorular.length} etiket="Doğru cevap" />
         </div>

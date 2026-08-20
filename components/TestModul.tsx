@@ -5,6 +5,7 @@ import { ArrowRight, Brain, Check, Flame, RotateCcw, Target, X } from "lucide-re
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { anaDonemler, anaDonemFiltrele, type AnaDonem } from "@/src/data";
 import { sorulariUret, type Soru } from "@/lib/soru";
+import { sfxCorrect, sfxWrong } from "@/lib/sfx";
 
 type Props = {
   onSonuc?: (dogruMu: boolean, donem: string) => void;
@@ -32,6 +33,7 @@ export default function TestModul({ onSonuc }: Props) {
     if (secim) return;
     const soru = sorular[aktif];
     const dogruMu = secenek === soru.dogru;
+    if (dogruMu) sfxCorrect(); else sfxWrong();
     setSecim(secenek);
     if (dogruMu) setDogruSayi((s) => s + 1);
     onSonuc?.(dogruMu, soru.donem);

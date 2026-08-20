@@ -28,7 +28,7 @@ import {
   kullaniciKaydet,
   kullaniciAdiKontrol,
 } from "@/lib/user";
-import { rankBul, sonrakiRank } from "@/lib/types";
+import { rankBul, sonrakiRank, RANK_KADEMELERI } from "@/lib/types";
 import { rastgeleBot, botGecikme, botDogruMu, botBonus } from "@/lib/bots";
 import { avatarEmoji, rastgeleAvatarId } from "@/lib/avatars";
 import { firebaseAktif } from "@/lib/firebase";
@@ -124,6 +124,7 @@ export default function DueloModulu({
   const toplamMatchScoreRef = useRef(0);
   const [gorevler, setGorevler] = useState<GunlukGorevState | null>(null);
   const [gorevAcik, setGorevAcik] = useState(false);
+  const [kariyerAcik, setKariyerAcik] = useState(false);
 
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
@@ -868,10 +869,13 @@ export default function DueloModulu({
             </div>
 
             {/* Rank + Progress Bar */}
-            <div className="mb-3 rounded-2xl bg-muted/40 p-4 ring-1 ring-border">
+            <button
+              onClick={() => setKariyerAcik(true)}
+              className="mb-3 w-full rounded-2xl bg-muted/40 p-4 ring-1 ring-border text-left transition hover:ring-teal/30 active:scale-[0.99]"
+            >
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
-                  <span className="text-lg">{simdikiRank.ikon}</span>
+                  <span className="text-lg" style={{ filter: `drop-shadow(0 0 6px ${simdikiRank.renk}40)` }}>{simdikiRank.ikon}</span>
                   <span className="font-serif text-sm font-bold text-card-foreground">{simdikiRank.ad}</span>
                 </div>
                 <span className="text-sm font-bold text-muted-foreground">
@@ -880,8 +884,8 @@ export default function DueloModulu({
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-teal/60 to-teal transition-[width] duration-500 ease-out"
-                  style={{ width: `${rankProgress}%` }}
+                  className="h-full rounded-full transition-[width] duration-500 ease-out"
+                  style={{ width: `${rankProgress}%`, background: `linear-gradient(to right, ${simdikiRank.renk}80, ${simdikiRank.renk})` }}
                 />
               </div>
               <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground">
@@ -890,7 +894,7 @@ export default function DueloModulu({
                   <span>{hedefRank.ad}'a {hedefeKalan} EP</span>
                 )}
               </div>
-            </div>
+            </button>
 
             {/* Günlük Görevler — kompakt akordiyon */}
             {(() => {
@@ -1031,11 +1035,107 @@ export default function DueloModulu({
 
           </div>
         </div>
+
+        {/* Kariyer Yolu Modalı */}
+        {kariyerAcik && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-md"
+            onClick={() => setKariyerAcik(false)}
+          >
+            <div
+              className="animate-pop glass-card max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-[1.75rem] p-6 shadow-2xl ring-1 ring-border no-scrollbar"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <div className="mb-4 flex items-start justify-between">
+                <div>
+                  <h2 className="font-serif text-lg font-bold text-card-foreground">Kariyer Yolu</h2>
+                  <p className="text-[11px] text-muted-foreground mt-0.5">{rp} EP — {simdikiRank.ad}</p>
+                </div>
+                <button
+                  onClick={() => setKariyerAcik(false)}
+                  className="text-muted-foreground transition hover:text-primary shrink-0"
+                  aria-label="Kapat"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <div className="relative">
+                {/* Dikey çizgi */}
+                <div className="absolute left-[18px] top-2 bottom-2 w-0.5 bg-border" />
+
+                <div className="space-y-3">
+                  {RANK_KADEMELERI.map((k, i) => {
+                    const acik = rp >= k.min;
+                    const simdiki = rp >= k.min && rp <= k.max;
+                    const sonraki = i < RANK_KADEMELERI.length - 1 ? RANK_KADEMELERI[i + 1] : null;
+                    const kalanEP = sonraki ? sonraki.min - rp : 0;
+                    return (
+                      <div key={k.ad} className="relative flex items-start gap-3 pl-0">
+                        {/* Badge daire */}
+                        <div
+                          className={`relative z-10 grid h-9 w-9 shrink-0 place-items-center rounded-full text-base transition ${
+                            simdiki
+                              ? "animate-pulse ring-2"
+                              : acik
+                                ? ""
+                                : "grayscale opacity-40"
+                          }`}
+                          style={{
+                            background: acik ? `${k.renk}20` : "var(--muted)",
+                            boxShadow: simdiki ? `0 0 12px ${k.renk}60` : "none",
+                            ...(simdiki ? { "--tw-ring-color": k.renk } : {}),
+                          } as Record<string, string>}
+                        >
+                          {acik ? (
+                            simdiki ? (
+                              <span style={{ filter: `drop-shadow(0 0 4px ${k.renk})` }}>{k.ikon}</span>
+                            ) : (
+                              <span>{k.ikon}</span>
+                            )
+                          ) : (
+                            <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                          )}
+                        </div>
+
+                        {/* İçerik */}
+                        <div className={`flex-1 pt-1 ${acik ? "" : "opacity-50"}`}>
+                          <div className="flex items-center gap-2">
+                            {acik && !simdiki && (
+                              <Check className="h-3.5 w-3.5 text-emerald-500 shrink-0" />
+                            )}
+                            <p
+                              className="text-sm font-bold"
+                              style={{ color: acik ? k.renk : "var(--muted-foreground)" }}
+                            >
+                              {k.ad}
+                            </p>
+                          </div>
+                          <p className="text-[10px] text-muted-foreground">
+                            {k.min}{k.max < 999999 ? ` – ${k.max}` : "+"} EP
+                          </p>
+                          {simdiki && sonraki && (
+                            <p className="mt-1 text-[10px] font-semibold" style={{ color: k.renk }}>
+                              Sonraki Lige {kalanEP} EP Kaldı
+                            </p>
+                          )}
+                          {simdiki && !sonraki && (
+                            <p className="mt-1 text-[10px] font-bold text-amber-500">
+                              Maksimum rütbeye ulaştın!
+                            </p>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     );
   }
-
-  // --- ARAMA ---
   if (adim === "aratma") {
     return (
       <div className="flex-1 flex items-center justify-center">
