@@ -65,7 +65,7 @@ export function istatistikGuncelle(sonuc: MacSonucu): Istatistik {
 
   if (sonuc.ranked) {
     yeni.macSayisi += 1;
-    yeni.puan += sonuc.puanKazandi;
+    yeni.puan = Math.max(0, yeni.puan + sonuc.puanKazandi);
     if (sonuc.kazandi || sonuc.hukmenGalibiyet) {
       yeni.galibiyet += 1;
       yeni.seri += 1;
@@ -81,10 +81,16 @@ export function istatistikGuncelle(sonuc: MacSonucu): Istatistik {
 }
 
 export function kazanilanPuan(oyuncuSkor: number, rakipSkor: number, hukmen: boolean): number {
-  if (hukmen) return 100;
-  const fark = oyuncuSkor - rakipSkor;
-  if (fark <= 0) return 0;
-  return Math.round(50 + fark * 0.5);
+  if (hukmen) return 50;
+  if (oyuncuSkor > rakipSkor) return 50;
+  if (oyuncuSkor === rakipSkor) return 0;
+  return -20;
+}
+
+// Soru başına RP: 10-20 arası, hıza göre
+export function soruPuani(kalanSure: number, toplamSure: number): number {
+  const oran = Math.max(0, Math.min(1, kalanSure / toplamSure));
+  return Math.round(10 + oran * 10);
 }
 
 // --- Leitner kart seviyeleri ---
