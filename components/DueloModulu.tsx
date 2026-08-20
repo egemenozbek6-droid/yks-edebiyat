@@ -1029,13 +1029,6 @@ export default function DueloModulu({
               </div>
             </div>
 
-            {/* Ana Sayfa */}
-            <button
-              onClick={cikisIste}
-              className="flex w-full items-center justify-center gap-2 rounded-2xl glass-card py-3 text-sm font-semibold text-muted-foreground ring-1 ring-border transition hover:text-teal active:scale-[0.98]"
-            >
-              <Home className="h-4 w-4" /> Ana Sayfa
-            </button>
           </div>
         </div>
       </div>
