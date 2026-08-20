@@ -1,6 +1,6 @@
 // ============================================================
 // EdebiKart — Günlük Görevler Sistemi
-// Her gün 2 rastgele orta zorluk görev verir, otomatik yenilenir.
+// Quest 1 her gün sabit, Quest 2 dinamik rotasyon.
 // ============================================================
 
 import { oku, yaz } from "./storage";
@@ -34,19 +34,22 @@ export type GunlukGorevState = {
   durumlar: Record<GorevTuru, GorevDurum>;
 };
 
-export const GOREV_HAVUZU: Gorev[] = [
-  {
-    tur: "ranked_win",
-    etiket: "Dereceli Zafer",
-    aciklama: "Bugün en az 1 Dereceli Maç kazan",
-    odul: 20,
-    hedef: 1,
-    ikon: "🎯",
-  },
+// Sabit görev 1 — her gün aynı
+export const SABIT_GOREV: Gorev = {
+  tur: "ranked_win",
+  etiket: "Günün İlk Zaferi",
+  aciklama: "1 Düello Maçı Kazan",
+  odul: 20,
+  hedef: 1,
+  ikon: "🎯",
+};
+
+// Dinamik görev havuzu — quest 2 için her gün rastgele
+export const DINAMIK_GOREV_HAVUZU: Gorev[] = [
   {
     tur: "streak_3",
-    etiket: "Seri Katili",
-    aciklama: "Herhangi bir maçta 3 soruyu üst üste doğru cevapla",
+    etiket: "Seri Üstadı",
+    aciklama: "3 soruyu üst üste doğru cevapla",
     odul: 15,
     hedef: 1,
     ikon: "⚡",
@@ -62,7 +65,7 @@ export const GOREV_HAVUZU: Gorev[] = [
   {
     tur: "score_100",
     etiket: "Yüzü Geç",
-    aciklama: "Bugün tüm maçlarda toplam 100 maç puanı topla",
+    aciklama: "Toplam 100 maç puanı topla",
     odul: 20,
     hedef: 100,
     ikon: "🏆",
@@ -70,7 +73,7 @@ export const GOREV_HAVUZU: Gorev[] = [
   {
     tur: "correct_10",
     etiket: "Bilgin",
-    aciklama: "Bugün toplam 10 soruyu doğru cevapla",
+    aciklama: "10 soruyu doğru cevapla",
     odul: 15,
     hedef: 10,
     ikon: "🧠",
@@ -83,9 +86,9 @@ function bugunTarih(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
-function rastgeleGorevler(havuz: Gorev[], adet: number): Gorev[] {
-  const karistirilmis = [...havuz].sort(() => Math.random() - 0.5);
-  return karistirilmis.slice(0, adet);
+function rastgeleDinamikGorev(): Gorev {
+  const idx = Math.floor(Math.random() * DINAMIK_GOREV_HAVUZU.length);
+  return DINAMIK_GOREV_HAVUZU[idx];
 }
 
 function bosDurum(tur: GorevTuru): GorevDurum {
@@ -97,7 +100,8 @@ export function gunlukGorevleriGetir(): GunlukGorevState {
   const kayitli = oku<GunlukGorevState | null>(GOREVLER_YOLU, null);
 
   if (!kayitli || kayitli.tarih !== bugun) {
-    const secilen = rastgeleGorevler(GOREV_HAVUZU, 2);
+    const dinamik = rastgeleDinamikGorev();
+    const secilen = [SABIT_GOREV, dinamik];
     const durumlar = {} as Record<GorevTuru, GorevDurum>;
     for (const g of secilen) {
       durumlar[g.tur] = bosDurum(g.tur);

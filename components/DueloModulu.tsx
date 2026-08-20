@@ -49,7 +49,7 @@ import {
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
 import type { Istatistik, Kullanici, MacSonucu, Rakip } from "@/lib/types";
-import { Pencil, Target } from "lucide-react";
+import { Pencil, Target, ChevronDown } from "lucide-react";
 import { sfxCorrect, sfxWrong, sfxTick, sfxVictory, sfxDefeat } from "@/lib/sfx";
 import {
   gunlukGorevleriGetir,
@@ -123,6 +123,7 @@ export default function DueloModulu({
   const toplamDogruRef = useRef(0);
   const toplamMatchScoreRef = useRef(0);
   const [gorevler, setGorevler] = useState<GunlukGorevState | null>(null);
+  const [gorevAcik, setGorevAcik] = useState(false);
 
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
@@ -867,7 +868,7 @@ export default function DueloModulu({
             </div>
 
             {/* Rank + Progress Bar */}
-            <div className="mb-4 rounded-2xl bg-muted/40 p-4 ring-1 ring-border">
+            <div className="mb-3 rounded-2xl bg-muted/40 p-4 ring-1 ring-border">
               <div className="flex items-center justify-between mb-2">
                 <div className="flex items-center gap-2">
                   <span className="text-lg">{simdikiRank.ikon}</span>
@@ -891,6 +892,72 @@ export default function DueloModulu({
               </div>
             </div>
 
+            {/* Günlük Görevler — kompakt akordiyon */}
+            {(() => {
+              const tamamlanan = gorevState.gorevler.filter((g) => gorevState.durumlar[g.tur]?.tamamlandi).length;
+              return (
+                <div className="mb-3 rounded-2xl bg-amber-500/5 ring-1 ring-amber-500/15 overflow-hidden">
+                  <button
+                    onClick={() => setGorevAcik(!gorevAcik)}
+                    className="flex w-full items-center justify-between px-3 py-2.5 transition hover:bg-amber-500/10"
+                  >
+                    <span className="inline-flex items-center gap-2 text-xs font-bold text-card-foreground">
+                      <span className="text-base">🎯</span>
+                      Günlük Görevler
+                      <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-500">
+                        {tamamlanan}/{gorevState.gorevler.length}
+                      </span>
+                    </span>
+                    <ChevronDown className={`h-4 w-4 text-amber-500 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
+                  </button>
+                  {gorevAcik && (
+                    <div className="space-y-2 px-3 pb-3 animate-rise">
+                      {gorevState.gorevler.map((g) => {
+                        const durum = gorevState.durumlar[g.tur];
+                        if (!durum) return null;
+                        const yuzde = Math.min(100, Math.round((durum.ilerleme / g.hedef) * 100));
+                        return (
+                          <div key={g.tur} className="rounded-xl bg-muted/40 p-2.5 ring-1 ring-border">
+                            <div className="flex items-start justify-between gap-2">
+                              <div className="flex items-center gap-1.5 min-w-0">
+                                <span className="text-sm shrink-0">{g.ikon}</span>
+                                <div className="min-w-0">
+                                  <p className="text-[11px] font-bold text-card-foreground truncate">{g.etiket}</p>
+                                  <p className="text-[9px] text-muted-foreground truncate">{g.aciklama}</p>
+                                </div>
+                              </div>
+                              <span className="shrink-0 rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold text-amber-500">
+                                +{g.odul} EP
+                              </span>
+                            </div>
+                            <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+                              <div
+                                className={`h-full rounded-full transition-[width] duration-500 ${durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"}`}
+                                style={{ width: `${yuzde}%` }}
+                              />
+                            </div>
+                            <div className="mt-1 flex items-center justify-between">
+                              <span className="text-[9px] text-muted-foreground">{durum.ilerleme} / {g.hedef}</span>
+                              {durum.tamamlandi && !durum.odulAlindi ? (
+                                <button
+                                  onClick={() => gorevOduluAl(g.tur)}
+                                  className="rounded-md bg-emerald-500 px-2.5 py-0.5 text-[9px] font-bold text-white transition hover:brightness-110 active:scale-95"
+                                >
+                                  Ödülü Al
+                                </button>
+                              ) : durum.odulAlindi ? (
+                                <span className="text-[9px] font-bold text-emerald-500">✓ Alındı</span>
+                              ) : null}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
             {/* Minimalist istatistik şeridi */}
             <div className="mt-auto grid grid-cols-3 gap-2">
               <div className="text-center">
@@ -905,65 +972,6 @@ export default function DueloModulu({
                 <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Toplam EP</p>
                 <p className="mt-0.5 text-lg font-bold text-teal">{rp}</p>
               </div>
-            </div>
-          </div>
-
-          {/* Günlük Görevler — tam genişlik */}
-          <div className="glass-card rounded-[1.75rem] p-5 ring-1 ring-border md:col-span-2">
-            <div className="mb-3 flex items-center gap-2">
-              <div className="grid h-9 w-9 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/20">
-                <Target className="h-4 w-4" strokeWidth={2} />
-              </div>
-              <div>
-                <p className="font-serif text-sm font-bold text-card-foreground">Günlük Görevler</p>
-                <p className="text-[10px] text-muted-foreground">Her gün yenilenir · {gorevState.tarih}</p>
-              </div>
-            </div>
-            <div className="grid gap-3 sm:grid-cols-2">
-              {gorevState.gorevler.map((g) => {
-                const durum = gorevState.durumlar[g.tur];
-                if (!durum) return null;
-                const yuzde = Math.min(100, Math.round((durum.ilerleme / g.hedef) * 100));
-                return (
-                  <div key={g.tur} className="rounded-2xl bg-muted/40 p-3 ring-1 ring-border">
-                    <div className="mb-2 flex items-start justify-between gap-2">
-                      <div className="flex items-center gap-2">
-                        <span className="text-lg">{g.ikon}</span>
-                        <div>
-                          <p className="text-xs font-bold text-card-foreground">{g.etiket}</p>
-                          <p className="text-[10px] text-muted-foreground">{g.aciklama}</p>
-                        </div>
-                      </div>
-                      <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[10px] font-bold text-amber-500">
-                        +{g.odul} EP
-                      </span>
-                    </div>
-                    <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
-                      <div
-                        className={`h-full rounded-full transition-[width] duration-500 ${
-                          durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"
-                        }`}
-                        style={{ width: `${yuzde}%` }}
-                      />
-                    </div>
-                    <div className="mt-1.5 flex items-center justify-between">
-                      <span className="text-[10px] text-muted-foreground">
-                        {durum.ilerleme} / {g.hedef}
-                      </span>
-                      {durum.tamamlandi && !durum.odulAlindi ? (
-                        <button
-                          onClick={() => gorevOduluAl(g.tur)}
-                          className="rounded-lg bg-emerald-500 px-3 py-1 text-[10px] font-bold text-white transition hover:brightness-110 active:scale-95"
-                        >
-                          Ödülü Al
-                        </button>
-                      ) : durum.odulAlindi ? (
-                        <span className="text-[10px] font-bold text-emerald-500">✓ Alındı</span>
-                      ) : null}
-                    </div>
-                  </div>
-                );
-              })}
             </div>
           </div>
 
