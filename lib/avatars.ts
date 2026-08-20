@@ -19,6 +19,17 @@ export const AVATARLAR: { id: string; emoji: string; etiket: string }[] = [
   { id: "tilki", emoji: "🦊", etiket: "Tilki" },
   { id: "kurt", emoji: "🐺", etiket: "Kurt" },
   { id: "kelebek", emoji: "🦋", etiket: "Kelebek" },
+  { id: "parşomen", emoji: "📜", etiket: "Parşömen" },
+  { id: "tapinak", emoji: "🏛️", etiket: "Tapınak" },
+  { id: "mum", emoji: "🕯️", etiket: "Mum" },
+  { id: "tac", emoji: "👑", etiket: "Taç" },
+  { id: "maske", emoji: "🎭", etiket: "Maske" },
+  { id: "firca", emoji: "🖌️", etiket: "Fırça" },
+  { id: "ampul", emoji: "💡", etiket: "Ampül" },
+  { id: "mezuniyet", emoji: "🎓", etiket: "Kavuk" },
+  { id: "kilic", emoji: "⚔️", etiket: "Kılıç" },
+  { id: "kalkan", emoji: "🛡️", etiket: "Kalkan" },
+  { id: "yazar", emoji: "✍️", etiket: "Yazar" },
 ];
 
 export function avatarEmoji(id: string): string {

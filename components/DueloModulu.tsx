@@ -427,8 +427,8 @@ export default function DueloModulu({
 
     if (!firebaseAktif) {
       setOdaHata("Çevrimiçi mod kapalı. Firebase anahtarları gerekli.");
-      setAdim("oda");
-      adimRef.current = "oda";
+      setAdim("oda_kur");
+      adimRef.current = "oda_kur";
       return;
     }
 
@@ -641,7 +641,7 @@ export default function DueloModulu({
       setOyuncuSkor(yeniSkor);
       setTurPuani(ertelenen);
       if (turPuaniTimer.current) clearTimeout(turPuaniTimer.current);
-      turPuaniTimer.current = window.setTimeout(() => setTurPuani(null), 1200);
+      turPuaniTimer.current = window.setTimeout(() => setTurPuani(null), 1000);
     }
     ertelenmisSkor.current = 0;
 
@@ -764,10 +764,6 @@ export default function DueloModulu({
 
   // --- LOBİ ---
   if (adim === "lobi" && kullanici) {
-    const galibiyetOrani =
-      istatistik && istatistik.macSayisi > 0
-        ? Math.round((istatistik.galibiyet / istatistik.macSayisi) * 100)
-        : 0;
     const rp = istatistik?.puan ?? 0;
     const simdikiRank = rankBul(rp);
     const hedefRank = sonrakiRank(rp);
@@ -818,7 +814,7 @@ export default function DueloModulu({
                   <span className="text-lg">{simdikiRank.ikon}</span>
                   <span className="font-serif text-sm font-bold text-card-foreground">{simdikiRank.ad}</span>
                 </div>
-                <span className="text-sm font-bold text-duello">{rp} RP</span>
+                <span className="text-sm font-bold text-duello">{rp} EP</span>
               </div>
               <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
                 <div
@@ -828,7 +824,7 @@ export default function DueloModulu({
               </div>
               {hedefRank && (
                 <p className="mt-1.5 text-[10px] text-muted-foreground">
-                  {hedefRank.ad} için {hedefeKalan} RP kaldı
+                  {hedefRank.ad} için {hedefeKalan} EP kaldı
                 </p>
               )}
             </div>
@@ -840,11 +836,11 @@ export default function DueloModulu({
                 <p className="mt-0.5 text-lg font-bold text-emerald-500">{istatistik?.galibiyet ?? 0}</p>
               </div>
               <div className="text-center border-x border-border">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Kazanma</p>
-                <p className="mt-0.5 text-lg font-bold text-card-foreground">%{galibiyetOrani}</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Mağlubiyet</p>
+                <p className="mt-0.5 text-lg font-bold text-destructive">{istatistik?.maglubiyet ?? 0}</p>
               </div>
               <div className="text-center">
-                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Toplam RP</p>
+                <p className="text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">Toplam EP</p>
                 <p className="mt-0.5 text-lg font-bold text-duello">{rp}</p>
               </div>
             </div>
@@ -869,7 +865,7 @@ export default function DueloModulu({
                   </span>
                 </div>
                 <p className="font-serif text-base font-bold text-card-foreground">Dereceli Maç</p>
-                <p className="mt-1 text-xs text-muted-foreground">RP kazan ve lig atla!</p>
+                <p className="mt-1 text-xs text-muted-foreground">EP kazan ve lig atla!</p>
                 <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-duello">
                   Hemen Rakip Bul <ChevronRight className="h-3 w-3" />
                 </div>
@@ -937,28 +933,27 @@ export default function DueloModulu({
     );
   }
 
-  // --- ODA (kurma / katılma ekranı) ---
-  if (adim === "oda") {
+  // --- ODA KUR (sadece soru sayısı seçimi → oda kodu oluştur) ---
+  if (adim === "oda_kur") {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(220,38,38,0.15)] max-w-sm w-full ring-1 ring-border">
           <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-duello/10 text-duello ring-1 ring-duello/20">
             <KeyRound className="h-6 w-6" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Özel Oda</h2>
-
+          <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Oda Kur</h2>
           <p className="mt-2 text-sm text-center text-pretty text-muted-foreground">
-            Bir oda kur ve 4 haneli kodunu arkadaşınla paylaş, ya da elindeki koda katıl.
+            Soru sayısını seç, oda kodun otomatik oluşturulacak.
           </p>
 
-          <div className="mt-4">
+          <div className="mt-5">
             <p className="mb-2 text-xs font-semibold text-muted-foreground">Soru sayısı</p>
             <div className="flex gap-2">
               {[5, 10, 15].map((n) => (
                 <button
                   key={n}
                   onClick={() => setFriendlySoruSayisi(n)}
-                  className={`flex-1 rounded-xl py-2 text-sm font-semibold transition ${
+                  className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition ${
                     friendlySoruSayisi === n
                       ? "bg-duello text-duello-foreground shadow-sm"
                       : "bg-muted/60 text-muted-foreground hover:text-foreground"
@@ -970,6 +965,37 @@ export default function DueloModulu({
             </div>
           </div>
 
+          <button
+            onClick={odaKur}
+            disabled={cooldownAktif}
+            className="mt-5 w-full rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            Odayı Oluştur
+          </button>
+          <button
+            onClick={() => setAdim("lobi")}
+            className="mt-3 w-full text-xs font-semibold text-muted-foreground transition hover:text-duello"
+          >
+            Geri Dön
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  // --- ODA KATIL (sadece kod girişi) ---
+  if (adim === "oda_katil") {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(220,38,38,0.15)] max-w-sm w-full ring-1 ring-border">
+          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-duello/10 text-duello ring-1 ring-duello/20">
+            <KeyRound className="h-6 w-6" strokeWidth={1.5} />
+          </div>
+          <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Odaya Katıl</h2>
+          <p className="mt-2 text-sm text-center text-pretty text-muted-foreground">
+            Arkadaşının paylaştığı 4 haneli kodu gir.
+          </p>
+
           <input
             type="text"
             value={odaInput}
@@ -980,30 +1006,21 @@ export default function DueloModulu({
             onKeyDown={(e) => e.key === "Enter" && odayaKatil()}
             placeholder="4 haneli kod..."
             maxLength={4}
-            className="mt-4 w-full rounded-2xl bg-muted/60 px-4 py-3 text-sm font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
+            className="mt-5 w-full rounded-2xl bg-muted/60 px-4 py-3.5 text-lg font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
           />
           {odaHata && (
             <p className="mt-2 text-xs font-semibold text-destructive text-center">{odaHata}</p>
           )}
-          <div className="mt-4 grid grid-cols-2 gap-3">
-            <button
-              onClick={odayaKatil}
-              disabled={odaInput.length !== 4}
-              className="rounded-2xl bg-duello py-3 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
-            >
-              Koda Katıl
-            </button>
-            <button
-              onClick={odaKur}
-              disabled={cooldownAktif}
-              className="rounded-2xl glass-card py-3 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-            >
-              Oda Kur
-            </button>
-          </div>
+          <button
+            onClick={odayaKatil}
+            disabled={odaInput.length !== 4}
+            className="mt-4 w-full rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+          >
+            Katıl
+          </button>
           <button
             onClick={() => setAdim("lobi")}
-            className="mt-4 w-full text-xs font-semibold text-muted-foreground transition hover:text-duello"
+            className="mt-3 w-full text-xs font-semibold text-muted-foreground transition hover:text-duello"
           >
             Geri Dön
           </button>
@@ -1090,13 +1107,13 @@ export default function DueloModulu({
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {kullanici?.kullaniciAdi}
               </p>
-              <p className="mt-1 text-2xl font-bold text-duello">{sonuc.oyuncuSkor} RP</p>
+              <p className="mt-1 text-2xl font-bold text-duello">{sonuc.oyuncuSkor} EP</p>
             </div>
             <div className="glass-card rounded-2xl p-4 ring-1 ring-border">
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {sonuc.rakipAdi}
               </p>
-              <p className="mt-1 text-2xl font-bold text-foreground">{sonuc.rakipSkor} RP</p>
+              <p className="mt-1 text-2xl font-bold text-foreground">{sonuc.rakipSkor} EP</p>
             </div>
           </div>
 
@@ -1110,7 +1127,7 @@ export default function DueloModulu({
                     : "bg-muted/40 text-muted-foreground ring-border"
               }`}>
                 <Zap className="h-4 w-4" />
-                {sonuc.puanKazandi > 0 ? `+${sonuc.puanKazandi} RP` : sonuc.puanKazandi < 0 ? `${sonuc.puanKazandi} RP` : "0 RP"}
+                {sonuc.puanKazandi > 0 ? `+${sonuc.puanKazandi} EP` : sonuc.puanKazandi < 0 ? `${sonuc.puanKazandi} EP` : "0 EP"}
               </div>
               {sonuc.seri >= 2 && (
                 <div className="flex items-center justify-center gap-2 rounded-2xl bg-orange-500/10 py-2.5 text-sm font-semibold text-orange-500 ring-1 ring-orange-500/20">
@@ -1277,13 +1294,12 @@ export default function DueloModulu({
           </div>
         )}
 
-        {/* Tur sonu puan animasyonu */}
+        {/* Tur sonu puan animasyonu — sleek float-up */}
         {turPuani !== null && (
-          <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
-            <div className="animate-pop flex items-center gap-2 rounded-2xl bg-duello/20 px-6 py-4 text-2xl font-bold text-duello-foreground shadow-2xl ring-2 ring-duello/40 backdrop-blur-md">
-              <Zap className="h-6 w-6 text-duello" />
-              +{turPuani} RP!
-            </div>
+          <div className="pointer-events-none absolute left-1/2 top-2 z-20 -translate-x-1/2 animate-[floatUp_1s_ease-out_forwards]">
+            <span className="text-lg font-bold text-emerald-500 drop-shadow-sm">
+              +{turPuani} EP
+            </span>
           </div>
         )}
       </div>

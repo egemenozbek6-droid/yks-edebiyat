@@ -87,7 +87,7 @@ export function kazanilanPuan(oyuncuSkor: number, rakipSkor: number, hukmen: boo
   return -20;
 }
 
-// Soru başına RP: 10-20 arası, hıza göre
+// Soru başına EP: 10-20 arası, hıza göre
 export function soruPuani(kalanSure: number, toplamSure: number): number {
   const oran = Math.max(0, Math.min(1, kalanSure / toplamSure));
   return Math.round(10 + oran * 10);
