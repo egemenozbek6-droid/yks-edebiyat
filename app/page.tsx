@@ -5,10 +5,10 @@ import { TriangleAlert as AlertTriangle, Brain, Flame, Info, Layers, Swords, Tar
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
-import TemaAnahtari from "@/components/TemaAnahtari";
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
+import SplashEkran from "@/components/SplashEkran";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
 import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
 import { sfxMuted, sfxMuteToggle } from "@/lib/sfx";
@@ -47,6 +47,14 @@ export default function App() {
   const [cikisOnayAcik, setCikisOnayAcik] = useState(false);
   const [cikisMesaj, setCikisMesaj] = useState("");
   const cikisOnayCallback = useRef<(() => void) | null>(null);
+
+  const [splashAktif, setSplashAktif] = useState(true);
+
+  // Splash ekranı: 1.5 saniye sonra kapat
+  useEffect(() => {
+    const t = window.setTimeout(() => setSplashAktif(false), 1500);
+    return () => clearTimeout(t);
+  }, []);
 
   // Intro animasyonu: ruh hali modalı kapanana kadar bekle, sonra 1 kez çalış
   const [introAktif, setIntroAktif] = useState(false);
@@ -175,6 +183,7 @@ export default function App() {
 
   return (
     <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col">
+      {splashAktif && <SplashEkran />}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04]"
         style={{
@@ -198,7 +207,6 @@ export default function App() {
           </div>
 
           <div className="flex items-center gap-2">
-            <TemaAnahtari />
             <button
               onClick={() => setSfxSesli(!sfxMuteToggle())}
               className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"

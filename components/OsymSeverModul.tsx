@@ -146,9 +146,9 @@ export default function OsymSeverModul() {
           </span>
           <button
             onClick={() => setBasladi(false)}
-            className="text-[11px] font-semibold text-muted-foreground transition hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 hover:ring-destructive/30 active:scale-95"
           >
-            Çıkış
+            <X className="h-3 w-3" /> Çıkış
           </button>
         </div>
       </div>

@@ -7,7 +7,8 @@ import {
   mevcutIstatistik,
   kullaniciKaydet,
 } from "@/lib/user";
-import { AVATARLAR, avatarEmoji, avatarKilitli, avatarRankAd, type AvatarKategori } from "@/lib/avatars";
+import { AVATARLAR, avatarEmoji, avatarLigKilitli, RANK_KADEMELERI } from "@/lib/avatars";
+import { rankBul } from "@/lib/types";
 import type { Kullanici } from "@/lib/types";
 
 type Props = {
@@ -15,7 +16,7 @@ type Props = {
   onGuncellendi: () => void;
 };
 
-type KilitliAvatar = { emoji: string; etiket: string; minEP: number } | null;
+type KilitliAvatar = { emoji: string; etiket: string; minEP: number; minLig: number } | null;
 
 export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const [kullanici, setKullanici] = useState<Kullanici | null>(null);
@@ -47,13 +48,15 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const standartlar = AVATARLAR.filter((a) => a.kategori === "standart");
   const prestijler = AVATARLAR.filter((a) => a.kategori === "prestij");
 
+  const simdikiRank = rankBul(mevcutEP);
+
   const renderAvatarButton = (a: (typeof AVATARLAR)[number]) => {
-    const kilitli = avatarKilitli(a.minEP, mevcutEP);
+    const kilitli = a.kategori === "prestij" ? avatarLigKilitli(a.minLig, mevcutEP) : false;
     const secili = seciliAvatar === a.id;
     return (
       <button
         key={a.id}
-        onClick={() => (kilitli ? setKilitliPreview({ emoji: a.emoji, etiket: a.etiket, minEP: a.minEP }) : avatarSec(a.id, false))}
+        onClick={() => (kilitli ? setKilitliPreview({ emoji: a.emoji, etiket: a.etiket, minEP: a.minEP, minLig: a.minLig }) : avatarSec(a.id, false))}
         className={`relative grid aspect-square place-items-center rounded-xl text-lg transition ${
           secili
             ? "bg-primary/20 ring-2 ring-primary"
@@ -62,7 +65,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
               : "bg-muted hover:bg-muted/70"
         }`}
         aria-label={a.etiket}
-        title={kilitli ? `${a.etiket} — ${a.minEP} EP` : a.etiket}
+        title={kilitli ? `${a.etiket} — Lig ${a.minLig}` : a.etiket}
       >
         {kilitli ? (
           <>
@@ -154,7 +157,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
               {prestijler.map(renderAvatarButton)}
             </div>
             <p className="mt-2 text-[10px] text-muted-foreground">
-              🔒 simgeli avatarlar belirli EP seviyelerine ulaşınca açılır
+              🔒 Prestij avatarlar lig atladıkça açılır. Mevcut lig: <span className="font-bold text-amber-500">{simdikiRank.ad}</span>
             </p>
           </div>
 
@@ -193,10 +196,10 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
               {kilitliPreview.etiket}
             </h3>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Bu avatar <span className="font-bold text-amber-500">{avatarRankAd(kilitliPreview.minEP)}</span> ({kilitliPreview.minEP} EP) seviyesinde açılır!
+              Bu avatar <span className="font-bold text-amber-500">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Efsane"}</span> ligine ulaşınca açılır!
             </p>
             <div className="mt-3 rounded-xl bg-muted/40 px-4 py-2 text-xs text-muted-foreground">
-              Mevcut EP: <span className="font-bold text-foreground">{mevcutEP}</span> / {kilitliPreview.minEP}
+              Gerekli lig: <span className="font-bold text-foreground">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Edebiyat Efsanesi"}</span> ({kilitliPreview.minEP}+ EP)
             </div>
             <button
               onClick={() => setKilitliPreview(null)}

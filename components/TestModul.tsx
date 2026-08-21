@@ -146,9 +146,9 @@ export default function TestModul({ onSonuc }: Props) {
               setSecilenDonem(null);
               setSorular([]);
             }}
-            className="text-[11px] font-semibold text-muted-foreground transition hover:text-foreground"
+            className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-primary/30 active:scale-95"
           >
-            Dönemi değiştir
+            <RotateCcw className="h-3 w-3" /> Dönemi değiştir
           </button>
         </div>
       </div>
