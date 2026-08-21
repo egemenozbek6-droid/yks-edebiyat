@@ -1,5 +1,7 @@
 "use client";
 
+import { Layers } from "lucide-react";
+
 export default function SplashEkran() {
   return (
     <div
@@ -12,10 +14,9 @@ export default function SplashEkran() {
           className="absolute inset-0 rounded-[2rem] blur-2xl"
           style={{ background: "radial-gradient(circle, rgba(234,88,12,0.35) 0%, transparent 70%)" }}
         />
-        <img
-          src="/icon.svg"
-          alt="Edebikart"
-          className="relative h-24 w-24"
+        <Layers
+          className="relative h-16 w-16 text-white"
+          strokeWidth={1.5}
           style={{ filter: "drop-shadow(0 0 12px rgba(234,88,12,0.5))" }}
         />
       </div>
