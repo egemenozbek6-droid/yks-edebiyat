@@ -27,11 +27,17 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
+      - name: Clean & Re-add Android Platform
+        run: |
+          rm -rf android
+          npx cap add android
+          npx cap sync
+
       - name: Build Android APK
         run: |
-          npx cap sync
           cd android
-          bash ./gradlew assembleDebug
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
