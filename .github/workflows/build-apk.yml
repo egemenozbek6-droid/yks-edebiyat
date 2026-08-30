@@ -18,7 +18,7 @@ jobs:
 
       - name: Install dependencies & Build web
         run: |
-          npm install
+          npm install --legacy-peer-deps
           npm run build
 
       - name: Set up JDK 17
@@ -29,7 +29,6 @@ jobs:
 
       - name: Build Android APK
         run: |
-          npx cap add android
           npx cap sync
           cd android
           chmod +x gradlew
