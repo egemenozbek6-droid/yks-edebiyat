@@ -120,6 +120,11 @@ export default function DueloModulu({
 
   // Günlük görev takibi (maç içi)
   const dogruSeriRef = useRef(0);
+  // Maç içi "soru bilme streaki" — UI'da gösterilen canlı state.
+  // NOT: istatistik.seri ile KARIŞTIRMA — o, maç KAZANMA streakidir ve
+  // sadece maç bittiğinde güncellenir. Bu state ise maç içinde soru
+  // cevapladıkça anlık güncellenir.
+  const [dogruSeri, setDogruSeri] = useState(0);
   const toplamDogruRef = useRef(0);
   const toplamMatchScoreRef = useRef(0);
   const [gorevler, setGorevler] = useState<GunlukGorevState | null>(null);
@@ -390,6 +395,7 @@ export default function DueloModulu({
       adimRef.current = "duelo";
       // Günlük görev takibini sıfırla
       dogruSeriRef.current = 0;
+      setDogruSeri(0);
       toplamDogruRef.current = 0;
       toplamMatchScoreRef.current = 0;
     },
@@ -556,11 +562,13 @@ export default function DueloModulu({
         ertelenmisSkor.current = rp;
         sfxCorrect();
         dogruSeriRef.current += 1;
+        setDogruSeri(dogruSeriRef.current);
         toplamDogruRef.current += 1;
       } else {
         ertelenmisSkor.current = 0;
         sfxWrong();
         dogruSeriRef.current = 0;
+        setDogruSeri(0);
       }
       // Online: cevabı Firestore'a gönder
       const secenekIndex = soru.secenekler.indexOf(secenek);
@@ -1519,9 +1527,9 @@ export default function DueloModulu({
                 {ertelenmisSkor.current > 0 && (
                   <span className="font-bold">+{ertelenmisSkor.current} EP</span>
                 )}
-                {istatistik?.seri >= 2 && (
+                {dogruSeri >= 2 && (
                   <span className="inline-flex items-center gap-0.5 text-orange-500">
-                    <Flame className="h-3 w-3" /> {istatistik.seri}
+                    <Flame className="h-3 w-3" /> {dogruSeri}
                   </span>
                 )}
               </span>
