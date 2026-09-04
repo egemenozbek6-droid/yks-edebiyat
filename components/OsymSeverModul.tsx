@@ -57,8 +57,8 @@ export default function OsymSeverModul() {
   if (!basladi) {
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-[1.75rem] bg-card p-8 text-center shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)]">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-osym/15 text-osym ring-1 ring-osym/30 animate-pop">
+        <div className="relative mb-6 overflow-hidden rounded-3xl border border-amber-500/20 bg-[linear-gradient(135deg,_#172033,_#0f172a)] p-8 text-center shadow-[0_16px_40px_rgba(217,119,6,0.08)]">
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-destructive text-destructive-foreground shadow-[0_4px_0_#450a0a] ring-1 ring-red-300/20 animate-pop">
             <Flame className="h-7 w-7" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
@@ -69,7 +69,7 @@ export default function OsymSeverModul() {
 
         <button
           onClick={basla}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-osym py-4 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border-b-[5px] border-amber-900 bg-primary py-4 text-sm font-black tracking-wide text-primary-foreground transition hover:brightness-110 active:translate-y-[5px] active:border-b-0"
         >
           <Flame className="h-4 w-4" /> Denemeyi Başlat
         </button>

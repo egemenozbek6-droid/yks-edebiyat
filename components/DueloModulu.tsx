@@ -993,7 +993,7 @@ export default function DueloModulu({
             <button
               onClick={rastgeleRakip}
               disabled={cooldownAktif}
-              className="group relative overflow-hidden rounded-[1.5rem] glass-card p-5 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+              className="group relative min-h-56 overflow-hidden rounded-3xl border border-amber-500/20 bg-[radial-gradient(ellipse_at_top_right,_rgba(217,119,6,0.18),_transparent_58%),linear-gradient(145deg,_#182338,_#090d16)] p-6 text-left shadow-[0_16px_40px_rgba(217,119,6,0.1)] transition hover:border-amber-500/40 active:translate-y-1 disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-duello/15 blur-3xl transition group-hover:bg-duello/25" />
               <div className="relative">
@@ -1005,10 +1005,10 @@ export default function DueloModulu({
                     Ranked
                   </span>
                 </div>
-                <p className="font-serif text-base font-bold text-card-foreground">Dereceli Maç</p>
-                <p className="mt-1 text-xs text-muted-foreground">EP kazan ve lig atla!</p>
-                <div className="mt-3 flex items-center gap-1 text-xs font-semibold text-duello">
-                  Hemen Rakip Bul <ChevronRight className="h-3 w-3" />
+<p className="font-serif text-2xl font-black tracking-tight text-foreground">Dereceli Düello</p>
+  <p className="mt-1 text-sm font-semibold text-amber-200/80">Canlı eşleşme · EP kazan · lig atla</p>
+                <div className="mt-5 flex items-center gap-2 rounded-2xl border-b-[5px] border-emerald-900 bg-emerald-600 px-4 py-3 text-sm font-black tracking-wide text-white transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0">
+                  Arenaya Çık <ChevronRight className="h-4 w-4" />
                 </div>
               </div>
             </button>

@@ -127,7 +127,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
                 <button disabled={adKaydediliyor} onClick={async () => { setAdKaydediliyor(true); const sonuc = await kullaniciAdiGuncelle(yeniAd); setAdMesaji(sonuc.tamam ? "Rumuz güncellendi" : sonuc.hata ?? "İsim değiştirilemedi"); if (sonuc.tamam) { const guncel = mevcutKullanici(); if (guncel) setKullanici(guncel); onGuncellendi(); } setAdKaydediliyor(false); }} className="rounded-xl border-b-4 border-amber-700 bg-primary px-4 py-2 text-xs font-black text-primary-foreground transition-all active:translate-y-1 active:border-b-0">Kaydet</button>
               </div>
             ) : (
-              <div className="flex items-center gap-2 rounded-xl bg-muted/60 px-4 py-3 ring-1 ring-border"><Lock className="h-4 w-4 shrink-0 text-muted-foreground" /><span className="flex-1 truncate text-sm font-bold text-foreground">{kullanici.kullaniciAdi}</span><span className="text-[10px] font-bold text-muted-foreground">{kullanici.hasChangedUsername ? "KULLANILDI" : "100 EP'DE AÇILIR"}</span></div>
+              <div className="flex items-center gap-2 rounded-xl bg-muted/60 px-4 py-3 ring-1 ring-border"><Lock className="h-4 w-4 shrink-0 text-muted-foreground" /><span className="flex-1 truncate text-sm font-bold text-foreground">{kullanici.kullaniciAdi}</span><span className="text-[10px] font-bold text-muted-foreground">{kullanici.hasChangedName ? "KULLANILDI" : "100 EP'DE AÇILIR"}</span></div>
             )}
             <p className="mt-1.5 text-[11px] text-muted-foreground">{adMesaji || (kullaniciAdiDegistirebilirMi() ? "Eser Çırağı oldun: rumuzunu bir kez değiştirebilirsin." : "100 EP ile Eser Çırağı ligine ulaşınca açılır.")}</p>
           </div>

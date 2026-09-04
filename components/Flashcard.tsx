@@ -142,7 +142,7 @@ export default function Flashcard({
           >
             {/* ÖN YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 flex flex-col rounded-3xl border border-amber-500/20 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
               <div className="flex items-start justify-between gap-3">
@@ -175,7 +175,7 @@ export default function Flashcard({
 
             {/* ARKA YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 flex flex-col rounded-3xl border border-amber-500/20 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -232,13 +232,13 @@ export default function Flashcard({
       <div className="mt-3 grid grid-cols-2 gap-2.5 shrink-0">
         <button
           onClick={() => tamamla("sol")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-card py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-destructive active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-slate-950 bg-slate-800 py-3 text-sm font-bold text-stone-200 shadow-sm transition hover:bg-slate-700 active:translate-y-[5px] active:border-b-0"
         >
           <RotateCcw className="h-4 w-4" /> Tekrar
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-emerald-900 bg-emerald-600 py-3 text-sm font-black tracking-wide text-white shadow-md transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0"
         >
           <Check className="h-4 w-4" /> Öğrendim
         </button>

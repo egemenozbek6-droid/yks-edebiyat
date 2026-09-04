@@ -32,11 +32,11 @@ export function kullaniciKaydet(kullanici: Kullanici): void {
 export async function kullaniciAdiGuncelle(yeniAd: string): Promise<{ tamam: boolean; hata?: string }> {
   const kullanici = mevcutKullanici();
   if (!kullanici) return { tamam: false, hata: "Kullanıcı bulunamadı" };
-  if (kullanici.hasChangedUsername) return { tamam: false, hata: "İsim değiştirme hakkınız kullanıldı" };
+  if (kullanici.hasChangedName) return { tamam: false, hata: "İsim değiştirme hakkınız kullanıldı" };
   const kontrol = kullaniciAdiKontrol(yeniAd);
   if (!kontrol.musait) return { tamam: false, hata: kontrol.mesaj };
   const eskiAd = kullanici.kullaniciAdi;
-  const yeniKullanici = { ...kullanici, kullaniciAdi: yeniAd.trim(), hasChangedUsername: true };
+  const yeniKullanici = { ...kullanici, kullaniciAdi: yeniAd.trim(), hasChangedName: true };
   const kullaniciId = String(kullanici.olusturmaTarihi);
 
   if (firebaseAktif && db) {
@@ -62,7 +62,7 @@ export async function kullaniciAdiGuncelle(yeniAd: string): Promise<{ tamam: boo
 
 export function kullaniciAdiDegistirebilirMi(): boolean {
   const kullanici = mevcutKullanici();
-  return Boolean(kullanici && !kullanici.hasChangedUsername && mevcutIstatistik().puan >= 100);
+  return Boolean(kullanici && !kullanici.hasChangedName && mevcutIstatistik().puan >= 100);
 }
 
 export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: string } {

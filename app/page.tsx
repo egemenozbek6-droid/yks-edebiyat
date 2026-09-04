@@ -219,14 +219,14 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSfxSesli(!sfxMuteToggle())}
-              className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"
+              className="w-9 h-9 rounded-2xl bg-secondary text-secondary-foreground border-b-4 border-background shadow-sm flex items-center justify-center transition hover:bg-muted active:translate-y-1 active:border-b-0 shrink-0"
               aria-label={sfxSesli ? "Sesi kapat" : "Sesi aç"}
             >
               {sfxSesli ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
             <button
               onClick={() => setInfoAcik(true)}
-              className="w-8 h-8 rounded-full glass-card shadow-sm flex items-center justify-center text-muted-foreground hover:text-primary transition shrink-0 ring-1 ring-border"
+              className="w-9 h-9 rounded-2xl bg-secondary text-secondary-foreground border-b-4 border-background shadow-sm flex items-center justify-center transition hover:bg-muted active:translate-y-1 active:border-b-0 shrink-0"
               aria-label="Bilgi"
             >
               <Info className="w-4 h-4" />
