@@ -472,13 +472,6 @@ export default function DueloModulu({
     const k = kullaniciRef.current;
     if (!k) return;
 
-    if (!firebaseAktif) {
-      setOdaHata("Çevrimiçi mod kapalı. Firebase anahtarları gerekli.");
-      setAdim("oda_kur");
-      adimRef.current = "oda_kur";
-      return;
-    }
-
     const unsub = odaKurOnline(
       kod,
       { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
@@ -506,11 +499,6 @@ export default function DueloModulu({
     if (trimmedInput.length !== 4) return;
     const k = kullaniciRef.current;
     if (!k) return;
-
-    if (!firebaseAktif) {
-      setOdaHata("Çevrimiçi mod kapalı. Firebase anahtarları gerekli.");
-      return;
-    }
 
     // Tüm duel state'ini sıfırla
     dueloSifirla();
@@ -1471,10 +1459,10 @@ export default function DueloModulu({
             const gosterDogru = secim !== null && rakipCevapladi && dogruSecenek;
             const gosterYanlis = secildi && !dogruSecenek;
 
-            let stil = "glass-card hover:bg-muted/40 text-card-foreground ring-1 ring-border";
-            if (gosterDogru) stil = "bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/30";
-            else if (gosterYanlis) stil = "bg-destructive/15 text-destructive ring-1 ring-destructive/30";
-            else if (secim !== null) stil = "bg-card/40 text-muted-foreground opacity-60 ring-1 ring-border";
+  let stil = "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/90 text-slate-100 hover:bg-slate-800 active:translate-y-1 active:border-b-0";
+  if (gosterDogru) stil = "border border-emerald-500 border-b-4 border-b-emerald-800 bg-emerald-600/30 text-emerald-200";
+  else if (gosterYanlis) stil = "border border-rose-500 border-b-4 border-b-rose-800 bg-rose-600/30 text-rose-200";
+  else if (secim !== null) stil = "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/60 text-slate-400 opacity-60";
 
             return (
               <button

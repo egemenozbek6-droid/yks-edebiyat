@@ -166,7 +166,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
               </h2>
               <button
                 onClick={gec}
-                className="text-muted-foreground transition hover:text-foreground"
+                className="rounded-xl border-b-4 border-slate-950 bg-slate-800 p-2 text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
                 aria-label="Kapat"
               >
                 <X className="h-5 w-5" />
@@ -180,7 +180,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
                   <button
                     key={d.id}
                     onClick={() => sec(d)}
-                    className="flex flex-col items-center gap-1.5 rounded-xl border-b-4 border-blue-950 bg-secondary px-1 py-3 text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
+                    className="flex flex-col items-center gap-1.5 rounded-xl border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/90 px-1 py-3 text-slate-100 transition hover:bg-slate-800 active:translate-y-1 active:border-b-0"
                   >
                     <Ikon className={`h-7 w-7 ${d.ikonSinif}`} strokeWidth={1.5} />
                     <span className="text-[10px] font-semibold text-muted-foreground">{d.etiket}</span>
@@ -191,7 +191,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
 
             <button
               onClick={gec}
-              className="mt-5 w-full rounded-xl border-b-4 border-blue-950 bg-secondary py-3 text-xs font-bold text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
+              className="mt-5 w-full rounded-xl border-b-4 border-sky-800 bg-sky-600 py-3 text-xs font-bold text-white transition hover:bg-sky-500 active:translate-y-1 active:border-b-0"
             >
               Şimdi değil, direkt çalışmaya başla
             </button>

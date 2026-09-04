@@ -119,7 +119,7 @@ export default function OsymSeverModul() {
           </button>
           <button
             onClick={() => setBasladi(false)}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground hover:ring-osym/40 active:scale-[0.98]"
+            className="rounded-xl border-b-4 border-slate-950 bg-slate-800 py-3.5 text-sm font-bold text-slate-100 shadow-sm transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
           >
             Geri Dön
           </button>
@@ -146,7 +146,7 @@ export default function OsymSeverModul() {
           </span>
           <button
             onClick={() => setBasladi(false)}
-            className="inline-flex items-center gap-1.5 rounded-xl border-b-4 border-red-900 bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 hover:ring-destructive/30 active:scale-95"
+            className="inline-flex items-center gap-1.5 rounded-xl border-b-4 border-red-900 bg-red-600 px-3 py-1 text-[11px] font-bold text-white transition hover:bg-red-500 active:translate-y-1 active:border-b-0"
           >
             <X className="h-3 w-3" /> Çıkış
           </button>
@@ -178,10 +178,10 @@ export default function OsymSeverModul() {
             const gosterYanlis = secildi && !dogruSecenek;
 
             let stil =
-              "bg-card ring-border text-card-foreground hover:ring-osym/40 hover:bg-muted/60";
-            if (gosterDogru) stil = "bg-emerald-500/15 ring-emerald-500/60 text-emerald-700 dark:text-emerald-300";
-            else if (gosterYanlis) stil = "bg-destructive/15 ring-destructive/60 text-destructive";
-            else if (secim !== null) stil = "bg-card ring-border text-muted-foreground opacity-60";
+              "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/90 text-slate-100 hover:bg-slate-800 active:translate-y-1 active:border-b-0";
+            if (gosterDogru) stil = "border border-emerald-500 border-b-4 border-b-emerald-800 bg-emerald-600/30 text-emerald-200";
+            else if (gosterYanlis) stil = "border border-rose-500 border-b-4 border-b-rose-800 bg-rose-600/30 text-rose-200";
+            else if (secim !== null) stil = "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/60 text-slate-400 opacity-60";
 
             return (
               <button

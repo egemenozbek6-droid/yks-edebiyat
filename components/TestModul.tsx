@@ -109,7 +109,7 @@ export default function TestModul({ onSonuc }: Props) {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={() => basla(secilenDonem)}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-xl border-b-4 border-sky-800 bg-sky-600 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-sky-500 active:translate-y-1 active:border-b-0"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -118,7 +118,7 @@ export default function TestModul({ onSonuc }: Props) {
               setSecilenDonem(null);
               setSorular([]);
             }}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground active:scale-[0.98]"
+            className="rounded-xl border-b-4 border-slate-950 bg-slate-800 py-3.5 text-sm font-bold text-slate-100 shadow-sm transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
           >
             Dönem Değiştir
           </button>
@@ -178,10 +178,10 @@ export default function TestModul({ onSonuc }: Props) {
             const gosterYanlis = secildi && !dogruSecenek;
 
             let stil =
-              "bg-card text-card-foreground hover:bg-muted/60";
-            if (gosterDogru) stil = "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300";
-            else if (gosterYanlis) stil = "bg-destructive/15 text-destructive";
-            else if (secim !== null) stil = "bg-card text-muted-foreground opacity-60";
+              "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/90 text-slate-100 hover:bg-slate-800 active:translate-y-1 active:border-b-0";
+            if (gosterDogru) stil = "border border-emerald-500 border-b-4 border-b-emerald-800 bg-emerald-600/30 text-emerald-200";
+            else if (gosterYanlis) stil = "border border-rose-500 border-b-4 border-b-rose-800 bg-rose-600/30 text-rose-200";
+            else if (secim !== null) stil = "border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/60 text-slate-400 opacity-60";
 
             return (
               <button

@@ -111,7 +111,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </div>
             <button
               onClick={onKapat}
-              className="text-muted-foreground transition hover:text-primary"
+              className="rounded-xl border-b-4 border-slate-950 bg-slate-800 p-2 text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
               aria-label="Kapat"
             >
               <X className="h-5 w-5" />
@@ -120,11 +120,11 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
 
           {/* Kullanıcı adı — 100 EP'de tek seferlik hak */}
           <div className="mb-5">
-            <label htmlFor="yeni-ad" className="mb-2 block text-sm font-bold text-foreground">İsim (Düello Rumuzu)</label>
+            <label htmlFor="yeni-ad" className="mb-2 block text-sm font-bold text-foreground">İsim</label>
             {kullaniciAdiDegistirebilirMi() ? (
               <div className="flex gap-2">
                 <input id="yeni-ad" value={yeniAd} onChange={(e) => setYeniAd(e.target.value)} placeholder={kullanici.kullaniciAdi} className="min-w-0 flex-1 rounded-xl bg-muted/60 px-4 py-3 text-sm font-bold text-foreground outline-none ring-1 ring-primary/25 focus:ring-primary" />
-                <button disabled={adKaydediliyor} onClick={async () => { setAdKaydediliyor(true); const sonuc = await kullaniciAdiGuncelle(yeniAd); setAdMesaji(sonuc.tamam ? "Rumuz güncellendi" : sonuc.hata ?? "İsim değiştirilemedi"); if (sonuc.tamam) { const guncel = mevcutKullanici(); if (guncel) setKullanici(guncel); onGuncellendi(); } setAdKaydediliyor(false); }} className="rounded-xl border-b-4 border-sky-900 bg-sky-600 px-4 py-2 text-xs font-bold text-white transition-all active:translate-y-1 active:border-b-0">Kaydet</button>
+                <button disabled={adKaydediliyor} onClick={async () => { setAdKaydediliyor(true); const sonuc = await kullaniciAdiGuncelle(yeniAd); setAdMesaji(sonuc.tamam ? "İsim güncellendi" : sonuc.hata ?? "İsim değiştirilemedi"); if (sonuc.tamam) { const guncel = mevcutKullanici(); if (guncel) setKullanici(guncel); onGuncellendi(); } setAdKaydediliyor(false); }} className="rounded-xl border-b-4 border-sky-900 bg-sky-600 px-4 py-2 text-xs font-bold text-white transition-all active:translate-y-1 active:border-b-0">Kaydet</button>
               </div>
             ) : (
               <div className="flex items-center gap-2 rounded-xl bg-muted/60 px-4 py-3 ring-1 ring-border"><Lock className="h-4 w-4 shrink-0 text-muted-foreground" /><span className="flex-1 truncate text-sm font-bold text-foreground">{kullanici.kullaniciAdi}</span><span className="text-[10px] font-bold text-muted-foreground">{kullanici.hasChangedName ? "KULLANILDI" : "100 EP'DE AÇILIR"}</span></div>
@@ -203,7 +203,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </div>
             <button
               onClick={() => setKilitliPreview(null)}
-              className="mt-4 w-full rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-foreground transition hover:bg-muted active:scale-[0.98] ring-1 ring-border"
+              className="mt-4 w-full rounded-xl border-b-4 border-slate-950 bg-slate-800 py-3 text-sm font-bold text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
             >
               Tamam
             </button>

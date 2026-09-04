@@ -1,6 +1,6 @@
 // ============================================================
-// EdebiKart — Firebase yapılandırması (hardcoded)
-// Firestore bağlantısı doğrudan buradan yapılır.
+// EdebiKart — Firebase yapılandırması
+// Eksik env değerlerinde güvenli biçimde yerel fallback kullanılır.
 // ============================================================
 
 import { initializeApp, type FirebaseApp } from "firebase/app";

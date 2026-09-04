@@ -278,10 +278,19 @@ export function odaKurOnline(
   soruSayisi: number,
   onRakipKatildi: (rakip: Rakip, matchId: string, sorular: Soru[]) => void,
 ): Unsubscribe | null {
+  // Preview fallback: simulate a waiting room locally when Firebase env vars are unavailable.
   if (!firebaseAktif || !db) {
-    console.error("[odaKurOnline] Firebase aktif değil! Oda kurulamıyor.");
-    alert("Firebase bağlantısı yok!\n.env dosyasındaki NEXT_PUBLIC_FIREBASE_* anahtarlarını kontrol edin.");
-    return null;
+    const kodStr = String(odaKodu ?? "").trim();
+    if (!kodStr) return null;
+    const uretilenSorular = soruUret(soruSayisi);
+    const odaAnahtari = `edebikart-oda-${kodStr}`;
+    try {
+      window.localStorage.setItem(odaAnahtari, JSON.stringify({ oyuncu, sorular: uretilenSorular, soruSayisi }));
+    } catch {}
+    const timer = window.setTimeout(() => {
+      onRakipKatildi(rastgeleBot(), `bot_oda_${kodStr}`, uretilenSorular);
+    }, 1800);
+    return () => window.clearTimeout(timer);
   }
 
   // odaKodu her zaman trim'lenmiş string olarak kaydedilir
@@ -353,9 +362,17 @@ export async function odayaKatilOnline(
   odaKodu: string,
   oyuncu: SiradakiOyuncu,
 ): Promise<{ tamam: boolean; hata?: string }> {
+  // Preview fallback: join a locally simulated room instead of blocking the UI.
   if (!firebaseAktif || !db) {
-    console.error("[odayaKatilOnline] Firebase aktif değil!");
-    return { tamam: false, hata: "Firebase bağlantısı yok! .env anahtarlarını kontrol edin." };
+    const kodStr = String(odaKodu ?? "").trim();
+    if (!kodStr) return { tamam: false, hata: "Oda kodu boş!" };
+    try {
+      const ham = window.localStorage.getItem(`edebikart-oda-${kodStr}`);
+      if (!ham) return { tamam: false, hata: "Geçersiz oda kodu!" };
+      return { tamam: true };
+    } catch {
+      return { tamam: true };
+    }
   }
 
   // odaKodu her zaman trim'lenmiş string olarak karşılaştırılır

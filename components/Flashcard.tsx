@@ -232,13 +232,13 @@ export default function Flashcard({
       <div className="mt-3 grid grid-cols-2 gap-2.5 shrink-0">
         <button
           onClick={() => tamamla("sol")}
-          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-slate-950 bg-slate-800 py-3 text-sm font-bold text-stone-200 shadow-sm transition hover:bg-slate-700 active:translate-y-[5px] active:border-b-0"
+          className="flex items-center justify-center gap-2 rounded-xl border border-slate-700/60 border-b-4 border-b-slate-950 bg-slate-900/90 py-3 text-sm font-bold text-slate-100 shadow-sm transition hover:bg-slate-800 active:translate-y-1 active:border-b-0"
         >
           <RotateCcw className="h-4 w-4" /> Tekrar
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-slate-950 bg-slate-700 py-3 text-sm font-black tracking-wide text-slate-100 shadow-md transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0"
+          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-sky-800 bg-sky-600 py-3 text-sm font-bold text-white shadow-md transition hover:bg-sky-500 active:translate-y-[5px] active:border-b-0"
         >
           <Check className="h-4 w-4" /> Öğrendim
         </button>

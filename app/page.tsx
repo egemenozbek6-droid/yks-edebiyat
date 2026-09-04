@@ -219,14 +219,14 @@ export default function App() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSfxSesli(!sfxMuteToggle())}
-              className="w-9 h-9 rounded-2xl bg-secondary text-secondary-foreground border-b-4 border-background shadow-sm flex items-center justify-center transition hover:bg-muted active:translate-y-1 active:border-b-0 shrink-0"
+              className="w-9 h-9 rounded-xl border-b-4 border-slate-950 bg-slate-800 text-slate-100 shadow-sm flex items-center justify-center transition hover:bg-slate-700 active:translate-y-1 active:border-b-0 shrink-0"
               aria-label={sfxSesli ? "Sesi kapat" : "Sesi aç"}
             >
               {sfxSesli ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
             </button>
             <button
               onClick={() => setInfoAcik(true)}
-              className="w-9 h-9 rounded-2xl bg-secondary text-secondary-foreground border-b-4 border-background shadow-sm flex items-center justify-center transition hover:bg-muted active:translate-y-1 active:border-b-0 shrink-0"
+              className="w-9 h-9 rounded-xl border-b-4 border-slate-950 bg-slate-800 text-slate-100 shadow-sm flex items-center justify-center transition hover:bg-slate-700 active:translate-y-1 active:border-b-0 shrink-0"
               aria-label="Bilgi"
             >
               <Info className="w-4 h-4" />
@@ -377,7 +377,7 @@ export default function App() {
               </button>
               <button
                 onClick={cikisOnayla}
-                className="rounded-2xl bg-destructive py-3 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+                className="rounded-xl border-b-4 border-red-900 bg-red-600 py-3 text-sm font-bold text-white shadow-md transition hover:bg-red-500 active:translate-y-1 active:border-b-0"
               >
                 Ayrıl
               </button>
@@ -406,7 +406,7 @@ export default function App() {
               </div>
               <button
                 onClick={() => setInfoAcik(false)}
-                className="text-muted-foreground hover:text-primary transition shrink-0"
+                className="rounded-xl border-b-4 border-slate-950 bg-slate-800 p-2 text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0 shrink-0"
                 aria-label="Kapat"
               >
                 <X className="w-5 h-5" />
