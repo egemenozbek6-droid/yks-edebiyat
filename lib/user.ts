@@ -3,6 +3,8 @@
 // ============================================================
 
 import { oku, yaz, kullaniciAdiMusaitMi, kullaniciAdiKaydet, kullaniciAdiSil, kayitliKullaniciAdlari } from "./storage";
+import { db, firebaseAktif } from "./firebase";
+import { doc, runTransaction, serverTimestamp, setDoc } from "firebase/firestore";
 import { rastgeleAvatarId } from "./avatars";
 import type { Istatistik, Kullanici, MacSonucu } from "./types";
 
@@ -19,17 +21,48 @@ export function mevcutKullanici(): Kullanici | null {
 export function kullaniciKaydet(kullanici: Kullanici): void {
   yaz(KULLANICI_YOLU, kullanici);
   kullaniciAdiKaydet(kullanici.kullaniciAdi);
+  if (firebaseAktif && db) {
+    void setDoc(doc(db, "users", String(kullanici.olusturmaTarihi)), kullanici, { merge: true }).catch(() => {});
+  }
   if (typeof window !== "undefined") {
     window.dispatchEvent(new Event("profileUpdated"));
   }
 }
 
-export function kullaniciAdiGuncelle(_yeniAd: string): { tamam: boolean; hata?: string } {
-  return { tamam: false, hata: "Rumuz kalıcıdır ve değiştirilemez" };
+export async function kullaniciAdiGuncelle(yeniAd: string): Promise<{ tamam: boolean; hata?: string }> {
+  const kullanici = mevcutKullanici();
+  if (!kullanici) return { tamam: false, hata: "Kullanıcı bulunamadı" };
+  if (kullanici.hasChangedUsername) return { tamam: false, hata: "İsim değiştirme hakkınız kullanıldı" };
+  const kontrol = kullaniciAdiKontrol(yeniAd);
+  if (!kontrol.musait) return { tamam: false, hata: kontrol.mesaj };
+  const eskiAd = kullanici.kullaniciAdi;
+  const yeniKullanici = { ...kullanici, kullaniciAdi: yeniAd.trim(), hasChangedUsername: true };
+  const kullaniciId = String(kullanici.olusturmaTarihi);
+
+  if (firebaseAktif && db) {
+    try {
+      await runTransaction(db, async (tx) => {
+        const eskiRef = doc(db!, "usernames", eskiAd.toLowerCase());
+        const yeniRef = doc(db!, "usernames", yeniAd.trim().toLowerCase());
+        const userRef = doc(db!, "users", kullaniciId);
+        const yeniSnap = await tx.get(yeniRef);
+        if (yeniSnap.exists() && yeniSnap.data()?.kullaniciId !== kullaniciId) throw new Error("Bu ad kullanılıyor");
+        tx.delete(eskiRef);
+        tx.set(yeniRef, { ad: yeniAd.trim(), kullaniciId, olusturmaZamani: serverTimestamp() });
+        tx.set(userRef, yeniKullanici, { merge: true });
+      });
+    } catch (error) {
+      return { tamam: false, hata: error instanceof Error ? error.message : "İsim değiştirilemedi" };
+    }
+  }
+  kullaniciAdiSil(eskiAd);
+  kullaniciKaydet(yeniKullanici);
+  return { tamam: true };
 }
 
 export function kullaniciAdiDegistirebilirMi(): boolean {
-  return false;
+  const kullanici = mevcutKullanici();
+  return Boolean(kullanici && !kullanici.hasChangedUsername && mevcutIstatistik().puan >= 100);
 }
 
 export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: string } {

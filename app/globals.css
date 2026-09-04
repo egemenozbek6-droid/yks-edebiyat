@@ -74,19 +74,19 @@
   --radius: 0.9rem;
 
   /* Deep matte charcoal background (#0F172A) */
-  --background: oklch(0.14 0.02 255);
-  --foreground: oklch(0.93 0.01 60);
+  --background: oklch(0.10 0.025 255);
+  --foreground: oklch(0.94 0.035 82);
 
   /* Glassmorphic card: slightly lighter charcoal (#1E293B) */
-  --card: oklch(0.20 0.025 255);
-  --card-foreground: oklch(0.93 0.01 60);
+  --card: oklch(0.15 0.035 255);
+  --card-foreground: oklch(0.94 0.035 82);
 
   --popover: oklch(0.20 0.025 255);
   --popover-foreground: oklch(0.93 0.01 60);
 
   /* Soft teal (#0E7490) — base primary for Kartlar & Test */
-  --primary: oklch(0.60 0.09 220);
-  --primary-foreground: oklch(0.97 0.01 220);
+  --primary: oklch(0.78 0.17 78);
+  --primary-foreground: oklch(0.16 0.03 70);
 
   /* Muted slate secondary */
   --secondary: oklch(0.28 0.02 255);
@@ -138,8 +138,14 @@
   * {
     @apply border-border outline-ring/50;
   }
+  html {
+    background: #090d16;
+  }
+
   body {
     @apply bg-background text-foreground;
+    background-image: radial-gradient(circle at 15% 10%, oklch(0.78 0.17 78 / 0.06) 0 1px, transparent 1px), radial-gradient(circle at 80% 65%, oklch(0.78 0.17 78 / 0.035) 0 1px, transparent 1px);
+    background-size: 37px 37px, 53px 53px;
   }
 }
 
@@ -200,11 +206,12 @@
   scrollbar-width: none;
 }
 
-/* Glassmorphic card utility */
+/* Antik akademi card surface */
 .glass-card {
-  background: oklch(0.20 0.025 255 / 60%);
+  background: linear-gradient(145deg, oklch(0.17 0.04 255 / 92%), oklch(0.12 0.03 255 / 96%));
   backdrop-filter: blur(12px);
-  border: 1px solid oklch(0.60 0.05 220 / 12%);
+  border: 1px solid oklch(0.78 0.17 78 / 20%);
+  box-shadow: inset 0 1px 0 oklch(0.94 0.035 82 / 5%), 0 12px 30px oklch(0.05 0.02 255 / 24%);
 }
 
 /* Tur sonu puan float-up animasyonu */

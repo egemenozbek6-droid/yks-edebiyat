@@ -197,7 +197,7 @@ export default function App() {
       <header className="relative z-30 backdrop-blur-xl bg-background/75 border-b border-border shrink-0">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-primary flex items-center justify-center shadow-md shrink-0 ring-1 ring-primary/30">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-[0_4px_0_theme(colors.amber.700)] shrink-0 ring-1 ring-primary/30">
               <Layers className="w-4.5 h-4.5 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div className="leading-tight">
@@ -226,7 +226,7 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 glass-card rounded-2xl ring-1 ring-border">
+          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-card/80 ring-1 ring-amber-500/20">
             {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
               const aktif = mod === m;
               return (
@@ -279,7 +279,7 @@ export default function App() {
                   <button
                     key={donem}
                     onClick={() => donemSec(donem)}
-                    className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition shrink-0 ${
+                    className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-semibold transition shrink-0 ${
                       aktif
                         ? "bg-primary text-primary-foreground shadow-sm"
                         : "glass-card text-muted-foreground hover:text-foreground ring-1 ring-border"
