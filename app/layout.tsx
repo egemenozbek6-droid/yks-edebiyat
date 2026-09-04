@@ -34,16 +34,6 @@ export const viewport: Viewport = {
   themeColor: '#0F172A',
 }
 
-const temaScripti = `
-(function () {
-  try {
-    document.documentElement.classList.add('dark');
-  } catch (e) {
-    document.documentElement.classList.add('dark');
-  }
-})();
-`
-
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -51,9 +41,6 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="tr" className={`${jakarta.variable} ${fraunces.variable} bg-background`} suppressHydrationWarning>
-      <head>
-        <script dangerouslySetInnerHTML={{ __html: temaScripti }} />
-      </head>
       <body className="antialiased font-sans">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}

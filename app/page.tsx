@@ -40,7 +40,11 @@ export default function App() {
   const [infoAcik, setInfoAcik] = useState(false);
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
   const [profilAcik, setProfilAcik] = useState(false);
-  const [sfxSesli, setSfxSesli] = useState(!sfxMuted());
+  const [sfxSesli, setSfxSesli] = useState(true);
+
+  useEffect(() => {
+    setSfxSesli(!sfxMuted());
+  }, []);
 
   // Navigation guard
   const [dueloAktif, setDueloAktif] = useState(false);
@@ -124,8 +128,14 @@ export default function App() {
 
   const [seciliAnaDonem, setSeciliAnaDonem] = useState<AnaDonem>("Tüm Dönemler");
   const kartVerisi = anaDonemFiltrele(seciliAnaDonem);
-  const [deste, setDeste] = useState<number[]>(() => karistir(kartVerisi.map((_, i) => i)));
+  // Keep the first render deterministic so SSR and hydration produce identical markup.
+  // Shuffle only after hydration in the effect below.
+  const [deste, setDeste] = useState<number[]>(() => kartVerisi.map((_, i) => i));
   const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set());
+
+  useEffect(() => {
+    setDeste(karistir(anaDonemFiltrele(seciliAnaDonem).map((_, i) => i)));
+  }, [seciliAnaDonem]);
 
   const { seviyeler, ogren, tekrar } = useKartSeviyeleri();
 
