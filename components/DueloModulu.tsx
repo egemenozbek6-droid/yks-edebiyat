@@ -5,7 +5,7 @@ import {
   Check,
   ChevronRight,
   Clock,
-  Flame,
+  Sparkles,
   Hop as Home,
   KeyRound,
   Lock,
@@ -856,7 +856,7 @@ export default function DueloModulu({
                   </div>
                   {istatistik && istatistik.seri >= 2 && (
                     <div className="absolute -bottom-1 -right-1 flex items-center gap-0.5 rounded-full bg-orange-500 px-1.5 py-0.5 text-[10px] font-bold text-white shadow-md">
-                      <Flame className="h-2.5 w-2.5" /> {istatistik.seri}
+                      <Sparkles className="h-2.5 w-2.5" /> {istatistik.seri}
                     </div>
                   )}
                 </div>
@@ -908,19 +908,19 @@ export default function DueloModulu({
             {(() => {
               const tamamlanan = gorevState.gorevler.filter((g) => gorevState.durumlar[g.tur]?.tamamlandi).length;
               return (
-                <div className="mb-3 rounded-2xl bg-amber-500/5 ring-1 ring-amber-500/15 overflow-hidden">
+                <div className="mb-3 rounded-2xl bg-sky-400/5 ring-1 ring-sky-400/15 overflow-hidden">
                   <button
                     onClick={() => setGorevAcik(!gorevAcik)}
-                    className="flex w-full items-center justify-between px-3 py-2.5 transition hover:bg-amber-500/10"
+                    className="flex w-full items-center justify-between px-3 py-2.5 transition hover:bg-sky-400/10"
                   >
                     <span className="inline-flex items-center gap-2 text-xs font-bold text-card-foreground">
                       <span className="text-base">🎯</span>
                       Günlük Görevler
-                      <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-500">
+                      <span className="rounded-full bg-sky-400/15 px-1.5 py-0.5 text-[10px] font-bold text-sky-400">
                         {tamamlanan}/{gorevState.gorevler.length}
                       </span>
                     </span>
-                    <ChevronDown className={`h-4 w-4 text-amber-500 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
+                    <ChevronDown className={`h-4 w-4 text-sky-400 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
                   </button>
                   {gorevAcik && (
                     <div className="space-y-2 px-3 pb-3 animate-rise">
@@ -938,13 +938,13 @@ export default function DueloModulu({
                                   <p className="text-[9px] text-muted-foreground truncate">{g.aciklama}</p>
                                 </div>
                               </div>
-                              <span className="shrink-0 rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold text-amber-500">
+                              <span className="shrink-0 rounded-full bg-sky-400/10 px-1.5 py-0.5 text-[9px] font-bold text-sky-400">
                                 +{g.odul} EP
                               </span>
                             </div>
                             <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
                               <div
-                                className={`h-full rounded-full transition-[width] duration-500 ${durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"}`}
+                                className={`h-full rounded-full transition-[width] duration-500 ${durum.tamamlandi ? "bg-emerald-500" : "bg-sky-400"}`}
                                 style={{ width: `${yuzde}%` }}
                               />
                             </div>
@@ -993,7 +993,7 @@ export default function DueloModulu({
             <button
               onClick={rastgeleRakip}
               disabled={cooldownAktif}
-              className="group relative min-h-56 overflow-hidden rounded-3xl border border-amber-500/20 bg-[radial-gradient(ellipse_at_top_right,_rgba(217,119,6,0.18),_transparent_58%),linear-gradient(145deg,_#182338,_#090d16)] p-6 text-left shadow-[0_16px_40px_rgba(217,119,6,0.1)] transition hover:border-amber-500/40 active:translate-y-1 disabled:opacity-50 disabled:pointer-events-none"
+              className="group relative min-h-56 overflow-hidden rounded-3xl border border-sky-400/25 bg-[radial-gradient(ellipse_at_top_right,_rgba(56,189,248,0.18),_transparent_58%),linear-gradient(145deg,_#182338,_#090d16)] p-6 text-left shadow-[0_16px_40px_rgba(217,119,6,0.1)] transition hover:border-sky-400/40 active:translate-y-1 disabled:opacity-50 disabled:pointer-events-none"
             >
               <div className="absolute -right-8 -top-8 h-28 w-28 rounded-full bg-duello/15 blur-3xl transition group-hover:bg-duello/25" />
               <div className="relative">
@@ -1028,13 +1028,13 @@ export default function DueloModulu({
                 <button
                   onClick={() => setAdim("oda_kur")}
                   disabled={cooldownAktif}
-                  className="rounded-xl bg-teal/15 py-2.5 text-sm font-semibold text-teal ring-1 ring-teal/20 transition hover:bg-teal/20 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                  className="rounded-xl border-b-4 border-blue-900 bg-primary py-2.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0 disabled:opacity-50 disabled:pointer-events-none"
                 >
                   Oda Kur
                 </button>
                 <button
                   onClick={() => setAdim("oda_katil")}
-                  className="rounded-xl glass-card py-2.5 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-teal/30 active:scale-[0.98]"
+                  className="rounded-xl border-b-4 border-blue-950 bg-secondary py-2.5 text-sm font-bold text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
                 >
                   Odaya Katıl
                 </button>
@@ -1128,7 +1128,7 @@ export default function DueloModulu({
                             </p>
                           )}
                           {simdiki && !sonraki && (
-                            <p className="mt-1 text-[10px] font-bold text-amber-500">
+                            <p className="mt-1 text-[10px] font-bold text-sky-400">
                               Maksimum rütbeye ulaştın!
                             </p>
                           )}
@@ -1361,7 +1361,7 @@ export default function DueloModulu({
               </div>
               {sonuc.seri >= 2 && (
                 <div className="flex items-center justify-center gap-2 rounded-2xl bg-orange-500/10 py-2.5 text-sm font-semibold text-orange-500 ring-1 ring-orange-500/20">
-                  <Flame className="h-4 w-4" /> {sonuc.seri} Galibiyet Serisi
+                  <Sparkles className="h-4 w-4" /> {sonuc.seri} Galibiyet Serisi
                 </div>
               )}
             </div>
@@ -1395,8 +1395,8 @@ export default function DueloModulu({
 
   const sureYuzde = (sure / SURE) * 100;
   const sonUcSaniye = sure <= 3 && sure > 0;
-  const sureRenk = sure > 5 ? "bg-teal" : sure > 3 ? "bg-amber-500" : "bg-destructive";
-  const sureMetinRenk = sure > 5 ? "text-teal" : sure > 3 ? "text-amber-500" : "text-destructive";
+  const sureRenk = sure > 5 ? "bg-teal" : sure > 3 ? "bg-sky-400" : "bg-destructive";
+  const sureMetinRenk = sure > 5 ? "text-teal" : sure > 3 ? "text-sky-400" : "text-destructive";
   const bekleniyor = secim !== null && !rakipCevapladi;
   const cevapDogru = secim !== null && secim !== ZAMAN_ASIMI && secim === soru.dogru;
 
@@ -1529,7 +1529,7 @@ export default function DueloModulu({
                 )}
                 {dogruSeri >= 2 && (
                   <span className="inline-flex items-center gap-0.5 text-orange-500">
-                    <Flame className="h-3 w-3" /> {dogruSeri}
+                    <Sparkles className="h-3 w-3" /> {dogruSeri}
                   </span>
                 )}
               </span>

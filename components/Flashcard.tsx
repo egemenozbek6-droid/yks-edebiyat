@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, Lightbulb, RotateCcw, Trophy, Undo2 } from "lucide-react"
+import { BookOpen, Check, ChevronLeft, ChevronRight, Sparkles, Lightbulb, RotateCcw, Trophy, Undo2 } from "lucide-react"
 import IlerlemeBari from "@/components/IlerlemeBari"
 import type { LiteratureItem } from "@/src/data"
 
@@ -142,7 +142,7 @@ export default function Flashcard({
           >
             {/* ÖN YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-3xl border border-amber-500/20 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
+              className="absolute inset-0 flex flex-col rounded-3xl border border-sky-400/25 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
               <div className="flex items-start justify-between gap-3">
@@ -151,15 +151,15 @@ export default function Flashcard({
                   Eser
                 </span>
                 {osymFreq && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400">
-                    <Flame className="h-3 w-3" strokeWidth={2} />
+                  <span className="inline-flex items-center gap-1 rounded-full bg-sky-400/15 px-2.5 py-1 text-[10px] font-bold text-sky-300">
+                    <Sparkles className="h-3 w-3" strokeWidth={2} />
                     {osymFreq}
                   </span>
                 )}
               </div>
 
               <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <h2 className="font-serif text-2xl font-extrabold leading-tight text-balance text-card-foreground sm:text-3xl">
+                <h2 className="font-sans text-2xl font-black leading-tight text-balance text-card-foreground sm:text-3xl">
                   {item.work}
                 </h2>
                 <p className="mt-3 text-sm font-medium text-muted-foreground">{item.genre}</p>
@@ -175,7 +175,7 @@ export default function Flashcard({
 
             {/* ARKA YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-3xl border border-amber-500/20 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
+              className="absolute inset-0 flex flex-col rounded-3xl border border-sky-400/25 bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.35)]"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
@@ -192,7 +192,7 @@ export default function Flashcard({
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                   Yazar
                 </p>
-                <h2 className="font-serif text-2xl font-extrabold uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-3xl">
+                <h2 className="font-sans text-2xl font-black uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-3xl">
                   {item.author}
                 </h2>
                 <p className="mt-3 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">

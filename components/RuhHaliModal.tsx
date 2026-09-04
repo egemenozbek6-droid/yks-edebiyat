@@ -180,7 +180,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
                   <button
                     key={d.id}
                     onClick={() => sec(d)}
-                    className="flex flex-col items-center gap-1.5 rounded-2xl bg-muted/70 px-1 py-3 ring-1 ring-border transition hover:bg-accent hover:ring-primary/40 active:scale-[0.96]"
+                    className="flex flex-col items-center gap-1.5 rounded-xl border-b-4 border-blue-950 bg-secondary px-1 py-3 text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
                   >
                     <Ikon className={`h-7 w-7 ${d.ikonSinif}`} strokeWidth={1.5} />
                     <span className="text-[10px] font-semibold text-muted-foreground">{d.etiket}</span>
@@ -191,7 +191,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
 
             <button
               onClick={gec}
-              className="mt-5 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+              className="mt-5 w-full rounded-xl border-b-4 border-blue-950 bg-secondary py-3 text-xs font-bold text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
             >
               Şimdi değil, direkt çalışmaya başla
             </button>

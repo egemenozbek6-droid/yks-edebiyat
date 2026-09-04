@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import { ArrowRight, Check, Flame, RotateCcw, X } from "lucide-react";
+import { ArrowRight, Check, Sparkles, RotateCcw, X } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { osymSeverSorulari, type Soru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
@@ -57,9 +57,9 @@ export default function OsymSeverModul() {
   if (!basladi) {
     return (
       <div className="animate-rise">
-        <div className="relative mb-6 overflow-hidden rounded-3xl border border-amber-500/20 bg-[linear-gradient(135deg,_#172033,_#0f172a)] p-8 text-center shadow-[0_16px_40px_rgba(217,119,6,0.08)]">
+        <div className="relative mb-6 overflow-hidden rounded-3xl border border-sky-400/25 bg-[linear-gradient(135deg,_#172033,_#0f172a)] p-8 text-center shadow-[0_16px_40px_rgba(217,119,6,0.08)]">
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-destructive text-destructive-foreground shadow-[0_4px_0_#450a0a] ring-1 ring-red-300/20 animate-pop">
-            <Flame className="h-7 w-7" strokeWidth={1.5} />
+            <Sparkles className="h-7 w-7" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
@@ -69,9 +69,9 @@ export default function OsymSeverModul() {
 
         <button
           onClick={basla}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl border-b-[5px] border-amber-900 bg-primary py-4 text-sm font-black tracking-wide text-primary-foreground transition hover:brightness-110 active:translate-y-[5px] active:border-b-0"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border-b-[5px] border-blue-900 bg-primary py-4 text-sm font-black tracking-wide text-primary-foreground transition hover:brightness-110 active:translate-y-[5px] active:border-b-0"
         >
-          <Flame className="h-4 w-4" /> Denemeyi Başlat
+          <Sparkles className="h-4 w-4" /> Denemeyi Başlat
         </button>
 
         {/* Mikro rozetler */}
@@ -98,7 +98,7 @@ export default function OsymSeverModul() {
     return (
       <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
         <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-osym/15 text-osym ring-1 ring-osym/30 animate-pop">
-          <Flame className="h-9 w-9" strokeWidth={1.5} />
+          <Sparkles className="h-9 w-9" strokeWidth={1.5} />
         </div>
         <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
         <p className="mt-2 text-sm text-muted-foreground">
@@ -113,7 +113,7 @@ export default function OsymSeverModul() {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={basla}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-osym py-3.5 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-2xl border-b-4 border-blue-900 bg-primary py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -142,7 +142,7 @@ export default function OsymSeverModul() {
         />
         <div className="mt-3 flex items-center justify-between">
           <span className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-osym">
-            <Flame className="h-3.5 w-3.5" /> Banko soru
+            <Sparkles className="h-3.5 w-3.5" /> Banko soru
           </span>
           <button
             onClick={() => setBasladi(false)}
@@ -160,7 +160,7 @@ export default function OsymSeverModul() {
           </p>
           {soru.osymFreq && (
             <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
-              <Flame className="h-3 w-3" strokeWidth={2} />
+              <Sparkles className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
           )}
@@ -218,7 +218,7 @@ export default function OsymSeverModul() {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-osym py-3.5 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-b-4 border-blue-900 bg-primary py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0 animate-rise"
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />

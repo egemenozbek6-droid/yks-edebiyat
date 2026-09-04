@@ -120,16 +120,16 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
 
           {/* Kullanıcı adı — 100 EP'de tek seferlik hak */}
           <div className="mb-5">
-            <label htmlFor="yeni-ad" className="mb-1.5 block text-xs font-semibold text-muted-foreground">Akademi Rumuzu</label>
+            <label htmlFor="yeni-ad" className="mb-1.5 block text-xs font-bold text-foreground">İsim</label><p className="mb-2 text-[11px] text-muted-foreground">Düello Rumuzu</p>
             {kullaniciAdiDegistirebilirMi() ? (
               <div className="flex gap-2">
                 <input id="yeni-ad" value={yeniAd} onChange={(e) => setYeniAd(e.target.value)} placeholder={kullanici.kullaniciAdi} className="min-w-0 flex-1 rounded-xl bg-muted/60 px-4 py-3 text-sm font-bold text-foreground outline-none ring-1 ring-primary/25 focus:ring-primary" />
-                <button disabled={adKaydediliyor} onClick={async () => { setAdKaydediliyor(true); const sonuc = await kullaniciAdiGuncelle(yeniAd); setAdMesaji(sonuc.tamam ? "Rumuz güncellendi" : sonuc.hata ?? "İsim değiştirilemedi"); if (sonuc.tamam) { const guncel = mevcutKullanici(); if (guncel) setKullanici(guncel); onGuncellendi(); } setAdKaydediliyor(false); }} className="rounded-xl border-b-4 border-amber-700 bg-primary px-4 py-2 text-xs font-black text-primary-foreground transition-all active:translate-y-1 active:border-b-0">Kaydet</button>
+                <button disabled={adKaydediliyor} onClick={async () => { setAdKaydediliyor(true); const sonuc = await kullaniciAdiGuncelle(yeniAd); setAdMesaji(sonuc.tamam ? "Rumuz güncellendi" : sonuc.hata ?? "İsim değiştirilemedi"); if (sonuc.tamam) { const guncel = mevcutKullanici(); if (guncel) setKullanici(guncel); onGuncellendi(); } setAdKaydediliyor(false); }} className="rounded-xl border-b-4 border-blue-900 bg-primary px-4 py-2 text-xs font-black text-primary-foreground transition-all active:translate-y-1 active:border-b-0">Kaydet</button>
               </div>
             ) : (
               <div className="flex items-center gap-2 rounded-xl bg-muted/60 px-4 py-3 ring-1 ring-border"><Lock className="h-4 w-4 shrink-0 text-muted-foreground" /><span className="flex-1 truncate text-sm font-bold text-foreground">{kullanici.kullaniciAdi}</span><span className="text-[10px] font-bold text-muted-foreground">{kullanici.hasChangedName ? "KULLANILDI" : "100 EP'DE AÇILIR"}</span></div>
             )}
-            <p className="mt-1.5 text-[11px] text-muted-foreground">{adMesaji || (kullaniciAdiDegistirebilirMi() ? "Eser Çırağı oldun: rumuzunu bir kez değiştirebilirsin." : "100 EP ile Eser Çırağı ligine ulaşınca açılır.")}</p>
+            <p className="mt-1.5 text-[11px] text-muted-foreground">{adMesaji || (kullaniciAdiDegistirebilirMi() ? "Düello Rumuzu değiştirilebilir." : "100 EP ile Eser Çırağı ligine ulaşınca açılır.")}</p>
           </div>
 
           {/* Avatar seçimi — kategorili */}
@@ -138,7 +138,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
               <label className="block text-xs font-semibold text-muted-foreground">
                 Avatar Seç
               </label>
-              <span className="text-[10px] font-bold text-amber-500">{mevcutEP} EP</span>
+              <span className="text-[10px] font-bold text-sky-400">{mevcutEP} EP</span>
             </div>
 
             {/* Standart Avatarlar */}
@@ -150,14 +150,14 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </div>
 
             {/* Prestij Avatarları */}
-            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-amber-500">
+            <p className="mb-1.5 text-[10px] font-bold uppercase tracking-wider text-sky-400">
               Prestij Avatarları
             </p>
             <div className="grid grid-cols-8 gap-1.5">
               {prestijler.map(renderAvatarButton)}
             </div>
             <p className="mt-2 text-[10px] text-muted-foreground">
-              🔒 Prestij avatarlar lig atladıkça açılır. Mevcut lig: <span className="font-bold text-amber-500">{simdikiRank.ad}</span>
+              🔒 Prestij avatarlar lig atladıkça açılır. Mevcut lig: <span className="font-bold text-sky-400">{simdikiRank.ad}</span>
             </p>
           </div>
 
@@ -176,7 +176,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
           onClick={() => setKilitliPreview(null)}
         >
           <div
-            className="animate-pop glass-card w-full max-w-xs rounded-[1.75rem] p-6 text-center shadow-2xl ring-1 ring-amber-500/20"
+            className="animate-pop glass-card w-full max-w-xs rounded-[1.75rem] p-6 text-center shadow-2xl ring-1 ring-sky-400/20"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -186,17 +186,17 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-3xl bg-muted/40 text-4xl ring-1 ring-amber-500/20">
+            <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-3xl bg-muted/40 text-4xl ring-1 ring-sky-400/20">
               <span className="opacity-40 grayscale">{kilitliPreview.emoji}</span>
             </div>
-            <div className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-full bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/30">
+            <div className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-full bg-sky-400/15 text-sky-400 ring-1 ring-sky-400/30">
               <Lock className="h-5 w-5" />
             </div>
             <h3 className="font-serif text-base font-bold text-card-foreground">
               {kilitliPreview.etiket}
             </h3>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Bu avatar <span className="font-bold text-amber-500">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Efsane"}</span> ligine ulaşınca açılır!
+              Bu avatar <span className="font-bold text-sky-400">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Efsane"}</span> ligine ulaşınca açılır!
             </p>
             <div className="mt-3 rounded-xl bg-muted/40 px-4 py-2 text-xs text-muted-foreground">
               Gerekli lig: <span className="font-bold text-foreground">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Edebiyat Efsanesi"}</span> ({kilitliPreview.minEP}+ EP)

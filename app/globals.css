@@ -74,26 +74,26 @@
   --radius: 0.9rem;
 
   /* Deep matte charcoal background (#0F172A) */
-  --background: oklch(0.10 0.025 255);
-  --foreground: oklch(0.94 0.035 82);
+  --background: oklch(0.11 0.035 255);
+  --foreground: oklch(0.96 0.02 235);
 
   /* Glassmorphic card: slightly lighter charcoal (#1E293B) */
-  --card: oklch(0.15 0.035 255);
-  --card-foreground: oklch(0.94 0.035 82);
+  --card: oklch(0.16 0.045 255);
+  --card-foreground: oklch(0.96 0.02 235);
 
   --popover: oklch(0.20 0.025 255);
   --popover-foreground: oklch(0.93 0.01 60);
 
   /* Soft teal (#0E7490) — base primary for Kartlar & Test */
-  --primary: oklch(0.78 0.17 78);
-  --primary-foreground: oklch(0.16 0.03 70);
+  --primary: oklch(0.72 0.16 235);
+  --primary-foreground: oklch(0.12 0.035 250);
 
   /* Muted slate secondary */
-  --secondary: oklch(0.28 0.02 255);
-  --secondary-foreground: oklch(0.90 0.01 60);
+  --secondary: oklch(0.25 0.055 250);
+  --secondary-foreground: oklch(0.9 0.04 230);
 
   --muted: oklch(0.25 0.02 255);
-  --muted-foreground: oklch(0.65 0.02 60);
+  --muted-foreground: oklch(0.70 0.035 235);
 
   --accent: oklch(0.30 0.03 220);
   --accent-foreground: oklch(0.90 0.01 60);
@@ -144,7 +144,7 @@
 
   body {
     @apply bg-background text-foreground;
-    background-image: radial-gradient(circle at 15% 10%, oklch(0.78 0.17 78 / 0.06) 0 1px, transparent 1px), radial-gradient(circle at 80% 65%, oklch(0.78 0.17 78 / 0.035) 0 1px, transparent 1px);
+    background-image: radial-gradient(circle at 15% 10%, oklch(0.72 0.16 235 / 0.06) 0 1px, transparent 1px), radial-gradient(circle at 80% 65%, oklch(0.72 0.16 235 / 0.035) 0 1px, transparent 1px);
     background-size: 37px 37px, 53px 53px;
   }
 }

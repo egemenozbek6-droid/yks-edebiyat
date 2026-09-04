@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TriangleAlert as AlertTriangle, Brain, Flame, Info, Layers, Swords, Target, X } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Brain, Sparkles, Info, Layers, Swords, Target, X } from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
@@ -22,7 +22,7 @@ type Mod = "kart" | "test" | "osym" | "duelo";
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
   { mod: "test", etiket: "Test", ikon: Brain, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
-  { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
+  { mod: "osym", etiket: "ÖSYM", ikon: Sparkles, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
   { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello/15 shadow-sm text-duello ring-1 ring-duello/30" },
 ];
 
@@ -207,7 +207,7 @@ export default function App() {
       <header className="relative z-30 backdrop-blur-xl bg-background/75 border-b border-border shrink-0">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-[0_4px_0_theme(colors.amber.700)] shrink-0 ring-1 ring-primary/30">
+            <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center shadow-[0_4px_0_theme(colors.blue.900)] shrink-0 ring-1 ring-primary/30">
               <Layers className="w-4.5 h-4.5 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div className="leading-tight">
@@ -236,7 +236,7 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-card/80 ring-1 ring-amber-500/20">
+          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-card/80 ring-1 ring-sky-400/20">
             {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
               const aktif = mod === m;
               return (
@@ -291,7 +291,7 @@ export default function App() {
                     onClick={() => donemSec(donem)}
                     className={`whitespace-nowrap rounded-xl px-3.5 py-1.5 text-xs font-semibold transition shrink-0 ${
                       aktif
-                        ? "bg-primary text-primary-foreground shadow-sm"
+                        ? "border-b-4 border-blue-900 bg-primary text-primary-foreground shadow-sm active:translate-y-1 active:border-b-0"
                         : "glass-card text-muted-foreground hover:text-foreground ring-1 ring-border"
                     }`}
                   >
@@ -443,7 +443,7 @@ export default function App() {
               {/* ÖSYM Sever */}
               <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/20">
-                  <Flame className="h-5 w-5" strokeWidth={1.8} />
+                  <Sparkles className="h-5 w-5" strokeWidth={1.8} />
                 </div>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-card-foreground">ÖSYM Sever</p>
