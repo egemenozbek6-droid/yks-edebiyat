@@ -58,7 +58,7 @@ export default function OsymSeverModul() {
     return (
       <div className="animate-rise">
         <div className="relative mb-6 overflow-hidden rounded-3xl border border-sky-400/25 bg-[linear-gradient(135deg,_#172033,_#0f172a)] p-8 text-center shadow-[0_16px_40px_rgba(217,119,6,0.08)]">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-destructive text-destructive-foreground shadow-[0_4px_0_#450a0a] ring-1 ring-red-300/20 animate-pop">
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-orange-600 text-white shadow-[0_4px_0_#9a3412] ring-1 ring-red-300/20 animate-pop">
             <Sparkles className="h-7 w-7" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
@@ -69,7 +69,7 @@ export default function OsymSeverModul() {
 
         <button
           onClick={basla}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl border-b-[5px] border-blue-900 bg-primary py-4 text-sm font-black tracking-wide text-primary-foreground transition hover:brightness-110 active:translate-y-[5px] active:border-b-0"
+          className="flex w-full items-center justify-center gap-2 rounded-2xl border-b-4 border-orange-700 bg-orange-600 py-4 text-sm font-black tracking-wide text-white transition hover:brightness-110 active:translate-y-[5px] active:border-b-0"
         >
           <Sparkles className="h-4 w-4" /> Denemeyi Başlat
         </button>
@@ -113,7 +113,7 @@ export default function OsymSeverModul() {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={basla}
-            className="flex items-center justify-center gap-2 rounded-2xl border-b-4 border-blue-900 bg-primary py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0"
+            className="flex items-center justify-center gap-2 rounded-2xl border-b-4 border-orange-700 bg-orange-600 py-3.5 text-sm font-bold text-white transition hover:brightness-110 active:translate-y-1 active:border-b-0"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -146,7 +146,7 @@ export default function OsymSeverModul() {
           </span>
           <button
             onClick={() => setBasladi(false)}
-            className="inline-flex items-center gap-1.5 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 hover:ring-destructive/30 active:scale-95"
+            className="inline-flex items-center gap-1.5 rounded-xl border-b-4 border-red-900 bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 hover:ring-destructive/30 active:scale-95"
           >
             <X className="h-3 w-3" /> Çıkış
           </button>
@@ -218,7 +218,7 @@ export default function OsymSeverModul() {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-b-4 border-blue-900 bg-primary py-3.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0 animate-rise"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl border-b-4 border-orange-700 bg-orange-600 py-3.5 text-sm font-bold text-white transition hover:brightness-110 active:translate-y-1 active:border-b-0 animate-rise"
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />

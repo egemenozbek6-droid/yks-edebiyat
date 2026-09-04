@@ -1007,7 +1007,7 @@ export default function DueloModulu({
                 </div>
 <p className="font-serif text-2xl font-black tracking-tight text-foreground">Dereceli Düello</p>
   <p className="mt-1 text-sm font-semibold text-amber-200/80">Canlı eşleşme · EP kazan · lig atla</p>
-                <div className="mt-5 flex items-center gap-2 rounded-2xl border-b-[5px] border-emerald-900 bg-emerald-600 px-4 py-3 text-sm font-black tracking-wide text-white transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0">
+                <div className="mt-5 flex items-center gap-2 rounded-2xl border-b-[5px] border-red-900 bg-red-600 px-4 py-3 text-sm font-black tracking-wide text-white transition hover:bg-red-500 active:translate-y-[5px] active:border-b-0">
                   Arenaya Çık <ChevronRight className="h-4 w-4" />
                 </div>
               </div>
@@ -1028,13 +1028,13 @@ export default function DueloModulu({
                 <button
                   onClick={() => setAdim("oda_kur")}
                   disabled={cooldownAktif}
-                  className="rounded-xl border-b-4 border-blue-900 bg-primary py-2.5 text-sm font-bold text-primary-foreground transition hover:brightness-110 active:translate-y-1 active:border-b-0 disabled:opacity-50 disabled:pointer-events-none"
+                  className="rounded-xl border-b-4 border-red-900 bg-red-600 py-2.5 text-sm font-bold text-white transition hover:bg-red-500 active:translate-y-1 active:border-b-0 disabled:opacity-50 disabled:pointer-events-none"
                 >
                   Oda Kur
                 </button>
                 <button
                   onClick={() => setAdim("oda_katil")}
-                  className="rounded-xl border-b-4 border-blue-950 bg-secondary py-2.5 text-sm font-bold text-secondary-foreground transition hover:bg-accent active:translate-y-1 active:border-b-0"
+                  className="rounded-xl border-b-4 border-slate-950 bg-slate-800 py-2.5 text-sm font-bold text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
                 >
                   Odaya Katıl
                 </button>
@@ -1185,7 +1185,7 @@ export default function DueloModulu({
                   onClick={() => setFriendlySoruSayisi(n)}
                   className={`flex-1 rounded-xl py-2.5 text-sm font-semibold transition ${
                     friendlySoruSayisi === n
-                      ? "bg-teal text-teal-foreground shadow-sm"
+                      ? "border-b-4 border-red-900 bg-red-600 text-white shadow-sm active:translate-y-1 active:border-b-0"
                       : "bg-muted/60 text-muted-foreground hover:text-foreground"
                   }`}
                 >
@@ -1198,7 +1198,7 @@ export default function DueloModulu({
           <button
             onClick={odaKur}
             disabled={cooldownAktif}
-            className="mt-5 w-full rounded-2xl bg-teal py-3.5 text-sm font-bold text-teal-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-5 w-full rounded-xl border-b-4 border-red-900 bg-red-600 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-red-500 active:translate-y-1 active:border-b-0 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Odayı Oluştur
           </button>
@@ -1244,7 +1244,7 @@ export default function DueloModulu({
           <button
             onClick={odayaKatil}
             disabled={odaInput.length !== 4}
-            className="mt-4 w-full rounded-2xl bg-teal py-3.5 text-sm font-bold text-teal-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mt-4 w-full rounded-xl border-b-4 border-red-900 bg-red-600 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-red-500 active:translate-y-1 active:border-b-0 disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Katıl
           </button>
@@ -1573,7 +1573,7 @@ export default function DueloModulu({
               </button>
               <button
                 onClick={forfeitOnayla}
-                className="rounded-2xl bg-destructive py-3.5 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+                className="rounded-xl border-b-4 border-red-900 bg-red-600 py-3.5 text-sm font-bold text-white shadow-md transition hover:bg-red-500 active:translate-y-1 active:border-b-0"
               >
                 Terk Et
               </button>

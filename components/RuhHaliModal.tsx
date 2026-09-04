@@ -146,7 +146,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
               if (!d) return null;
               const Ikon = d.ikon;
               return (
-                <div className={`mx-auto mb-5 grid h-20 w-20 animate-pop place-items-center rounded-3xl bg-primary/10 ring-1 ring-primary/20 ${d.ikonSinif}`}>
+                <div className={`mx-auto mb-5 grid h-20 w-20 animate-pop place-items-center rounded-3xl bg-secondary ring-1 ring-sky-400/30 ${d.ikonSinif}`}>
                   <Ikon className="h-9 w-9" strokeWidth={1.5} />
                 </div>
               );

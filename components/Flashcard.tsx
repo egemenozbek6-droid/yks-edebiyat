@@ -238,7 +238,7 @@ export default function Flashcard({
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-emerald-900 bg-emerald-600 py-3 text-sm font-black tracking-wide text-white shadow-md transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0"
+          className="flex items-center justify-center gap-2 rounded-2xl border-b-[5px] border-slate-950 bg-slate-700 py-3 text-sm font-black tracking-wide text-slate-100 shadow-md transition hover:bg-emerald-500 active:translate-y-[5px] active:border-b-0"
         >
           <Check className="h-4 w-4" /> Öğrendim
         </button>
@@ -283,7 +283,7 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
       </div>
       <button
         onClick={onSifirla}
-        className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+        className="mt-6 inline-flex items-center gap-2 rounded-xl border-b-4 border-slate-950 bg-slate-700 px-6 py-3 text-sm font-bold text-slate-100 shadow-md transition hover:bg-slate-600 active:translate-y-1 active:border-b-0"
       >
         <RotateCcw className="h-4 w-4" /> Sıfırla
       </button>

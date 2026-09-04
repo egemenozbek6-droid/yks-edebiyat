@@ -20,10 +20,10 @@ const APP_SUBTITLE = "YKS Yazar Eser & Düello";
 type Mod = "kart" | "test" | "osym" | "duelo";
 
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
-  { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
-  { mod: "test", etiket: "Test", ikon: Brain, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
-  { mod: "osym", etiket: "ÖSYM", ikon: Sparkles, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
-  { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello/15 shadow-sm text-duello ring-1 ring-duello/30" },
+  { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "border-b-4 border-slate-950 bg-slate-700 text-slate-100 shadow-sm active:translate-y-1 active:border-b-0" },
+  { mod: "test", etiket: "Test", ikon: Brain, aktifKlass: "border-b-4 border-slate-950 bg-slate-700 text-slate-100 shadow-sm active:translate-y-1 active:border-b-0" },
+  { mod: "osym", etiket: "ÖSYM", ikon: Sparkles, aktifKlass: "border-b-4 border-orange-800 bg-orange-600 text-white shadow-sm active:translate-y-1 active:border-b-0" },
+  { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "border-b-4 border-red-900 bg-red-600 text-white shadow-sm active:translate-y-1 active:border-b-0" },
 ];
 
 function karistir<T>(dizi: T[]): T[] {
@@ -236,7 +236,7 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 rounded-xl bg-card/80 ring-1 ring-sky-400/20">
+          <div className="grid grid-cols-4 gap-2">
             {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
               const aktif = mod === m;
               return (
@@ -247,7 +247,7 @@ export default function App() {
                   className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
                     aktif
                       ? aktifKlass
-                      : "text-muted-foreground hover:text-foreground"
+                      : "rounded-xl border-b-4 border-slate-950 bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-slate-100 active:translate-y-1 active:border-b-0"
                   }`}
                 >
                   <Ikon className="w-3.5 h-3.5" strokeWidth={aktif ? 2.4 : 1.8} />
@@ -271,7 +271,7 @@ export default function App() {
             </p>
             <button
               onClick={() => setRuhHali(null)}
-              className="text-muted-foreground transition hover:text-primary shrink-0"
+              className="rounded-xl border-b-4 border-slate-950 bg-slate-800 px-2 py-1 text-muted-foreground transition hover:bg-slate-700 hover:text-slate-100 active:translate-y-1 active:border-b-0 shrink-0"
               aria-label="Mesajı kapat"
             >
               <X className="w-3.5 h-3.5" />
@@ -371,7 +371,7 @@ export default function App() {
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 onClick={cikisReddet}
-                className="rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
+                className="rounded-xl border-b-4 border-slate-950 bg-slate-800 py-3 text-sm font-bold text-slate-100 transition hover:bg-slate-700 active:translate-y-1 active:border-b-0"
               >
                 İptal
               </button>
