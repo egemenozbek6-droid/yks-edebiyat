@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Battery, BatteryLow, BatteryMedium, BatteryWarning, Rocket, X, type LucideIcon } from "lucide-react";
+import { Battery, BatteryLow, BatteryMedium, BatteryWarning, Rocket, Swords, Target, X, type LucideIcon } from "lucide-react";
 
 export type RuhHali = {
   id: string;
@@ -10,13 +10,31 @@ export type RuhHali = {
   mesaj: string;
 };
 
+type HedefMod = "osym" | "duelo";
+
+type Yonlendirme = {
+  mod: HedefMod;
+  etiket: string;
+  ikon: LucideIcon;
+};
+
+type Mesaj = {
+  metin: string;
+  // Sadece mesaj içinde düello/ÖSYMsever'den bahsedildiğinde doldur.
+  // Boş bırakılırsa buton çıkmaz.
+  yonlendirme?: Yonlendirme;
+};
+
 type Duygu = {
   id: string;
   etiket: string;
   ikon: LucideIcon;
   ikonSinif: string;
-  mesajlar: string[];
+  mesajlar: Mesaj[];
 };
+
+const DUELLO: Yonlendirme = { mod: "duelo", etiket: "Düelloya Gir", ikon: Swords };
+const OSYMSEVER: Yonlendirme = { mod: "osym", etiket: "ÖSYMsever'e Git", ikon: Target };
 
 const duyguHavuzu: Duygu[] = [
   {
@@ -25,8 +43,19 @@ const duyguHavuzu: Duygu[] = [
     ikon: Rocket,
     ikonSinif: "text-emerald-500",
     mesajlar: [
-      "Enerjin harika! Bu modla bugün soru kaçırmazsın, hadi dersin başına!",
-      "Harika hissetmen süper! Tam odaklanıp verim alma vakti.",
+      { metin: "Süpermişsin, tamam. Git 30 soru çöz de görelim." },
+      { metin: "Enerjin varmış, boşuna anlatma bana. Otur çalış." },
+      { metin: "Aferin sana. Şimdi kanıtla, boş konuşma." },
+      { metin: "Bu formla bahane üretirsen yazık olur valla." },
+      { metin: "İyiymişsin. Telefonla mı geçecek bu iyilik, masada mı?" },
+      {
+        metin: "Bu formda kart falan az kalır, git düelloda birini ez geç.",
+        yonlendirme: DUELLO,
+      },
+      {
+        metin: "Nadir moddasın, ziyan etme. Düelloya gir de rütbe kap.",
+        yonlendirme: DUELLO,
+      },
     ],
   },
   {
@@ -35,8 +64,19 @@ const duyguHavuzu: Duygu[] = [
     ikon: BatteryMedium,
     ikonSinif: "text-sky-500",
     mesajlar: [
-      "Sakin bir gün. Ne iyi ne kötü. Rutinini bozma, ufaktan başla gerisi gelir.",
-      "Nötr günler istikrar günüdür. Modun geldikçe tempoyu artırırsın.",
+      { metin: "Sıradan bir gündesin. Sıradan insan da soru çözer, hadi." },
+      { metin: "Nötr olmak bahane değil. Bir kart aç." },
+      { metin: "Bu tam da hiçbir şey yapmama bahanesi, kanma." },
+      { metin: "Ne isteklisin ne tembel, o yüzden bahanen de yok." },
+      { metin: "İdare eder diyorsun, idare etmek zaten yeter. Kalk." },
+      {
+        metin: "Ortalamasın, tamam. O zaman ÖSYMsever'den gerçek sorularla bir bak.",
+        yonlendirme: OSYMSEVER,
+      },
+      {
+        metin: "Özel bir şey beklemiyorum senden. ÖSYMsever'de birkaç gerçek soru çöz yeter.",
+        yonlendirme: OSYMSEVER,
+      },
     ],
   },
   {
@@ -45,8 +85,19 @@ const duyguHavuzu: Duygu[] = [
     ikon: Battery,
     ikonSinif: "text-amber-500",
     mesajlar: [
-      "Bazen sadece günü kurtarmak gerekir. Kendini çok sıkma, azar azar ilerle.",
-      "Arada böyle modlar olur, sorun değil. Ufak bir kahve molası verip tekrar bak istersen.",
+      { metin: "Eh işte, klasik. Telefonu bari bırak." },
+      { metin: "Şevk bekleyerek kaç gün geçti, saydın mı?" },
+      { metin: "Mükemmel bahane bulma noktasındasın, bulma." },
+      { metin: "Kahve iç, ne yaparsan yap, 20 dakikaya kart aç." },
+      { metin: "Kanepeye yapışırsın biliyorum, bugün yapma." },
+      {
+        metin: "Şevkin yoksa düelloya gir, kaybetme hırsı seni uyandırır.",
+        yonlendirme: DUELLO,
+      },
+      {
+        metin: "Yarım gazsan bile düelloda biri seni yenerse enerjin gelir, dene.",
+        yonlendirme: DUELLO,
+      },
     ],
   },
   {
@@ -55,8 +106,19 @@ const duyguHavuzu: Duygu[] = [
     ikon: BatteryWarning,
     ikonSinif: "text-orange-500",
     mesajlar: [
-      "Derin bir nefes al. Sınav maratonunda bu baskı çok normal, sen elinden geleni yapıyorsun.",
-      "Kafan dolu ve gergin olabilirsin. Şöyle bir zihnini boşalt, tek bir karta odaklanıp adım adım gidelim.",
+      { metin: "Kafan dağınık, tamam. Panikle soru çözülmüyor, sakin." },
+      { metin: "Herkes stresli, seni özel yapmıyor bu." },
+      { metin: "Mucize beklemiyorum senden, küçük adım yeter." },
+      { metin: "Stres yakıyor seni, motive etmiyor. Beş dakika mola." },
+      { metin: "Ağlamak yerine tek konuya kilitlen, geç bunu." },
+      {
+        metin: "Rakip baskısı istemiyorsan ÖSYMsever'den kendi hızında birkaç soru çöz.",
+        yonlendirme: OSYMSEVER,
+      },
+      {
+        metin: "Tek ihtiyacın olan şey bir sonraki soru. ÖSYMsever'den gerçek bir tane seç.",
+        yonlendirme: OSYMSEVER,
+      },
     ],
   },
   {
@@ -65,8 +127,19 @@ const duyguHavuzu: Duygu[] = [
     ikon: BatteryLow,
     ikonSinif: "text-red-500",
     mesajlar: [
-      "Pil bitmiş gibi mi? Bugün kendine yüklenme, sadece yapabildiğin kadarını yap.",
-      "Bazen dinlenmek de çalışmanın bir parçasıdır. Gerekirse biraz ara ver, dinlen.",
+      { metin: "Pilin bitmiş, kahramanlık yok. Küçük bir şey yeter." },
+      { metin: "Yatakta telefonla kaybolmak dinlenmek değil." },
+      { metin: "Bitkinsin, o zaman 5 soru bile zafer sayılır." },
+      { metin: "Dipteyse enerjin, bir bardak su iç, sonra bak." },
+      { metin: "Dinlen bugün, ama yarın bahane olmasın bu." },
+      {
+        metin: "Düello için enerjin yok biliyorum, ÖSYMsever'den 2 dakikalık bir şey dene.",
+        yonlendirme: OSYMSEVER,
+      },
+      {
+        metin: "Kanepeye tam yapışmadan ÖSYMsever'den bir soru bak bari.",
+        yonlendirme: OSYMSEVER,
+      },
     ],
   },
 ];
@@ -77,18 +150,20 @@ function bugun() {
   return new Date().toISOString().slice(0, 10);
 }
 
-function rastgeleMesaj(havuz: string[]): string {
+function rastgeleMesaj(havuz: Mesaj[]): Mesaj {
   return havuz[Math.floor(Math.random() * havuz.length)];
 }
 
 type Props = {
   onSecim: (ruhHali: RuhHali) => void;
   onKapat: () => void;
+  onModSec: (mod: HedefMod) => void;
 };
 
-export default function RuhHaliModal({ onSecim, onKapat }: Props) {
+export default function RuhHaliModal({ onSecim, onKapat, onModSec }: Props) {
   const [acik, setAcik] = useState(false);
   const [secilen, setSecilen] = useState<RuhHali | null>(null);
+  const [secilenYonlendirme, setSecilenYonlendirme] = useState<Yonlendirme | null>(null);
 
   useEffect(() => {
     try {
@@ -118,15 +193,22 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
 
   const sec = (duygu: Duygu) => {
     kaydet();
+    const mesaj = rastgeleMesaj(duygu.mesajlar);
     const ruhHali: RuhHali = {
       id: duygu.id,
       emoji: "",
       etiket: duygu.etiket,
-      mesaj: rastgeleMesaj(duygu.mesajlar),
+      mesaj: mesaj.metin,
     };
+    setSecilenYonlendirme(mesaj.yonlendirme ?? null);
     setSecilen(ruhHali);
     onSecim(ruhHali);
-    window.setTimeout(() => setAcik(false), 2600);
+  };
+
+  const yonlendir = (hedefMod: HedefMod) => {
+    kaydet();
+    setAcik(false);
+    onModSec(hedefMod);
   };
 
   if (!acik) return null;
@@ -154,15 +236,29 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
             <p className="font-serif text-xl font-bold leading-snug text-balance text-card-foreground">
               {secilen.mesaj}
             </p>
-            <p className="mt-4 text-xs font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              Hadi başlıyoruz
-            </p>
+
+            {secilenYonlendirme && (
+              <button
+                onClick={() => yonlendir(secilenYonlendirme.mod)}
+                className="mt-5 flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-2.5 text-sm font-semibold text-primary-foreground transition hover:opacity-90 active:scale-[0.98]"
+              >
+                <secilenYonlendirme.ikon className="h-4 w-4" strokeWidth={2} />
+                {secilenYonlendirme.etiket}
+              </button>
+            )}
+
+            <button
+              onClick={gec}
+              className="mt-3 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
+            >
+              Boşver, direkt başlayayım
+            </button>
           </div>
         ) : (
           <>
             <div className="flex items-start justify-between gap-3">
               <h2 className="font-serif text-2xl font-bold leading-tight text-balance text-card-foreground">
-                Bugün nasılsın?
+                Naber, bugün moralin nasıl?
               </h2>
               <button
                 onClick={gec}
@@ -193,7 +289,7 @@ export default function RuhHaliModal({ onSecim, onKapat }: Props) {
               onClick={gec}
               className="mt-5 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
             >
-              Şimdi değil, direkt çalışmaya başla
+              Boşver, direkt başlayayım
             </button>
           </>
         )}
