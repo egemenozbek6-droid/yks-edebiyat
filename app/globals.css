@@ -231,3 +231,36 @@
 .animate-urgent-scale {
   animation: urgentScale 0.6s ease-in-out infinite;
 }
+/* ========== BASILABILIR BUTONLAR ========== */
+.btn-press {
+  position: relative;
+  border-bottom: 4px solid color-mix(in oklch, var(--primary) 70%, black);
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease, filter 0.15s ease;
+}
+.btn-press:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+.btn-press:hover {
+  filter: brightness(1.08);
+}
+
+.btn-press-duello {
+  position: relative;
+  border-bottom: 4px solid color-mix(in oklch, var(--color-duello) 70%, black);
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease, filter 0.15s ease;
+}
+.btn-press-duello:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
+
+.btn-press-muted {
+  position: relative;
+  border-bottom: 4px solid color-mix(in oklch, var(--muted) 80%, black);
+  transition: transform 0.1s ease, border-bottom-width 0.1s ease;
+}
+.btn-press-muted:active {
+  transform: translateY(3px);
+  border-bottom-width: 1px;
+}
