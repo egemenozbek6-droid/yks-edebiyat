@@ -58,7 +58,7 @@ export default function TestModul({ onSonuc }: Props) {
           </div>
           <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">Bir dönem seç</h2>
           <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            Seçtiğin dönemdeki tüm eserlerden soru gelir. Soru sayısı dönemdeki eser sayısına göre dinamiktir.
+            Eksik hissettiğin edebiyat dönemini seç ve kendini dene.
           </p>
         </div>
 
