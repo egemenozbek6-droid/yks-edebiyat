@@ -329,13 +329,14 @@ export default function App() {
         )}
       </main>
 
-      <RuhHaliModal
-        onSecim={(rh) => {
-          setRuhHali(rh);
-          window.setTimeout(() => setModalKapandi(true), 2800);
-        }}
-        onKapat={() => setModalKapandi(true)}
-      />
+<RuhHaliModal
+  onSecim={(rh) => {
+    setRuhHali(rh);
+    window.setTimeout(() => setModalKapandi(true), 2800);
+  }}
+  onKapat={() => setModalKapandi(true)}
+  onModSec={(hedefMod) => modDegistir(hedefMod)}
+/>
 
       {/* Profil modalı */}
       {profilAcik && (
