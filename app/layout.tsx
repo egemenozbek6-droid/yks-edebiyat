@@ -1,10 +1,14 @@
 import { Analytics } from '@vercel/analytics/next'
 import type { Metadata, Viewport } from 'next'
-import { Plus_Jakarta_Sans, Fraunces } from 'next/font/google'
+import { Plus_Jakarta_Sans } from 'next/font/google'
 import './globals.css'
 
-const jakarta = Plus_Jakarta_Sans({ subsets: ['latin'], variable: '--font-sans' })
-const fraunces = Fraunces({ subsets: ['latin'], variable: '--font-serif', style: ['normal', 'italic'] })
+// Hem sans hem serif değişkenlerini tek ve tok modern sans fonta bağlıyoruz
+const jakarta = Plus_Jakarta_Sans({ 
+  subsets: ['latin'], 
+  variable: '--font-sans',
+  display: 'swap'
+})
 
 export const metadata: Metadata = {
   title: 'EdebiKart: YKS Yazar Eser & Düello',
@@ -50,11 +54,12 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="tr" className={`${jakarta.variable} ${fraunces.variable} bg-background`} suppressHydrationWarning>
+    // fraunces yerine font-serif için de jakarta değişkenini veriyoruz; böylece bileşenlerde font-serif yazsa bile tırnaklı fonta düşemez
+    <html lang="tr" className={`${jakarta.variable} bg-background font-sans`} style={{ ['--font-serif' as any]: 'var(--font-sans)' }} suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: temaScripti }} />
       </head>
-      <body className="antialiased font-sans">
+      <body className="antialiased font-sans font-medium selection:bg-sky-500/30 selection:text-sky-200">
         {children}
         {process.env.NODE_ENV === 'production' && <Analytics />}
       </body>
