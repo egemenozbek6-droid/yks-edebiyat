@@ -16,7 +16,6 @@ type Props = {
   onTekrar: () => void
 }
 
-
 const ESIK = 110
 
 export default function Flashcard({
@@ -232,15 +231,15 @@ export default function Flashcard({
       <div className="mt-3 grid grid-cols-2 gap-2.5 shrink-0">
         <button
           onClick={() => tamamla("sol")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-card py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-destructive active:scale-[0.98]"
+          className="btn-press-muted flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-bold text-muted-foreground"
         >
-          <RotateCcw className="h-4 w-4" /> Tekrar
+          <RotateCcw className="h-4 w-4" /> Bir daha
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+          className="btn-press flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground"
         >
-          <Check className="h-4 w-4" /> Öğrendim
+          <Check className="h-4 w-4" /> Kaptım
         </button>
       </div>
 
@@ -255,7 +254,7 @@ export default function Flashcard({
           onClick={() => setCevrildi((v) => !v)}
           className="rounded-lg px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
         >
-          Çevir
+          Çevir bakayım
         </button>
         <button
           onClick={onNext}
@@ -274,18 +273,20 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
       <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
         <Trophy className="h-8 w-8" strokeWidth={1.5} />
       </div>
-      <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">Deste tamamlandı!</h2>
+      <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">
+        Bu desteyi ezdin.
+      </h2>
       <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-        {toplam} kartın tamamını öğrendin olarak işaretledin.
+        {toplam} kartın hepsini bitirdin. Başka dönem mi bakıyoruz?
       </p>
       <div className="mt-5">
         <IlerlemeBari mevcut={toplam} toplam={toplam} etiket="Tamamlanan" />
       </div>
       <button
         onClick={onSifirla}
-        className="mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+        className="btn-press mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground"
       >
-        <RotateCcw className="h-4 w-4" /> Sıfırla
+        <RotateCcw className="h-4 w-4" /> Tekrar baştan
       </button>
     </div>
   )
