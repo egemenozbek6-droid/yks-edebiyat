@@ -158,7 +158,7 @@ export default function Flashcard({
               </div>
 
               <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <h2 className="font-serif text-2xl font-extrabold leading-tight text-balance text-card-foreground sm:text-3xl">
+                <h2 className="font-sans text-2xl font-black tracking-tight leading-tight text-balance text-card-foreground sm:text-3xl">
                   {item.work}
                 </h2>
                 <p className="mt-3 text-sm font-medium text-muted-foreground">{item.genre}</p>
@@ -191,7 +191,7 @@ export default function Flashcard({
                 <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                   Yazar
                 </p>
-                <h2 className="font-serif text-2xl font-extrabold uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-3xl">
+                <h2 className="font-sans text-2xl font-black tracking-tight uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-3xl">
                   {item.author}
                 </h2>
                 <p className="mt-3 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
@@ -273,7 +273,7 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
       <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
         <Trophy className="h-8 w-8" strokeWidth={1.5} />
       </div>
-      <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">
+      <h2 className="font-sans text-xl font-black tracking-tight tracking-tight text-balance text-card-foreground">
         Bu desteyi ezdin.
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
