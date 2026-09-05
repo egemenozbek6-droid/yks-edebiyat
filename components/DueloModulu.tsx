@@ -1313,24 +1313,23 @@ export default function DueloModulu({
               <X className="h-9 w-9" strokeWidth={1.5} />
             )}
           </div>
-         <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
-  {hukmenGalibiyet
-    ? "Rakip kaçtı."
-    : kazandi
-      ? "Ezici üstünlük."
-      : berabere
-        ? "Berabere kaldınız."
-        : "Bu sefer olmadı."}
-</h2>
-<p className="mt-2 text-sm text-muted-foreground">
-  {hukmenGalibiyet
-    ? "Rakip oyundan çıktı. Galibiyet senin."
-    : kazandi
-      ? "Rakip utansın."
-      : berabere
-        ? "İkiniz de aynı skoru yaptınız."
-        : "Rövanş ister misin, yoksa kaçacak mısın?"}
-</p>
+          <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
+            {hukmenGalibiyet
+              ? "Rakip kaçtı."
+              : kazandi
+                ? "Ezici üstünlük."
+                : berabere
+                  ? "Berabere kaldınız."
+                  : "Bu sefer olmadı."}
+          </h2>
+          <p className="mt-2 text-sm text-muted-foreground">
+            {hukmenGalibiyet
+              ? "Rakip oyundan çıktı. Galibiyet senin."
+              : kazandi
+                ? "Rakip utansın."
+                : berabere
+                  ? "İkiniz de aynı skoru yaptınız."
+                  : "Rövanş ister misin, yoksa kaçacak mısın?"}
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
@@ -1370,20 +1369,20 @@ export default function DueloModulu({
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
-  onClick={() => {
-    dueloSifirla();
-    rastgeleRakip();
-  }}
-  className="btn-press-duello flex items-center justify-center gap-2 rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground"
->
-  <Swords className="h-4 w-4" /> Rövanş
-</button>
-<button
-  onClick={cikisIste}
-  className="btn-press-muted flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-bold text-muted-foreground ring-1 ring-border"
->
-  <Home className="h-4 w-4" /> Çık
-</button>
+              onClick={() => {
+                dueloSifirla();
+                rastgeleRakip();
+              }}
+              className="btn-press-duello flex items-center justify-center gap-2 rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground"
+            >
+              <Swords className="h-4 w-4" /> Rövanş
+            </button>
+            <button
+              onClick={cikisIste}
+              className="btn-press-muted flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-bold text-muted-foreground ring-1 ring-border"
+            >
+              <Home className="h-4 w-4" /> Çık
+            </button>
           </div>
         </div>
       </div>
