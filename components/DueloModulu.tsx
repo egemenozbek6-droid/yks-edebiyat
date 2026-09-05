@@ -1313,7 +1313,7 @@ export default function DueloModulu({
               <X className="h-9 w-9" strokeWidth={1.5} />
             )}
           </div>
-          <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
+          <h2 className="font-sans text-2xl font-black tracking-tight text-card-foreground">
             {hukmenGalibiyet
               ? "Rakip kaçtı."
               : kazandi
