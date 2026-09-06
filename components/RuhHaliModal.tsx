@@ -251,7 +251,7 @@ export default function RuhHaliModal({ onSecim, onKapat, onModSec }: Props) {
               onClick={gec}
               className="mt-3 w-full rounded-xl py-2 text-xs font-semibold text-muted-foreground transition hover:text-foreground"
             >
-              Boşver, direkt başlayayım
+              Hadi, EdebiKart'a dalalım!
             </button>
           </div>
         ) : (
