@@ -53,7 +53,7 @@ export default function TestModul({ onSonuc }: Props) {
     return (
       <div className="animate-rise">
         <div className="mb-6 rounded-[1.75rem] bg-card p-7 text-center shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)]">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-primary/10 text-primary">
+          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-violet-500/10 text-violet-500">
             <Brain className="h-6 w-6" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">Bir dönem seç</h2>
@@ -71,7 +71,7 @@ export default function TestModul({ onSonuc }: Props) {
                 onClick={() => basla(donem)}
                 className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left transition active:scale-[0.99] ${
                   tumMu
-                    ? "bg-primary text-primary-foreground shadow-md hover:brightness-110"
+                    ? "bg-violet-500 text-white shadow-md hover:brightness-110"
                     : "bg-card text-card-foreground shadow-sm hover:shadow-md"
                 }`}
               >
@@ -96,12 +96,12 @@ export default function TestModul({ onSonuc }: Props) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     return (
       <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.1)]">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-violet-500/10 text-violet-500 animate-pop">
           <Target className="h-9 w-9" strokeWidth={1.5} />
         </div>
         <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test bitti</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {sorular.length} soruda <span className="font-bold text-primary">{dogruSayi}</span> doğru — %{oran}
+          {sorular.length} soruda <span className="font-bold text-violet-500">{dogruSayi}</span> doğru — %{oran}
         </p>
         <div className="mt-6">
           <IlerlemeBari mevcut={dogruSayi} toplam={sorular.length} etiket="Doğru cevap" />
@@ -109,7 +109,7 @@ export default function TestModul({ onSonuc }: Props) {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={() => basla(secilenDonem)}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-2xl bg-violet-500 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -146,7 +146,7 @@ export default function TestModul({ onSonuc }: Props) {
               setSecilenDonem(null);
               setSorular([]);
             }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-primary/30 active:scale-95"
+            className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-violet-500/30 active:scale-95"
           >
             <RotateCcw className="h-3 w-3" /> Dönemi değiştir
           </button>
@@ -159,7 +159,7 @@ export default function TestModul({ onSonuc }: Props) {
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
           </p>
           {soru.osymFreq && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400">
+            <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
               <Flame className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
@@ -218,7 +218,7 @@ export default function TestModul({ onSonuc }: Props) {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-semibold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-violet-500 py-3.5 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
