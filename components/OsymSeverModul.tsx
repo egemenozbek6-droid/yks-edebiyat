@@ -63,7 +63,7 @@ export default function OsymSeverModul() {
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
           <p className="mx-auto mt-3 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-            YKS'de fark yaratan banko sorular burada. Dönem sınırlarını kaldır, ÖSYM'nin en çok sevdiği yazar ve eserlerle kendini tam sınav ayarında test et.
+           ÖSYM'nin en sevdiği yazar ve eserler burada. Dönem sınırı yok, hedef tek: 24'te 24.
           </p>
         </div>
 
