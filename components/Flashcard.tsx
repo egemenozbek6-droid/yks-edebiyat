@@ -85,7 +85,9 @@ export default function Flashcard({
   }
 
   const kisaIpucu = `${item.period} · ${item.genre}`
-  const osymFreq = item.osym_stats?.osym_freq
+  const osymFreqHam = item.osym_stats?.osym_freq
+  // Veride emoji gömülü gelebiliyor, ikonla çakışmasın diye temizliyoruz.
+  const osymFreq = osymFreqHam?.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim()
 
   const donus = Math.max(-12, Math.min(12, dx / 14))
   const sagOran = Math.min(1, Math.max(0, dx / ESIK))
@@ -147,14 +149,6 @@ export default function Flashcard({
             >
               {/* Kitap sırtı — sol kenar şeridi */}
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary/60" aria-hidden="true" />
-
-              {/* Dev alıntı işareti — arka plan dokusu */}
-              <span
-                className="pointer-events-none absolute -left-3 top-6 select-none font-serif text-[7rem] font-black italic leading-none text-primary/[0.06]"
-                aria-hidden="true"
-              >
-                &ldquo;
-              </span>
 
               <div className="relative flex h-full flex-col p-6">
                 <div className="flex items-center justify-between gap-3">
@@ -269,7 +263,7 @@ export default function Flashcard({
           onClick={() => setCevrildi((v) => !v)}
           className="rounded-lg px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
         >
-          Çevir bakayım
+          Arkasına bakalım
         </button>
         <button
           onClick={onNext}
