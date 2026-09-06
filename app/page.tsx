@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
-import { TriangleAlert as AlertTriangle, Brain, Flame, Info, Layers, Swords, Target, X } from "lucide-react";
+import { TriangleAlert as AlertTriangle, Layers, NotebookPen, Flame, Swords, Info, X } from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
@@ -21,7 +21,7 @@ type Mod = "kart" | "test" | "osym" | "duelo";
 
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
-  { mod: "test", etiket: "Test", ikon: Brain, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
+  { mod: "test", etiket: "Test", ikon: NotebookPen, aktifKlass: "bg-violet-500/15 shadow-sm text-violet-500 ring-1 ring-violet-500/30" },
   { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
   { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello/15 shadow-sm text-duello ring-1 ring-duello/30" },
 ];
@@ -226,26 +226,24 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 glass-card rounded-2xl ring-1 ring-border">
-            {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
-              const aktif = mod === m;
-              return (
-                <button
-                  key={m}
-                  onClick={() => modDegistir(m)}
-                  aria-current={aktif ? "page" : undefined}
-                  className={`flex items-center justify-center gap-1.5 py-2 rounded-xl text-xs font-semibold transition ${
-                    aktif
-                      ? aktifKlass
-                      : "text-muted-foreground hover:text-foreground"
-                  }`}
-                >
-                  <Ikon className="w-3.5 h-3.5" strokeWidth={aktif ? 2.4 : 1.8} />
-                  {etiket}
-                </button>
-              );
-            })}
-          </div>
+         <div className="grid grid-cols-4 gap-1.5 p-1.5 glass-card rounded-2xl ring-1 ring-border">
+  {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
+    const aktif = mod === m;
+    return (
+      <button
+        key={m}
+        onClick={() => modDegistir(m)}
+        aria-current={aktif ? "page" : undefined}
+        className={`flex flex-col items-center justify-center gap-1 rounded-xl py-2.5 text-[11px] font-semibold transition ${
+          aktif ? aktifKlass : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
+        }`}
+      >
+        <Ikon className="h-4.5 w-4.5" strokeWidth={aktif ? 2.4 : 1.8} />
+        {etiket}
+      </button>
+    );
+  })}
+</div>
         </div>
       </header>
 
@@ -418,11 +416,11 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Test */}
-              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/20">
-                  <Brain className="h-5 w-5" strokeWidth={1.8} />
-                </div>
+             {/* Test */}
+<div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+  <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-500/15 text-violet-500 ring-1 ring-violet-500/20">
+    <NotebookPen className="h-5 w-5" strokeWidth={1.8} />
+  </div>
                 <div className="min-w-0">
                   <p className="text-sm font-bold text-card-foreground">Test</p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground">
