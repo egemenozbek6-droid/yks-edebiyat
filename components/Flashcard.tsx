@@ -123,7 +123,7 @@ export default function Flashcard({
               ? `Cevap: ${item.author}, ${item.period}.`
               : `Eser: ${item.work}.`
           }
-          className={`relative w-full ${intro ? "animate-card-intro" : ""} ${
+          className={`relative w-full h-full ${intro ? "animate-card-intro" : ""} ${
             surukleniyor && !intro ? "" : "transition-all duration-300 ease-out"
           }`}
           style={{
@@ -134,7 +134,7 @@ export default function Flashcard({
           }}
         >
           <div
-            className="relative h-[min(44vh,340px)] w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
+            className="relative h-full w-full transition-transform duration-700 ease-[cubic-bezier(0.22,1,0.36,1)]"
             style={{
               transformStyle: "preserve-3d",
               transform: cevrildi ? "rotateY(180deg)" : "rotateY(0deg)",
@@ -156,24 +156,19 @@ export default function Flashcard({
                 &ldquo;
               </span>
 
-              {/* ÖSYM sıklık kurdelesi — sağ üst köşeye yapışık */}
-              {osymFreq && (
-                <div
-                  className="absolute -right-11 top-5 w-40 rotate-45 bg-osym py-1 text-center shadow-md"
-                  aria-hidden="true"
-                >
-                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-white">
-                    <Flame className="h-3 w-3" strokeWidth={2.5} />
-                    {osymFreq}
-                  </span>
-                </div>
-              )}
-
               <div className="relative flex h-full flex-col p-6">
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
-                  <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
-                  Eser
-                </span>
+                <div className="flex items-center justify-between gap-3">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+                    <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
+                    Eser
+                  </span>
+                  {osymFreq && (
+                    <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
+                      <Flame className="h-3 w-3" strokeWidth={2.5} />
+                      {osymFreq}
+                    </span>
+                  )}
+                </div>
 
                 <div className="flex flex-1 flex-col items-center justify-center text-center">
                   <h2 className="font-serif text-3xl font-bold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
