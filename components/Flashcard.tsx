@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, Lightbulb, RotateCcw, Trophy, Undo2 } from "lucide-react"
+import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2 } from "lucide-react"
 import IlerlemeBari from "@/components/IlerlemeBari"
 import type { LiteratureItem } from "@/src/data"
 
@@ -100,6 +100,7 @@ export default function Flashcard({
 
       {/* Kart alanı — flex-1, ekranı doldur */}
       <div className="relative select-none flex-1 min-h-0 flex items-center" style={{ perspective: "1600px" }}>
+        {/* Arkadaki deste yığını — sayfa kenarları gibi */}
         <div className="absolute inset-x-4 top-3 h-full rounded-[1.75rem] bg-card/40" aria-hidden="true" />
         <div className="absolute inset-x-2 top-1.5 h-full rounded-[1.75rem] bg-card/60" aria-hidden="true" />
 
@@ -141,69 +142,88 @@ export default function Flashcard({
           >
             {/* ÖN YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 overflow-hidden rounded-[1.75rem] bg-card shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
-              <div className="flex items-start justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+              {/* Kitap sırtı — sol kenar şeridi */}
+              <div className="absolute inset-y-0 left-0 w-1.5 bg-primary/60" aria-hidden="true" />
+
+              {/* Dev alıntı işareti — arka plan dokusu */}
+              <span
+                className="pointer-events-none absolute -left-3 top-6 select-none font-serif text-[7rem] font-black italic leading-none text-primary/[0.06]"
+                aria-hidden="true"
+              >
+                &ldquo;
+              </span>
+
+              {/* ÖSYM sıklık kurdelesi — sağ üst köşeye yapışık */}
+              {osymFreq && (
+                <div
+                  className="absolute -right-11 top-5 w-40 rotate-45 bg-osym py-1 text-center shadow-md"
+                  aria-hidden="true"
+                >
+                  <span className="inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wide text-white">
+                    <Flame className="h-3 w-3" strokeWidth={2.5} />
+                    {osymFreq}
+                  </span>
+                </div>
+              )}
+
+              <div className="relative flex h-full flex-col p-6">
+                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
                   <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
                   Eser
                 </span>
-                {osymFreq && (
-                  <span className="inline-flex items-center gap-1 rounded-full bg-orange-500/15 px-2.5 py-1 text-[10px] font-bold text-orange-600 dark:text-orange-400">
-                    <Flame className="h-3 w-3" strokeWidth={2} />
-                    {osymFreq}
-                  </span>
-                )}
-              </div>
 
-              <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <h2 className="font-sans text-2xl font-black tracking-tight leading-tight text-balance text-card-foreground sm:text-3xl">
-                  {item.work}
-                </h2>
-                <p className="mt-3 text-sm font-medium text-muted-foreground">{item.genre}</p>
-              </div>
+                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                  <h2 className="font-serif text-3xl font-bold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
+                    {item.work}
+                  </h2>
+                  <p className="mt-3 text-sm font-medium italic text-muted-foreground">{item.genre}</p>
+                </div>
 
-              <div className="flex items-center justify-center gap-2 rounded-2xl bg-accent/50 px-3.5 py-2.5">
-                <Lightbulb className="h-3.5 w-3.5 shrink-0 text-primary" strokeWidth={2} />
-                <p className="text-center text-[12px] font-medium italic leading-snug text-pretty text-accent-foreground">
-                  {kisaIpucu}
-                </p>
+                <div className="flex items-center justify-center gap-2 border-t border-border/60 pt-3">
+                  <p className="text-center text-[12px] font-medium leading-snug text-pretty text-muted-foreground">
+                    {kisaIpucu}
+                  </p>
+                </div>
               </div>
             </div>
 
             {/* ARKA YÜZ */}
             <div
-              className="absolute inset-0 flex flex-col rounded-[1.75rem] bg-card p-6 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 overflow-hidden rounded-[1.75rem] bg-card shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
               }}
             >
-              <div className="flex items-start justify-between gap-3">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+              {/* Kitap sırtı — sol kenar şeridi */}
+              <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
+
+              <div className="relative flex h-full flex-col p-6">
+                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
                   {item.period}
                 </span>
-              </div>
 
-              <div className="flex flex-1 flex-col items-center justify-center text-center">
-                <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
-                  Yazar
-                </p>
-                <h2 className="font-sans text-2xl font-black tracking-tight uppercase leading-tight tracking-wide text-balance text-card-foreground sm:text-3xl">
-                  {item.author}
-                </h2>
-                <p className="mt-3 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
-                  {item.period}
-                </p>
-
-                <div className="mt-4 w-full rounded-2xl bg-accent/50 p-3">
-                  <p className="mb-1 flex items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
-                    <Lightbulb className="h-3 w-3" strokeWidth={2} />
-                    Bilgi
+                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                    Yazar
                   </p>
-                  <p className="text-xs leading-relaxed text-pretty text-muted-foreground">{item.info}</p>
+                  <h2 className="font-serif text-3xl font-bold leading-tight text-balance text-card-foreground sm:text-4xl">
+                    {item.author}
+                  </h2>
+                  <p className="mt-3 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
+                    {item.period}
+                  </p>
+
+                  <div className="mt-4 w-full rounded-2xl border border-border/60 bg-accent/40 p-3">
+                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
+                      Bilgi
+                    </p>
+                    <p className="text-xs leading-relaxed text-pretty text-muted-foreground">{item.info}</p>
+                  </div>
                 </div>
               </div>
             </div>
