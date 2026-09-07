@@ -154,7 +154,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             ) : kullaniciAdiDegistirebilirMi() ? (
               <>
                 <div className="mb-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-[11px] leading-relaxed text-emerald-600 dark:text-emerald-400">
-                  <span className="font-bold">Eser Çırağı ödülü:</span> Bir kez isim değiştirme hakkınız var. Başkasının aldığı adları seçemezsiniz.
+                  <span className="font-bold">Eser Çırağı ödülü:</span> Bir kez isim değiştirebilirsin. İsmini seç.
                 </div>
                 <div className="flex gap-2">
                   <input
