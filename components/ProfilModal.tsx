@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Check, Lock, X } from "lucide-react";
+import { Lock, X } from "lucide-react";
 import {
   mevcutKullanici,
   mevcutIstatistik,
@@ -59,7 +59,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
         onClick={() => (kilitli ? setKilitliPreview({ emoji: a.emoji, etiket: a.etiket, minEP: a.minEP, minLig: a.minLig }) : avatarSec(a.id, false))}
         className={`relative grid aspect-square place-items-center rounded-xl text-lg transition ${
           secili
-            ? "bg-primary/20 ring-2 ring-primary"
+            ? "bg-duello/20 ring-2 ring-duello"
             : kilitli
               ? "bg-muted/40 opacity-50 cursor-pointer hover:opacity-70"
               : "bg-muted hover:bg-muted/70"
@@ -94,7 +94,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
           {/* Header */}
           <div className="mb-5 flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-primary/15 text-2xl ring-1 ring-primary/30">
+              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-duello/15 text-2xl ring-1 ring-duello/30">
                 {avatarEmoji(seciliAvatar)}
               </div>
               <div>
@@ -116,19 +116,19 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
           {/* Kullanıcı adı — kalıcı, kilitli */}
           <div className="mb-5">
             <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
-              İsminiz
+              Kullanıcı adı
             </label>
-            <div className="flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-3 ring-1 ring-primary/20">
-              <Lock className="h-4 w-4 shrink-0 text-primary" />
+            <div className="flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-3 ring-1 ring-border">
+              <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="flex-1 truncate text-sm font-bold text-foreground">
-                İsminiz Sabit: {kullanici.kullaniciAdi}
+                {kullanici.kullaniciAdi}
               </span>
-              <span className="inline-flex items-center gap-1 rounded-full bg-primary/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-primary">
-                <Lock className="h-2.5 w-2.5" /> Sabit
+              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                Kilitli
               </span>
             </div>
             <p className="mt-1.5 text-[11px] text-muted-foreground">
-              İsminiz sabittir ve daha sonra değiştirilemez.
+              İsim daha sonra değiştirilemez.
             </p>
           </div>
 
@@ -161,11 +161,6 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </p>
           </div>
 
-          {/* Bilgi */}
-          <div className="flex items-center justify-center gap-2 rounded-2xl bg-muted/40 py-3 text-xs text-muted-foreground">
-            <Check className="h-3.5 w-3.5 text-emerald-500" />
-            Avatar değişiklikleri anında kaydedilir
-          </div>
         </div>
       </div>
 
@@ -186,26 +181,29 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="mx-auto mb-4 grid h-20 w-20 place-items-center rounded-3xl bg-muted/40 text-4xl ring-1 ring-amber-500/20">
+            <div className="relative mx-auto mb-4 grid h-20 w-20 place-items-center rounded-3xl bg-muted/40 text-4xl ring-1 ring-amber-500/20">
               <span className="opacity-40 grayscale">{kilitliPreview.emoji}</span>
-            </div>
-            <div className="mx-auto mb-3 grid h-10 w-10 place-items-center rounded-full bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/30">
-              <Lock className="h-5 w-5" />
+              <span className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/30">
+                <Lock className="h-4 w-4" />
+              </span>
             </div>
             <h3 className="font-serif text-base font-bold text-card-foreground">
               {kilitliPreview.etiket}
             </h3>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Bu avatar <span className="font-bold text-amber-500">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Efsane"}</span> ligine ulaşınca açılır!
+              <span className="font-bold text-amber-500">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Efsane"}</span> ligine ulaşınca açılır
+              <span className="text-muted-foreground"> ({kilitliPreview.minEP}+ EP)</span>
             </p>
-            <div className="mt-3 rounded-xl bg-muted/40 px-4 py-2 text-xs text-muted-foreground">
-              Gerekli lig: <span className="font-bold text-foreground">{RANK_KADEMELERI[kilitliPreview.minLig - 1]?.ad ?? "Edebiyat Efsanesi"}</span> ({kilitliPreview.minEP}+ EP)
-            </div>
+            {mevcutEP < kilitliPreview.minEP && (
+              <div className="mt-3 rounded-xl bg-amber-500/10 px-4 py-2 text-xs font-semibold text-amber-500 ring-1 ring-amber-500/20">
+                {kilitliPreview.minEP - mevcutEP} EP daha
+              </div>
+            )}
             <button
               onClick={() => setKilitliPreview(null)}
               className="mt-4 w-full rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-foreground transition hover:bg-muted active:scale-[0.98] ring-1 ring-border"
             >
-              Tamam
+              Anladım
             </button>
           </div>
         </div>
