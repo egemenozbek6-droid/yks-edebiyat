@@ -9,6 +9,9 @@ export type Kullanici = {
   kullaniciAdi: string;
   avatar: AvatarId;
   olusturmaTarihi: number;
+  /** Eser Çırağı sonrası tek seferlik isim değişikliği kullanıldı mı */
+  isimDegisti?: boolean;
+  /** @deprecated isimDegisti kullan — eski kayıt uyumu */
   hasChangedUsername?: boolean;
 };
 
@@ -50,7 +53,6 @@ export function sonrakiRank(puan: number): RankKademe | null {
 }
 
 export type KartSeviye = {
-  // literatureItem.id -> seviye (1..5)
   [kartId: number]: number;
 };
 
