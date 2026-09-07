@@ -772,8 +772,8 @@ export default function DueloModulu({
   if (adim === "nick") {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(14,116,144,0.12)] max-w-sm w-full">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-duello/15 text-duello animate-pop ring-1 ring-duello/30">
+        <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full">
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-xl bg-duello/15 text-duello animate-pop ring-1 ring-duello/30">
             <Swords className="h-7 w-7" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-xl font-bold tracking-tight text-center text-card-foreground">
@@ -793,7 +793,7 @@ export default function DueloModulu({
             onKeyDown={(e) => e.key === "Enter" && nickKaydet()}
             placeholder="İsminiz..."
             maxLength={20}
-            className="mt-5 w-full rounded-2xl bg-muted/60 px-4 py-3 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
+            className="mt-5 w-full rounded-lg bg-muted/60 px-4 py-3 text-sm font-medium text-foreground placeholder:text-muted-foreground/60 outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
           />
           {nickHata && (
             <p className="mt-2 text-xs font-semibold text-destructive">{nickHata}</p>
@@ -808,7 +808,7 @@ export default function DueloModulu({
           <button
             onClick={nickKaydet}
             disabled={!nickInput.trim()}
-            className="mt-4 w-full rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mt-4 w-full rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Devam Et
           </button>
@@ -846,7 +846,7 @@ export default function DueloModulu({
         <div className="animate-rise w-full max-w-3xl mx-auto grid gap-3 md:grid-cols-2">
 
           {/* PROFİL & RANK — en üstte */}
-          <div className="glass-card rounded-[1.5rem] p-4 ring-1 ring-border flex flex-col">
+          <div className="glass-card rounded-xl p-4 ring-1 ring-border flex flex-col">
             {/* Avatar + İsim + Profil butonu */}
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2.5">
@@ -993,10 +993,9 @@ export default function DueloModulu({
             <button
               onClick={rastgeleRakip}
               disabled={cooldownAktif}
-              className="group relative overflow-hidden rounded-[1.35rem] glass-card p-4 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+              className="group relative overflow-hidden rounded-xl glass-card p-4 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
             >
-              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-duello/15 blur-3xl transition group-hover:bg-duello/25" />
-              <div className="relative">
+<div className="relative">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-duello/15 text-duello transition group-hover:scale-110 ring-1 ring-duello/20">
                     <Swords className="h-4 w-4" strokeWidth={2} />
@@ -1014,7 +1013,7 @@ export default function DueloModulu({
             </button>
 
             {/* Özel Oda */}
-            <div className="glass-card rounded-[1.35rem] p-4 ring-1 ring-border">
+            <div className="glass-card rounded-xl p-4 ring-1 ring-border">
               <div className="mb-2.5 flex items-center gap-2">
                 <div className="grid h-9 w-9 place-items-center rounded-xl bg-duello/10 text-duello ring-1 ring-duello/20">
                   <KeyRound className="h-4 w-4" strokeWidth={2} />
@@ -1046,11 +1045,11 @@ export default function DueloModulu({
         {/* Kariyer Yolu Modalı */}
         {kariyerAcik && (
           <div
-            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-md"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm"
             onClick={() => setKariyerAcik(false)}
           >
             <div
-              className="animate-pop glass-card max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-[1.75rem] p-6 shadow-2xl ring-1 ring-border no-scrollbar"
+              className="animate-pop glass-card max-h-[85vh] w-full max-w-sm overflow-y-auto rounded-xl p-6 shadow-2xl ring-1 ring-border no-scrollbar"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="mb-4 flex items-start justify-between">
@@ -1147,13 +1146,13 @@ export default function DueloModulu({
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="animate-rise text-center">
-          <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-duello/15 text-duello ring-1 ring-duello/30">
+          <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-xl bg-duello/15 text-duello ring-1 ring-duello/30">
             <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-duello/20 border-t-duello" />
           </div>
           <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip aranıyor...</h2>
           <button
             onClick={aramaIptal}
-            className="mt-6 rounded-2xl glass-card px-6 py-3 text-sm font-semibold text-muted-foreground ring-1 ring-border transition hover:text-duello active:scale-[0.98]"
+            className="mt-6 rounded-lg glass-card px-6 py-3 text-sm font-semibold text-muted-foreground ring-1 ring-border transition hover:text-duello active:scale-[0.98]"
           >
             İptal Et
           </button>
@@ -1166,8 +1165,8 @@ export default function DueloModulu({
   if (adim === "oda_kur") {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(14,116,144,0.12)] max-w-sm w-full ring-1 ring-border">
-          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-duello/10 text-duello ring-1 ring-duello/20">
+        <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full ring-1 ring-border">
+          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <KeyRound className="h-6 w-6" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Oda Kur</h2>
@@ -1197,7 +1196,7 @@ export default function DueloModulu({
           <button
             onClick={odaKur}
             disabled={cooldownAktif}
-            className="mt-5 w-full rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+            className="mt-5 w-full rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Odayı Oluştur
           </button>
@@ -1216,8 +1215,8 @@ export default function DueloModulu({
   if (adim === "oda_katil") {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(14,116,144,0.12)] max-w-sm w-full ring-1 ring-border">
-          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-duello/10 text-duello ring-1 ring-duello/20">
+        <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full ring-1 ring-border">
+          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <KeyRound className="h-6 w-6" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-lg font-bold text-center text-card-foreground">Odaya Katıl</h2>
@@ -1235,7 +1234,7 @@ export default function DueloModulu({
             onKeyDown={(e) => e.key === "Enter" && odayaKatil()}
             placeholder="4 haneli kod..."
             maxLength={4}
-            className="mt-5 w-full rounded-2xl bg-muted/60 px-4 py-3.5 text-lg font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
+            className="mt-5 w-full rounded-lg bg-muted/60 px-4 py-3.5 text-lg font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
           />
           {odaHata && (
             <p className="mt-2 text-xs font-semibold text-destructive text-center">{odaHata}</p>
@@ -1243,7 +1242,7 @@ export default function DueloModulu({
           <button
             onClick={odayaKatil}
             disabled={odaInput.length !== 4}
-            className="mt-4 w-full rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="mt-4 w-full rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Katıl
           </button>
@@ -1262,13 +1261,13 @@ export default function DueloModulu({
   if (adim === "oda_bekleme") {
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="animate-rise glass-card rounded-[1.75rem] p-7 shadow-[0_12px_40px_-12px_rgba(14,116,144,0.12)] max-w-sm w-full text-center ring-1 ring-border">
-          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-2xl bg-duello/10 text-duello ring-1 ring-duello/20">
+        <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full text-center ring-1 ring-border">
+          <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-duello/20 border-t-duello" />
           </div>
           <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip bekleniyor...</h2>
           <p className="mt-2 text-xs text-muted-foreground">Oda kodun</p>
-          <div className="mt-2 rounded-2xl bg-muted/60 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
+          <div className="mt-2 rounded-lg bg-muted/60 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
             {olusturulanKod}
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
@@ -1294,9 +1293,9 @@ export default function DueloModulu({
     const berabere = sonuc.berabere;
     return (
       <div className="flex-1 flex items-center justify-center">
-        <div className="animate-rise glass-card rounded-[1.75rem] p-8 text-center shadow-[0_12px_40px_-12px_rgba(14,116,144,0.12)] max-w-sm w-full ring-1 ring-border">
+        <div className="animate-rise glass-card rounded-xl p-8 text-center shadow-sm max-w-sm w-full ring-1 ring-border">
           <div
-            className={`mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl animate-pop ${
+            className={`mx-auto mb-5 grid h-20 w-20 place-items-center rounded-xl animate-pop ${
               kazandi
                 ? "bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/30"
                 : berabere
@@ -1332,13 +1331,13 @@ export default function DueloModulu({
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="glass-card rounded-2xl p-4 ring-1 ring-border">
+            <div className="glass-card rounded-lg p-4 ring-1 ring-border">
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {kullanici?.kullaniciAdi}
               </p>
               <p className="mt-1 text-2xl font-bold text-duello">{sonuc.oyuncuSkor} EP</p>
             </div>
-            <div className="glass-card rounded-2xl p-4 ring-1 ring-border">
+            <div className="glass-card rounded-lg p-4 ring-1 ring-border">
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {sonuc.rakipAdi}
               </p>
@@ -1348,7 +1347,7 @@ export default function DueloModulu({
 
           {dueloModu === "ranked" && (
             <div className="mt-4 space-y-2">
-              <div className={`flex items-center justify-center gap-2 rounded-2xl py-2.5 text-sm font-semibold ring-1 ${
+              <div className={`flex items-center justify-center gap-2 rounded-lg py-2.5 text-sm font-semibold ring-1 ${
                 sonuc.puanKazandi > 0
                   ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20"
                   : sonuc.puanKazandi < 0
@@ -1359,7 +1358,7 @@ export default function DueloModulu({
                 {sonuc.puanKazandi > 0 ? `+${sonuc.puanKazandi} EP` : sonuc.puanKazandi < 0 ? `${sonuc.puanKazandi} EP` : "0 EP"}
               </div>
               {sonuc.seri >= 2 && (
-                <div className="flex items-center justify-center gap-2 rounded-2xl bg-orange-500/10 py-2.5 text-sm font-semibold text-orange-500 ring-1 ring-orange-500/20">
+                <div className="flex items-center justify-center gap-2 rounded-lg bg-orange-500/10 py-2.5 text-sm font-semibold text-orange-500 ring-1 ring-orange-500/20">
                   <Flame className="h-4 w-4" /> {sonuc.seri} Galibiyet Serisi
                 </div>
               )}
@@ -1372,13 +1371,13 @@ export default function DueloModulu({
                 dueloSifirla();
                 rastgeleRakip();
               }}
-              className="btn-press-duello flex items-center justify-center gap-2 rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground"
+              className="btn-press-duello flex items-center justify-center gap-2 rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground"
             >
               <Swords className="h-4 w-4" /> Rövanş
             </button>
             <button
               onClick={cikisIste}
-              className="btn-press-muted flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-bold text-muted-foreground ring-1 ring-border"
+              className="btn-press-muted flex items-center justify-center gap-2 rounded-lg bg-card py-3.5 text-sm font-bold text-muted-foreground ring-1 ring-border"
             >
               <Home className="h-4 w-4" /> Çık
             </button>
@@ -1402,7 +1401,7 @@ export default function DueloModulu({
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
       {/* Skor barı */}
-      <div className="mb-3 glass-card rounded-2xl p-3 ring-1 ring-border shrink-0">
+      <div className="mb-3 glass-card rounded-lg p-3 ring-1 ring-border shrink-0">
         <div className="flex items-center justify-between gap-2">
           <div className="flex flex-1 items-center gap-2">
             <span className="text-lg">{avatarEmoji(kullanici.avatar)}</span>
@@ -1446,7 +1445,7 @@ export default function DueloModulu({
       </div>
 
       {/* Soru kartı */}
-      <div className="relative glass-card flex flex-col rounded-[1.75rem] p-5 ring-1 ring-border">
+      <div className="relative bg-card flex flex-col rounded-xl p-4 border border-border">
         {/* Terk Et butonu — sağ üst köşe */}
         <button
           onClick={forfeitYap}
@@ -1470,19 +1469,19 @@ export default function DueloModulu({
             const gosterDogru = secim !== null && rakipCevapladi && dogruSecenek;
             const gosterYanlis = secildi && !dogruSecenek;
 
-            let stil = "glass-card hover:bg-muted/40 text-card-foreground ring-1 ring-border";
-            if (gosterDogru) stil = "bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/30";
-            else if (gosterYanlis) stil = "bg-destructive/15 text-destructive ring-1 ring-destructive/30";
-            else if (secim !== null) stil = "bg-card/40 text-muted-foreground opacity-60 ring-1 ring-border";
+            let stil = "bg-background border border-border text-card-foreground hover:border-duello/50 hover:bg-muted/40";
+            if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
+            else if (gosterYanlis) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+            else if (secim !== null) stil = "bg-background border-border text-muted-foreground opacity-50";
 
             return (
               <button
                 key={secenek}
                 onClick={() => cevapla(secenek)}
                 disabled={secim !== null}
-                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-3.5 text-left text-sm font-semibold transition-all duration-200 ${stil} ${
+                className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
                   gosterYanlis ? "animate-shake" : ""
-                } ${gosterDogru ? "animate-pop" : ""} ${secim === null ? "active:scale-[0.99]" : ""}`}
+                } ${secim === null ? "active:scale-[0.99]" : ""}`}
               >
                 <span
                   className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
@@ -1552,9 +1551,9 @@ export default function DueloModulu({
 
       {/* Forfeit onay modalı — oyuncu Terk Et'e bastığında */}
       {forfeitConfirm && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-md">
-          <div className="animate-pop glass-card max-w-sm w-full rounded-[1.75rem] p-7 text-center shadow-2xl ring-1 ring-destructive/20">
-            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-destructive/15 text-destructive animate-pop ring-1 ring-destructive/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
+          <div className="animate-pop glass-card max-w-sm w-full rounded-xl p-7 text-center shadow-2xl ring-1 ring-destructive/20">
+            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-xl bg-destructive/15 text-destructive animate-pop ring-1 ring-destructive/30">
               <LogOut className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
@@ -1566,13 +1565,13 @@ export default function DueloModulu({
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
                 onClick={() => setForfeitConfirm(false)}
-                className="rounded-2xl bg-muted/60 py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/40 active:scale-[0.98]"
+                className="rounded-lg bg-muted/60 py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/40 active:scale-[0.98]"
               >
                 Vazgeç
               </button>
               <button
                 onClick={forfeitOnayla}
-                className="rounded-2xl bg-destructive py-3.5 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+                className="rounded-lg bg-destructive py-3.5 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
               >
                 Evet, Terk Et
               </button>
@@ -1583,9 +1582,9 @@ export default function DueloModulu({
 
       {/* Forfeit popup — rakip oyundan çekildi */}
       {forfeitModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-md">
-          <div className="animate-pop glass-card max-w-sm w-full rounded-[1.75rem] p-8 text-center shadow-2xl ring-1 ring-emerald-500/20">
-            <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-3xl bg-emerald-500/15 text-emerald-500 animate-pop ring-1 ring-emerald-500/30">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
+          <div className="animate-pop glass-card max-w-sm w-full rounded-xl p-8 text-center shadow-2xl ring-1 ring-emerald-500/20">
+            <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-xl bg-emerald-500/15 text-emerald-500 animate-pop ring-1 ring-emerald-500/30">
               <Trophy className="h-9 w-9" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
@@ -1601,7 +1600,7 @@ export default function DueloModulu({
                 dueloSifirla();
                 onCikis();
               }}
-              className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
             >
               <Home className="h-4 w-4" /> Ana Sayfaya Dön
             </button>
