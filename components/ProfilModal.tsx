@@ -98,10 +98,12 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
                 {avatarEmoji(seciliAvatar)}
               </div>
               <div>
-                <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">
+                <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                   Profil
+                </p>
+                <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">
+                  {kullanici.kullaniciAdi}
                 </h2>
-                <p className="text-xs text-muted-foreground">{kullanici.kullaniciAdi}</p>
               </div>
             </div>
             <button
