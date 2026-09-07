@@ -3,14 +3,11 @@
 // ============================================================
 
 import { oku, yaz, kullaniciAdiMusaitMi, kullaniciAdiKaydet, kullaniciAdiSil, kayitliKullaniciAdlari } from "./storage";
-import { rastgeleAvatarId } from "./avatars";
 import type { Istatistik, Kullanici, MacSonucu } from "./types";
 
 const KULLANICI_YOLU = "kullanici";
 const ISTATISTIK_YOLU = "istatistik";
 const KART_SEVIYELERI_YOLU = "kart-seviyeleri";
-
-// --- Kullanıcı ---
 
 export function mevcutKullanici(): Kullanici | null {
   return oku<Kullanici | null>(KULLANICI_YOLU, null);
@@ -24,12 +21,54 @@ export function kullaniciKaydet(kullanici: Kullanici): void {
   }
 }
 
-export function kullaniciAdiGuncelle(_yeniAd: string): { tamam: boolean; hata?: string } {
-  return { tamam: false, hata: "Rumuz kalıcıdır ve değiştirilemez" };
+function isimHakkiKullanildi(k: Kullanici): boolean {
+  return !!(k.isimDegisti || k.hasChangedUsername);
 }
 
+/** Eser Çırağı (100 EP+) ve hak henüz kullanılmadıysa true */
 export function kullaniciAdiDegistirebilirMi(): boolean {
-  return false;
+  const k = mevcutKullanici();
+  if (!k) return false;
+  if (isimHakkiKullanildi(k)) return false;
+  return mevcutIstatistik().puan >= 100;
+}
+
+export function kullaniciAdiGuncelle(yeniAd: string): { tamam: boolean; hata?: string } {
+  const k = mevcutKullanici();
+  if (!k) return { tamam: false, hata: "Oturum bulunamadı" };
+  if (isimHakkiKullanildi(k)) {
+    return { tamam: false, hata: "İsim değiştirme hakkınızı zaten kullandınız" };
+  }
+  if (mevcutIstatistik().puan < 100) {
+    return { tamam: false, hata: "İsim değiştirmek için Eser Çırağı rütbesine ulaşmalısınız (100 EP)" };
+  }
+
+  const temiz = yeniAd.trim();
+  if (temiz.toLowerCase() === k.kullaniciAdi.toLowerCase()) {
+    return { tamam: false, hata: "Yeni isim eskisiyle aynı olamaz" };
+  }
+
+  const kontrol = kullaniciAdiKontrol(temiz);
+  if (!kontrol.musait) {
+    return { tamam: false, hata: kontrol.mesaj };
+  }
+
+  const eski = k.kullaniciAdi;
+  kullaniciAdiSil(eski);
+  const guncel: Kullanici = {
+    ...k,
+    kullaniciAdi: temiz,
+    isimDegisti: true,
+    hasChangedUsername: true,
+  };
+  kullaniciKaydet(guncel);
+
+  const ist = mevcutIstatistik();
+  if (ist.kullaniciAdi !== temiz) {
+    istatistikYaz({ ...ist, kullaniciAdi: temiz });
+  }
+
+  return { tamam: true };
 }
 
 export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: string } {
@@ -39,12 +78,14 @@ export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: strin
   if (temiz.length > 20) return { musait: false, mesaj: "En fazla 20 karakter" };
   if (!/^[a-zA-Z0-9_çğıöşüÇĞİÖŞÜ\s]+$/.test(temiz))
     return { musait: false, mesaj: "Geçersiz karakter" };
+  const mevcut = mevcutKullanici();
+  if (mevcut && temiz.toLowerCase() === mevcut.kullaniciAdi.toLowerCase()) {
+    return { musait: false, mesaj: "Mevcut adınız" };
+  }
   if (!kullaniciAdiMusaitMi(temiz))
     return { musait: false, mesaj: "Bu ad kullanılıyor" };
   return { musait: true, mesaj: "Uygun" };
 }
-
-// --- İstatistik ---
 
 export function mevcutIstatistik(): Istatistik {
   const kullanici = mevcutKullanici();
@@ -94,13 +135,10 @@ export function kazanilanPuan(oyuncuSkor: number, rakipSkor: number, hukmen: boo
   return -20;
 }
 
-// Soru başına EP: 10-20 arası, hıza göre (hard cap)
 export function soruPuani(kalanSure: number, toplamSure: number): number {
   const oran = Math.max(0, Math.min(1, kalanSure / toplamSure));
   return Math.min(20, Math.max(10, Math.round(10 + oran * 10)));
 }
-
-// --- Leitner kart seviyeleri ---
 
 export function kartSeviyeleri(): Record<number, number> {
   return oku<Record<number, number>>(KART_SEVIYELERI_YOLU, {});
@@ -111,8 +149,6 @@ export function kartSeviyesiGuncelle(kartId: number, seviye: number): void {
   tum[kartId] = seviye;
   yaz(KART_SEVIYELERI_YOLU, tum);
 }
-
-// --- Debug / test yardımcıları ---
 
 export function tumKayitliAdlar(): string[] {
   return Array.from(kayitliKullaniciAdlari());
