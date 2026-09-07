@@ -63,8 +63,8 @@
   --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
   --font-serif: var(--font-serif), ui-serif, Georgia, serif;
   --animate-shake: v0-shake 0.4s ease-in-out;
-  --animate-pop: v0-pop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-  --animate-rise: v0-rise 0.4s ease-out both;
+  --animate-pop: v0-pop 0.2s ease-out;
+  --animate-rise: v0-rise 0.25s ease-out both;
   --animate-glow: v0-glow 2s ease-in-out infinite;
   --animate-slide-in: v0-slide-in 0.5s ease-out both;
 }
@@ -200,11 +200,10 @@
   scrollbar-width: none;
 }
 
-/* Glassmorphic card utility */
+/* Solid card surface — no glass / blur (less "AI UI") */
 .glass-card {
-  background: oklch(0.20 0.025 255 / 60%);
-  backdrop-filter: blur(12px);
-  border: 1px solid oklch(0.60 0.05 220 / 12%);
+  background: var(--card);
+  border: 1px solid var(--border);
 }
 
 /* Tur sonu puan float-up animasyonu */
