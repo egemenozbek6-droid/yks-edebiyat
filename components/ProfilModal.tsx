@@ -136,7 +136,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
               Kullanıcı adı
             </label>
-            {kullanici.isimDegisti ? (
+           {(kullanici.isimDegisti || kullanici.hasChangedUsername) ? (
               <>
                 <div className="flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-3 border border-border">
                   <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
