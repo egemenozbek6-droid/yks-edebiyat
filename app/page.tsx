@@ -20,10 +20,10 @@ const APP_SUBTITLE = "YKS Yazar Eser & Düello";
 type Mod = "kart" | "test" | "osym" | "duelo";
 
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
-  { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary/15 shadow-sm text-primary ring-1 ring-primary/30" },
-  { mod: "test", etiket: "Test", ikon: NotebookPen, aktifKlass: "bg-violet-500/15 shadow-sm text-violet-500 ring-1 ring-violet-500/30" },
-  { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym/15 shadow-sm text-osym ring-1 ring-osym/30" },
-  { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello/15 shadow-sm text-duello ring-1 ring-duello/30" },
+  { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary text-primary-foreground" },
+  { mod: "test", etiket: "Test", ikon: NotebookPen, aktifKlass: "bg-violet-600 text-white" },
+  { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym text-osym-foreground" },
+  { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello text-duello-foreground" },
 ];
 
 function karistir<T>(dizi: T[]): T[] {
@@ -197,7 +197,7 @@ export default function App() {
       <header className="relative z-30 backdrop-blur-xl bg-background/75 border-b border-border shrink-0">
         <div className="max-w-3xl mx-auto px-4 py-3 flex items-center justify-between gap-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-primary flex items-center justify-center shadow-md shrink-0 ring-1 ring-primary/30">
+            <div className="w-9 h-9 rounded-lg bg-primary flex items-center justify-center shadow-md shrink-0 ring-1 ring-primary/30">
               <Layers className="w-4.5 h-4.5 text-primary-foreground" strokeWidth={1.5} />
             </div>
             <div className="leading-tight">
@@ -226,7 +226,7 @@ export default function App() {
 
         {/* Mod seçici — 4'lü */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-         <div className="grid grid-cols-4 gap-1.5 p-1.5 glass-card rounded-2xl ring-1 ring-border">
+         <div className="grid grid-cols-4 gap-1 p-1 bg-card border border-border rounded-lg">
   {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
     const aktif = mod === m;
     return (
@@ -250,7 +250,7 @@ export default function App() {
       {/* İçerik — kart modu no-scroll, diğer modlar gerektiğinde scroll */}
       <main className="relative flex-1 overflow-y-auto no-scrollbar max-w-3xl mx-auto w-full px-4 py-3 flex flex-col">
         {ruhHali && (
-          <div className="mb-3 flex items-start gap-3 rounded-2xl glass-card p-3 ring-1 ring-border animate-rise shrink-0">
+          <div className="mb-3 flex items-start gap-3 rounded-lg glass-card p-3 ring-1 ring-border animate-rise shrink-0">
             <span className="text-xl leading-none" aria-hidden="true">
               {ruhHali.emoji || "💬"}
             </span>
@@ -344,14 +344,14 @@ export default function App() {
       {/* Navigation guard onay modalı */}
       {cikisOnayAcik && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-5"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-5"
           onClick={cikisReddet}
         >
           <div
-            className="glass-card rounded-[1.75rem] shadow-2xl max-w-sm w-full p-6 animate-pop ring-1 ring-destructive/20"
+            className="glass-card rounded-xl shadow-lg max-w-sm w-full p-6 animate-pop ring-1 ring-destructive/20"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-destructive/15 text-destructive ring-1 ring-destructive/30">
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-lg bg-destructive/15 text-destructive ring-1 ring-destructive/30">
               <AlertTriangle className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <p className="text-center text-sm font-semibold text-pretty text-card-foreground">
@@ -360,13 +360,13 @@ export default function App() {
             <div className="mt-5 grid grid-cols-2 gap-3">
               <button
                 onClick={cikisReddet}
-                className="rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
+                className="rounded-lg bg-muted/60 py-3 text-sm font-semibold text-muted-foreground transition hover:text-foreground active:scale-[0.98]"
               >
                 İptal
               </button>
               <button
                 onClick={cikisOnayla}
-                className="rounded-2xl bg-destructive py-3 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+                className="rounded-lg bg-destructive py-3 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
               >
                 Ayrıl
               </button>
@@ -377,11 +377,11 @@ export default function App() {
 
       {infoAcik && (
         <div
-          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-md flex items-center justify-center p-5"
+          className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-5"
           onClick={() => setInfoAcik(false)}
         >
           <div
-            className="glass-card rounded-[1.75rem] shadow-2xl max-w-md w-full p-6 animate-pop ring-1 ring-border max-h-[90vh] overflow-y-auto no-scrollbar"
+            className="glass-card rounded-xl shadow-lg max-w-md w-full p-6 animate-pop ring-1 ring-border max-h-[90vh] overflow-y-auto no-scrollbar"
             onClick={(e) => e.stopPropagation()}
           >
             <div className="flex items-start justify-between mb-5">
@@ -404,7 +404,7 @@ export default function App() {
 
             <div className="space-y-2.5">
               {/* Kartlar */}
-              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+              <div className="flex items-start gap-3 rounded-lg bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/20">
                   <Layers className="h-5 w-5" strokeWidth={1.8} />
                 </div>
@@ -417,7 +417,7 @@ export default function App() {
               </div>
 
              {/* Test */}
-<div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+<div className="flex items-start gap-3 rounded-lg bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
   <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-violet-500/15 text-violet-500 ring-1 ring-violet-500/20">
     <NotebookPen className="h-5 w-5" strokeWidth={1.8} />
   </div>
@@ -430,7 +430,7 @@ export default function App() {
               </div>
 
               {/* ÖSYM Sever */}
-              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+              <div className="flex items-start gap-3 rounded-lg bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/20">
                   <Flame className="h-5 w-5" strokeWidth={1.8} />
                 </div>
@@ -443,7 +443,7 @@ export default function App() {
               </div>
 
               {/* Düello & Rank */}
-              <div className="flex items-start gap-3 rounded-2xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
+              <div className="flex items-start gap-3 rounded-lg bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
                 <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-duello/15 text-duello ring-1 ring-duello/20">
                   <Swords className="h-5 w-5" strokeWidth={1.8} />
                 </div>
