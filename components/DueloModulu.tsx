@@ -259,10 +259,12 @@ export default function DueloModulu({
     };
     if (firebaseAktif) {
       const onlineTamam = await kullaniciAdiKaydetOnline(yeniKullanici.kullaniciAdi, yeniKullanici.kullaniciAdi);
-      if (!onlineTamam) {
-        setNickHata("Bu kullanıcı adı alınmış");
-        return;
-      }
+     if (firebaseAktif) {
+  await kullaniciAdiKaydetOnline(
+    yeniKullanici.kullaniciAdi,
+    yeniKullanici.kullaniciAdi,
+  ).catch(() => false);
+}
     }
     kullaniciKaydet(yeniKullanici);
     setKullanici(yeniKullanici);
