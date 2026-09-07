@@ -845,63 +845,8 @@ export default function DueloModulu({
       <div className="flex-1 flex flex-col justify-center py-1 min-h-0">
         <div className="animate-rise w-full max-w-3xl mx-auto grid gap-3 md:grid-cols-2">
 
-          {/* OYUN MODLARI — mobilde en üstte (scroll'suz aksiyon) */}
-          <div className="flex flex-col gap-2.5 order-1 md:order-2">
-            {/* Dereceli Maç */}
-            <button
-              onClick={rastgeleRakip}
-              disabled={cooldownAktif}
-              className="group relative overflow-hidden rounded-[1.35rem] glass-card p-4 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-            >
-              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-duello/15 blur-3xl transition group-hover:bg-duello/25" />
-              <div className="relative">
-                <div className="mb-2 flex items-center justify-between">
-                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-duello/15 text-duello transition group-hover:scale-110 ring-1 ring-duello/20">
-                    <Swords className="h-4 w-4" strokeWidth={2} />
-                  </div>
-                  <span className="rounded-full bg-duello/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-duello">
-                    Ranked
-                  </span>
-                </div>
-                <p className="font-serif text-sm font-bold text-card-foreground">Dereceli Maç</p>
-                <p className="mt-0.5 text-[11px] text-muted-foreground">EP kazan ve lig atla!</p>
-                <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-duello">
-                  Hemen Rakip Bul <ChevronRight className="h-3 w-3" />
-                </div>
-              </div>
-            </button>
-
-            {/* Özel Oda */}
-            <div className="glass-card rounded-[1.35rem] p-4 ring-1 ring-border">
-              <div className="mb-2.5 flex items-center gap-2">
-                <div className="grid h-9 w-9 place-items-center rounded-xl bg-duello/10 text-duello ring-1 ring-duello/20">
-                  <KeyRound className="h-4 w-4" strokeWidth={2} />
-                </div>
-                <div>
-                  <p className="font-serif text-sm font-bold text-card-foreground">Özel Oda</p>
-                  <p className="text-[10px] text-muted-foreground">Arkadaşınla dostluk maçı</p>
-                </div>
-              </div>
-              <div className="grid grid-cols-2 gap-2">
-                <button
-                  onClick={() => setAdim("oda_kur")}
-                  disabled={cooldownAktif}
-                  className="rounded-xl bg-duello/15 py-2 text-sm font-semibold text-duello ring-1 ring-duello/20 transition hover:bg-duello/20 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
-                >
-                  Oda Kur
-                </button>
-                <button
-                  onClick={() => setAdim("oda_katil")}
-                  className="rounded-xl glass-card py-2 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98]"
-                >
-                  Odaya Katıl
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {/* PROFİL & RANK — mobilde altta */}
-          <div className="glass-card rounded-[1.5rem] p-4 ring-1 ring-border flex flex-col order-2 md:order-1">
+          {/* PROFİL & RANK — en üstte */}
+          <div className="glass-card rounded-[1.5rem] p-4 ring-1 ring-border flex flex-col">
             {/* Avatar + İsim + Profil butonu */}
             <div className="flex items-start justify-between mb-3">
               <div className="flex items-center gap-2.5">
@@ -1038,6 +983,61 @@ export default function DueloModulu({
               <div className="text-center">
                 <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Toplam EP</p>
                 <p className="mt-0.5 text-base font-bold text-duello">{rp}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* OYUN MODLARI — ranked sonra özel oda */}
+          <div className="flex flex-col gap-2.5">
+            {/* Dereceli Maç */}
+            <button
+              onClick={rastgeleRakip}
+              disabled={cooldownAktif}
+              className="group relative overflow-hidden rounded-[1.35rem] glass-card p-4 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+            >
+              <div className="absolute -right-8 -top-8 h-24 w-24 rounded-full bg-duello/15 blur-3xl transition group-hover:bg-duello/25" />
+              <div className="relative">
+                <div className="mb-2 flex items-center justify-between">
+                  <div className="grid h-10 w-10 place-items-center rounded-xl bg-duello/15 text-duello transition group-hover:scale-110 ring-1 ring-duello/20">
+                    <Swords className="h-4 w-4" strokeWidth={2} />
+                  </div>
+                  <span className="rounded-full bg-duello/15 px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-duello">
+                    Ranked
+                  </span>
+                </div>
+                <p className="font-serif text-sm font-bold text-card-foreground">Dereceli Maç</p>
+                <p className="mt-0.5 text-[11px] text-muted-foreground">EP kazan ve lig atla!</p>
+                <div className="mt-2 flex items-center gap-1 text-xs font-semibold text-duello">
+                  Hemen Rakip Bul <ChevronRight className="h-3 w-3" />
+                </div>
+              </div>
+            </button>
+
+            {/* Özel Oda */}
+            <div className="glass-card rounded-[1.35rem] p-4 ring-1 ring-border">
+              <div className="mb-2.5 flex items-center gap-2">
+                <div className="grid h-9 w-9 place-items-center rounded-xl bg-duello/10 text-duello ring-1 ring-duello/20">
+                  <KeyRound className="h-4 w-4" strokeWidth={2} />
+                </div>
+                <div>
+                  <p className="font-serif text-sm font-bold text-card-foreground">Özel Oda</p>
+                  <p className="text-[10px] text-muted-foreground">Arkadaşınla dostluk maçı</p>
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <button
+                  onClick={() => setAdim("oda_kur")}
+                  disabled={cooldownAktif}
+                  className="rounded-xl bg-duello/15 py-2 text-sm font-semibold text-duello ring-1 ring-duello/20 transition hover:bg-duello/20 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
+                >
+                  Oda Kur
+                </button>
+                <button
+                  onClick={() => setAdim("oda_katil")}
+                  className="rounded-xl glass-card py-2 text-sm font-semibold text-foreground ring-1 ring-border transition hover:ring-duello/30 active:scale-[0.98]"
+                >
+                  Odaya Katıl
+                </button>
               </div>
             </div>
           </div>
