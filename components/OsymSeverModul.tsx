@@ -57,8 +57,8 @@ export default function OsymSeverModul() {
   if (!basladi) {
     return (
       <div className="animate-rise">
-        <div className="mb-6 rounded-[1.75rem] bg-card p-8 text-center shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)]">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-3xl bg-osym/15 text-osym ring-1 ring-osym/30 animate-pop">
+        <div className="mb-6 rounded-xl bg-card p-8 text-center ">
+          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/30 ">
             <Flame className="h-7 w-7" strokeWidth={1.5} />
           </div>
           <h2 className="font-serif text-2xl font-bold text-balance text-card-foreground">ÖSYM Sever</h2>
@@ -69,7 +69,7 @@ export default function OsymSeverModul() {
 
         <button
           onClick={basla}
-          className="flex w-full items-center justify-center gap-2 rounded-2xl bg-osym py-4 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-osym py-4 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
         >
           <Flame className="h-4 w-4" /> Denemeyi Başlat
         </button>
@@ -96,8 +96,8 @@ export default function OsymSeverModul() {
     const basari = oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
     const yeniRekor = dogruSayi >= enIyiSkor;
     return (
-      <div className="animate-rise rounded-[1.75rem] bg-card p-9 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-3xl bg-osym/15 text-osym ring-1 ring-osym/30 animate-pop">
+      <div className="animate-rise rounded-xl bg-card p-6 text-center border border-border">
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/30 ">
           <Flame className="h-9 w-9" strokeWidth={1.5} />
         </div>
         <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
@@ -113,13 +113,13 @@ export default function OsymSeverModul() {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={basla}
-            className="flex items-center justify-center gap-2 rounded-2xl bg-osym py-3.5 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            className="flex items-center justify-center gap-2 rounded-lg bg-osym py-3 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
           <button
             onClick={() => setBasladi(false)}
-            className="rounded-2xl bg-card py-3.5 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground hover:ring-osym/40 active:scale-[0.98]"
+            className="rounded-lg bg-muted py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground hover:ring-osym/40 active:scale-[0.98]"
           >
             Geri Dön
           </button>
@@ -133,7 +133,7 @@ export default function OsymSeverModul() {
 
   return (
     <div className="animate-rise">
-      <div className="mb-6 rounded-3xl bg-card/70 p-4 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] backdrop-blur">
+      <div className="mb-6 rounded-xl bg-card border border-border p-3">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -153,7 +153,7 @@ export default function OsymSeverModul() {
         </div>
       </div>
 
-      <div className="rounded-[1.75rem] bg-card p-7 shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]">
+      <div className="rounded-xl bg-card p-5 border border-border">
         <div className="flex items-start justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
@@ -178,22 +178,22 @@ export default function OsymSeverModul() {
             const gosterYanlis = secildi && !dogruSecenek;
 
             let stil =
-              "bg-card ring-border text-card-foreground hover:ring-osym/40 hover:bg-muted/60";
-            if (gosterDogru) stil = "bg-emerald-500/15 ring-emerald-500/60 text-emerald-700 dark:text-emerald-300";
-            else if (gosterYanlis) stil = "bg-destructive/15 ring-destructive/60 text-destructive";
-            else if (secim !== null) stil = "bg-card ring-border text-muted-foreground opacity-60";
+              "bg-background border border-border text-card-foreground hover:border-osym/60 hover:bg-muted/40";
+            if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
+            else if (gosterYanlis) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+            else if (secim !== null) stil = "bg-background border-border text-muted-foreground opacity-50";
 
             return (
               <button
                 key={secenek}
                 onClick={() => cevapla(secenek)}
                 disabled={secim !== null}
-                className={`flex w-full items-center gap-3 rounded-2xl px-4 py-4 text-left text-sm font-semibold ring-1 transition-all duration-200 ${stil} ${
+                className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
                   gosterYanlis ? "animate-shake" : ""
-                } ${gosterDogru ? "animate-pop" : ""} ${secim === null ? "active:scale-[0.99]" : ""}`}
+                } ${secim === null ? "active:scale-[0.99]" : ""}`}
               >
                 <span
-                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-md text-xs font-bold tabular-nums ${
                     gosterDogru
                       ? "bg-emerald-500 text-white"
                       : gosterYanlis
@@ -218,7 +218,7 @@ export default function OsymSeverModul() {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-2xl bg-osym py-3.5 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
+            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-osym py-3 text-sm font-semibold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
