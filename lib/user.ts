@@ -82,8 +82,6 @@ export function kullaniciAdiKontrol(ad: string): { musait: boolean; mesaj: strin
   if (mevcut && temiz.toLowerCase() === mevcut.kullaniciAdi.toLowerCase()) {
     return { musait: false, mesaj: "Mevcut adınız" };
   }
-  if (!kullaniciAdiMusaitMi(temiz))
-    return { musait: false, mesaj: "Bu ad kullanılıyor" };
   return { musait: true, mesaj: "Uygun" };
 }
 
