@@ -6,6 +6,9 @@ import {
   mevcutKullanici,
   mevcutIstatistik,
   kullaniciKaydet,
+  kullaniciAdiDegistirebilirMi,
+  kullaniciAdiGuncelle,
+  kullaniciAdiKontrol,
 } from "@/lib/user";
 import { AVATARLAR, avatarEmoji, avatarLigKilitli, RANK_KADEMELERI } from "@/lib/avatars";
 import { rankBul } from "@/lib/types";
@@ -23,6 +26,10 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const [seciliAvatar, setSeciliAvatar] = useState<string>("");
   const [mevcutEP, setMevcutEP] = useState(0);
   const [kilitliPreview, setKilitliPreview] = useState<KilitliAvatar>(null);
+  const [isimInput, setIsimInput] = useState("");
+  const [isimHata, setIsimHata] = useState("");
+  const [isimOk, setIsimOk] = useState(false);
+  const [isimKontrol, setIsimKontrol] = useState<{ musait: boolean; mesaj: string } | null>(null);
 
   useEffect(() => {
     const k = mevcutKullanici();
@@ -32,6 +39,15 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
       setMevcutEP(mevcutIstatistik().puan);
     }
   }, []);
+
+  useEffect(() => {
+    if (!isimInput.trim()) {
+      setIsimKontrol(null);
+      return;
+    }
+    const t = setTimeout(() => setIsimKontrol(kullaniciAdiKontrol(isimInput)), 250);
+    return () => clearTimeout(t);
+  }, [isimInput]);
 
   const avatarSec = (avatarId: string, kilitli: boolean) => {
     if (kilitli) return;
@@ -115,23 +131,92 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </button>
           </div>
 
-          {/* Kullanıcı adı — kalıcı, kilitli */}
+          {/* Kullanıcı adı — Eser Çırağı ile 1 kez değişebilir */}
           <div className="mb-5">
             <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
               Kullanıcı adı
             </label>
-            <div className="flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-3 ring-1 ring-border">
-              <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
-              <span className="flex-1 truncate text-sm font-bold text-foreground">
-                {kullanici.kullaniciAdi}
-              </span>
-              <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                Kilitli
-              </span>
-            </div>
-            <p className="mt-1.5 text-[11px] text-muted-foreground">
-              İsim daha sonra değiştirilemez.
-            </p>
+            {kullanici.isimDegisti ? (
+              <>
+                <div className="flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-3 border border-border">
+                  <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="flex-1 truncate text-sm font-bold text-foreground">
+                    {kullanici.kullaniciAdi}
+                  </span>
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Kilitli
+                  </span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
+                  Tek seferlik isim hakkınızı kullandınız. Artık değiştirilemez.
+                </p>
+              </>
+            ) : kullaniciAdiDegistirebilirMi() ? (
+              <>
+                <div className="mb-2 rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-3 py-2 text-[11px] leading-relaxed text-emerald-600 dark:text-emerald-400">
+                  <span className="font-bold">Eser Çırağı ödülü:</span> Bir kez isim değiştirme hakkınız var. Başkasının aldığı adları seçemezsiniz.
+                </div>
+                <div className="flex gap-2">
+                  <input
+                    value={isimInput}
+                    onChange={(e) => {
+                      setIsimInput(e.target.value);
+                      setIsimHata("");
+                      setIsimOk(false);
+                    }}
+                    placeholder={kullanici.kullaniciAdi}
+                    maxLength={20}
+                    className="min-w-0 flex-1 rounded-lg border border-border bg-background px-3 py-2.5 text-sm font-medium outline-none focus:border-duello/50"
+                  />
+                  <button
+                    type="button"
+                    disabled={!isimInput.trim() || (isimKontrol !== null && !isimKontrol.musait)}
+                    onClick={() => {
+                      const sonuc = kullaniciAdiGuncelle(isimInput);
+                      if (!sonuc.tamam) {
+                        setIsimHata(sonuc.hata ?? "Değiştirilemedi");
+                        setIsimOk(false);
+                        return;
+                      }
+                      setIsimHata("");
+                      setIsimOk(true);
+                      setIsimInput("");
+                      const k = mevcutKullanici();
+                      if (k) setKullanici(k);
+                      onGuncellendi();
+                    }}
+                    className="shrink-0 rounded-lg bg-duello px-3 py-2.5 text-xs font-bold text-duello-foreground disabled:opacity-40"
+                  >
+                    Kaydet
+                  </button>
+                </div>
+                {isimKontrol && isimInput.trim() && (
+                  <p className={`mt-1.5 text-[11px] font-medium ${isimKontrol.musait ? "text-emerald-500" : "text-destructive"}`}>
+                    {isimKontrol.mesaj}
+                  </p>
+                )}
+                {isimHata && <p className="mt-1.5 text-[11px] font-medium text-destructive">{isimHata}</p>}
+                {isimOk && <p className="mt-1.5 text-[11px] font-medium text-emerald-500">İsim güncellendi. Bu haktı yalnızca bir kez kullanabilirsiniz.</p>}
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-3 border border-border">
+                  <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
+                  <span className="flex-1 truncate text-sm font-bold text-foreground">
+                    {kullanici.kullaniciAdi}
+                  </span>
+                  <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                    Kilitli
+                  </span>
+                </div>
+                <p className="mt-1.5 text-[11px] text-muted-foreground">
+                  <span className="font-semibold text-foreground">Eser Çırağı</span> rütbesine ulaşınca (100 EP) bir kez isim değiştirme hakkı kazanırsın.
+                  {mevcutEP < 100 && (
+                    <span className="text-amber-500"> · {100 - mevcutEP} EP kaldı</span>
+                  )}
+                </p>
+              </>
+            )}
           </div>
 
           {/* Avatar seçimi — kategorili */}
