@@ -150,7 +150,8 @@ export default function Flashcard({
               {/* Kitap sırtı — sol kenar şeridi */}
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary/60" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col p-6">
+              <div className="relative flex h-full flex-col p-5">
+                {/* Üst badge satırı */}
                 <div className="flex items-center justify-between gap-3">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
                     <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
@@ -164,15 +165,19 @@ export default function Flashcard({
                   )}
                 </div>
 
-                <div className="flex flex-1 flex-col items-center justify-center text-center">
+                {/* Orta içerik — sıkılaştırılmış */}
+                <div className="flex flex-1 flex-col items-center justify-center text-center px-1">
                   <h2 className="font-serif text-3xl font-bold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
                     {item.work}
                   </h2>
-                  <p className="mt-3 text-sm font-medium italic text-muted-foreground">{item.genre}</p>
+                  <p className="mt-1.5 text-sm font-medium italic text-muted-foreground">
+                    {item.genre}
+                  </p>
                 </div>
 
-                <div className="flex items-center justify-center gap-2 border-t border-border/60 pt-3">
-                  <p className="text-center text-[12px] font-medium leading-snug text-pretty text-muted-foreground">
+                {/* Alt dönem etiketi — güçlendirilmiş */}
+                <div className="flex items-center justify-center pt-1">
+                  <p className="rounded-full bg-muted/40 px-3.5 py-1.5 text-center text-[12px] font-medium leading-snug text-pretty text-muted-foreground">
                     {kisaIpucu}
                   </p>
                 </div>
@@ -191,19 +196,19 @@ export default function Flashcard({
               {/* Kitap sırtı — sol kenar şeridi */}
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col p-6">
+              <div className="relative flex h-full flex-col p-5">
                 <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
                   {item.period}
                 </span>
 
                 <div className="flex flex-1 flex-col items-center justify-center text-center">
-                  <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
                     Yazar
                   </p>
                   <h2 className="font-serif text-3xl font-bold leading-tight text-balance text-card-foreground sm:text-4xl">
                     {item.author}
                   </h2>
-                  <p className="mt-3 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
+                  <p className="mt-2.5 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
                     {item.period}
                   </p>
 
@@ -282,7 +287,7 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
       <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
         <Trophy className="h-8 w-8" strokeWidth={1.5} />
       </div>
-      <h2 className="font-sans text-xl font-black tracking-tight tracking-tight text-balance text-card-foreground">
+      <h2 className="font-sans text-xl font-black tracking-tight text-balance text-card-foreground">
         Bu desteyi ezdin.
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
