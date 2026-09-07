@@ -257,14 +257,11 @@ export default function DueloModulu({
       avatar: rastgeleAvatarId(),
       olusturmaTarihi: Date.now(),
     };
-    if (firebaseAktif) {
-      const onlineTamam = await kullaniciAdiKaydetOnline(yeniKullanici.kullaniciAdi, yeniKullanici.kullaniciAdi);
-     if (firebaseAktif) {
-  await kullaniciAdiKaydetOnline(
-    yeniKullanici.kullaniciAdi,
-    yeniKullanici.kullaniciAdi,
-  ).catch(() => false);
-}
+      if (firebaseAktif) {
+      await kullaniciAdiKaydetOnline(
+        yeniKullanici.kullaniciAdi,
+        yeniKullanici.kullaniciAdi,
+      ).catch(() => false);
     }
     kullaniciKaydet(yeniKullanici);
     setKullanici(yeniKullanici);
