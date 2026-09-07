@@ -84,17 +84,17 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm"
         onClick={onKapat}
       >
         <div
-          className="animate-pop glass-card max-h-[90vh] w-full max-w-md overflow-y-auto rounded-[1.75rem] p-6 shadow-2xl no-scrollbar"
+          className="animate-pop glass-card max-h-[90vh] w-full max-w-md overflow-y-auto rounded-xl p-6 shadow-lg no-scrollbar"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Header */}
           <div className="mb-5 flex items-start justify-between">
             <div className="flex items-center gap-3">
-              <div className="grid h-14 w-14 place-items-center rounded-2xl bg-duello/15 text-2xl ring-1 ring-duello/30">
+              <div className="grid h-14 w-14 place-items-center rounded-lg bg-duello/15 text-2xl ring-1 ring-duello/30">
                 {avatarEmoji(seciliAvatar)}
               </div>
               <div>
@@ -120,7 +120,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             <label className="mb-1.5 block text-xs font-semibold text-muted-foreground">
               Kullanıcı adı
             </label>
-            <div className="flex items-center gap-2 rounded-2xl bg-muted/60 px-4 py-3 ring-1 ring-border">
+            <div className="flex items-center gap-2 rounded-lg bg-muted/60 px-4 py-3 ring-1 ring-border">
               <Lock className="h-4 w-4 shrink-0 text-muted-foreground" />
               <span className="flex-1 truncate text-sm font-bold text-foreground">
                 {kullanici.kullaniciAdi}
@@ -169,11 +169,11 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
       {/* Kilitli avatar önizleme modalı */}
       {kilitliPreview && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-md"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm"
           onClick={() => setKilitliPreview(null)}
         >
           <div
-            className="animate-pop glass-card w-full max-w-xs rounded-[1.75rem] p-6 text-center shadow-2xl ring-1 ring-amber-500/20"
+            className="animate-pop glass-card w-full max-w-xs rounded-xl p-6 text-center shadow-lg ring-1 ring-amber-500/20"
             onClick={(e) => e.stopPropagation()}
           >
             <button
@@ -183,7 +183,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             >
               <X className="h-4 w-4" />
             </button>
-            <div className="relative mx-auto mb-4 grid h-20 w-20 place-items-center rounded-3xl bg-muted/40 text-4xl ring-1 ring-amber-500/20">
+            <div className="relative mx-auto mb-4 grid h-20 w-20 place-items-center rounded-xl bg-muted/40 text-4xl ring-1 ring-amber-500/20">
               <span className="opacity-40 grayscale">{kilitliPreview.emoji}</span>
               <span className="absolute -bottom-1 -right-1 grid h-8 w-8 place-items-center rounded-full bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/30">
                 <Lock className="h-4 w-4" />
@@ -203,7 +203,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             )}
             <button
               onClick={() => setKilitliPreview(null)}
-              className="mt-4 w-full rounded-2xl bg-muted/60 py-3 text-sm font-semibold text-foreground transition hover:bg-muted active:scale-[0.98] ring-1 ring-border"
+              className="mt-4 w-full rounded-lg bg-muted/60 py-3 text-sm font-semibold text-foreground transition hover:bg-muted active:scale-[0.98] ring-1 ring-border"
             >
               Anladım
             </button>
