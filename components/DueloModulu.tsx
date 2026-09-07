@@ -1558,10 +1558,10 @@ export default function DueloModulu({
               <LogOut className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
-              Maçı Terk Et
+              Maçtan kaçacak mısın?
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız. Emin misiniz?
+              Terk edersen maçı kaybedersin, rakibin hükmen galip sayılır. Gerçekten çıkmak istiyor musun?
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
@@ -1574,7 +1574,7 @@ export default function DueloModulu({
                 onClick={forfeitOnayla}
                 className="rounded-2xl bg-destructive py-3.5 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
               >
-                Terk Et
+                Evet, Terk Et
               </button>
             </div>
           </div>
