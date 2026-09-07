@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
+   Copy,
   ChevronRight,
   Clock,
   Flame,
@@ -90,6 +91,7 @@ export default function DueloModulu({
   const [odaInput, setOdaInput] = useState("");
   const [olusturulanKod, setOlusturulanKod] = useState("");
   const [odaHata, setOdaHata] = useState("");
+ const [kodKopyalandi, setKodKopyalandi] = useState(false);
   const [friendlySoruSayisi, setFriendlySoruSayisi] = useState(5);
 
   const [dueloModu, setDueloModu] = useState<DueloModu>("ranked");
@@ -1267,9 +1269,39 @@ export default function DueloModulu({
           </div>
           <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip bekleniyor...</h2>
           <p className="mt-2 text-xs text-muted-foreground">Oda kodun</p>
-          <div className="mt-2 rounded-lg bg-muted/60 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
-            {olusturulanKod}
-          </div>
+          <div className="mt-2 flex items-center justify-center gap-2">
+  <div className="rounded-lg bg-muted/60 px-5 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
+    {olusturulanKod}
+  </div>
+  <button
+    type="button"
+    onClick={async () => {
+      try {
+        await navigator.clipboard.writeText(olusturulanKod);
+      } catch {
+        const ta = document.createElement("textarea");
+        ta.value = olusturulanKod;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+      setKodKopyalandi(true);
+      window.setTimeout(() => setKodKopyalandi(false), 2000);
+    }}
+    className="grid h-12 w-12 place-items-center rounded-lg border border-border bg-card text-muted-foreground hover:text-duello"
+    aria-label="Kodu kopyala"
+  >
+    {kodKopyalandi ? (
+      <Check className="h-5 w-5 text-emerald-500" />
+    ) : (
+      <Copy className="h-5 w-5" />
+    )}
+  </button>
+</div>
+{kodKopyalandi && (
+  <p className="mt-2 text-xs font-semibold text-emerald-500">Panoya kopyalandı</p>
+)}
           <p className="mt-3 text-xs text-muted-foreground">
             Bu kodu arkadaşınla paylaş. Rakip katılınca maç otomatik başlar.
           </p>
