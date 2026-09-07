@@ -781,7 +781,7 @@ export default function DueloModulu({
           </h2>
           <p className="mt-2 text-sm text-center text-pretty text-muted-foreground">
             İsminiz ne olsun?{" "}
-            <span className="font-semibold text-duello">(Bu isim sabittir ve daha sonra değiştirilemez)</span>
+            <span className="font-semibold text-duello">(Başlangıçta kilitli — Eser Çırağı olunca 1 kez değiştirebilirsin)</span>
           </p>
           <input
             type="text"
