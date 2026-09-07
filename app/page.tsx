@@ -267,26 +267,27 @@ export default function App() {
           </div>
         )}
 
-        {/* Kart modu dönem filtresi — yatay kaydırmalı */}
+        {/* Kart modu dönem filtresi — sade select + kısa etiketler */}
         {mod === "kart" && (
           <div className="mb-3 shrink-0">
-            <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1 -mx-1 px-1">
-              {anaDonemler.map((donem) => {
-                const aktif = seciliAnaDonem === donem;
-                return (
-                  <button
-                    key={donem}
-                    onClick={() => donemSec(donem)}
-                    className={`whitespace-nowrap rounded-full px-3.5 py-1.5 text-xs font-semibold transition shrink-0 ${
-                      aktif
-                        ? "bg-primary text-primary-foreground shadow-sm"
-                        : "glass-card text-muted-foreground hover:text-foreground ring-1 ring-border"
-                    }`}
-                  >
+            <label className="mb-1 block text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+              Dönem
+            </label>
+            <div className="relative">
+              <select
+                value={seciliAnaDonem}
+                onChange={(e) => donemSec(e.target.value as AnaDonem)}
+                className="w-full appearance-none rounded-lg border border-border bg-card px-3 py-2.5 pr-9 text-sm font-medium text-foreground outline-none focus:border-primary/50"
+              >
+                {anaDonemler.map((donem) => (
+                  <option key={donem} value={donem}>
                     {donem}
-                  </button>
-                );
-              })}
+                  </option>
+                ))}
+              </select>
+              <span className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground text-xs">
+                ▼
+              </span>
             </div>
           </div>
         )}
