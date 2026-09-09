@@ -9,8 +9,23 @@ const KULLANICI_YOLU = "kullanici";
 const ISTATISTIK_YOLU = "istatistik";
 const KART_SEVIYELERI_YOLU = "kart-seviyeleri";
 
+/** Cihaza özel benzersiz id */
+export function cihazIdUret(): string {
+  const rand = Math.random().toString(36).slice(2, 10);
+  return "c_" + Date.now().toString(36) + "_" + rand;
+}
+
+function kullaniciNormalize(k: Kullanici): Kullanici {
+  if (k.cihazId) return k;
+  const guncel: Kullanici = { ...k, cihazId: cihazIdUret() };
+  yaz(KULLANICI_YOLU, guncel);
+  return guncel;
+}
+
 export function mevcutKullanici(): Kullanici | null {
-  return oku<Kullanici | null>(KULLANICI_YOLU, null);
+  const k = oku<Kullanici | null>(KULLANICI_YOLU, null);
+  if (!k) return null;
+  return kullaniciNormalize(k);
 }
 
 export function kullaniciKaydet(kullanici: Kullanici): void {
