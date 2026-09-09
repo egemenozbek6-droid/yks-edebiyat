@@ -7,6 +7,8 @@ export type AvatarId = string;
 
 export type Kullanici = {
   kullaniciAdi: string;
+  /** Cihaza özel kalıcı kimlik (online id). İsimle karışmaz. */
+  cihazId: string;
   avatar: AvatarId;
   olusturmaTarihi: number;
   /** Eser Çırağı sonrası tek seferlik isim değişikliği kullanıldı mı */
@@ -74,4 +76,6 @@ export type Rakip = {
   ad: string;
   avatar: AvatarId;
   bot: boolean;
+  /** Online kimlik (cihazId); botlarda yok */
+  id?: string;
 };
