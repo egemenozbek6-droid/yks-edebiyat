@@ -36,7 +36,6 @@ export default function TestModul({ onSonuc }: Props) {
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  // Kadınlar testi mi kontrolü
   const isKadinTesti = secilenBaslik === "Kadın Yazarlar Özel Testi";
 
   // Genel Soru Üretici (Dönem testleri için)
@@ -53,17 +52,19 @@ export default function TestModul({ onSonuc }: Props) {
     });
   }, []);
 
-  // Kadın Yazarlar için Özel Soru Üretici (Şıkların HEPSİ sadece kadın yazarlardan oluşur)
+  // Kadın Yazarlar için Özel Soru Üretici (Benzersiz yazar şıkları garantili)
   const kadinYazarlarTestiBaslat = useCallback(() => {
     const havuz = kadinYazarlarData as unknown as LiteratureItem[];
     const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
 
     const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
-      const digerleri = havuz.filter((x) => x.author !== item.author);
-      const yanlisSecenekler = [...digerleri]
+      // Sadece farklı yazarları filtrele
+      const digerYazarlar = Array.from(new Set(havuz.map((x) => x.author)))
+        .filter((yazar) => yazar !== item.author);
+
+      const yanlisSecenekler = digerYazarlar
         .sort(() => 0.5 - Math.random())
-        .slice(0, 3)
-        .map((x) => x.author);
+        .slice(0, 3);
 
       const secenekler = [...yanlisSecenekler, item.author].sort(() => 0.5 - Math.random());
 
