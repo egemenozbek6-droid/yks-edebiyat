@@ -841,28 +841,7 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
   }, 1800);
 }, [onCikis, dueloSifirla, maciBitir]);
 
-  // Önce dinleyiciyi kapat ki kendi terk event'imizi tekrar işlemeyelim
-  if (matchUnsubRef.current) {
-    matchUnsubRef.current();
-    matchUnsubRef.current = null;
-  }
-
-  // Online: rakibe hükmen galibiyet ver
-  if (mId && !mId.startsWith("bot_") && benimId) {
-    matchTerk(mId, benimId, digerId).catch(() => {});
-  }
-
-  // Terk eden taraf her zaman kaybeder (hükmen mağlubiyet)
-  maciBitir(false, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
-
-  // Kısa gecikmeyle temizle (sonuç ekranı görünsün)
-  window.setTimeout(() => {
-    dueloSifirla();
-    onCikis();
-  }, 1800);
-}, [onCikis, dueloSifirla, maciBitir]);
-
-  // --- Çıkış (lobi/sonuç ekranlarından) ---
+// --- Çıkış (lobi/sonuç ekranlarından) ---
   const cikisIste = useCallback(() => {
     if (adim === "duelo") {
       forfeitYap();
