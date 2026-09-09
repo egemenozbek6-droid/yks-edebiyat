@@ -724,22 +724,29 @@ export default function DueloModulu({
         setSure(SURE);
       }
 
-      // Maç bittiyse veya rakip terk ettiyse
-      if (mac.durum === "bitti" || mac.durum === "terk") {
-        const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
-        const rS = rakipNum === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
-        const hukmen = mac.durum === "terk";
-        const kazandi = hukmen
-          ? mac.kazananId === (kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi)
-          : oS > rS;
-        const berabere = !hukmen && oS === rS;
-        // Eğer rakip terk ettiyse ve biz kazandıysak popup göster
-        if (hukmen && kazandi && mac.forfeitedBy && mac.forfeitedBy !== (kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi)) {
-          setForfeitModal(true);
-        } else {
-          maciBitir(kazandi, berabere, hukmen, oS, rS);
-        }
-      }
+     // Maç bittiyse veya rakip terk ettiyse
+if (mac.durum === "bitti" || mac.durum === "terk") {
+  const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
+  
+  // Ben terk ettiysem bu event'i işleme (zaten forfeitOnayla halletti)
+  if (mac.durum === "terk" && mac.forfeitedBy === benimId) {
+    return;
+  }
+
+  const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
+  const rS = (oyuncuNumRef.current === 1 ? mac.oyuncu2?.skor : mac.oyuncu1.skor) ?? 0;
+  const hukmen = mac.durum === "terk";
+  const kazandi = hukmen
+    ? mac.kazananId === benimId
+    : oS > rS;
+  const berabere = !hukmen && oS === rS;
+
+  if (hukmen && kazandi) {
+    setForfeitModal(true); // Rakip kaçtı → hükmen galibiyet popup
+  } else {
+    maciBitir(kazandi, berabere, hukmen, oS, rS);
+  }
+}
     });
     matchUnsubRef.current = unsub;
     return () => {
@@ -807,19 +814,53 @@ export default function DueloModulu({
   }, []);
 
   const forfeitOnayla = useCallback(() => {
-    setForfeitConfirm(false);
-    // Her iki modda da terk kayıp sayılır
-    maciBitir(false, false, false, oyuncuSkorRef.current, rakipSkorRef.current);
-    // Online: rakibe hükmen galibiyet ver (ranked + friendly)
-    const mId = matchIdRef.current;
-    if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
-      const benimId = kullaniciRef.current.cihazId || kullaniciRef.current.kullaniciAdi;
-      const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
-      matchTerk(mId, benimId, digerId).catch(() => {});
-    }
+  setForfeitConfirm(false);
+
+  const mId = matchIdRef.current;
+  const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
+  const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
+
+  // Önce dinleyiciyi kapat ki kendi terk event'imizi tekrar işlemeyelim
+  if (matchUnsubRef.current) {
+    matchUnsubRef.current();
+    matchUnsubRef.current = null;
+  }
+
+  // Online: rakibe hükmen galibiyet ver
+  if (mId && !mId.startsWith("bot_") && benimId) {
+    matchTerk(mId, benimId, digerId).catch(() => {});
+  }
+
+  // Terk eden taraf her zaman kaybeder (hükmen mağlubiyet)
+  maciBitir(false, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
+
+  // Kısa gecikmeyle temizle (sonuç ekranı görünsün)
+  window.setTimeout(() => {
     dueloSifirla();
     onCikis();
-  }, [onCikis, dueloSifirla, maciBitir]);
+  }, 1800);
+}, [onCikis, dueloSifirla, maciBitir]);
+
+  // Önce dinleyiciyi kapat ki kendi terk event'imizi tekrar işlemeyelim
+  if (matchUnsubRef.current) {
+    matchUnsubRef.current();
+    matchUnsubRef.current = null;
+  }
+
+  // Online: rakibe hükmen galibiyet ver
+  if (mId && !mId.startsWith("bot_") && benimId) {
+    matchTerk(mId, benimId, digerId).catch(() => {});
+  }
+
+  // Terk eden taraf her zaman kaybeder (hükmen mağlubiyet)
+  maciBitir(false, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
+
+  // Kısa gecikmeyle temizle (sonuç ekranı görünsün)
+  window.setTimeout(() => {
+    dueloSifirla();
+    onCikis();
+  }, 1800);
+}, [onCikis, dueloSifirla, maciBitir]);
 
   // --- Çıkış (lobi/sonuç ekranlarından) ---
   const cikisIste = useCallback(() => {
