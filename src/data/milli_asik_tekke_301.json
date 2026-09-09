@@ -490,5 +490,114 @@
     "genre": "Tiyatro (Manzum / Beş Hececiler)",
     "info": "Lale Devri'nde geçen ve Türk tiyatro tarihinde hece ölçüsüyle yazılmış ilk başarılı manzum piyes kabul edilen meşhur oyundur.",
     "keywords": ["Heceyle Yazılan İlk Oyun", "Lale Devri", "Binnaz", "Akbaba Dergisi"]
+  },
+  {
+    "id": 345,
+    "author": "Karacaoğlan",
+    "work": "Koşmalar ve Semailer",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Lirik Halk Şiiri",
+    "info": "Toroslar'da Türkmen aşiretleri arasında yaşayan; divan şiirinden ve aruzdan hiç etkilenmeyen, sadece heceyle doğa ve sevgili güzelliğini anlatan en büyük lirik saz şairidir.",
+    "keywords": ["Toroslar", "Güzelleme Ustası", "Arı Türkçe", "Aruz Kullanmayan"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 346,
+    "author": "Köroğlu",
+    "work": "Koçaklamalar",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Epik Halk Şiiri (Koçaklama)",
+    "info": "'Benden selam olsun Bolu Beyi'ne' dizeleriyle Bolu Beyi'nin zulmüne başkaldıran, tüfeğin icadıyla mertliğin bozulduğunu haykıran yiğitlik şairidir.",
+    "keywords": ["Bolu Beyi", "Koçaklama", "Tüfek İcat Oldu Mertlik Bozuldu", "Çamlıbel"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 347,
+    "author": "Dadaloğlu",
+    "work": "Avşar Koçaklamaları",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Koçaklama / Ağıt",
+    "info": "Fırka-i İslahiye ordusunun göçebe Avşar Türkmenlerini zorla iskân etme kararına 'Ferman padişahınsa dağlar bizimdir' diyerek sazıyla direnen son büyük isyan şairidir.",
+    "keywords": ["Ferman Padişahın Dağlar Bizimdir", "Avşar Boyu", "Zorunlu İskân", "Koçaklama"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 348,
+    "author": "Seyrani",
+    "work": "Taşlamalar",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Hiciv (Taşlama)",
+    "info": "Develili halk ozanı; İstanbul'daki rüşvetçi paşaları, sahte hocaları ve kadıları acımasızca taşladığı için sürgün edilen halk şiirinin en keskin hiciv ustasıdır.",
+    "keywords": ["Taşlama Ustası", "Sosyal Eleştiri", "Develi", "Korkusuz Hiciv"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 349,
+    "author": "Yunus Emre",
+    "work": "Risaletü'n-Nushiyye",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Didaktik Mesnevi",
+    "info": "Yunus'un ilahilerinden farklı olarak aruz vezniyle yazdığı; akıl, sabır, kibir ve nefis terbiyesini alegorik ruh-beden savaşı üzerinden öğütleyen nasihatnamesidir.",
+    "keywords": ["Aruzla Yazılan Eser", "Nasihatname", "Nefis Terbiyesi", "Alegori"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 350,
+    "author": "Hacı Bektaş Veli",
+    "work": "Makalat",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Tasavvuf Kitabı",
+    "info": "Kişinin nefsini yenip kâmil insan olabilmesi için geçmesi gereken 'Şeriat, Tarikat, Marifet, Hakikat'ten oluşan 'Dört Kapı Kırk Makam' esasını anlatan temel eserdir.",
+    "keywords": ["Dört Kapı Kırk Makam", "Kâmil İnsan", "Bektaşilik Esasları"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 351,
+    "author": "Pir Sultan Abdal",
+    "work": "Nefesler ve Deyişler",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Nefes / İlahi",
+    "info": "Sivas Banaz'da yaşayan; Şah Tahmasb'ı desteklediği için Hızır Paşa tarafından asılan, sazı ve inancı uğruna ölümü göze alan Alevi-Bektaşi lirik isyan şairidir.",
+    "keywords": ["Hızır Paşa", "Sivas Banaz", "Dönen Dönsün Ben Dönmezem", "Nefes"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 352,
+    "author": "Kaygusuz Abdal",
+    "work": "Budalaname",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Mensur Tasavvuf Eseri",
+    "info": "Alevi-Bektaşi edebiyatının kurucularından olan şairin, ham dervişlere nefis terbiyesini ve tasavvuf inceliklerini sade Türkçe ve mizahi üslupla anlattığı nesir kitabıdır.",
+    "keywords": ["Sade Nesir", "Mizahi Üslup", "Budalaname", "Nefis Eğitimi"]
+  },
+  {
+    "id": 353,
+    "author": "Kaygusuz Abdal",
+    "work": "Şathiyeler",
+    "period": "Halk Edebiyatı (Âşık & Tekke)",
+    "genre": "Şathiye (Mizahi Tasavvuf Şiiri)",
+    "info": "'Yücelerden yüce Tanrı / Gündüzün seyrana çıktım' gibi dizelerle Allah'la şakalaşır gibi görünen ama derin tasavvufi sırlar içeren edebiyatımızın en ünlü şathiyeleridir.",
+    "keywords": ["Şathiye Türünün Zirvesi", "Alaycı Üslup", "Tasavvufi Neşe", "Nefes"]
   }
 ]
