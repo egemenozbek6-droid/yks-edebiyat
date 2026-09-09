@@ -3,22 +3,22 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   Check,
-   Copy,
+  Copy,
   ChevronRight,
   Clock,
   Flame,
-  Hop as Home,
+  Home,
   KeyRound,
   Lock,
   LogOut,
-  Search,
   Swords,
   Trophy,
-  CircleUser as UserCircle,
   X,
   Zap,
+  Pencil,
+  ChevronDown,
 } from "lucide-react";
-import { type Soru } from "@/lib/soru";
+import { type Soru, sorulariUret } from "@/lib/soru";
 import {
   mevcutKullanici,
   mevcutIstatistik,
@@ -54,7 +54,6 @@ import {
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
 import type { Istatistik, Kullanici, MacSonucu, Rakip } from "@/lib/types";
-import { Pencil, Target, ChevronDown } from "lucide-react";
 import { sfxCorrect, sfxWrong, sfxTick, sfxVictory, sfxDefeat } from "@/lib/sfx";
 import {
   gunlukGorevleriGetir,
@@ -62,6 +61,7 @@ import {
   macOlayiKaydet,
   type GunlukGorevState,
 } from "@/lib/gunlukGorevler";
+import { gecerliYazarlar } from "@/src/data";
 
 type Adim = "nick" | "lobi" | "aratma" | "oda_katil" | "oda_kur" | "oda_bekleme" | "duelo" | "sonuc";
 type DueloModu = "ranked" | "friendly";
@@ -95,7 +95,7 @@ export default function DueloModulu({
   const [odaInput, setOdaInput] = useState("");
   const [olusturulanKod, setOlusturulanKod] = useState("");
   const [odaHata, setOdaHata] = useState("");
- const [kodKopyalandi, setKodKopyalandi] = useState(false);
+  const [kodKopyalandi, setKodKopyalandi] = useState(false);
   const [friendlySoruSayisi, setFriendlySoruSayisi] = useState(5);
 
   const [dueloModu, setDueloModu] = useState<DueloModu>("ranked");
@@ -268,7 +268,7 @@ export default function DueloModulu({
       avatar: rastgeleAvatarId(),
       olusturmaTarihi: Date.now(),
     };
-      if (firebaseAktif) {
+    if (firebaseAktif) {
       await kullaniciAdiKaydetOnline(
         yeniKullanici.kullaniciAdi,
         yeniKullanici.kullaniciAdi,
@@ -364,7 +364,7 @@ export default function DueloModulu({
       // Özel oda: rövanş tekliflerini dinle (ref ile — sıra sorunu olmasın)
       if (mod === "friendly" && matchIdRef.current && !matchIdRef.current.startsWith("bot_")) {
         const mid = matchIdRef.current;
-        queue.setTimeout(() => {
+        window.setTimeout(() => {
           rovanşDinlemeyiBaslatRef.current?.(mid);
         }, 0);
       }
@@ -509,8 +509,6 @@ export default function DueloModulu({
       const gecikme = 3000 + Math.random() * 2000;
       aramaTimer.current = window.setTimeout(() => {
         const bot = rastgeleBot();
-        const { sorulariUret } = require("@/lib/soru") as typeof import("@/lib/soru");
-        const { gecerliYazarlar } = require("@/src/data") as typeof import("@/src/data");
         const havuz = gecerliYazarlar();
         const s = sorulariUret(havuz).slice(0, SORU_SAYISI);
         dueloBaslat("ranked", bot, SORU_SAYISI, "bot_" + Date.now(), 1, s);
@@ -1064,7 +1062,7 @@ export default function DueloModulu({
               disabled={cooldownAktif}
               className="group relative overflow-hidden rounded-xl glass-card p-4 text-left ring-1 ring-duello/20 transition hover:ring-duello/40 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none"
             >
-<div className="relative">
+              <div className="relative">
                 <div className="mb-2 flex items-center justify-between">
                   <div className="grid h-10 w-10 place-items-center rounded-xl bg-duello/15 text-duello transition group-hover:scale-110 ring-1 ring-duello/20">
                     <Swords className="h-4 w-4" strokeWidth={2} />
@@ -1211,6 +1209,7 @@ export default function DueloModulu({
       </div>
     );
   }
+
   if (adim === "aratma") {
     return (
       <div className="flex-1 flex items-center justify-center">
@@ -1337,38 +1336,38 @@ export default function DueloModulu({
           <h2 className="font-serif text-lg font-bold text-card-foreground">Rakip bekleniyor...</h2>
           <p className="mt-2 text-xs text-muted-foreground">Oda kodun</p>
           <div className="mt-2 flex items-center justify-center gap-2">
-  <div className="rounded-lg bg-muted/60 px-5 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
-    {olusturulanKod}
-  </div>
-  <button
-    type="button"
-    onClick={async () => {
-      try {
-        await navigator.clipboard.writeText(olusturulanKod);
-      } catch {
-        const ta = document.createElement("textarea");
-        ta.value = olusturulanKod;
-        document.body.appendChild(ta);
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
-      setKodKopyalandi(true);
-      window.setTimeout(() => setKodKopyalandi(false), 2000);
-    }}
-    className="grid h-12 w-12 place-items-center rounded-lg border border-border bg-card text-muted-foreground hover:text-duello"
-    aria-label="Kodu kopyala"
-  >
-    {kodKopyalandi ? (
-      <Check className="h-5 w-5 text-emerald-500" />
-    ) : (
-      <Copy className="h-5 w-5" />
-    )}
-  </button>
-</div>
-{kodKopyalandi && (
-  <p className="mt-2 text-xs font-semibold text-emerald-500">Panoya kopyalandı</p>
-)}
+            <div className="rounded-lg bg-muted/60 px-5 py-4 text-3xl font-bold tracking-[0.4em] text-duello ring-1 ring-duello/20">
+              {olusturulanKod}
+            </div>
+            <button
+              type="button"
+              onClick={async () => {
+                try {
+                  await navigator.clipboard.writeText(olusturulanKod);
+                } catch {
+                  const ta = document.createElement("textarea");
+                  ta.value = olusturulanKod;
+                  document.body.appendChild(ta);
+                  ta.select();
+                  document.execCommand("copy");
+                  document.body.removeChild(ta);
+                }
+                setKodKopyalandi(true);
+                window.setTimeout(() => setKodKopyalandi(false), 2000);
+              }}
+              className="grid h-12 w-12 place-items-center rounded-lg border border-border bg-card text-muted-foreground hover:text-duello"
+              aria-label="Kodu kopyala"
+            >
+              {kodKopyalandi ? (
+                <Check className="h-5 w-5 text-emerald-500" />
+              ) : (
+                <Copy className="h-5 w-5" />
+              )}
+            </button>
+          </div>
+          {kodKopyalandi && (
+            <p className="mt-2 text-xs font-semibold text-emerald-500">Panoya kopyalandı</p>
+          )}
           <p className="mt-3 text-xs text-muted-foreground">
             Bu kodu arkadaşınla paylaş. Rakip katılınca maç otomatik başlar.
           </p>
