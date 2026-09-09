@@ -58,7 +58,6 @@ export default function TestModul({ onSonuc }: Props) {
     const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
 
     const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
-      // Sadece farklı yazarları filtrele
       const digerYazarlar = Array.from(new Set(havuz.map((x) => x.author)))
         .filter((yazar) => yazar !== item.author);
 
@@ -146,7 +145,7 @@ export default function TestModul({ onSonuc }: Props) {
             </div>
             <div className="min-w-0">
               <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
-              <p className="text-[11px] text-muted-foreground truncate">Eksiklerini nokta atışı tespit et, hemen teste başla! 🚀</p>
+              <p className="text-[11px] text-muted-foreground truncate">Eksiklerini kapat, teste başla! 🚀</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
@@ -169,7 +168,7 @@ export default function TestModul({ onSonuc }: Props) {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                Sadece kadın yazarlarımızın ve eserleri! 🌸
+                Sadece kadın yazar ve eserleri! 🌸
               </p>
             </div>
           </div>
