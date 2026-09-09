@@ -92,7 +92,7 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI (Üste hizalanmış ve Düello sekmeleriyle uyumlu yerleşim)
+  // 1. ANA SEÇİM EKRANI
   if (durum === "ana_secim") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6 space-y-3">
@@ -121,7 +121,7 @@ export default function TestModul({ onSonuc }: Props) {
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
         </button>
 
-        {/* Seçenek 2: Kadın Yazar & Eserler (Pembe / Çiçek Temalı) */}
+        {/* Seçenek 2: Kadın Yazar & Eserler */}
         <button
           onClick={kadinYazarlarTestiBaslat}
           className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500"
@@ -148,21 +148,21 @@ export default function TestModul({ onSonuc }: Props) {
     );
   }
 
-  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde)
+  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde - Yeni Motivasyon Yazısıyla)
   if (durum === "donem_secimi") {
     return (
-      <div className="animate-rise max-w-xl mx-auto w-full py-2">
+      <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6">
         <button
           onClick={() => setDurum("ana_secim")}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground mb-4 transition"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground mb-3 transition"
         >
           <ArrowLeft className="w-4 h-4" /> Kategorilere Dön
         </button>
 
-        <div className="mb-6 rounded-xl bg-card p-5 border border-border text-center">
-          <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Bir Dönem Seç</h2>
+        <div className="mb-4 rounded-xl bg-card p-4 border border-border text-center">
+          <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">Bir Dönem Seç</h2>
           <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
-            Eksik hissettiğin edebiyat dönemini seç ve kendini dene.
+            Kritik eksiklerini tespit et, sınav provasına hemen başla!
           </p>
         </div>
 
