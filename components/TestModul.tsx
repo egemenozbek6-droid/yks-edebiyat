@@ -52,7 +52,7 @@ export default function TestModul({ onSonuc }: Props) {
     });
   }, []);
 
-  // Kadın Yazarlar için Özel Soru Üretici (Benzersiz yazar şıkları garantili)
+  // Kadın Yazarlar için Özel Soru Üretici
   const kadinYazarlarTestiBaslat = useCallback(() => {
     const havuz = kadinYazarlarData as unknown as LiteratureItem[];
     const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
@@ -107,11 +107,13 @@ export default function TestModul({ onSonuc }: Props) {
     if (secim) return;
     const soru = sorular[aktif];
     const dogruMu = secenek === soru.dogru;
-    if (dogruMu) sfxCorrect(); else sfxWrong();
-    setSecim(secenek);
-    if (dogruSayi + (dogruMu ? 1 : 0)) {
-      if (dogruMu) setDogruSayi((s) => s + 1);
+    if (dogruMu) {
+      sfxCorrect();
+      setDogruSayi((prev) => prev + 1);
+    } else {
+      sfxWrong();
     }
+    setSecim(secenek);
     onSonuc?.(dogruMu, soru.donem);
   };
 
@@ -141,7 +143,6 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
 
         <div className="space-y-2.5 pt-1">
-          {/* Seçenek 1: Dönem Testleri */}
           <button
             onClick={() => setDurum("donem_secimi")}
             className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm w-full"
@@ -158,7 +159,6 @@ export default function TestModul({ onSonuc }: Props) {
             <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
           </button>
 
-          {/* Seçenek 2: Kadın Yazar & Eserler */}
           <button
             onClick={kadinYazarlarTestiBaslat}
             className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500 w-full"
@@ -233,11 +233,10 @@ export default function TestModul({ onSonuc }: Props) {
     );
   }
 
-  // 3. SONUÇ EKRANI (Başarı Oranına Göre Özel Mesajlar & CTA Butonları)
+  // 3. SONUÇ EKRANI
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     
-    // Mesaj belirleme mantığı (Kadın yazarlar ve dönem testleri için ayrı özelleştirilebilir)
     let sonucMesaji = "";
     if (oran > 70) {
       sonucMesaji = isKadinTesti 
@@ -245,7 +244,7 @@ export default function TestModul({ onSonuc }: Props) {
         : "Harika iş çıkarıyorsun, sınavda bu netler kaçmaz! 🚀";
     } else if (oran >= 50) {
       sonucMesaji = isKadinTesti 
-        : "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin." 
+        ? "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin." 
         : "Fena değil! Birkaç tekrarla bu işi tamamen bitirirsin 💪";
     } else {
       sonucMesaji = isKadinTesti 
