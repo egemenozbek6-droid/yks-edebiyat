@@ -9,6 +9,7 @@ import {
   Check, 
   ChevronRight,
   Flame, 
+  Flower,
   HeartHandshake,
   RotateCcw, 
   Target, 
@@ -53,9 +54,13 @@ export default function TestModul({ onSonuc }: Props) {
     testiBaslat(havuz, donem);
   }, [testiBaslat]);
 
-  // Kadın yazarlar testini başlat
+  // Kadın yazarlar testini başlat (Rastgele 10 soru)
   const kadinYazarlarTestiBaslat = useCallback(() => {
-    testiBaslat(kadinYazarlarData as unknown as LiteratureItem[], "Kadın Yazarlar");
+    const karisikListe = [...kadinYazarlarData]
+      .sort(() => 0.5 - Math.random())
+      .slice(0, 10) as unknown as LiteratureItem[];
+    
+    testiBaslat(karisikListe, "Kadın Yazarlar Özel Testi");
   }, [testiBaslat]);
 
   const basaDon = () => {
@@ -116,18 +121,25 @@ export default function TestModul({ onSonuc }: Props) {
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
         </button>
 
-        {/* Seçenek 2: Kadın Yazar & Eserler */}
+        {/* Seçenek 2: Kadın Yazar & Eserler (Pembe / Çiçek Temalı) */}
         <button
           onClick={kadinYazarlarTestiBaslat}
-          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-rose-500"
+          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500"
         >
           <div className="flex items-center gap-3.5">
-            <div className="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
-              <HeartHandshake className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
+              <Flower className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
-              <p className="text-[11px] text-muted-foreground">Fatma Aliye'den Latife Tekin'e kadın yazarlar özel testi</p>
+              <div className="flex items-center gap-2">
+                <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500">
+                  10 Soru
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Sadece kadın yazarlarımız ve eserlerinden oluşan 10 soruluk testler
+              </p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
@@ -201,7 +213,7 @@ export default function TestModul({ onSonuc }: Props) {
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
             onClick={() => {
-              if (secilenBaslik === "Kadın Yazarlar") kadinYazarlarTestiBaslat();
+              if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
               else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
             }}
             className="flex items-center justify-center gap-2 rounded-lg bg-violet-600 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
