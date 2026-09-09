@@ -122,58 +122,64 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI
+  // 1. ANA SEÇİM EKRANI (ÖSYM Sever Temasına Uyarlanmış Premium Kart Yapısı)
   if (durum === "ana_secim") {
     return (
-      <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6 space-y-3">
-        <div className="text-center mb-3">
-          <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
-            <Brain className="h-6 w-6" strokeWidth={1.5} />
+      <div className="animate-rise max-w-xl mx-auto w-full pt-1 pb-6 space-y-3">
+        <div className="glass-card rounded-2xl p-6 text-center border border-border shadow-lg space-y-3">
+          <div className="mx-auto grid h-12 w-12 place-items-center rounded-xl bg-violet-500/15 text-violet-500 ring-1 ring-violet-500/30">
+            <Brain className="h-6 w-6" strokeWidth={1.75} />
           </div>
-          <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">Test Modu</h2>
-          <p className="text-xs text-muted-foreground mt-0.5">Çözmek istediğin test kategorisini belirle</p>
+          <div>
+            <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Test Modu</h2>
+            <p className="text-xs text-muted-foreground mt-1 max-w-sm mx-auto leading-relaxed">
+              Dönemleri tara veya özel seçkilerle bilgilerini pekiştir. Sınav provasına başla.
+            </p>
+          </div>
         </div>
 
-        {/* Seçenek 1: Dönem Testleri */}
-        <button
-          onClick={() => setDurum("donem_secimi")}
-          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm w-full"
-        >
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
-              <BookOpen className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
-              <p className="text-[11px] text-muted-foreground truncate">Eksiklerini bul, teste başla! 🚀</p>
-            </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
-        </button>
-
-        {/* Seçenek 2: Kadın Yazar & Eserler */}
-        <button
-          onClick={kadinYazarlarTestiBaslat}
-          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500 w-full"
-        >
-          <div className="flex items-center gap-3.5 min-w-0">
-            <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
-              <Flower className="w-5 h-5" />
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 shrink-0">
-                  Özel
-                </span>
+        <div className="space-y-2.5 pt-1">
+          {/* Seçenek 1: Dönem Testleri */}
+          <button
+            onClick={() => setDurum("donem_secimi")}
+            className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm w-full"
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+                <BookOpen className="w-5 h-5" />
               </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                Sadece kadın yazar ve eserleri! 🌸
-              </p>
+              <div className="min-w-0">
+                <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
+                <p className="text-[11px] text-muted-foreground truncate">Eksiklerini bul, teste başla! 🚀</p>
+              </div>
             </div>
-          </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
-        </button>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+          </button>
+
+          {/* Seçenek 2: Kadın Yazar & Eserler */}
+          <button
+            onClick={kadinYazarlarTestiBaslat}
+            className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500 w-full"
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
+                <Flower className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 shrink-0">
+                    Özel
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                  Sadece kadın yazar ve eserleri! 🌸
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+          </button>
+        </div>
       </div>
     );
   }
