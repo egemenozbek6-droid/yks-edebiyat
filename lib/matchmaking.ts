@@ -555,14 +555,11 @@ export async function matchTerk(
 ): Promise<void> {
   if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
   const ref = doc(db!, "matches", matchId);
-  await updateDoc(
-    ref,
-    sanitizePayload({
-      durum: "terk",
-      kazananId: digerOyuncuId ?? null,
-      forfeitedBy: terkEdenId ?? null,
-    }),
-  );
+  await updateDoc(ref, sanitizePayload({
+    durum: "terk",
+    kazananId: digerOyuncuId ?? null,
+    forfeitedBy: terkEdenId ?? null,
+  }));
 }
 
 /** Özel oda rövanş teklifi */
