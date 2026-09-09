@@ -109,16 +109,16 @@ export default function TestModul({ onSonuc }: Props) {
           onClick={() => setDurum("donem_secimi")}
           className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm"
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
               <BookOpen className="w-5 h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
-              <p className="text-[11px] text-muted-foreground">Geçiş, Divan, Tanzimat, Millî Edebiyat ve Cumhuriyet</p>
+              <p className="text-[11px] text-muted-foreground truncate">Geçiş, Divan, Tanzimat, Millî Edebiyat ve Cumhuriyet</p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
         </button>
 
         {/* Seçenek 2: Kadın Yazar & Eserler */}
@@ -126,29 +126,29 @@ export default function TestModul({ onSonuc }: Props) {
           onClick={kadinYazarlarTestiBaslat}
           className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500"
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
               <Flower className="w-5 h-5" />
             </div>
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
-                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500">
+                <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500 shrink-0">
                   Özel
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Sadece kadın yazarlarımız ve eserlerinden oluşan 10 soruluk testler
+              <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                Sadece kadın yazarlar ve eserleri (10 Soru)
               </p>
             </div>
           </div>
-          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
         </button>
       </div>
     );
   }
 
-  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde - Yeni Motivasyon Yazısıyla)
+  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde)
   if (durum === "donem_secimi") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6">
@@ -162,7 +162,7 @@ export default function TestModul({ onSonuc }: Props) {
         <div className="mb-4 rounded-xl bg-card p-4 border border-border text-center">
           <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">Bir Dönem Seç</h2>
           <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
-            Kritik eksiklerini tespit et, sınav provasına hemen başla!
+            Eksiğin olan dönemi belirle ve teste dal!
           </p>
         </div>
 
