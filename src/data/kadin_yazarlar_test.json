@@ -1,1 +1,254 @@
-
+[
+  {
+    "id": 501,
+    "author": "Halide Edip Adıvar",
+    "work": "Sinekli Bakkal",
+    "period": "Milli Edebiyat",
+    "genre": "Roman",
+    "info": "II. Abdülhamit dönemi İstanbul'unda Aksaray Sinekli Bakkal Mahallesi ekseninde Doğu-Batı sentezini irdeler. Rabia; Vehbi Dede'den Doğu musikisini, İtalyan Peregrini'den Batı müziğini alarak bu sentezi simgeler.",
+    "keywords": ["Rabia", "Peregrini", "Kız Tevfik", "Vehbi Dede", "Doğu-Batı Sentezi"]
+  },
+  {
+    "id": 502,
+    "author": "Halide Edip Adıvar",
+    "work": "Ateşten Gömlek",
+    "period": "Milli Edebiyat",
+    "genre": "Roman",
+    "info": "Türk edebiyatında Kurtuluş Savaşı'nı doğrudan işleyen ilk romandır. İzmir işgalinde ailesi katledilen Ayşe ile ona aşık olan subaylar Peyami ve İhsan ekseninde Millî Mücadele destanını anlatır.",
+    "keywords": ["Ayşe", "Peyami", "İhsan", "İzmir'in İşgali", "Kurtuluş Savaşı"]
+  },
+  {
+    "id": 503,
+    "author": "Halide Edip Adıvar",
+    "work": "Vurun Kahpeye",
+    "period": "Milli Edebiyat",
+    "genre": "Roman",
+    "info": "İstanbul'dan Anadolu'ya gönüllü giden genç öğretmen Aliye'nin Kuva-yı Milliye ruhunu yayma çabasını ve yerel işbirlikçilerin kışkırtması sonucu linç edilmesini konu edinir.",
+    "keywords": ["Aliye Öğretmen", "Hacı Fettah", "Tosun Bey", "Kuva-yı Milliye"]
+  },
+  {
+    "id": 504,
+    "author": "Halide Edip Adıvar",
+    "work": "Handan",
+    "period": "Milli Edebiyat",
+    "genre": "Roman",
+    "info": "Türk edebiyatında mektup-roman tarzının başarılı ilk örneklerindendir. Handan'ın Refik Cemal, Hüsnü Paşa ve Neriman arasındaki içsel ve duygusal çatışmaları kadın psikolojisi odağında işlenir.",
+    "keywords": ["Handan", "Refik Cemal", "Hüsnü Paşa", "Neriman", "Mektup Roman"]
+  },
+  {
+    "id": 505,
+    "author": "Halide Edip Adıvar",
+    "work": "Mor Salkımlı Ev",
+    "period": "Milli Edebiyat",
+    "genre": "Anı",
+    "info": "Yazarın çocukluk yıllarından II. Meşrutiyet dönemine ve 1918'e kadar geçen süreci, aile çevresini ve eski İstanbul yaşamını aktardığı otobiyografik anı yapıtıdır.",
+    "keywords": ["Çocukluk Hatıraları", "Eski İstanbul", "II. Meşrutiyet", "Otobiyografi"]
+  },
+  {
+    "id": 506,
+    "author": "Halide Edip Adıvar",
+    "work": "Türk'ün Ateşle İmtihanı",
+    "period": "Milli Edebiyat",
+    "genre": "Anı",
+    "info": "1918 Mondros Mütarekesi'nden Mudanya Mütarekesi'ne kadar geçen Millî Mücadele yıllarını bizzat karargâhta ve cephede rütbeli bir nefer olarak tanıklıklarıyla aktardığı hatıratıdır.",
+    "keywords": ["Kurtuluş Savaşı Hatıraları", "Mustafa Kemal Paşa", "Sakarya Savaşı", "Cephe Gerisi"]
+  },
+  {
+    "id": 507,
+    "author": "Halide Nusret Zorlutuna",
+    "work": "Benim Küçük Dostlarım",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Anı",
+    "info": "Cumhuriyet'in ilk yıllarında Anadolu'nun farklı kent ve köylerinde sürdürdüğü fedakâr öğretmenlik yıllarını ve öğrencileriyle olan samimi anılarını aktardığı meşhur hatıratıdır.",
+    "keywords": ["Öğretmenlik Anıları", "Anadolu Eğitimi", "Öğrenci Portreleri", "Ümmü'l-Muharrirat"]
+  },
+  {
+    "id": 508,
+    "author": "Samiha Ayverdi",
+    "work": "İbrahim Efendi Konağı",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Şehzadebaşı'ndaki bir konağın ihtişamlı günlerinden hazin çöküşüne uzanan süreci anlatır. Konak hayatının dağılması üzerinden Osmanlı toplumunun ve manevi değerlerinin çözülüşünü belgeler.",
+    "keywords": ["İbrahim Efendi", "Konak Hayatı", "Osmanlı'nın Yıkılışı", "Gelenek Çözülmesi"]
+  },
+  {
+    "id": 509,
+    "author": "Samiha Ayverdi",
+    "work": "Mesihpaşa İmamı",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Mesihpaşa Camii imamı Halis Efendi'nin şahsında, gerçek aşktan ve manevi derinlikten yoksun salt şekilci din anlayışının yol açtığı sevgisizlik ve ahlaki çöküş irdelenir.",
+    "keywords": ["Halis Efendi", "Mesihpaşa Camii", "Tasavvufi Ahlak", "Nefis Eğitimi"]
+  },
+  {
+    "id": 510,
+    "author": "Nezihe Meriç",
+    "work": "Korsan Çıkmazı",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "TDK Roman Ödülü alan eserde, Beyoğlu Korsan Çıkmazı'nda yaşayan Meliha ve Şükran üzerinden modernleşme sürecinde kentli kadının kimlik, evlilik ve içsel özgürlük çatışmaları bilinç akışıyla sunulur.",
+    "keywords": ["Meliha", "Şükran", "İç Monolog", "Modern Kadın", "TDK Roman Ödülü"]
+  },
+  {
+    "id": 511,
+    "author": "Nezihe Meriç",
+    "work": "Bozbulanık",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Hikaye",
+    "info": "Yazarın ilk öykü kitabıdır ve 1950 kuşağı öykücülüğünün öncülerindendir. Kadınların günlük hayattaki küçük acılarını, yalnızlıklarını ve iç çatışmalarını yalın bir dille aktarır.",
+    "keywords": ["İlk Hikaye Kitabı", "Modernist Öykü", "Kadın Duyarlığı", "Durum Hikayesi"]
+  },
+  {
+    "id": 512,
+    "author": "Nezihe Meriç",
+    "work": "Topal Koşma",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Hikaye",
+    "info": "Bireyin iç dünyasını, çocukluk duyarlığını ve yerleşik ahlak kuralları karşısında bocalayan kadınların içsel çatışmalarını bilinç akışı tekniğiyle aktaran öykü kitabıdır.",
+    "keywords": ["Bilinç Akışı", "Kadın ve Çocuk", "Modern Yaşam Bunalımı"]
+  },
+  {
+    "id": 513,
+    "author": "Füruzan",
+    "work": "Parasız Yatılı",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Hikaye",
+    "info": "Sait Faik Hikâye Armağanı'nı kazanan ilk eserdir. Yoksul kenar mahalle kadınlarını, kimsesiz çocukları ve hastabakıcılık yaparak kızını okutmaya çalışan bir annenin fedakârlığını sıcacık bir dille anlatır.",
+    "keywords": ["Sait Faik Hikaye Armağanı", "Parasız Yatılı Sınavı", "Kenar Mahalle", "Yoksulluk"]
+  },
+  {
+    "id": 514,
+    "author": "Füruzan",
+    "work": "47'liler",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "TDK Roman Ödüllü eserde, 1947 doğumlu üniversite gençliğinin 12 Mart 1971 muhtırası sürecinde yaşadığı çatışmalar, sorgulamalar ve işkence günleri Emine karakteri üzerinden aktarılır.",
+    "keywords": ["Emine", "12 Mart Dönemi", "1947 Kuşağı", "TDK Roman Ödülü"]
+  },
+  {
+    "id": 515,
+    "author": "Adalet Ağaoğlu",
+    "work": "Ölmeye Yatmak",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Dar Zamanlar üçlemesinin ilk romanıdır. Bir otel odasında intihar kararını sorgulayan Doçent Aysel'in zihninden Cumhuriyet aydın kuşağının yaşadığı iç hesaplaşma ve kimlik krizi geriye dönüşlerle verilir.",
+    "keywords": ["Aysel", "Dar Zamanlar Üçlemesi", "Cumhuriyet Aydını", "Bilinç Akışı", "Geriye Dönüş"]
+  },
+  {
+    "id": 516,
+    "author": "Adalet Ağaoğlu",
+    "work": "Bir Düğün Gecesi",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Dar Zamanlar üçlemesinin ikinci romanıdır. Bir düğün boyunca asker, tüccar ve sol aydınların iç sesleri kurgulanarak 12 Mart sonrası Türkiye'nin ahlaki ve siyasi yapısı çözümlenir.",
+    "keywords": ["Tezel", "Ömer", "Çok Sesli Monolog", "12 Mart Sonrası", "Düğün Salonu"]
+  },
+  {
+    "id": 517,
+    "author": "Adalet Ağaoğlu",
+    "work": "Fikrimin İnce Gülü",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Almanya'da işçi olan Bayram'ın büyük fedakârlıklarla aldığı sarı Mercedes otomobiliyle köyü Ballıhisar'a uzanan yolculuğu ve mülkiyet hırsıyla kendine ve topluma yabancılaşması anlatılır.",
+    "keywords": ["Bayram", "Balköpüğü Mercedes", "Almanya Göçü", "Yabancılaşma", "Ballıhisar"]
+  },
+  {
+    "id": 518,
+    "author": "Sevgi Soysal",
+    "work": "Yenişehir'de Bir Öğle Vakti",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Orhan Kemal Roman Armağanı alan eserde Ankara Yenişehir'de devrilen bir kavak ağacının etrafındaki aydın, memur ve öğrenci tipleri üzerinden 12 Mart öncesi toplumun kesitleri verilir.",
+    "keywords": ["Ali", "Doğan", "Olcay", "Kavak Ağacı", "Ankara", "Orhan Kemal Roman Armağanı"]
+  },
+  {
+    "id": 519,
+    "author": "Sevgi Soysal",
+    "work": "Yürümek",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "TRT Roman Başarı Ödülü kazanan eserde Ela ve Sermet'in evlilikleri çerçevesinde cinsellik tabuları ve geleneksel kadın-erkek rollerinin birey üzerindeki baskısı sorgulanır.",
+    "keywords": ["Ela", "Sermet", "Cinsellik Tabuları", "Toplumsal Roller", "TRT Roman Ödülü"]
+  },
+  {
+    "id": 520,
+    "author": "Sevgi Soysal",
+    "work": "Tante Rosa",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Hikaye",
+    "info": "Geleneksel ahlak kalıplarına ve evlilik kurumuna sığmayan, hayatını kendi bağımsız arzularına göre yaşamayı seçen sıra dışı bir kadının yaşam mücadelesini ironik bir dille sunar.",
+    "keywords": ["Tante Rosa", "Sıra Dışı Kadın", "İronik Üslup", "Bireysel Özgürlük"]
+  },
+  {
+    "id": 521,
+    "author": "Sevgi Soysal",
+    "work": "Yıldırım Bölge Kadınlar Koğuşu",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Anı",
+    "info": "Yazarın 12 Mart muhtırası sonrası tutuklu kaldığı koğuştaki cezaevi sürecini ve kadın mahkûmların dayanışmasını mizahi ve sarsıcı bir gözlem gücüyle yansıttığı anı kitabıdır.",
+    "keywords": ["Cezaevi Günleri", "12 Mart Muhtırası", "Kadın Koğuşu", "Mamak"]
+  },
+  {
+    "id": 522,
+    "author": "Latife Tekin",
+    "work": "Sevgili Arsız Ölüm",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Büyülü gerçekçilik akımının önemli yapıtlarındandır. Köyden kente göç eden Huvat ve Atiye ailesinin yoksulluğunu, cinler ve masalsı motiflerle yaşayan Dirmit kızın iç dünyası üzerinden anlatır.",
+    "keywords": ["Dirmit", "Huvat", "Atiye", "Büyülü Gerçekçilik", "Gecekondu Göçü"]
+  },
+  {
+    "id": 523,
+    "author": "Latife Tekin",
+    "work": "Berci Kristin Çöp Masalları",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Fabrika atıkları ve dev çöp tepelerinin yanında geceleri kurulan gecekonduların yıkım tehdidine karşı varoluş mücadelesini masalsı ve metaforik bir dille belgeler.",
+    "keywords": ["Çöp Tepeleri", "Gecekondu Direnişi", "Büyülü Anlatım", "Sanayi Atıkları"]
+  },
+  {
+    "id": 524,
+    "author": "Pınar Kür",
+    "work": "Bir Cinayet Romanı",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Postmodern üstkurmaca tekniğiyle yazılmış önemli bir polisiye romandır. Bir cinayet soruşturulurken aynı zamanda polisiye roman yazma sürecinin kuralları da metne dahil edilir.",
+    "keywords": ["Akın Erkan", "Emin Köklü", "Üstkurmaca", "Postmodern Polisiye"]
+  },
+  {
+    "id": 525,
+    "author": "Pınar Kür",
+    "work": "Asılacak Kadın",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Cinsel istismara uğrayan ve kocasını öldürmeye azmettirmekten idama mahkûm edilen Melek'in trajedisi üzerinden adalet mekanizmasını ve toplumsal ikiyüzlülüğü bilinç akışıyla sorgular.",
+    "keywords": ["Melek", "Yalçın", "Hüsrev", "Bilinç Akışı", "Kadın İstismarı"]
+  },
+  {
+    "id": 526,
+    "author": "İnci Aral",
+    "work": "Ölü Erkek Kuşlar",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Yunus Nadi Roman Ödülü alan eserde Suna, Suzan ve Ayhan ekseninde evlilik kurumunun geleneksel sınırları, kadının kimlik arayışı ve toplumsal tabular irdelenir.",
+    "keywords": ["Suna", "Suzan", "Ayhan", "Yunus Nadi Ödülü", "Evlilik Kurumu"]
+  },
+  {
+    "id": 527,
+    "author": "İnci Aral",
+    "work": "Yeni Yalan Zamanlar",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Yeşil, Mor ve Safran Sarı'dan oluşan üçlemenin ilk kitabıdır. 1980 sonrası tüketim toplumuna geçişte kadının yalnızlığını, değer yitimini ve savrulan idealleri ele alır.",
+    "keywords": ["Üçleme", "Yeşil", "Tüketim Toplumu", "Kadın Kimliği", "1980 Sonrası"]
+  },
+  {
+    "id": 528,
+    "author": "Buket Uzuner",
+    "work": "Kumral Ada Mavi Tuna",
+    "period": "Cumhuriyet Dönemi",
+    "genre": "Roman",
+    "info": "Kuzguncuk'ta geçen çocukluk aşkı ile ansızın patlak veren bir iç savaş metaforunu birleştiren; Tuna, Ada ve Aras arasındaki duygusal çatışmaları aktaran postmodern romandır.",
+    "keywords": ["Tuna", "Ada", "Aras", "Kuzguncuk", "İç Savaş Metaforu"]
+  }
+]
