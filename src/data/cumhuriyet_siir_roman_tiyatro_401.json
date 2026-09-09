@@ -3,19 +3,19 @@
     "id": 401,
     "author": "Necip Fazıl Kısakürek",
     "work": "Örümcek Ağı",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
+    "period": "Cumhuriyet Dönemi Şiiri (Saf Şiir / Bağımsız)",
     "genre": "Şiir",
-    "info": "Necip Fazıl'ın ilk şiir kitabıdır; bu dönemde daha çok bireysel bunalım, ölüm korkusu ve metafizik endişe temalarını işlemiştir.",
-    "keywords": ["Metafizik Endişe", "Ölüm Korkusu", "İlk Şiir Kitabı"]
+    "info": "Necip Fazıl'ın ilk şiir kitabıdır. Bireysel yalnızlık, ölüm korkusu ve metafizik ürpertileri hece ölçüsü ustalığıyla işlemiştir.",
+    "keywords": ["Metafizik Endişe", "Ölüm Korkusu", "İlk Şiir Kitabı", "Bohem Hayat"]
   },
   {
     "id": 402,
     "author": "Necip Fazıl Kısakürek",
     "work": "Kaldırımlar",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
+    "period": "Cumhuriyet Dönemi Şiiri (Saf Şiir / Bağımsız)",
     "genre": "Şiir",
-    "info": "Necip Fazıl'ın en tanınmış şiirlerinden biridir; büyük şehrin gece hayatı ve yalnızlık teması aynı adlı şiiriyle özdeşleşmiştir.",
-    "keywords": ["Yalnızlık", "Şehir Hayatı", "Ünlü Şiir"],
+    "info": "Şaire 'Kaldırımlar Şairi' unvanını kazandıran; Paris ve İstanbul sokaklarındaki yalnızlığı, geceyi ve içsel bunalımı anlatan başyapıtıdır.",
+    "keywords": ["Kaldırımlar Şairi", "Yalnızlık", "Gece ve Şehir", "Bunalım"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -26,9 +26,9 @@
     "author": "Necip Fazıl Kısakürek",
     "work": "Bir Adam Yaratmak",
     "period": "Cumhuriyet Dönemi Tiyatrosu",
-    "genre": "Tiyatro",
-    "info": "Bir yazarın yaratıcılık sancısını ve iç dünyasındaki çatışmaları işleyen; Necip Fazıl'ın en önemli tiyatro eseridir.",
-    "keywords": ["Yaratıcılık Sancısı", "İç Çatışma", "Tiyatro"],
+    "genre": "Tiyatro (Dram)",
+    "info": "Oyun yazarı Hüsrev'in yazdığı oyunla kendi kaderi arasında sıkışarak aklını yitirme noktasına gelmesini anlatan güçlü bir psikolojik dramdır.",
+    "keywords": ["Hüsrev", "Kader Çatışması", "Cinnet ve Şüphe", "Tiyatro"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -40,8 +40,8 @@
     "work": "Simavne Kadısı Oğlu Şeyh Bedreddin Destanı",
     "period": "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)",
     "genre": "Şiir (Destan)",
-    "info": "Osmanlı döneminde eşitlikçi bir isyan başlatan Şeyh Bedreddin'i konu alan; toplumcu gerçekçi şiirin en önemli örneklerinden biridir.",
-    "keywords": ["Şeyh Bedreddin", "İsyan", "Toplumcu Gerçekçilik"],
+    "info": "Tarihsel bir figür olan Şeyh Bedreddin ve müritlerinin ortak mülkiyet ve eşitlik idealiyle başlattığı isyanı lirik-epik bir dille anlatan başyapıttır.",
+    "keywords": ["Şeyh Bedreddin", "Börklüce Mustafa", "Toplumcu Gerçekçilik", "Epik Şiir"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -53,8 +53,8 @@
     "work": "Memleketimden İnsan Manzaraları",
     "period": "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)",
     "genre": "Şiir (Epik-Manzum Roman)",
-    "info": "Bir tren yolculuğu çerçevesinde farklı toplumsal sınıflardan insan portrelerini geniş bir manzum-epik anlatıyla veren, şairin başyapıtlarındandır.",
-    "keywords": ["Manzum Roman", "Toplumsal Portreler", "Tren Yolculuğu"],
+    "info": "Haydarpaşa Garı'ndan kalkan bir trende toplumun her kesiminden insan portreleri üzerinden Türkiye'nin siyasi ve toplumsal panoramasını çizer.",
+    "keywords": ["Haydarpaşa Garı", "Tren Yolculuğu", "Toplumsal Panorama", "Manzum Roman"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -66,8 +66,8 @@
     "work": "Kuvayi Milliye Destanı",
     "period": "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)",
     "genre": "Şiir (Destan)",
-    "info": "Kurtuluş Savaşı'nı ve Kuvayı Milliye direnişini epik bir üslupla anlatan destansı şiir eseridir.",
-    "keywords": ["Kurtuluş Savaşı", "Kuvayı Milliye", "Epik Destan"]
+    "info": "Kurtuluş Savaşı mücadelesini, halk kahramanlarını (Kartallı Kazım, Arhaveli İsmail vb.) ve direniş ruhunu destansı dizelerle anlatır.",
+    "keywords": ["Kurtuluş Savaşı", "Kuvayı Milliye", "Kartallı Kazım", "Epik Şiir"]
   },
   {
     "id": 407,
@@ -75,8 +75,8 @@
     "work": "Huzur",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "İstanbul'da geçen, Doğu-Batı arasındaki kültürel gerilimi Mümtaz karakteri üzerinden derin bir psikolojik ve müzikal anlatımla işleyen; Türk romanının başyapıtlarından biridir.",
-    "keywords": ["Mümtaz", "Doğu-Batı Sentezi", "İstanbul", "Psikolojik Roman"],
+    "info": "Mümtaz ile Nuran'ın aşkı etrafında Doğu-Batı çatışması, Türk musikisi, Boğaziçi ve II. Dünya Savaşı öncesi huzursuzluğunu işleyen başyapıttır.",
+    "keywords": ["Mümtaz", "Nuran", "İhsan", "Suat", "Huzursuzluk"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -88,8 +88,8 @@
     "work": "Saatleri Ayarlama Enstitüsü",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Hayri İrdal karakteri üzerinden Türk toplumunun modernleşme sürecindeki tutarsızlıkları ironik ve alegorik bir dille eleştiren; Türk edebiyatının en özgün romanlarından biridir.",
-    "keywords": ["Hayri İrdal", "Modernleşme Eleştirisi", "İroni", "Alegori"],
+    "info": "Hayri İrdal ve Halit Ayarcı karakterleri üzerinden bürokrasinin ve Doğu-Batı arasında bocalayan modernleşmenin ironik eleştirisidir.",
+    "keywords": ["Hayri İrdal", "Halit Ayarcı", "Zaman ve Saat", "İroni ve Hiciv"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -99,10 +99,10 @@
     "id": 409,
     "author": "Ahmet Hamdi Tanpınar",
     "work": "Beş Şehir",
-    "period": "Cumhuriyet Dönemi (Deneme)",
+    "period": "Cumhuriyet Dönemi Denemesi",
     "genre": "Deneme",
-    "info": "Ankara, Erzurum, Konya, Bursa ve İstanbul şehirlerini; tarihî, kültürel ve kişisel izlenimlerle anlatan önemli bir deneme kitabıdır.",
-    "keywords": ["Beş Şehir", "Kültürel İzlenim", "Deneme"]
+    "info": "Ankara, Erzurum, Konya, Bursa ve İstanbul şehirlerinin tarihî ve kültürel derinliğini nostaljik ve şairane bir dille aktaran deneme kitabıdır.",
+    "keywords": ["Ankara-Erzurum-Konya-Bursa-İstanbul", "Tarih ve Kültür", "Şehir Monografisi"]
   },
   {
     "id": 410,
@@ -110,17 +110,17 @@
     "work": "Sahnenin Dışındakiler",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Millî Mücadele yıllarında İstanbul'da geçen, aşk ve toplumsal çözülme temalarını işleyen romandır.",
-    "keywords": ["Millî Mücadele", "İstanbul", "Toplumsal Çözülme"]
+    "info": "Kurtuluş Savaşı'nın asıl sahnesi Anadolu iken sahnenin dışında kalan işgal altındaki İstanbul'daki aydınların ruh halini Cemal üzerinden işler.",
+    "keywords": ["Cemal", "Sabiha", "İşgal İstanbul'u", "Millî Mücadele"]
   },
   {
     "id": 411,
     "author": "Peyami Safa",
     "work": "Dokuzuncu Hariciye Koğuşu",
     "period": "Cumhuriyet Dönemi Romanı",
-    "genre": "Roman (Psikolojik)",
-    "info": "Bacağındaki hastalık yüzünden hastanede tedavi gören bir gencin fiziksel ve ruhsal acılarını, iç monologla derinlemesine işleyen psikolojik romandır.",
-    "keywords": ["Hastane", "İç Monolog", "Psikolojik Roman"],
+    "genre": "Roman (Otobiyografik/Psikolojik)",
+    "info": "Türk edebiyatının ilk otobiyografik romanıdır. Kemik veremi çeken adsız bir gencin hastane acılarını ve Nüzhet'e olan platonik aşkını anlatır.",
+    "keywords": ["İlk Otobiyografik Roman", "Hasta Çocuk", "Nüzhet", "Doktor Ragıp"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -132,8 +132,8 @@
     "work": "Fatih-Harbiye",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "İstanbul'un Doğu'yu (Fatih) ve Batı'yı (Harbiye) simgeleyen iki semti üzerinden, Neriman karakteri aracılığıyla Doğu-Batı çatışmasını işleyen romandır.",
-    "keywords": ["Fatih-Harbiye", "Neriman", "Doğu-Batı Çatışması"],
+    "info": "Geleneksel Doğu'yu temsil eden Şinasi ile Batılı züppeliği temsil eden Macit arasında bocalayan Neriman'ın yanlış Batılılaşma macerasıdır.",
+    "keywords": ["Neriman", "Şinasi", "Macit", "Doğu-Batı Çatışması"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -144,18 +144,18 @@
     "author": "Peyami Safa",
     "work": "Matmazel Noraliya'nın Koltuğu",
     "period": "Cumhuriyet Dönemi Romanı",
-    "genre": "Roman",
-    "info": "Maddecilik ile maneviyat/tasavvuf arasındaki çatışmayı, bir ruh hastalığı ve iyileşme süreci üzerinden ele alan felsefi-psikolojik romandır.",
-    "keywords": ["Maddecilik-Maneviyat Çatışması", "Ruh Hastalığı", "Felsefi Roman"]
+    "genre": "Roman (Psikolojik/Tasavvufi)",
+    "info": "Materyalist tıp öğrencisi Ferit'in yaşadığı varoluşsal krizden tasavvuf ve maneviyata yönelerek kurtuluşunu anlatan mistik romandır.",
+    "keywords": ["Ferit", "Maddecilik-Maneviyat", "Mistik Buhran", "Matmazel Noraliya"]
   },
   {
     "id": 414,
     "author": "Sabahattin Ali",
     "work": "Kuyucaklı Yusuf",
-    "period": "Cumhuriyet Dönemi Romanı",
-    "genre": "Roman (Realist)",
-    "info": "Küçük bir Anadolu kasabasında büyüyen Yusuf'un, haksızlıklara karşı verdiği mücadeleyi ve trajik aşkını realist bir dille anlatan romandır.",
-    "keywords": ["Yusuf", "Anadolu Kasabası", "Haksızlık", "Realizm"],
+    "period": "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)",
+    "genre": "Roman",
+    "info": "Ailesi katledilen Yusuf'un kaymakam tarafından evlat edinilmesi ve kasaba eşrafının yozlaşmış düzenine başkaldırışını anlatan başyapıttır.",
+    "keywords": ["Yusuf", "Muazzez", "Kasaba Bürokrasisi", "İlk Kasaba Romanı"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -167,8 +167,8 @@
     "work": "İçimizdeki Şeytan",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Aydın kesim içindeki ikiyüzlülüğü, fırsatçılığı ve karakter zaafını Ömer karakteri üzerinden eleştiren romandır.",
-    "keywords": ["Ömer", "Aydın Eleştirisi", "İkiyüzlülük"]
+    "info": "İrade zayıflığını 'içimizdeki şeytan' kılıfına uyduran Ömer ile saf Macide'nin ilişkisi üzerinden dönemin aydın çevrelerinin ikiyüzlülüğünü eleştirir.",
+    "keywords": ["Ömer", "Macide", "Bedri", "Aydın İkiyüzlülüğü"]
   },
   {
     "id": 416,
@@ -176,8 +176,8 @@
     "work": "Kürk Mantolu Madonna",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Raif Efendi'nin Berlin'de yaşadığı, Maria Puder'e duyduğu derin ve tamamlanmamış aşkı anlatan; içe dönük, lirik üslubuyla tanınan romandır.",
-    "keywords": ["Raif Efendi", "Maria Puder", "Berlin", "Tamamlanmamış Aşk"],
+    "info": "İçine kapanık memur Raif Efendi'nin gençliğinde Berlin'de ressam Maria Puder ile yaşadığı tutkulu ve hüzünlü aşkı anlatan psikolojik romandır.",
+    "keywords": ["Raif Efendi", "Maria Puder", "Berlin Galerisi", "Yalnızlık"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -187,10 +187,10 @@
     "id": 417,
     "author": "Yaşar Kemal",
     "work": "İnce Memed",
-    "period": "Cumhuriyet Dönemi Romanı (Köy/Toplumcu Gerçekçi)",
+    "period": "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)",
     "genre": "Roman",
-    "info": "Çukurova'da ağalık düzenine ve zulme başkaldıran eşkıya İnce Memed'in hikayesini destansı bir üslupla anlatan; köy/toplumcu gerçekçi romanın en tanınmış eseridir.",
-    "keywords": ["İnce Memed", "Çukurova", "Ağalık Düzeni", "Destansı Anlatım"],
+    "info": "Abdi Ağa'nın zulmüne dayanamayarak dağa çıkan eşkıya İnce Memed'in Çukurova ve Toroslar'daki efsanevi başkaldırısını anlatan 4 ciltlik nehir romandır.",
+    "keywords": ["İnce Memed", "Abdi Ağa", "Çukurova", "Hatçe", "Başkaldırı"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
@@ -202,26 +202,30 @@
     "work": "Yer Demir Gök Bakır",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Ağır kış koşullarında bir Anadolu köyünde açlık ve yoksullukla mücadele eden köylülerin, hayali bir kurtarıcıya sarılmasını anlatan romandır.",
-    "keywords": ["Yoksulluk", "Anadolu Köyü", "Efsane-Gerçeklik"]
+    "info": "Dağın Öte Yüzü üçlemesinin ikinci kitabıdır. Borç batağındaki Yalak köylülerinin çaresizlikten Taşbaşoğlu'nu ermiş/kurtarıcı ilan etmesini anlatır.",
+    "keywords": ["Taşbaşoğlu", "Yalak Köyü", "Efsane Yaratma", "Çaresizlik"]
   },
   {
     "id": 419,
-    "author": "Yaşar Kemal",
-    "work": "Ölmez Otu",
-    "period": "Cumhuriyet Dönemi Romanı",
-    "genre": "Roman",
-    "info": "Yer Demir Gök Bakır'ın devamı niteliğindeki, aynı köyün insanlarının mücadelesini sürdüren romandır.",
-    "keywords": ["Köy Üçlemesi", "Mücadele"]
-  },
-  {
-    "id": 420,
     "author": "Kemal Tahir",
     "work": "Devlet Ana",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Tarihi Roman",
-    "info": "Osmanlı Devleti'nin kuruluş dönemini, toplumsal ve tarihsel bir bakış açısıyla anlatan geniş kapsamlı tarihi romandır.",
-    "keywords": ["Osmanlı Kuruluşu", "Tarihi Roman", "Toplumsal Bakış"],
+    "info": "Osmanlı'nın Söğüt'te kuruluşunu 'Kerim Devlet' (Asya Tipi Üretim Tarzı) teziyle Batı feodalizminden ayıran anıtsal tarihi romandır.",
+    "keywords": ["Osman Bey", "Şeyh Edebali", "Kerim Devlet", "Bacıyan-ı Rum"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 420,
+    "author": "Kemal Tahir",
+    "work": "Esir Şehrin İnsanları",
+    "period": "Cumhuriyet Dönemi Romanı",
+    "genre": "Roman",
+    "info": "Mütareke dönemi İstanbul'unda paşa çocuğu aydın Kâmil Bey'in bireysel kayıtsızlıktan sıyrılarak Millî Mücadele saflarına katılışını anlatan romandır.",
+    "keywords": ["Kâmil Bey", "İşgal İstanbul'u", "Nedime Hanım", "Kuvayı Milliye Bilinci"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -230,324 +234,310 @@
   {
     "id": 421,
     "author": "Kemal Tahir",
-    "work": "Esir Şehrin İnsanları",
-    "period": "Cumhuriyet Dönemi Romanı",
-    "genre": "Roman",
-    "info": "Mütareke döneminde işgal altındaki İstanbul'da yaşayan insanların direniş ve teslimiyet arasındaki tutumlarını anlatan romandır.",
-    "keywords": ["Mütareke Dönemi", "İşgal İstanbul", "Direniş-Teslimiyet"]
-  },
-  {
-    "id": 422,
-    "author": "Kemal Tahir",
     "work": "Yorgun Savaşçı",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Kurtuluş Savaşı sonrasında bir subayın yaşadığı hayal kırıklığını ve dönemin toplumsal-siyasi atmosferini anlatan romandır.",
-    "keywords": ["Kurtuluş Savaşı Sonrası", "Hayal Kırıklığı", "Subay"]
+    "info": "İttihatçı subay 'Cehennem Yüzbaşı' Cemil üzerinden Mondros mütarekesi sonrası ordunun dağılışını ve Anadolu'da direnişin filizlenişini işler.",
+    "keywords": ["Yüzbaşı Cemil", "İttihatçılar", "Anadolu Direnişi", "Yorgunluk"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
   },
   {
-    "id": 423,
+    "id": 422,
     "author": "Orhan Kemal",
     "work": "Bereketli Topraklar Üzerinde",
     "period": "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)",
     "genre": "Roman",
-    "info": "Çukurova'ya çalışmaya gelen mevsimlik işçilerin yaşadığı sömürü ve zor yaşam koşullarını gerçekçi bir dille anlatan işçi/emek romanıdır.",
-    "keywords": ["Mevsimlik İşçiler", "Çukurova", "Sömürü", "Emek Romanı"],
+    "info": "Sivas'ın köyünden Çukurova'ya para kazanmaya gelen İflahsızın Yusuf, Köse Hasan ve Pehlivan Ali'nin kapitalist çarklar arasında ezilişini anlatır.",
+    "keywords": ["İflahsızın Yusuf", "Köse Hasan", "Pehlivan Ali", "Çukurova Fabrikaları"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 424,
+    "id": 423,
     "author": "Orhan Kemal",
     "work": "Murtaza",
     "period": "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)",
     "genre": "Roman",
-    "info": "Aşırı görev bilinciyle hareket eden, saf ve dürüst bir bekçi olan Murtaza'nın hikayesini işleyen romandır.",
-    "keywords": ["Murtaza", "Bekçi", "Görev Bilinci"]
+    "info": "Kraldan çok kralcı, görevine körü körüne sadık göçmen bekçi Murtaza tipinin trajikomik hikayesi üzerinden bürokrasi ve ahlak eleştirisidir.",
+    "keywords": ["Bekçi Murtaza", "Vazife Tutkusu", "Mizah ve Dram", "Toplumsal Hiciv"]
   },
   {
-    "id": 425,
+    "id": 424,
     "author": "Orhan Kemal",
     "work": "Baba Evi",
     "period": "Cumhuriyet Dönemi Romanı (Toplumcu Gerçekçi)",
     "genre": "Roman",
-    "info": "Yoksul bir ailenin İstanbul'daki hayat mücadelesini ve toplumsal sınıf farklılıklarını anlatan otobiyografik izler taşıyan romandır.",
-    "keywords": ["Yoksulluk", "Sınıf Farkları", "Otobiyografik İzler"]
+    "info": "Yazarın 'Küçük Adamın Notları' serisinin ilk kitabı. Katı bir baba baskısı altındaki çocukluk ve Beyrut sürgün yıllarını anlatan otobiyografik romandır.",
+    "keywords": ["Otobiyografik Roman", "Baba Baskısı", "Küçük Adam", "Beyrut Yılları"]
   },
   {
-    "id": 426,
+    "id": 425,
     "author": "Fakir Baykurt",
     "work": "Yılanların Öcü",
     "period": "Cumhuriyet Dönemi Romanı (Köy Romanı)",
     "genre": "Roman",
-    "info": "Bir Anadolu köyünde toprak ve ev meselesi yüzünden yaşanan çatışmayı, köy ağalığı ve iktidar mücadelesi ekseninde anlatan köy romanıdır.",
-    "keywords": ["Köy Romanı", "Toprak Meselesi", "Ağalık Çatışması"],
+    "info": "Karataş köyünde Irazca Ana ve oğlu Kara Bayram'ın, evlerinin önüne ev yaptırmak isteyen Haceli ve muhtar ile verdikleri toprak kavgasıdır.",
+    "keywords": ["Irazca Ana", "Kara Bayram", "Haceli", "Köy İktidarı"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
+    }
+  },
+  {
+    "id": 426,
+    "author": "Oğuz Atay",
+    "work": "Tutunamayanlar",
+    "period": "Cumhuriyet Dönemi Romanı (Modernist/Postmodern)",
+    "genre": "Roman",
+    "info": "İntihar eden Selim Işık'ın gizemini çözmeye çalışan Turgut Özben'in küçük burjuva dünyasından kopuşunu bilinç akışı ve üstkurmaca ile anlatan başyapıttır.",
+    "keywords": ["Selim Işık", "Turgut Özben", "Olric", "Bilinç Akışı", "Küçük Burjuva"],
+    "osym_stats": {
+      "is_banko": true,
+      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
     }
   },
   {
     "id": 427,
-    "author": "Fakir Baykurt",
-    "work": "Tırpan",
-    "period": "Cumhuriyet Dönemi Romanı (Köy Romanı)",
+    "author": "Oğuz Atay",
+    "work": "Tehlikeli Oyunlar",
+    "period": "Cumhuriyet Dönemi Romanı (Modernist/Postmodern)",
     "genre": "Roman",
-    "info": "Köy hayatındaki toprak kavgalarını ve insan ilişkilerini konu alan bir başka köy romanıdır.",
-    "keywords": ["Köy Romanı", "Toprak Kavgası"]
+    "info": "Gecekonduya taşınan Hikmet Benol'un kafasındaki hayali karakterlerle oyunlar oynayarak varoluş sancısı çekmesini anlatan postmodern romandır.",
+    "keywords": ["Hikmet Benol", "Albay Hüsamettin", "İç Konuşma", "Oyun İçinde Oyun"]
   },
   {
     "id": 428,
-    "author": "Oğuz Atay",
-    "work": "Tutunamayanlar",
-    "period": "Cumhuriyet Dönemi Romanı (Modernist)",
-    "genre": "Roman (Postmodern/Modernist)",
-    "info": "Türk edebiyatında modernist/postmodern roman tekniğinin öncü örneklerinden kabul edilir. Toplumla uyum sağlayamayan Selim Işık ile onun arkadaşı Turgut Özben'in hikayesi anlatılır.",
-    "keywords": ["Selim Işık", "Turgut Özben", "Modernist Roman", "Uyumsuzluk"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 429,
-    "author": "Oğuz Atay",
-    "work": "Tehlikeli Oyunlar",
-    "period": "Cumhuriyet Dönemi Romanı (Modernist)",
-    "genre": "Roman",
-    "info": "Toplumdan kopuk, kendi iç dünyasında farklı roller/oyunlar kuran bir bireyin bunalımını anlatan modernist romandır.",
-    "keywords": ["Bireysel Bunalım", "İç Dünya", "Modernist Roman"]
-  },
-  {
-    "id": 430,
     "author": "Aziz Nesin",
     "work": "Zübük",
     "period": "Cumhuriyet Dönemi Romanı (Mizah)",
     "genre": "Roman (Mizahi/Hiciv)",
-    "info": "Çıkarcı, fırsatçı ve ilkesiz bir tip olan Zübük karakteri üzerinden toplumsal ve siyasi ikiyüzlülüğü hicveden romandır.",
-    "keywords": ["Zübük", "Fırsatçılık", "Siyasi Hiciv"],
+    "info": "İbrahim Zübükzade karakteri üzerinden siyasi yozlaşmayı, halkın menfaatçiliğini ve sistemdeki ahlaki çöküşü sertçe eleştiren hiciv romanıdır.",
+    "keywords": ["İbrahim Zübükzade", "Siyasi Yozlaşma", "Menfaatçilik", "Mizah"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 431,
+    "id": 429,
     "author": "Aziz Nesin",
     "work": "Yaşar Ne Yaşar Ne Yaşamaz",
     "period": "Cumhuriyet Dönemi Romanı (Mizah)",
     "genre": "Roman (Mizahi/Hiciv)",
-    "info": "Bürokratik aksaklıkları ve sistemin insanı yok sayan yönlerini mizahi bir dille eleştiren romandır.",
-    "keywords": ["Bürokrasi Eleştirisi", "Mizah"]
+    "info": "Nüfus kağıdında ölü göründüğü için bürokrasinin kapılarından dönen ama askerlik ve vergi günü gelince yaşayan sayılan Yaşar Yaşamaz'ın trajikomik öyküsüdür.",
+    "keywords": ["Yaşar Yaşamaz", "Nüfus Çıkmazı", "Bürokrasi Eleştirisi"]
   },
   {
-    "id": 432,
-    "author": "Halikarnas Balıkçısı (Cevat Şakir Kabaağaçlı)",
+    "id": 430,
+    "author": "Halikarnas Balıkçısı",
     "work": "Aganta Burina Burinata",
     "period": "Cumhuriyet Dönemi Romanı",
     "genre": "Roman",
-    "info": "Ege ve Akdeniz'i, deniz ve balıkçılık kültürünü canlı bir dille anlatan; yazarın deniz sevgisini yansıttığı romandır.",
-    "keywords": ["Deniz Teması", "Ege", "Balıkçılık Kültürü"]
+    "info": "Deniz sevgisi tutkuya dönüşen Bodrumlu Mahmut'un, ailesinin karşı çıkmasına rağmen karadan kopup denizlere açılışını lirik bir dille anlatır.",
+    "keywords": ["Bodrum", "Denizci Mahmut", "Ege ve Sünger Avcılığı", "Deniz Tutkusu"]
   },
   {
-    "id": 433,
+    "id": 431,
     "author": "Cahit Sıtkı Tarancı",
     "work": "Otuz Beş Yaş",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
+    "period": "Cumhuriyet Dönemi Şiiri (Saf Şiir)",
     "genre": "Şiir",
-    "info": "Yaşamın anlamı, zamanın geçiciliği ve ölüm bilinci üzerine yazılmış; şairin en tanınmış şiiri olan 'Otuz Beş Yaş'ın da yer aldığı şiir kitabıdır.",
-    "keywords": ["Zaman ve Ölüm", "Otuz Beş Yaş", "Yaşam Bilinci"],
+    "info": "'Ölüm şairi' olarak anılan şairin yaşama sevinci ile ölüm korkusunu hece ölçüsünün kusursuz ahengiyle harmanladığı şiir kitabıdır.",
+    "keywords": ["Ölüm Şairi", "Yaşama Sevinci", "Dante Vurgusu", "Hece Ahengi"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 434,
+    "id": 432,
     "author": "Orhan Veli Kanık",
     "work": "Garip",
-    "period": "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)",
-    "genre": "Şiir (Ortak Kitap/Manifesto)",
-    "info": "Oktay Rifat ve Melih Cevdet Anday ile birlikte yayımlanan; ölçü, kafiye ve söz sanatlarını reddederek gündelik dili ve sıradan insanı şiire taşıyan Garip akımının manifestosu niteliğindeki eserdir.",
-    "keywords": ["Garip Akımı", "I. Yeni", "Ölçü-Kafiye Reddi", "Gündelik Dil"],
+    "period": "Cumhuriyet Dönemi Şiiri (Garip / I. Yeni)",
+    "genre": "Şiir (Manifesto)",
+    "info": "Melih Cevdet ve Oktay Rifat ile çıkardıkları, vezin, kafiye ve süsü yıkarak sıradan insanı (Süleyman Efendi) şiire sokan devrimci manifestodur.",
+    "keywords": ["Vezinsiz-Kafiyesiz", "Süleyman Efendi", "Sıradan İnsan", "I. Yeni"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 435,
+    "id": 433,
     "author": "Orhan Veli Kanık",
     "work": "Vazgeçemediğim",
-    "period": "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)",
+    "period": "Cumhuriyet Dönemi Şiiri (Garip / I. Yeni)",
     "genre": "Şiir",
-    "info": "Orhan Veli'nin sade dille, günlük hayattan izlenimleri ve bireysel duyguları işlediği şiirlerini içeren kitaptır.",
-    "keywords": ["Sade Dil", "Günlük Hayat", "Garip Akımı"]
+    "info": "'İstanbul'u Dinliyorum' şiirinin de yer aldığı, şairin Garip çizgisini korurken lirik ve melankolik tınılara da yer verdiği şiir kitabıdır.",
+    "keywords": ["İstanbul'u Dinliyorum", "Lirizm", "Gündelik Hayat"]
+  },
+  {
+    "id": 434,
+    "author": "Oktay Rifat",
+    "work": "Yaşayıp Ölmek Aşk ve Avarelik Üstüne Şiirler",
+    "period": "Cumhuriyet Dönemi Şiiri (Garip / I. Yeni)",
+    "genre": "Şiir",
+    "info": "Garip akımı döneminde yayımladığı, sokak dilinin canlılığını ve yaşama sevincini ironik dizelerle aktardığı şiir kitabıdır.",
+    "keywords": ["Garip Dönemi", "İroni", "Yaşama Sevinci"]
+  },
+  {
+    "id": 435,
+    "author": "Melih Cevdet Anday",
+    "work": "Rahatı Kaçan Ağaç",
+    "period": "Cumhuriyet Dönemi Şiiri (Garip / I. Yeni)",
+    "genre": "Şiir",
+    "info": "Garip şiirinin yalınlığını felsefi düşünceyle buluşturmaya başladığı, doğa ve insan ilişkisini sorgulayan şiir kitabıdır.",
+    "keywords": ["Garip Havası", "Felsefi Düşünce", "Düşünce Şiiri"]
   },
   {
     "id": 436,
-    "author": "Oktay Rifat",
-    "work": "Yaşayıp Ölmek Aşk ve Avarelik Üstüne Şiirler",
-    "period": "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)",
-    "genre": "Şiir",
-    "info": "Garip akımının kurucularından Oktay Rifat'ın, akım anlayışına uygun sade ve alaycı şiirlerini içeren kitaptır.",
-    "keywords": ["Garip Akımı", "Alaycı Üslup", "Aşk ve Avarelik"]
-  },
-  {
-    "id": 437,
-    "author": "Melih Cevdet Anday",
-    "work": "Rahatı Kaçan Ağaç",
-    "period": "Cumhuriyet Dönemi Şiiri (Garip/I. Yeni)",
-    "genre": "Şiir",
-    "info": "Garip akımının üçüncü kurucu ismi olan Melih Cevdet Anday'ın, zamanla akımdan uzaklaşarak daha felsefi ve toplumsal temalara yöneldiği dönem şiirlerini içerir.",
-    "keywords": ["Garip Akımından Uzaklaşma", "Felsefi Şiir"]
-  },
-  {
-    "id": 438,
     "author": "Fazıl Hüsnü Dağlarca",
     "work": "Çocuk ve Allah",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
+    "period": "Cumhuriyet Dönemi Şiiri (Bağımsız)",
     "genre": "Şiir",
-    "info": "Çocukluk, varoluş ve Tanrı kavramını iç içe işleyen; şairin en tanınmış ve üretken şiir anlayışının ilk güçlü örneklerinden kitaptır.",
-    "keywords": ["Çocukluk", "Varoluş", "Tanrı Kavramı"],
+    "info": "Şairin kozmik alem, çocukluk hisleri ve Tanrı kavramını sezgici ve mistik bir boyutta işlediği en önemli başyapıtıdır.",
+    "keywords": ["Kozmik Alem", "Sezgi Şiiri", "Çocuk Saflığı", "Mistik Boyut"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 439,
+    "id": 437,
     "author": "Behçet Necatigil",
     "work": "Eski Toprak",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
+    "period": "Cumhuriyet Dönemi Şiiri (Bağımsız)",
     "genre": "Şiir",
-    "info": "Gündelik hayatı, ev/aile içi ilişkileri ve küçük insanın dramını kapalı, çağrışımlı bir dille işleyen şiir kitabıdır.",
-    "keywords": ["Gündelik Hayat", "Kapalı Anlatım", "Küçük İnsan"]
+    "info": "'Evler Şairi'nin orta sınıf aile yaşantısını, evin içindeki mahremiyeti ve küçük insanın hüzünlerini kapalı bir dille anlattığı kitabıdır.",
+    "keywords": ["Evler Şairi", "Orta Sınıf Yaşamı", "Ev-Aile Teması"]
+  },
+  {
+    "id": 438,
+    "author": "Attila İlhan",
+    "work": "Duvar",
+    "period": "Cumhuriyet Dönemi Şiiri (Maviciler)",
+    "genre": "Şiir",
+    "info": "Şairin II. Dünya Savaşı acılarını ve toplumcu gerçekçi başkaldırıyı işlediği ilk şiir kitabıdır.",
+    "keywords": ["Maviciler", "Toplumcu Dönem", "İlk Şiir Kitabı"]
+  },
+  {
+    "id": 439,
+    "author": "Attila İlhan",
+    "work": "Sisler Bulvarı",
+    "period": "Cumhuriyet Dönemi Şiiri (Maviciler)",
+    "genre": "Şiir",
+    "info": "'Kimi sevsem sensin', 'Emperyal Oteli' gibi klasiklerin yer aldığı; sinematografik anlatımı ve melankolisiyle ünlü kitabıdır.",
+    "keywords": ["Kaptan", "Sinematografik Şiir", "Pia", "Melankoli"]
   },
   {
     "id": 440,
-    "author": "Attila İlhan",
-    "work": "Duvar",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
-    "genre": "Şiir",
-    "info": "Attila İlhan'ın toplumcu ve bireysel temaları bir arada işlediği, şairin ilk şiir kitabıdır.",
-    "keywords": ["Toplumcu Şiir", "İlk Kitap"]
-  },
-  {
-    "id": 441,
-    "author": "Attila İlhan",
-    "work": "Sisler Bulvarı",
-    "period": "Cumhuriyet Dönemi Şiiri (Bağımsızlar)",
-    "genre": "Şiir",
-    "info": "Aşk, hüzün ve büyük şehir yaşamını melankolik bir dille işleyen; Attila İlhan'ın sinema diliyle de beslenen şiir kitabıdır.",
-    "keywords": ["Melankoli", "Aşk", "Büyük Şehir"]
-  },
-  {
-    "id": 442,
     "author": "Turgut Uyar",
     "work": "Dünyanın En Güzel Arabistanı",
     "period": "Cumhuriyet Dönemi Şiiri (İkinci Yeni)",
     "genre": "Şiir",
-    "info": "Kapalı imgeler, alışılmadık söz dizimi ve soyut anlatımıyla İkinci Yeni akımının en önemli eserlerinden biridir.",
-    "keywords": ["İkinci Yeni", "Kapalı İmge", "Soyut Anlatım"],
+    "info": "'Göğe Bakma Durağı' şiirinin yer aldığı; büyük kentin boğuculuğundan kaçışı soyut imgelerle anlatan İkinci Yeni zirvesidir.",
+    "keywords": ["Göğe Bakma Durağı", "İkinci Yeni Zirvesi", "Kaçış Teması"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 443,
+    "id": 441,
     "author": "Edip Cansever",
     "work": "Yerçekimli Karanfil",
     "period": "Cumhuriyet Dönemi Şiiri (İkinci Yeni)",
     "genre": "Şiir",
-    "info": "Bireyin iç dünyasını, yalnızlığını ve varoluşsal sıkıntısını İkinci Yeni'nin kapalı ve imgesel diliyle işleyen şiir kitabıdır.",
-    "keywords": ["İkinci Yeni", "Bireysel Yalnızlık", "İmgesel Dil"],
+    "info": "Dramatik monologlar, eşya-insan yabancılaşması ve zengin imge dünyasıyla İkinci Yeni poetikasının temel taşıdır.",
+    "keywords": ["Dramatik Monolog", "Yabancılaşma", "İmge Zenginliği"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 444,
+    "id": 442,
     "author": "Cemal Süreya",
     "work": "Üvercinka",
     "period": "Cumhuriyet Dönemi Şiiri (İkinci Yeni)",
     "genre": "Şiir",
-    "info": "Aşk ve erotizmi alışılmadık imgeler ve sözcük oyunlarıyla işleyen; İkinci Yeni akımının en dikkat çeken kitaplarından biridir.",
-    "keywords": ["İkinci Yeni", "Erotizm", "Sözcük Oyunları"],
+    "info": "Türkçenin sınırlarını zorlayan sözcük oyunları, erotizm ve ironiyi harmanlayarak İkinci Yeni'nin doğuşunu müjdeleyen kitaptır.",
+    "keywords": ["Güvercin Cendere", "Erotizm ve İroni", "Dil Sapmaları"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 445,
+    "id": 443,
     "author": "İlhan Berk",
     "work": "Galile Denizi",
     "period": "Cumhuriyet Dönemi Şiiri (İkinci Yeni)",
     "genre": "Şiir",
-    "info": "İkinci Yeni akımının öncülerinden İlhan Berk'in, soyut ve resimsel imgelerle örülü şiirlerini içeren kitaptır.",
-    "keywords": ["İkinci Yeni", "Resimsel İmge", "Soyutlama"]
+    "info": "'Şiir anlam için yazılmaz' diyerek anlamsızlığı savunan şairin soyut ve resimsel dille yazdığı İkinci Yeni kitabıdır.",
+    "keywords": ["Anlamsız Şiir", "Görsel İmge", "Soyut Şiir"]
   },
   {
-    "id": 446,
+    "id": 444,
     "author": "Ece Ayhan",
     "work": "Kınar Hanımın Denizleri",
     "period": "Cumhuriyet Dönemi Şiiri (İkinci Yeni)",
     "genre": "Şiir",
-    "info": "Toplumun dışladığı kesimleri, tarihsel göndermeleri ve kapalı bir dili bir araya getiren; İkinci Yeni'nin en radikal örneklerinden kitaptır.",
-    "keywords": ["İkinci Yeni", "Toplum Dışı Kesimler", "Tarihsel Gönderme"]
+    "info": "Kendine has 'sivil şiir' diliyle marjinal tipleri, azınlıkları ve sokak kültürünü anlattığı ilk şiir kitabıdır.",
+    "keywords": ["Sivil Şiir", "Marjinal Hayatlar", "Sözdizimi Kırılması"]
   },
   {
-    "id": 447,
+    "id": 445,
     "author": "Haldun Taner",
     "work": "Keşanlı Ali Destanı",
-    "period": "Cumhuriyet Dönemi Tiyatrosu (Epik Tiyatro)",
-    "genre": "Tiyatro (Epik)",
-    "info": "Gecekondu mahallesinde geçen; Brecht'in epik tiyatro tekniklerinin Türk tiyatrosuna en başarılı uyarlamalarından biri kabul edilen; Keşanlı Ali'nin hikayesini anlatan oyundur.",
-    "keywords": ["Epik Tiyatro", "Brecht Etkisi", "Gecekondu", "Keşanlı Ali"],
+    "period": "Cumhuriyet Dönemi Tiyatrosu",
+    "genre": "Tiyatro (İlk Epik Tiyatro)",
+    "info": "Türk edebiyatındaki İLK EPİK TİYATRO örneğidir. Sineklidağ gecekondusunda geçmeyen cinayet yüzünden efsaneleşen Ali'yi anlatır.",
+    "keywords": ["İlk Epik Tiyatro", "Keşanlı Ali", "Zilha", "Sineklidağ"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
     }
   },
   {
-    "id": 448,
+    "id": 446,
     "author": "Haldun Taner",
     "work": "Gözlerimi Kaparım Vazifemi Yaparım",
-    "period": "Cumhuriyet Dönemi (Hikaye)",
-    "genre": "Hikaye",
-    "info": "Küçük memur tiplerinin ikiyüzlülüğünü ve sistemdeki bozuklukları ince bir mizahla eleştiren ünlü hikayedir.",
-    "keywords": ["Memur Eleştirisi", "Mizah", "Sistem Eleştirisi"]
+    "period": "Cumhuriyet Dönemi Tiyatrosu",
+    "genre": "Tiyatro (Epik / Müzikal)",
+    "info": "II. Meşrutiyet'ten 1960'lara kadar olan Türkiye tarihini, saf memur Vicdani ile fırsatçı Efruz karakterleri üzerinden hicveden epik oyundur.",
+    "keywords": ["Vicdani", "Efruz", "Tiyatro Oyunu", "Tarihsel Hiciv"]
   },
   {
-    "id": 449,
+    "id": 447,
     "author": "Musahipzade Celal",
     "work": "Aynaroz Kadısı",
     "period": "Cumhuriyet Dönemi Tiyatrosu",
-    "genre": "Tiyatro (Tarihi-Folklorik Komedi)",
-    "info": "Osmanlı dönemi mahalle hayatını, yerel tipleri ve gelenekleri komedi unsurlarıyla sahneye taşıyan; yazarın en tanınmış tarihi-folklorik oyunudur.",
-    "keywords": ["Osmanlı Mahalle Hayatı", "Folklorik Komedi", "Yerel Tipler"]
+    "genre": "Tiyatro (Tarihi Komedi)",
+    "info": "Osmanlı'nın çöküş dönemindeki rüşvet, yozlaşma ve mahalle yaşamını töre komedisi tarzında sahneye aktaran ünlü oyunudur.",
+    "keywords": ["Osmanlı Kurumları", "Töre Komedisi", "Geleneksel Tiyatro İzleri"]
   },
   {
-    "id": 450,
+    "id": 448,
     "author": "Turgut Özakman",
-    "work": "Kanlı Nigar",
+    "work": "Töre",
     "period": "Cumhuriyet Dönemi Tiyatrosu",
-    "genre": "Tiyatro (Komedi)",
-    "info": "Halk tiyatrosu geleneğinden ve eski İstanbul argosundan yararlanarak yazılmış, mizahi bir dille toplumsal tipleri eleştiren komedi oyunudur.",
-    "keywords": ["Komedi", "Halk Tiyatrosu Geleneği", "İstanbul Argosu"]
+    "genre": "Tiyatro (Dram)",
+    "info": "Erzurum yöresinde iki aile arasındaki kan davasını ve töre baskısını kadınların acıları üzerinden eleştiren ödüllü oyunudur.",
+    "keywords": ["Kan Davası", "Töre Eleştirisi", "Kadın Dramı"]
   },
   {
-    "id": 451,
-    "author": "Recep Bilginer",
+    "id": 449,
+    "author": "Refik Erduran",
     "work": "Cengiz Han'ın Bisikleti",
     "period": "Cumhuriyet Dönemi Tiyatrosu",
     "genre": "Tiyatro (Komedi-Hiciv)",
-    "info": "Güncel toplumsal ve siyasi meseleleri, tarihsel bir figürün ismini kullanarak ironik biçimde eleştiren komedi oyunudur.",
-    "keywords": ["Siyasi Hiciv", "İroni", "Güncel Eleştiri"]
+    "info": "Çok eşlilikten kurtulamayan bir adamın Batılılaşma özentisini ve aile kurumundaki yozlaşmayı mizahi bir dille yeren meşhur tiyatro oyunudur.",
+    "keywords": ["Refik Erduran", "Çok Eşlilik Eleştirisi", "Tiyatro", "Yanlış Batılılaşma"]
   }
 ]
