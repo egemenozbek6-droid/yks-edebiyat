@@ -92,7 +92,7 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI (Eşit uzunlukta ve tema uyumlu butonlar)
+  // 1. ANA SEÇİM EKRANI
   if (durum === "ana_secim") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6 space-y-3">
@@ -115,7 +115,7 @@ export default function TestModul({ onSonuc }: Props) {
             </div>
             <div className="min-w-0">
               <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
-              <p className="text-[11px] text-muted-foreground truncate">Kritik eksiklerini bul ve kapat</p>
+              <p className="text-[11px] text-muted-foreground truncate">Eksiklerini nokta atışı tespit et, hemen teste başla! 🚀</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
@@ -138,7 +138,7 @@ export default function TestModul({ onSonuc }: Props) {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                Sadece kadın yazarlarımızın yazar ve eserleri
+                Sadece kadın yazarlarımız ve eserleri! 🌸
               </p>
             </div>
           </div>
