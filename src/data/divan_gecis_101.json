@@ -51,10 +51,10 @@
     "id": 105,
     "author": "Gülşehri",
     "work": "Mantıku't-Tayr",
-    "period": "Divan Edebiyatı (14.yy)",
-    "genre": "Alegorik Mesnevi",
+    "period": "Divan Edebiyatı",
+    "genre": "Alegorik Mesnevi (14.yy)",
     "info": "Kuşların Hüdhüd önderliğinde padişahları Simurg'u (Tanrı'yı) bulmak için çıktıkları tasavvufi yolculuğu anlatan alegorik mesnevidir.",
-    "keywords": ["Kuş Dili", "Simurg", "Hüdhüd", "Alegori", "Tasavvuf Yolculuğu"],
+    "keywords": ["Kuş Dili", "Simurg", "Hüdhüd", "Alegori", "Tasavvuf Yolculuğu", "14. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -64,10 +64,10 @@
     "id": 106,
     "author": "Aşık Paşa",
     "work": "Garibname",
-    "period": "Divan Edebiyatı (14.yy)",
-    "genre": "Dini-Didaktik Mesnevi",
+    "period": "Divan Edebiyatı",
+    "genre": "Dini-Didaktik Mesnevi (14.yy)",
     "info": "'Türk diline kimesne bakmaz idi' diyerek Türkçenin hor görülmesine karşı çıkan ve halka tasavvufu öğretmek için Türkçe yazılan ilk büyük mesnevidir.",
-    "keywords": ["Türkçe Savunusu", "Garibname", "Halk İçin Tasavvuf", "Aşık Paşa"],
+    "keywords": ["Türkçe Savunusu", "Garibname", "Halk İçin Tasavvuf", "Aşık Paşa", "14. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -77,19 +77,19 @@
     "id": 107,
     "author": "Ahmedi",
     "work": "İskendername",
-    "period": "Divan Edebiyatı (14.yy)",
-    "genre": "Mesnevi (Tarihi-Didaktik)",
+    "period": "Divan Edebiyatı",
+    "genre": "Mesnevi (Tarihi-Didaktik / 14.yy)",
     "info": "Büyük İskender'in doğu seferlerini anlatan eserdir. Eserin sonundaki bölüm, Osmanlı tarihine dair İLK Türkçe manzum kaynaktır.",
-    "keywords": ["Büyük İskender", "İlk Manzum Osmanlı Tarihi", "Ansiklopedik Mesnevi"]
+    "keywords": ["Büyük İskender", "İlk Manzum Osmanlı Tarihi", "Ansiklopedik Mesnevi", "14. Yüzyıl"]
   },
   {
     "id": 108,
     "author": "Şeyhi",
     "work": "Harname",
-    "period": "Divan Edebiyatı (15.yy)",
-    "genre": "Fabl (Hiciv Mesnevisi)",
+    "period": "Divan Edebiyatı",
+    "genre": "Fabl (Hiciv Mesnevisi / 15.yy)",
     "info": "Türk edebiyatının ilk fabl örneğidir. Çelebi Mehmed'in hediye ettiği köye giderken soyulan hekim şairin, boynuz ararken kulak ve kuyruğundan olan eşek alegorisiyle yazdığı hicvidir.",
-    "keywords": ["İlk Fabl", "Eşek Hikayesi", "Boynuz Umarken Kulaktan Olmak", "Sosyal Hiciv"],
+    "keywords": ["İlk Fabl", "Eşek Hikayesi", "Boynuz Umarken Kulaktan Olmak", "Sosyal Hiciv", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -99,19 +99,19 @@
     "id": 109,
     "author": "Şeyhi",
     "work": "Hüsrev ü Şirin",
-    "period": "Divan Edebiyatı (15.yy)",
-    "genre": "Mesnevi",
+    "period": "Divan Edebiyatı",
+    "genre": "Mesnevi (15.yy)",
     "info": "Sasani hükümdarı Hüsrev ile Şirin arasındaki aşkı ve Ferhad'ın aşk uğruna dağları delmesini konu alan klasik mesnevidir.",
-    "keywords": ["Hüsrev", "Şirin", "Ferhad", "Aşk Mesnevisi"]
+    "keywords": ["Hüsrev", "Şirin", "Ferhad", "Aşk Mesnevisi", "15. Yüzyıl"]
   },
   {
     "id": 110,
     "author": "Süleyman Çelebi",
     "work": "Vesiletü'n-Necat (Mevlid)",
-    "period": "Divan Edebiyatı (15.yy)",
-    "genre": "Dini Mesnevi",
+    "period": "Divan Edebiyatı",
+    "genre": "Dini Mesnevi (15.yy)",
     "info": "Hz. Muhammed'in diğer peygamberlerden üstün olduğunu göstermek amacıyla Bursa'da yazılmış, yüzyıllardır cami ve evlerde okunan meşhur Mevlid'dir.",
-    "keywords": ["Kurtuluş Vesilesi", "Mevlid", "Veladet Bahri", "Hz. Muhammed"],
+    "keywords": ["Kurtuluş Vesilesi", "Mevlid", "Veladet Bahri", "Hz. Muhammed", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -121,10 +121,10 @@
     "id": 111,
     "author": "Ali Şir Nevai",
     "work": "Muhakemetü'l-Lugateyn",
-    "period": "Çağatay Edebiyatı (15.yy)",
-    "genre": "Dil İncelemesi",
+    "period": "Divan Edebiyatı",
+    "genre": "Dil İncelemesi (Çağatay Sahası)",
     "info": "Türkçenin kelime dağarcığı ve ifade gücü bakımından Farsçadan üstün olduğunu ispatlamak amacıyla yazılmış filolojik eserdir.",
-    "keywords": ["Türkçe-Farsça Karşılaştırması", "Çağatay Edebiyatı", "Türk Dili Savunusu"],
+    "keywords": ["Türkçe-Farsça Karşılaştırması", "Çağatay Edebiyatı", "Türk Dili Savunusu", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -134,10 +134,10 @@
     "id": 112,
     "author": "Ali Şir Nevai",
     "work": "Mecalisü'n-Nefais",
-    "period": "Çağatay Edebiyatı (15.yy)",
-    "genre": "Tezkire (Biyografi)",
+    "period": "Divan Edebiyatı",
+    "genre": "Tezkire (İlk Şairler Tezkiresi)",
     "info": "Türk edebiyatındaki İLK ŞAİRLER TEZKİRESİDİR (biyografi antolojisi). Çağdaşı ve kendinden önceki şairlerin hayatını ve edebi yeteneklerini tanıtır.",
-    "keywords": ["İlk Tezkire", "Şairler Biyografisi", "Sekiz Meclis", "İlk Biyografik Eser"],
+    "keywords": ["İlk Tezkire", "Şairler Biyografisi", "Sekiz Meclis", "İlk Biyografik Eser", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -147,10 +147,10 @@
     "id": 113,
     "author": "Ahmet Paşa",
     "work": "Kerem Kasidesi",
-    "period": "Divan Edebiyatı (15.yy)",
-    "genre": "Kaside",
+    "period": "Divan Edebiyatı",
+    "genre": "Kaside (15.yy)",
     "info": "Fatih Sultan Mehmed'in gazabına uğrayıp Yedikule zindanına atılan şairin, padişahtan af dilemek ve idamdan kurtulmak için yazdığı meşhur af kasidesidir.",
-    "keywords": ["Kerem Redifi", "Fatih Sultan Mehmed", "Af Kasidesi", "Sultanü'ş Şuara"],
+    "keywords": ["Kerem Redifi", "Fatih Sultan Mehmed", "Af Kasidesi", "Sultanü'ş Şuara", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -160,10 +160,10 @@
     "id": 114,
     "author": "Sinan Paşa",
     "work": "Tazarruname",
-    "period": "Divan Edebiyatı - Nesir (15.yy)",
-    "genre": "Süslü Nesir (Münacat)",
+    "period": "Divan Edebiyatı",
+    "genre": "Süslü Nesir (İlk Süslü Nesir)",
     "info": "Türk edebiyatında SÜSLÜ (SANATLI/SECİLİ) NESRİN İLK VE EN PARLAK ÖRNEĞİ kabul edilir. Allah'a yalvarış ve yakarışı şiirsel bir ahenkle anlatır.",
-    "keywords": ["İlk Süslü Nesir", "Tazarruname", "Seci Ustası", "Münacat"],
+    "keywords": ["İlk Süslü Nesir", "Tazarruname", "Seci Ustası", "Münacat", "15. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -173,10 +173,10 @@
     "id": 115,
     "author": "Seydi Ali Reis",
     "work": "Mir'âtü'l-Memâlik",
-    "period": "Divan Edebiyatı - Nesir (16.yy)",
-    "genre": "Gezi Yazısı / Anı",
+    "period": "Divan Edebiyatı",
+    "genre": "Gezi Yazısı / Anı (16.yy)",
     "info": "'Memleketlerin Aynası' anlamına gelen eser, Hint Seferi dönüşünde Hindistan'dan İstanbul'a yapılan çileli kara yolculuğunu anlatan ilk gezi-hatıra kitabıdır.",
-    "keywords": ["İlk Gezi-Anı Kitabı", "Memleketlerin Aynası", "Hint Seferi", "Denizci"],
+    "keywords": ["İlk Gezi-Anı Kitabı", "Memleketlerin Aynası", "Hint Seferi", "Denizci", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -186,10 +186,10 @@
     "id": 116,
     "author": "Fuzuli",
     "work": "Leyla vü Mecnun",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Mesnevi (Lirik-Tasavvufi)",
     "info": "Kays'ın Leyla'ya duyduğu beşeri aşkın ıstıraplarla olgunlaşıp ilahi aşka (Allah aşkına) dönüşmesini işleyen Türk edebiyatının en lirik mesnevisidir.",
-    "keywords": ["Kays", "Mecnun", "Leyla", "Beşeri Aşktan İlahi Aşka", "Izdırap"],
+    "keywords": ["Kays", "Mecnun", "Leyla", "Beşeri Aşktan İlahi Aşka", "Izdırap", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 8 Kez Çıktı 🔥"
@@ -199,10 +199,10 @@
     "id": 117,
     "author": "Fuzuli",
     "work": "Şikayetname",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Mektup (Süslü Nesir)",
     "info": "Kendisine bağlanan 9 akçelik vakıf maaşını alamaması üzerine bürokrasideki rüşveti ve yozlaşmayı eleştirdiği ilk edebi mektuptur.",
-    "keywords": ["İlk Edebi Mektup", "Selam Verdim Rüşvet Değildir Diye Almadılar", "Bürokrasi Hicvi"],
+    "keywords": ["İlk Edebi Mektup", "Selam Verdim Rüşvet Değildir Diye Almadılar", "Bürokrasi Hicvi", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -212,19 +212,19 @@
     "id": 118,
     "author": "Fuzuli",
     "work": "Beng ü Bade",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Alegorik Mesnevi",
     "info": "Şah İsmail'e ithaf edilen; afyon (beng) ile şarabın (bade) münazarası üzerinden Osmanlı ile Safevi devletlerinin güç savaşını simgeleyen alegorik eserdir.",
-    "keywords": ["Afyon ve Şarap", "Şah İsmail", "Münazara", "Siyasi Alegori"]
+    "keywords": ["Afyon ve Şarap", "Şah İsmail", "Münazara", "Siyasi Alegori", "16. Yüzyıl"]
   },
   {
     "id": 119,
     "author": "Fuzuli",
     "work": "Su Kasidesi",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Kaside (Na't)",
     "info": "Hz. Muhammed'e duyulan aşkı ve şefaat dileğini 'su' redifi etrafında zengin mazmunlarla işleyen edebiyatımızın en meşhur na'tıdır.",
-    "keywords": ["Na't", "Su Redifi", "Peygamber Sevgisi", "Mazmun Zenginliği"],
+    "keywords": ["Na't", "Su Redifi", "Peygamber Sevgisi", "Mazmun Zenginliği", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -234,19 +234,19 @@
     "id": 120,
     "author": "Fuzuli",
     "work": "Rind ü Zahid",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Mensur Münazara",
     "info": "Şekilci dindarlığı temsil eden Zahid (baba) ile hakiki gönül adamı Rind (oğul) arasındaki felsefi tartışmayı anlatan mensur eserdir.",
-    "keywords": ["Rind ile Zahid", "Münazara", "Şekilcilik Eleştirisi", "Tasavvuf Felsefesi"]
+    "keywords": ["Rind ile Zahid", "Münazara", "Şekilcilik Eleştirisi", "Tasavvuf Felsefesi", "16. Yüzyıl"]
   },
   {
     "id": 121,
     "author": "Baki",
     "work": "Kanuni Mersiyesi",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Mersiye (Terkib-i Bend)",
     "info": "Kanuni Sultan Süleyman'ın vefatı üzerine terkib-i bend biçimiyle yazılan, aruz kusursuzluğu ve dil ahengiyle mersiye türünün zirvesidir.",
-    "keywords": ["Kanuni", "Terkib-i Bend", "Zigetvar Seferi", "Sultanu'ş Şuara"],
+    "keywords": ["Kanuni", "Terkib-i Bend", "Zigetvar Seferi", "Sultanu'ş Şuara", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -256,10 +256,10 @@
     "id": 122,
     "author": "Bağdatlı Ruhi",
     "work": "Terkib-i Bend",
-    "period": "Divan Edebiyatı (16.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Terkib-i Bend (Sosyal Hiciv)",
     "info": "Dönemin sahte sofularını ve ahlaki çöküşü eleştiren, başta Ziya Paşa olmak üzere pek çok şair tarafından nazire yazılan felsefi şiirdir.",
-    "keywords": ["Sosyal Hiciv", "Nazire Edilen Şiir", "Ziya Paşa'nın İlhamı"],
+    "keywords": ["Sosyal Hiciv", "Nazire Edilen Şiir", "Ziya Paşa'nın İlhamı", "16. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -269,10 +269,10 @@
     "id": 123,
     "author": "Nef'i",
     "work": "Siham-ı Kaza",
-    "period": "Divan Edebiyatı (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Hiciv (Manzum)",
     "info": "'Kaza Okları' anlamına gelen; dönemin sadrazamlarını, devlet ricalini ve şairlerini acımasız ve cesur bir üslupla yerdiği meşhur hiciv mecmuasıdır.",
-    "keywords": ["Kaza Okları", "Acımasız Hiciv", "Övgü ve Yergide Usta", "IV. Murad"],
+    "keywords": ["Kaza Okları", "Acımasız Hiciv", "Övgü ve Yergide Usta", "IV. Murad", "17. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -282,10 +282,10 @@
     "id": 124,
     "author": "Nabi",
     "work": "Hayriyye",
-    "period": "Divan Edebiyatı (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Didaktik Mesnevi (Nasihatname)",
     "info": "Nabi'nin oğlu Ebulhayr'a öğüt vermek amacıyla yazdığı, hikemi (öğretici) üslubun edebiyatımızdaki en seçkin örneği olan mesnevidir.",
-    "keywords": ["Hikemi Şiir", "Ebulhayr", "Oğluna Nasihat", "Toplumsal Eleştiri"],
+    "keywords": ["Hikemi Şiir", "Ebulhayr", "Oğluna Nasihat", "Toplumsal Eleştiri", "17. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -295,28 +295,28 @@
     "id": 125,
     "author": "Nabi",
     "work": "Hayrabad",
-    "period": "Divan Edebiyatı (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Aşk ve Macera Mesnevisi",
     "info": "Feridüddin Attar'dan esinlenerek yazılan macera ve aşk mesnevisidir. Şeyh Galip bu eserin kusurlarını aşmak amacıyla başyapıtı Hüsn ü Aşk'ı yazmıştır.",
-    "keywords": ["Hüsn ü Aşk'a İlham", "Aşk ve Macera Mesnevisi", "Attar Etkisi"]
+    "keywords": ["Hüsn ü Aşk'a İlham", "Aşk ve Macera Mesnevisi", "Attar Etkisi", "17. Yüzyıl"]
   },
   {
     "id": 126,
     "author": "Katip Çelebi",
     "work": "Keşfü'z-Zünun",
-    "period": "Divan Edebiyatı - Nesir (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Bibliyografya (Ansiklopedi)",
     "info": "15 bine yakın kitabı ve 10 bine yakın yazarı alfabetik tanıtan devasa bibliyografyadır. Katip Çelebi Batı'da 'Hacı Kalfa' olarak tanınır.",
-    "keywords": ["Bibliyografya", "Hacı Kalfa", "Alfabetik Kitap Rehberi"]
+    "keywords": ["Bibliyografya", "Hacı Kalfa", "Alfabetik Kitap Rehberi", "17. Yüzyıl"]
   },
   {
     "id": 127,
     "author": "Katip Çelebi",
     "work": "Cihannüma",
-    "period": "Divan Edebiyatı - Nesir (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Coğrafya Kitabı",
     "info": "Osmanlı'da Batı harita ve coğrafya kaynaklarından yararlanılarak hazırlanmış ilk kapsamlı dünya coğrafyası kitabıdır.",
-    "keywords": ["İlk Coğrafya Kitabı", "Dünya Coğrafyası", "Batı Kaynakları"],
+    "keywords": ["İlk Coğrafya Kitabı", "Dünya Coğrafyası", "Batı Kaynakları", "17. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -326,10 +326,10 @@
     "id": 128,
     "author": "Evliya Çelebi",
     "work": "Seyahatname",
-    "period": "Divan Edebiyatı - Nesir (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "Gezi Yazısı",
     "info": "'Şefaat ya Resulallah' yerine rüyasında 'Seyahat ya Resulallah' diyerek 50 yıl gezen seyyahın 10 ciltlik abidevi gezi ve kültür eseridir.",
-    "keywords": ["10 Cilt", "Seyahat Ya Resulallah", "Osmanlı Coğrafyası", "Folklor ve Mizah"],
+    "keywords": ["10 Cilt", "Seyahat Ya Resulallah", "Osmanlı Coğrafyası", "Folklor ve Mizah", "17. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
@@ -339,19 +339,19 @@
     "id": 129,
     "author": "Nergisi",
     "work": "Nihâlistan",
-    "period": "Divan Edebiyatı - Nesir (17.yy)",
+    "period": "Divan Edebiyatı",
     "genre": "İlk Mensur Hamse",
     "info": "Geleneksel manzum mesnevilerin aksine, Türk edebiyatında DÜZYAZIYLA (MENSUR) YAZILMIŞ İLK HAMSE'nin (beşli setin) en tanınmış kitabıdır. Ağır ve secili nesirdir.",
-    "keywords": ["İlk Mensur Hamse", "Düzyazı Hamse", "Secili Nesir", "Sanatlı Nesir"]
+    "keywords": ["İlk Mensur Hamse", "Düzyazı Hamse", "Secili Nesir", "Sanatlı Nesir", "17. Yüzyıl"]
   },
   {
     "id": 130,
     "author": "Nedim",
     "work": "Şarkılar",
-    "period": "Divan Edebiyatı (18.yy - Lale Devri)",
-    "genre": "Şiir (Şarkı)",
+    "period": "Divan Edebiyatı",
+    "genre": "Şiir (Şarkı / Lale Devri)",
     "info": "Lale Devri'nin eğlence ve neşesini, Sadabad köşklerini, İstanbul Türkçesi ve halk deyimlerini şarkı nazım şeklinin zirvesine taşımıştır.",
-    "keywords": ["Mahallileşme Akımı", "Lale Devri", "Şarkı Nazım Şekli", "Sadabad Eğlenceleri"],
+    "keywords": ["Mahallileşme Akımı", "Lale Devri", "Şarkı Nazım Şekli", "Sadabad Eğlenceleri", "18. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -361,10 +361,10 @@
     "id": 131,
     "author": "Şeyh Galip",
     "work": "Hüsn ü Aşk",
-    "period": "Divan Edebiyatı (18.yy - Son Dönem)",
-    "genre": "Alegorik Mesnevi",
+    "period": "Divan Edebiyatı",
+    "genre": "Alegorik Mesnevi (Sebk-i Hindi)",
     "info": "Divan şiirinin son büyük mesnevisidir. Sebk-i Hindi akımıyla yazılmıştır. Hüsn (Güzellik) ile Aşk'ın ilahi aşk yolunda Kalp Kalesi'ne ve ateşte açan güllere ulaşma macerasıdır.",
-    "keywords": ["Hüsn", "Aşk", "Sebk-i Hindi", "Benî Muhabbet", "Kalp Kalesi", "Mumdan Gemiler"],
+    "keywords": ["Hüsn", "Aşk", "Sebk-i Hindi", "Benî Muhabbet", "Kalp Kalesi", "Mumdan Gemiler", "18. Yüzyıl"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
