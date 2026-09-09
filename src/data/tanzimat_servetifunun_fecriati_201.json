@@ -5,7 +5,7 @@
     "work": "Şair Evlenmesi",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Tiyatro (Komedi)",
-    "info": "Türk edebiyatının Batılı anlamda ilk tiyatro eseridir. Görücü usulüyle evliliği ve yanlış eş seçimini eleştirir; Müştak Bey ile Kumru Hanım'ın başından geçenler anlatılır.",
+    "info": "Türk edebiyatının Batılı anlamda ilk tiyatro eseridir. Görücü usulüyle evliliği eleştirir; Müştak Bey ile Kumru Hanım'ın hikayesini anlatır.",
     "keywords": ["İlk Tiyatro Eseri", "Görücü Usulü Eleştirisi", "Müştak Bey", "Kumru Hanım"],
     "osym_stats": {
       "is_banko": true,
@@ -18,8 +18,8 @@
     "work": "Tercüme-i Manzume",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Çeviri Şiir",
-    "info": "Fransız şairlerden (La Fontaine, Racine, Lamartine vb.) yapılan şiir çevirilerini içerir. Türk edebiyatında Batı şiirinden yapılan ilk manzum çeviri örneklerindendir.",
-    "keywords": ["İlk Şiir Çevirisi", "La Fontaine", "Fransız Edebiyatı Etkisi"]
+    "info": "Fransız şairlerden (La Fontaine, Lamartine) yapılan Batılı anlamda ilk manzum şiir çevirilerini içerir.",
+    "keywords": ["İlk Şiir Çevirisi", "La Fontaine", "Fransız Edebiyatı"]
   },
   {
     "id": 203,
@@ -27,17 +27,17 @@
     "work": "Durub-ı Emsal-i Osmaniye",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Derleme (Atasözü)",
-    "info": "Türk edebiyatında bir alanda yazılmış ilk kapsamlı atasözü derlemesidir.",
-    "keywords": ["Atasözü Derlemesi", "İlk Örnek"]
+    "info": "Türk edebiyatında ilk atasözü derlemesi kabul edilir.",
+    "keywords": ["Atasözü Derlemesi", "İlk Atasözü Kitabı"]
   },
   {
     "id": 204,
     "author": "Şinasi",
     "work": "Müntahabat-ı Eş'ar",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Şiir (Divan)",
-    "info": "Şinasi'nin kendi şiirlerini topladığı eserdir; içerik olarak eski (divan) biçimlerle yeni (toplumsal) temaları bir arada barındırır.",
-    "keywords": ["Şiir Derlemesi", "Eski-Yeni Karışımı"]
+    "genre": "Şiir",
+    "info": "Şinasi'nin kendi şiirlerini bir araya getirdiği şiir kitabıdır.",
+    "keywords": ["Şiir Derlemesi", "Didaktik Şiir"]
   },
   {
     "id": 205,
@@ -45,7 +45,7 @@
     "work": "İntibah",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Edebi Roman",
-    "info": "İlk edebi romandır. Ali Bey'in kötü kadın Mahpeyker'e olan zaafı ve masum Dilaşub ile yaşadığı trajedi anlatılır.",
+    "info": "İlk edebi romandır. Ali Bey'in Mahpeyker'e olan zaafı ve masum Dilaşub ile yaşadığı trajedi anlatılır.",
     "keywords": ["Ali Bey", "Mahpeyker", "Dilaşub", "İlk Edebi Roman"],
     "osym_stats": {
       "is_banko": true,
@@ -58,7 +58,7 @@
     "work": "Cezmi",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Tarihi Roman",
-    "info": "Türk edebiyatındaki ilk tarihi romandır. 16. yüzyıl Osmanlı-İran savaşları zemininde Adil Giray ve Cezmi'nin hikayesi anlatılır.",
+    "info": "Türk edebiyatındaki ilk tarihi romandır. 16. yüzyıl Osmanlı-İran savaşları zemininde Cezmi ve Adil Giray anlatılır.",
     "keywords": ["Cezmi", "Adil Giray", "İlk Tarihi Roman", "İran Savaşları"],
     "osym_stats": {
       "is_banko": true,
@@ -71,8 +71,8 @@
     "work": "Vatan yahut Silistre",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Tiyatro (Dram)",
-    "info": "Vatan sevgisini işleyen, sahnelendiğinde halkı coşturarak yazarın Magosa'ya sürgün edilmesine sebep olan ünlü vatan/dram konulu tiyatro eseridir. İslam Bey ve Zekiye'nin hikayesi anlatılır.",
-    "keywords": ["Vatan Sevgisi", "Silistre Kuşatması", "İslam Bey", "Magosa Sürgünü"],
+    "info": "Sahnelenen ilk tiyatro eseridir. Vatan sevgisini işler ve İslam Bey ile Zekiye'nin aşkı üzerinden kurgulanır.",
+    "keywords": ["Sahnelenen İlk Tiyatro", "Vatan Sevgisi", "İslam Bey", "Zekiye"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
@@ -84,8 +84,8 @@
     "work": "Celaleddin Harzemşah",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Tiyatro (Tarihi Dram)",
-    "info": "Harzemşahlar Devleti hükümdarı Celaleddin'in Moğollara karşı verdiği mücadeleyi konu alan tarihi bir tiyatro eseridir.",
-    "keywords": ["Celaleddin Harzemşah", "Moğol Mücadelesi", "Tarihi Dram"]
+    "info": "Harzemşahlar Devleti hükümdarı Celaleddin'in Moğollara karşı mücadelesini anlatır. Önsözünde tiyatro görüşlerini açıklar.",
+    "keywords": ["Celaleddin Harzemşah", "Moğol Mücadelesi", "Tiyatro Önsözü"]
   },
   {
     "id": 209,
@@ -93,8 +93,8 @@
     "work": "Tahrib-i Harabat",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Eleştiri",
-    "info": "Ziya Paşa'nın divan şiiri antolojisi olan 'Harabat'a ve Ziya Paşa'nın eski edebiyata dönüş tavrına karşı yazılmış sert bir eleştiri eseridir.",
-    "keywords": ["Ziya Paşa'ya Cevap", "Harabat Eleştirisi", "Edebi Tartışma"],
+    "info": "İlk edebi eleştiri eseridir. Ziya Paşa'nın Harabat antolojisindeki eski edebiyatı öven tutumuna karşı yazılmıştır.",
+    "keywords": ["İlk Eleştiri", "Ziya Paşa Eleştirisi", "Harabat Karşıtı"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -105,29 +105,27 @@
     "author": "Namık Kemal",
     "work": "Renan Müdafaanamesi",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Eleştiri (Felsefi Makale)",
-    "info": "Fransız düşünür Ernest Renan'ın İslamiyet ve bilim hakkındaki iddialarına karşı yazılmış savunma niteliğinde bir eserdir.",
-    "keywords": ["Ernest Renan", "İslam Savunusu", "Felsefi Eser"]
+    "genre": "Eleştiri / İnceleme",
+    "info": "Fransız düşünür Ernest Renan'ın İslamiyet'in ilerlemeye engel olduğu iddiasına karşı yazılmış savunmadır.",
+    "keywords": ["Ernest Renan", "İslam Savunusu", "Reddiye"]
   },
   {
-  {
-  "id": 211,
-  "author": "Ziya Paşa",
-  "work": "Rüya",
-  "period": "Tanzimat Edebiyatı (1. Dönem)",
-  "genre": "Siyasi Hiciv / Mülakat (Röportaj)",
-  "info": "Edebiyatımızda mülakat türünün ilk örneği kabul edilir. Yazar rüyasında Padişah Abdülaziz ile konuşarak Sadrazam Âli Paşa yönetimini ve dönemin siyasetini sertçe eleştirir.",
-  "keywords": ["Mülakat", "Siyasi Hiciv", "Sadrazam Âli Paşa Eleştirisi", "Rüya Motifi"]
-}
+    "id": 211,
+    "author": "Ziya Paşa",
+    "work": "Rüya",
+    "period": "Tanzimat Edebiyatı (1. Dönem)",
+    "genre": "Siyasi Hiciv / Mülakat (Röportaj)",
+    "info": "Edebiyatımızda mülakat türünün ilk örneği kabul edilir. Yazar rüyasında Padişah ile konuşarak Sadrazam Âli Paşa yönetimini eleştirir.",
+    "keywords": ["Mülakat", "Siyasi Hiciv", "Âli Paşa Eleştirisi", "Rüya Motifi"]
   },
   {
     "id": 212,
     "author": "Ziya Paşa",
     "work": "Terkib-i Bend",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Terkib-i Bend",
-    "info": "Kader, talih, dünyanın karmaşıklığı ve zıtlıklar üzerine felsefi düşüncelerin işlendiği, Bağdatlı Ruhi'nin aynı adlı eserinden etkilenilen ünlü şiiridir. 'Diyar-ı küfrü gezdim beldeler kâşaneler gördüm' beytiyle tanınır.",
-    "keywords": ["Kader", "Talih", "Zıtlıklar", "Bağdatlı Ruhi Etkisi"],
+    "genre": "Şiir (Terkib-i Bend)",
+    "info": "Bağdatlı Ruhi'ye nazire olarak yazılan, felsefi ve toplumsal eleştirilerin yer aldığı ünlü hikmetli şiiridir.",
+    "keywords": ["Bağdatlı Ruhi Naziresi", "Hikmetli Sözler", "Felsefi Şiir"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -138,9 +136,9 @@
     "author": "Ziya Paşa",
     "work": "Terci-i Bend",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Terci-i Bend",
-    "info": "Allah'ın büyüklüğü, evrenin sırları ve insan aklının bu sırları kavramaktaki yetersizliği gibi felsefi-tasavvufi temaların işlendiği şiirdir.",
-    "keywords": ["Felsefi Tema", "Evrenin Sırları", "Tasavvuf"]
+    "genre": "Şiir (Terci-i Bend)",
+    "info": "Allah'ın kudreti, kâinatın sırları ve insanın acizliği üzerine felsefi-tasavvufi düşüncelerin işlendiği şiiridir.",
+    "keywords": ["Felsefi Şiir", "Evrenin Sırları", "Varlık Sorunu"]
   },
   {
     "id": 214,
@@ -148,8 +146,8 @@
     "work": "Harabat",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Antoloji",
-    "info": "Divan şiirinden örnekler derleyen üç ciltlik bir antolojidir. Ziya Paşa'nın önsözünde savunduğu görüşler, 'Şiir ve İnşa' makalesindeki fikirleriyle çelişince Namık Kemal'in eleştirisine (Tahrib-i Harabat) hedef olmuştur.",
-    "keywords": ["Antoloji", "Divan Şiiri Derlemesi", "Çelişki", "Namık Kemal Eleştirisi"],
+    "info": "Üç ciltlik divan şiiri antolojisidir. Önsözünde divan edebiyatını övüp halk edebiyatını küçümsemesi Namık Kemal ile arasını açmıştır.",
+    "keywords": ["Divan Şiiri Antolojisi", "Namık Kemal Eleştirisi", "Eski Şiir Savunusu"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -161,17 +159,17 @@
     "work": "Zafername",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Hiciv (Kaside ve Şerh)",
-    "info": "Dönemin sadrazamı Ali Paşa'yı, başarısızlıklarını 'zafer' gibi göstererek ironik biçimde öven; aslında ağır bir şekilde yeren hiciv eseridir.",
-    "keywords": ["Ali Paşa Hicvi", "İroni", "Sadrazam Eleştirisi"]
+    "info": "Dönemin sadrazamı Âli Paşa'yı, Girit isyanındaki başarısızlığını över gibi yaparak alaycı ve ironik dille yeren meşhur hicvidir.",
+    "keywords": ["Âli Paşa Hicvi", "İroni", "Girit Meselesi"]
   },
   {
     "id": 216,
     "author": "Ziya Paşa",
     "work": "Şiir ve İnşa",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Makale (Eleştiri)",
-    "info": "Divan edebiyatının taklit bir edebiyat olduğunu, gerçek Türk edebiyatının halk edebiyatında aranması gerektiğini savunan önemli bir makaledir; yazarın kendi pratik tutumuyla çelişmesiyle tanınır.",
-    "keywords": ["Halk Edebiyatı Savunusu", "Taklit Eleştirisi", "Makale"]
+    "genre": "Makale",
+    "info": "Hürriyet gazetesinde yayımlanan; asıl Türk edebiyatının divan değil halk edebiyatı olduğunu savunduğu ünlü makalesidir.",
+    "keywords": ["Halk Edebiyatı Savunusu", "Makale", "Edebi Teori"]
   },
   {
     "id": 217,
@@ -179,8 +177,8 @@
     "work": "Felatun Bey ile Rakım Efendi",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Roman",
-    "info": "Batılılaşmayı yanlış anlayan alafranga Felatun Bey ile çalışkan, Doğu-Batı sentezini doğru kuran Rakım Efendi'nin karşılaştırıldığı, yanlış Batılılaşma teması işlenen romandır.",
-    "keywords": ["Yanlış Batılılaşma", "Felatun Bey", "Rakım Efendi", "Alafranga Tip"],
+    "info": "Yanlış Batılılaşmış züppe tip Felatun Bey ile Doğu-Batı dengesini kurmuş çalışkan Rakım Efendi'nin zıtlığını anlatan romandır.",
+    "keywords": ["Yanlış Batılılaşma", "Felatun Bey", "Rakım Efendi", "Alafrangalık"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -192,26 +190,26 @@
     "work": "Letaif-i Rivayat",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Hikaye (Külliyat)",
-    "info": "Ahmet Mithat Efendi'nin farklı konularda yazdığı kısa hikayelerden oluşan geniş kapsamlı bir hikaye külliyatıdır.",
-    "keywords": ["Hikaye Külliyatı", "Çok Yönlü Konular"]
+    "info": "Türk edebiyatında ilk yerli hikaye serisi kabul edilir. Halka okuma sevgisi aşılamak için yazılmış 25 cüzlük külliyattır.",
+    "keywords": ["İlk Yerli Hikaye", "Halka Okuma Sevgisi", "25 Cüz"]
   },
   {
     "id": 219,
     "author": "Ahmet Mithat Efendi",
     "work": "Kıssadan Hisse",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Hikaye",
-    "info": "Halka ders ve öğüt vermeyi amaçlayan, didaktik anlatım geleneğine bağlı hikayelerden oluşan bir eserdir.",
-    "keywords": ["Didaktik", "Halka Öğüt", "Hikaye"]
+    "genre": "Hikaye / Fıkra",
+    "info": "Ahlaki ders ve öğüt vermek amacıyla Ezop ve La Fontaine masallarından da yararlanılarak yazılmış didaktik hikaye kitabıdır.",
+    "keywords": ["Didaktik", "Ahlaki Ders", "Kıssa"]
   },
   {
     "id": 220,
     "author": "Ahmet Mithat Efendi",
     "work": "Müşahedat",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Roman",
-    "info": "Yazarın kendisinin de roman içinde bir karakter olarak yer aldığı, gözlemlerini ve tanıklıklarını aktardığı romandır.",
-    "keywords": ["Yazar-Anlatıcı", "Gözlem", "Roman"]
+    "genre": "Roman (Natüralist Deneme)",
+    "info": "Yazarın kendisini de kurgusal bir karakter olarak romana dahil ettiği, natüralist yöntemlerle yazılmış deneysel romanıdır.",
+    "keywords": ["Yazarın Romanda Olması", "Natüralizm Denemesi", "Gözlem"]
   },
   {
     "id": 221,
@@ -219,7 +217,7 @@
     "work": "Taaşşuk-ı Talat ve Fitnat",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Roman",
-    "info": "Türk edebiyatının ilk yerli romanı kabul edilir (İntibah ilk edebi/teknik roman, bu ise ilk yerli roman olarak anılır). Talat ile Fitnat'ın görücü usulü ve toplumsal baskılar yüzünden yaşadığı trajik aşk anlatılır.",
+    "info": "Türk edebiyatının ilk yerli romanıdır. Talat ile Fitnat'ın görücü usulü evlilik geleneği yüzünden yaşadığı trajik son anlatılır.",
     "keywords": ["İlk Yerli Roman", "Talat", "Fitnat", "Görücü Usulü"],
     "osym_stats": {
       "is_banko": true,
@@ -232,8 +230,8 @@
     "work": "Kamus-ı Türki",
     "period": "Tanzimat Edebiyatı (1. Dönem)",
     "genre": "Sözlük",
-    "info": "Türkçenin köklerine inen, dönemine göre çok önemli ve kapsamlı bir Türkçe sözlüktür.",
-    "keywords": ["Türkçe Sözlük", "Dil Çalışması"]
+    "info": "Adında 'Türk' kelimesi geçen ilk Türkçe sözlüktür. Türkçeyi Arapça ve Farsçadan bağımsız bir dil olarak ele almasıyla öncüdür.",
+    "keywords": ["İlk Türkçe Sözlük", "Dil Çalışması", "Kamus-ı Türki"]
   },
   {
     "id": 223,
@@ -241,7 +239,7 @@
     "work": "Araba Sevdası",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Roman (Realist)",
-    "info": "Türk edebiyatının ilk realist romanı kabul edilir. Yanlış Batılılaşmanın simgesi olan Bihruz Bey'in alafranga hayat tarzı ve Periveş'e duyduğu gülünç aşk anlatılır.",
+    "info": "İlk realist romandır. Gösteriş meraklısı Bihruz Bey'in alafranga özentiliği ve Periveş'e duyduğu platonik aşk anlatılır.",
     "keywords": ["İlk Realist Roman", "Bihruz Bey", "Yanlış Batılılaşma", "Periveş"],
     "osym_stats": {
       "is_banko": true,
@@ -254,26 +252,26 @@
     "work": "Talim-i Edebiyat",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Edebiyat Teorisi (Ders Kitabı)",
-    "info": "Batılı edebiyat bilgilerini ve terimlerini tanıtan, dönemin edebiyat öğretiminde kullanılan önemli bir ders/teori kitabıdır.",
-    "keywords": ["Edebiyat Teorisi", "Batılı Terimler", "Ders Kitabı"]
+    "info": "Mekteb-i Mülkiye'deki ders notlarından oluşan, Batılı edebiyat teorisi ve retoriğini tanıtan çığır açıcı ders kitabıdır.",
+    "keywords": ["Edebiyat Teorisi", "Batılı Edebiyat Bilgileri", "Ders Kitabı"]
   },
   {
     "id": 225,
     "author": "Recaizade Mahmut Ekrem",
     "work": "Zemzeme",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Şiir/Eleştiri",
-    "info": "Şiir ve eleştiri yazılarının bir arada bulunduğu, yazarın 'sanat sanat içindir' görüşünü ve Muallim Naci ile olan edebi tartışmasını içeren eserdir.",
-    "keywords": ["Sanat Sanat İçindir", "Muallim Naci Tartışması", "Eleştiri"]
+    "genre": "Şiir / Edebi Tartışma",
+    "info": "Önsözünde 'Güzel olan her şey şiirin konusu olabilir' tezini savunan, Muallim Naci ile 'eski-yeni' kavgası başlatan şiir kitabıdır.",
+    "keywords": ["Kulak İçin Kafiye", "Demdeme Tartışması", "Eski-Yeni Çatışması"]
   },
   {
     "id": 226,
     "author": "Abdülhak Hamit Tarhan",
     "work": "Finten",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Tiyatro",
-    "info": "Batılı tarzda yazılmış, aşk ve entrika temalı; 'Şair-i Azam' unvanlı Abdülhak Hamit'in oynanması güç, okunmak için yazılmış (kitabi) tiyatrolarından biridir.",
-    "keywords": ["Şair-i Azam", "Kitabi Tiyatro", "Entrika"]
+    "genre": "Tiyatro (Dram)",
+    "info": "Londra'da geçen; hırs, cinayet ve intikam temalarını Shakespeare etkisiyle işleyen, sahnelenmekten ziyade okunmak için yazılmış tiyatrodur.",
+    "keywords": ["Okunmak İçin Tiyatro", "Shakespeare Etkisi", "Finten"]
   },
   {
     "id": 227,
@@ -281,8 +279,8 @@
     "work": "Sahra",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Şiir",
-    "info": "Doğa güzelliklerinin ve kırsal hayatın işlendiği, biçim ve içerik yönünden divan şiiri geleneğinden kopuşun önemli örneklerinden bir şiir kitabıdır.",
-    "keywords": ["Doğa Teması", "Biçimsel Yenilik"]
+    "info": "Türk edebiyatındaki ilk pastoral şiir örneğidir. Kır ve köy hayatının güzellikleri şehir hayatının yapaylığıyla kıyaslanır.",
+    "keywords": ["İlk Pastoral Şiir", "Doğa Sevgisi", "Kır Hayatı"]
   },
   {
     "id": 228,
@@ -290,8 +288,8 @@
     "work": "Makber",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Şiir (Mersiye)",
-    "info": "Şairin eşi Fatma Hanım'ın ölümü üzerine yazdığı, ölüm ve ölümsüzlük temalarını işleyen, Türk edebiyatının en tanınmış mersiyelerinden biridir.",
-    "keywords": ["Fatma Hanım", "Ölüm Teması", "Mersiye"],
+    "info": "Şairin Beyrut'ta ölen eşi Fatma Hanım için yazdığı; ölüm, yokluk ve Tanrı temalarını metafizik boyutta ele alan mersiyesidir.",
+    "keywords": ["Fatma Hanım", "Metafizik Bunalım", "Ölüm Teması", "Mersiye"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -302,27 +300,27 @@
     "author": "Abdülhak Hamit Tarhan",
     "work": "Eşber",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Tiyatro (Manzum)",
-    "info": "Büyük İskender'e karşı direnen İranlı kahraman Eşber'i konu alan manzum tiyatro eseridir.",
-    "keywords": ["Manzum Tiyatro", "Büyük İskender", "Eşber"]
+    "genre": "Tiyatro (Aruzla Manzum)",
+    "info": "Aruz vezniyle yazılmış ilk manzum tiyatro örneğidir. Büyük İskender'in Pencap hükümdarı Eşber ile olan mücadelesi anlatılır.",
+    "keywords": ["Aruzla Yazılan İlk Tiyatro", "Manzum Dram", "Büyük İskender"]
   },
   {
     "id": 230,
     "author": "Abdülhak Hamit Tarhan",
     "work": "Tarık yahut Endülüs Fethi",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Tiyatro (Manzum-Tarihi)",
-    "info": "Endülüs'ün fethini konu alan tarihi ve manzum bir tiyatro eseridir.",
-    "keywords": ["Endülüs Fethi", "Tarihi Tiyatro", "Manzum"]
+    "genre": "Tiyatro (Tarihi)",
+    "info": "Tarık bin Ziyad'ın İspanya'yı fethini ve gemileri yakmasını konu alan tarihi tiyatro eseridir.",
+    "keywords": ["Endülüs Fethi", "Tarık bin Ziyad", "Tarihi Tiyatro"]
   },
   {
     "id": 231,
     "author": "Samipaşazade Sezai",
     "work": "Sergüzeşt",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Roman (Realist)",
-    "info": "Köle olarak satılan Dilber adlı bir cariyenin trajik hikayesi üzerinden kölelik kurumunu eleştiren, realizmin ilk güçlü örneklerinden roman.",
-    "keywords": ["Kölelik Eleştirisi", "Dilber", "Cariye", "Realizm"],
+    "genre": "Roman (Realist-Romantik Geçiş)",
+    "info": "Kafkasya'dan kaçırılıp konaklara satılan Dilber adlı esir kızın dramı üzerinden esaret ve kölelik kurumunu eleştiren romandır.",
+    "keywords": ["Esaret Eleştirisi", "Dilber", "Cariye", "Celal Bey"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -334,8 +332,8 @@
     "work": "Küçük Şeyler",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Hikaye",
-    "info": "Türk edebiyatında Batılı anlamda (gözlem ve realist tekniğe dayalı) ilk hikaye kitabı kabul edilir.",
-    "keywords": ["İlk Realist Hikaye Kitabı", "Gözlem Tekniği"],
+    "info": "Batılı anlamda (Maupassant tarzı, realist teknikle yazılmış) ilk modern hikaye kitabıdır.",
+    "keywords": ["İlk Modern Hikaye", "Batılı Anlamda Hikaye", "Realizm"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
@@ -346,9 +344,9 @@
     "author": "Nabizade Nazım",
     "work": "Karabibik",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
-    "genre": "Hikaye (Köy Konulu)",
-    "info": "Türk edebiyatında köy hayatını konu alan ilk hikaye/köy edebiyatı örneği kabul edilir. Karabibik adlı bir çiftçinin geçim mücadelesi anlatılır.",
-    "keywords": ["İlk Köy Konulu Eser", "Karabibik", "Kırsal Yaşam"],
+    "genre": "Uzun Hikaye / Köy Romanı",
+    "info": "İlk köy temalı eserdir. Antalya'nın Kaş ilçesine bağlı Beymelek köyünde yaşayan Karabibik'in öküz alma ve kızını evlendirme telaşı anlatılır.",
+    "keywords": ["İlk Köy Romanı", "Karabibik", "Antalya-Kaş", "Huri"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -360,8 +358,8 @@
     "work": "Zehra",
     "period": "Tanzimat Edebiyatı (2. Dönem)",
     "genre": "Roman (Natüralist)",
-    "info": "Kıskançlık temasını natüralist bir yaklaşımla işleyen, Türk edebiyatındaki ilk psikolojik roman denemelerinden biri sayılan romandır.",
-    "keywords": ["Kıskançlık", "Natüralizm", "İlk Psikolojik Roman Denemesi"],
+    "info": "İlk natüralist roman ve ilk psikolojik roman denemesidir. Zehra'nın kıskançlığı yüzünden kendisini ve kocasını felakete sürüklemesi anlatılır.",
+    "keywords": ["İlk Natüralist Roman", "Kıskançlık", "Suphi", "Sırrıcemal"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -373,8 +371,8 @@
     "work": "Rübab-ı Şikeste",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Şiir",
-    "info": "Tevfik Fikret'in aşk, aile, tabiat gibi bireysel temaları Batılı bir duyarlılıkla işlediği; Servet-i Fünun şiirinin en önemli eserlerinden biri olan şiir kitabıdır.",
-    "keywords": ["Kırık Saz", "Bireysel Temalar", "Servet-i Fünun Şiiri"],
+    "info": "Tevfik Fikret'in ferdiyetçi döneminde yazdığı, melankoli ve karamsarlık temalı şiirlerini topladığı başyapıtıdır.",
+    "keywords": ["Kırık Saz", "Melankoli", "Servet-i Fünun Şiiri"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -386,17 +384,17 @@
     "work": "Haluk'un Defteri",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Şiir",
-    "info": "Şairin oğlu Haluk'a duyduğu sevgi ve ona olan umutlarını işlediği, toplumcu ve didaktik yönü ağır basan şiir kitabıdır.",
-    "keywords": ["Haluk", "Baba Sevgisi", "Gelecek Nesil"]
+    "info": "Oğlu Haluk'un şahsında Türk gençliğine seslendiği; aydınlanma, bilim, çalışma ve ahlak öğütleri veren didaktik şiir kitabıdır.",
+    "keywords": ["Haluk", "Gençliğe Hitap", "Didaktik Şiir", "Aydınlanma"]
   },
   {
     "id": 237,
     "author": "Tevfik Fikret",
     "work": "Şermin",
-    "period": "Milli Edebiyat / Servet-i Fünun Sonrası",
+    "period": "Servet-i Fünun Edebiyatı",
     "genre": "Şiir (Çocuk Şiirleri)",
-    "info": "Türk edebiyatında çocuklar için, sade bir dille yazılmış ilk şiir kitaplarından biridir.",
-    "keywords": ["Çocuk Şiiri", "Sade Dil", "İlk Örneklerden"]
+    "info": "Fikret'in aruz veznini bırakıp sadece hece ölçüsü ve arı Türkçeyle çocuklar için yazdığı eğitici şiir kitabıdır.",
+    "keywords": ["Hece Ölçüsü", "Çocuk Şiiri", "Sade Türkçe"]
   },
   {
     "id": 238,
@@ -404,8 +402,8 @@
     "work": "Sis",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Şiir",
-    "info": "İstanbul'u kaplayan sisi, dönemin siyasi ve toplumsal çöküşünün simgesi olarak kullanan; II. Abdülhamit dönemine yönelik sert bir eleştiri niteliği taşıyan ünlü şiirdir.",
-    "keywords": ["İstanbul", "Sis", "Toplumsal Eleştiri", "II. Abdülhamit"],
+    "info": "İstanbul'u istibdat yönetiminin suç ortağı görerek lanetlediği ünlü şiirdir. Şiire Yahya Kemal 'Siste Söyleniş' ile cevap vermiştir.",
+    "keywords": ["İstanbul Nefreti", "İstibdat Eleştirisi", "Siste Söyleniş"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -417,8 +415,8 @@
     "work": "Tamat",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Şiir",
-    "info": "Cenap Şahabettin'in, ağır ve süslü bir dille, empresyonist bir tavırla yazdığı şiirlerini topladığı eseridir.",
-    "keywords": ["Empresyonizm", "Süslü Dil", "Servet-i Fünun"]
+    "info": "Cenap Şahabettin'in gençlik şiirlerini topladığı tek şiir kitabıdır. Ağır dil ve sembolist imgeler taşır.",
+    "keywords": ["Tek Şiir Kitabı", "Sembolizm", "Ağır Dil"]
   },
   {
     "id": 240,
@@ -426,8 +424,8 @@
     "work": "Hac Yolunda",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Gezi Yazısı",
-    "info": "Yazarın hac yolculuğu sırasındaki gözlem ve izlenimlerini anlattığı, dönemin önemli gezi yazılarından biridir.",
-    "keywords": ["Hac", "Gezi Yazısı", "İzlenim"]
+    "info": "Sağlık müfettişi olarak gittiği Hicaz yolculuğundaki gözlemlerini edebi bir üslupla anlattığı önemli gezi yazısıdır.",
+    "keywords": ["Hicaz Yolculuğu", "Gezi Yazısı", "Gözlem"]
   },
   {
     "id": 241,
@@ -435,8 +433,8 @@
     "work": "Mai ve Siyah",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Roman",
-    "info": "Genç ve idealist şair Ahmet Cemil'in hayalleri ile içinde bulunduğu gerçekler arasındaki çatışmayı; sanat, hayal kırıklığı ve maddi sıkıntı temalarıyla işleyen romandır.",
-    "keywords": ["Ahmet Cemil", "Hayal-Gerçek Çatışması", "Sanatçı Bunalımı"],
+    "info": "Servet-i Fünun neslinin manifestosu sayılan roman. Şair Ahmet Cemil'in mavi hülyaları ile siyah gerçekler arasındaki çatışmasını işler.",
+    "keywords": ["Ahmet Cemil", "Mai Hülya Siyah Hakikat", "Nesil Romanı"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
@@ -448,8 +446,8 @@
     "work": "Aşk-ı Memnu",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Roman",
-    "info": "Türk edebiyatının teknik açıdan en gelişmiş romanlarından biri kabul edilir. Bihter'in yasak aşkı ve trajik sonunu, zengin bir yalı ailesi çevresinde anlatır.",
-    "keywords": ["Bihter", "Yasak Aşk", "Teknik Ustalık", "Yalı Hayatı"],
+    "info": "Batılı tekniğe tam uygun ilk kusursuz Türk romanı kabul edilir. Bihter, Adnan Bey ve Behlül arasındaki yasak aşkı işler.",
+    "keywords": ["Bihter", "Behlül", "Adnan Bey", "Batılı Tekniğe Uygun İlk Roman"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
@@ -461,17 +459,17 @@
     "work": "Kırık Hayatlar",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Roman",
-    "info": "Aile içi ilişkiler, aşk ve hayal kırıklıkları temasını psikolojik tahlillerle işleyen bir başka Halit Ziya romanıdır.",
-    "keywords": ["Aile İçi İlişkiler", "Psikolojik Tahlil"]
+    "info": "Doktor Ömer Behiç'in mutlu aile hayatının Neyyir adında bir kadın yüzünden dağılma noktasına gelmesini anlatan realist romandır.",
+    "keywords": ["Ömer Behiç", "Aile Dağılması", "Realist Roman"]
   },
   {
     "id": 244,
     "author": "Halit Ziya Uşaklıgil",
-    "work": "Nemide",
+    "work": "Kırk Yıl",
     "period": "Servet-i Fünun Edebiyatı",
-    "genre": "Roman",
-    "info": "Halit Ziya'nın Servet-i Fünun dönemi öncesine (İzmir yıllarına) ait, romantizmin etkilerini taşıyan erken dönem romanlarından biridir.",
-    "keywords": ["Erken Dönem Roman", "Romantizm Etkisi"]
+    "genre": "Anı (Hatıra)",
+    "info": "Halit Ziya'nın çocukluğundan itibaren Servet-i Fünun topluluğunun kuruluşunu ve edebiyat dünyasını anlattığı anı türündeki başyapıtıdır.",
+    "keywords": ["Edebi Hatıra", "Servet-i Fünun Dönemi", "Anı Türü"]
   },
   {
     "id": 245,
@@ -479,8 +477,8 @@
     "work": "Eylül",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Roman (Psikolojik)",
-    "info": "Türk edebiyatının ilk psikolojik roman örneği kabul edilir. Necip ile arkadaşının eşi Suat arasındaki yasak ve iç çatışmalarla dolu aşkı derinlemesine bir ruh tahliliyle anlatır.",
-    "keywords": ["İlk Psikolojik Roman", "Necip", "Suat", "Ruh Tahlili"],
+    "info": "İlk psikolojik romandır. Suat, eşi Süreyya ve aile dostları Necip arasındaki yasak aşkı ve vicdan azabını tahlil eder.",
+    "keywords": ["İlk Psikolojik Roman", "Suat", "Süreyya", "Necip"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -492,8 +490,8 @@
     "work": "Hayal İçinde",
     "period": "Servet-i Fünun Edebiyatı",
     "genre": "Roman",
-    "info": "Servet-i Fünun anlayışına uygun, bireysel bunalım ve hayal-gerçek çatışmasını işleyen bir romandır.",
-    "keywords": ["Bireysel Bunalım", "Hayal-Gerçek Çatışması"]
+    "info": "Nezih adlı gencin platonik aşkı etrafında hayal ile gerçek arasındaki çatışmayı anlatan tipik bir Servet-i Fünun romanıdır.",
+    "keywords": ["Nezih", "Hayal-Gerçek Çatışması", "Platonik Aşk"]
   },
   {
     "id": 247,
@@ -501,8 +499,8 @@
     "work": "Göl Saatleri",
     "period": "Fecr-i Ati Edebiyatı",
     "genre": "Şiir",
-    "info": "Sembolizm ve empresyonizmin etkisiyle, 'saf şiir' anlayışına uygun, çağrışım ve musikiye dayalı şiirlerden oluşan kitabıdır.",
-    "keywords": ["Sembolizm", "Saf Şiir", "Çağrışım", "Musiki"],
+    "info": "Sembolizm ve empresyonizmin izlerini taşıyan; gün batımı, akşam ve göl imgeleriyle saf şiir anlayışıyla yazılmış ilk şiir kitabıdır.",
+    "keywords": ["Sembolizm", "Saf Şiir", "Akşam Şairi", "Göl İmgeleri"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
@@ -514,8 +512,8 @@
     "work": "Piyale",
     "period": "Fecr-i Ati Edebiyatı",
     "genre": "Şiir",
-    "info": "Ahmet Haşim'in en tanınmış şiirlerinden 'O Belde' ve 'Merdiven'in de yer aldığı, şairin şiir anlayışını yansıtan önsözüyle de bilinen kitabıdır.",
-    "keywords": ["O Belde", "Merdiven", "Şiir Anlayışı Önsözü"],
+    "info": "'Merdiven' ve 'O Belde' şiirlerinin yer aldığı; başında 'Şiir Hakkında Bazı Mülahazalar' başlıklı poetikasını sunduğu kitabıdır.",
+    "keywords": ["Merdiven", "O Belde", "Şiir Hakkında Bazı Mülahazalar", "Poetika"],
     "osym_stats": {
       "is_banko": true,
       "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
@@ -526,17 +524,17 @@
     "author": "Ahmet Haşim",
     "work": "Bize Göre",
     "period": "Fecr-i Ati Edebiyatı",
-    "genre": "Deneme/Sohbet",
-    "info": "Ahmet Haşim'in gözlem, izlenim ve düşüncelerini serbest bir üslupla aktardığı deneme-sohbet türündeki yazılarını içerir.",
-    "keywords": ["Deneme", "Sohbet", "Serbest Üslup"]
+    "genre": "Fıkra / Deneme",
+    "info": "İkdam gazetesindeki fıkra ve köşe yazılarını topladığı; nükteli ve keskin gözlemlerini yansıttığı nesir eseridir.",
+    "keywords": ["Fıkra", "Deneme", "İkdam Gazetesi"]
   },
   {
     "id": 250,
     "author": "Ahmet Haşim",
     "work": "Gurabahane-i Laklakan",
     "period": "Fecr-i Ati Edebiyatı",
-    "genre": "Deneme/Gezi",
-    "info": "Yazarın Avrupa izlenimlerini ve eleştirel gözlemlerini ironik bir dille aktardığı deneme-gezi yazılarından oluşan eseridir.",
-    "keywords": ["Avrupa İzlenimleri", "İroni", "Gezi-Deneme"]
+    "genre": "Fıkra / Deneme",
+    "info": "Bursa'daki leylek bakımevinden esinlenerek adlandırılan; sanat, edebiyat ve cemiyet meseleleri üzerine fıkra ve denemeleridir.",
+    "keywords": ["Düşkün Leylekler Evi", "Fıkra", "Deneme"]
   }
 ]
