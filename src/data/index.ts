@@ -67,28 +67,52 @@ export const anaDonemler: AnaDonem[] = [
 
 // Alt dönem → ana dönem eşleştirme
 const donemEslesme: Record<string, AnaDonem> = {
+  // Geçiş Dönemi
   "Geçiş Dönemi": "Geçiş Dönemi",
+
+  // Divan Edebiyatı
+  "Divan Edebiyatı": "Divan Edebiyatı",
   "Divan Edebiyatı (Başlangıç/Çağatay)": "Divan Edebiyatı",
   "Divan Edebiyatı (Klasik Dönem 13-15.yy)": "Divan Edebiyatı",
+  "Divan Edebiyatı (14.yy)": "Divan Edebiyatı",
+  "Divan Edebiyatı (15.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı (16.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı (16-17.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı (17.yy)": "Divan Edebiyatı",
+  "Divan Edebiyatı - Nesir (15.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı - Nesir (16.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı - Nesir (17.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı - Nesir (17-18.yy)": "Divan Edebiyatı",
   "Divan Edebiyatı (18.yy - Lale Devri)": "Divan Edebiyatı",
   "Divan Edebiyatı (18.yy - Son Dönem)": "Divan Edebiyatı",
   "Divan Edebiyatı (18.yy)": "Divan Edebiyatı",
+
+  // Halk Edebiyatı
+  "Halk Edebiyatı (Âşık & Tekke)": "Halk Edebiyatı (Âşık & Tekke)",
+  "Halk Edebiyatı (Aşık & Tekke)": "Halk Edebiyatı (Âşık & Tekke)",
+  "Halk Edebiyatı": "Halk Edebiyatı (Âşık & Tekke)",
   "Tekke (Tasavvuf) Edebiyatı": "Halk Edebiyatı (Âşık & Tekke)",
   "Aşık Edebiyatı (Halk Edebiyatı)": "Halk Edebiyatı (Âşık & Tekke)",
+
+  // Tanzimat Edebiyatı
+  "Tanzimat Edebiyatı": "Tanzimat Edebiyatı",
   "Tanzimat Edebiyatı (1. Dönem)": "Tanzimat Edebiyatı",
   "Tanzimat Edebiyatı (2. Dönem)": "Tanzimat Edebiyatı",
+
+  // Servet-i Fünun & Fecr-i Ati
+  "Servet-i Fünun & Fecr-i Ati": "Servet-i Fünun & Fecr-i Ati",
   "Servet-i Fünun Edebiyatı": "Servet-i Fünun & Fecr-i Ati",
   "Fecr-i Ati Edebiyatı": "Servet-i Fünun & Fecr-i Ati",
+
+  // Milli Edebiyat
+  "Milli Edebiyat": "Milli Edebiyat",
   "Milli Edebiyat Dönemi": "Milli Edebiyat",
   "Milli Edebiyat Dönemi (Bağımsızlar)": "Milli Edebiyat",
   "Milli Edebiyat Dönemi (Beş Hececiler)": "Milli Edebiyat",
   "Milli Edebiyat / Servet-i Fünun Sonrası": "Milli Edebiyat",
+
+  // Cumhuriyet Dönemi
+  "Cumhuriyet Dönemi": "Cumhuriyet Dönemi",
   "Cumhuriyet Dönemi (Milli Edebiyat Sonrası)": "Cumhuriyet Dönemi",
   "Cumhuriyet Dönemi Şiiri (Bağımsızlar)": "Cumhuriyet Dönemi",
   "Cumhuriyet Dönemi Şiiri (Toplumcu Gerçekçi)": "Cumhuriyet Dönemi",
@@ -107,6 +131,10 @@ const donemEslesme: Record<string, AnaDonem> = {
 };
 
 export function anaDonemBul(altDonem: string): AnaDonem {
+  if (!altDonem) return "Tüm Dönemler";
+  if (anaDonemler.includes(altDonem as AnaDonem)) {
+    return altDonem as AnaDonem;
+  }
   return donemEslesme[altDonem] ?? "Tüm Dönemler";
 }
 
