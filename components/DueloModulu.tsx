@@ -46,6 +46,9 @@ import {
   matchBitir,
   matchTerk,
   kullaniciAdiKaydetOnline,
+  rovanşTeklifEt,
+  rovanşBaslatIfHazir,
+  rovanşDinle,
   type OnlineMac,
 } from "@/lib/matchmaking";
 import type { Unsubscribe } from "firebase/firestore";
@@ -111,8 +114,13 @@ export default function DueloModulu({
   const [hukmenGalibiyet, setHukmenGalibiyet] = useState(false);
   const [forfeitModal, setForfeitModal] = useState(false);
   const [forfeitConfirm, setForfeitConfirm] = useState(false);
+  const [rovanşPopup, setRovanşPopup] = useState<{ matchId: string; rakipAd: string } | null>(null);
+  const [rovanşBekleniyor, setRovanşBekleniyor] = useState(false);
   const [cooldownAktif, setCooldownAktif] = useState(false);
   const cooldownTimer = useRef<number | null>(null);
+  const rovanşUnsubRef = useRef<Unsubscribe | null>(null);
+  const sonFriendlyMatchRef = useRef("");
+  const rovanşDinlemeyiBaslatRef = useRef<(mId: string) => void>(() => {});
 
   // Tur sonu puan animasyonu
   const [turPuani, setTurPuani] = useState<number | null>(null);
@@ -237,6 +245,7 @@ export default function DueloModulu({
       if (odaUnsubRef.current) odaUnsubRef.current();
       if (matchUnsubRef.current) matchUnsubRef.current();
       if (katilanMatchUnsubRef.current) katilanMatchUnsubRef.current();
+      if (rovanşUnsubRef.current) rovanşUnsubRef.current();
       const k = kullaniciRef.current;
       if (k) rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
       if (olusturulanKodRef.current) odaSil(olusturulanKodRef.current).catch(() => {});
@@ -294,6 +303,9 @@ export default function DueloModulu({
     if (odaUnsubRef.current) { odaUnsubRef.current(); odaUnsubRef.current = null; }
     if (matchUnsubRef.current) { matchUnsubRef.current(); matchUnsubRef.current = null; }
     if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
+    if (rovanşUnsubRef.current) { rovanşUnsubRef.current(); rovanşUnsubRef.current = null; }
+    setRovanşPopup(null);
+    setRovanşBekleniyor(false);
     setSorular([]);
     setSoruIndex(0);
     soruIndexRef.current = 0;
@@ -345,6 +357,14 @@ export default function DueloModulu({
       setHukmenGalibiyet(hukmen && kazandi);
       setAdim("sonuc");
       adimRef.current = "sonuc";
+
+      // Özel oda: rövanş tekliflerini dinle (ref ile — sıra sorunu olmasın)
+      if (mod === "friendly" && matchIdRef.current && !matchIdRef.current.startsWith("bot_")) {
+        const mid = matchIdRef.current;
+        queue.setTimeout(() => {
+          rovanşDinlemeyiBaslatRef.current?.(mid);
+        }, 0);
+      }
 
       // SFX
       if (kazandi || hukmen) sfxVictory();
@@ -402,6 +422,49 @@ export default function DueloModulu({
     },
     [],
   );
+
+  const rovanşDinlemeyiBaslat = useCallback(
+    (mId: string) => {
+      if (!mId || mId.startsWith("bot_")) return;
+      const kid = kullaniciRef.current?.kullaniciAdi;
+      if (!kid) return;
+
+      if (rovanşUnsubRef.current) {
+        rovanşUnsubRef.current();
+        rovanşUnsubRef.current = null;
+      }
+
+      sonFriendlyMatchRef.current = mId;
+
+      const unsub = rovanşDinle(
+        mId,
+        kid,
+        (rakipAd) => {
+          setRovanşPopup({ matchId: mId, rakipAd });
+        },
+        (sorular, rakipBilgi, num) => {
+          setRovanşPopup(null);
+          setRovanşBekleniyor(false);
+          if (rovanşUnsubRef.current) {
+            rovanşUnsubRef.current();
+            rovanşUnsubRef.current = null;
+          }
+          dueloBaslat(
+            "friendly",
+            rakipBilgi,
+            sorular.length || aktifSoruSayisiRef.current || 5,
+            mId,
+            num,
+            sorular,
+          );
+        },
+      );
+      rovanşUnsubRef.current = unsub;
+    },
+    [dueloBaslat],
+  );
+
+  rovanşDinlemeyiBaslatRef.current = rovanşDinlemeyiBaslat;
 
   // --- Anti-spam cooldown (2 saniye) ---
   const cooldownBaslat = useCallback(() => {
@@ -1398,13 +1461,36 @@ export default function DueloModulu({
 
           <div className="mt-6 grid grid-cols-2 gap-3">
             <button
-              onClick={() => {
+              type="button"
+              onClick={async () => {
+                const mod = dueloModuRef.current;
+                const mid = matchIdRef.current;
+                const kid = kullaniciRef.current?.kullaniciAdi;
+
+                if (mod === "friendly" && mid && !mid.startsWith("bot_") && kid) {
+                  setRovanşBekleniyor(true);
+                  try {
+                    await rovanşTeklifEt(mid, kid);
+                    await rovanşBaslatIfHazir(mid);
+                  } catch {
+                    setRovanşBekleniyor(false);
+                  }
+                  return;
+                }
+
+                setCooldownAktif(false);
+                if (cooldownTimer.current) {
+                  clearTimeout(cooldownTimer.current);
+                  cooldownTimer.current = null;
+                }
                 dueloSifirla();
                 rastgeleRakip();
               }}
-              className="btn-press-duello flex items-center justify-center gap-2 rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground"
+              disabled={rovanşBekleniyor}
+              className="btn-press-duello flex items-center justify-center gap-2 rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground disabled:opacity-60"
             >
-              <Swords className="h-4 w-4" /> Rövanş
+              <Swords className="h-4 w-4" />
+              {rovanşBekleniyor ? "Rakip bekleniyor..." : "Rövanş"}
             </button>
             <button
               onClick={cikisIste}
@@ -1579,6 +1665,52 @@ export default function DueloModulu({
           </div>
         )}
       </div>
+
+      {/* Rövanş teklifi popup */}
+      {rovanşPopup && (
+        <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
+          <div className="animate-pop glass-card max-w-sm w-full rounded-xl p-7 text-center shadow-lg ring-1 ring-duello/20">
+            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-xl bg-duello/15 text-duello ring-1 ring-duello/30">
+              <Swords className="h-7 w-7" strokeWidth={1.5} />
+            </div>
+            <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
+              Rövanş teklifi
+            </h2>
+            <p className="mt-2 text-sm text-pretty text-muted-foreground">
+              <span className="font-semibold text-foreground">{rovanşPopup.rakipAd}</span>
+              {" "}rövanş teklif etti. Aynı odada tekrar oynamak ister misin?
+            </p>
+            <div className="mt-6 grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRovanşPopup(null)}
+                className="rounded-lg bg-muted/60 py-3.5 text-sm font-semibold text-foreground transition hover:bg-muted/40 active:scale-[0.98]"
+              >
+                Reddet
+              </button>
+              <button
+                type="button"
+                onClick={async () => {
+                  const kid = kullaniciRef.current?.kullaniciAdi;
+                  const mid = rovanşPopup.matchId;
+                  if (!kid || !mid) return;
+                  setRovanşPopup(null);
+                  setRovanşBekleniyor(true);
+                  try {
+                    await rovanşTeklifEt(mid, kid);
+                    await rovanşBaslatIfHazir(mid);
+                  } catch {
+                    setRovanşBekleniyor(false);
+                  }
+                }}
+                className="btn-press-duello rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+              >
+                Kabul et
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Forfeit onay modalı — oyuncu Terk Et'e bastığında */}
       {forfeitConfirm && (
