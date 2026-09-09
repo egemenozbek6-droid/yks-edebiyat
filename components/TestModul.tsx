@@ -17,7 +17,7 @@ import {
 } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { anaDonemler, anaDonemFiltrele, type AnaDonem, type LiteratureItem } from "@/src/data";
-import { sorulariUret, type Soru } from "@/lib/soru";
+import { type Soru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
 import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
 
@@ -36,10 +36,49 @@ export default function TestModul({ onSonuc }: Props) {
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  // Havuzdan soru üretip testi başlatan çekirdek fonksiyon
+  // Genel Soru Üretici (Dönem testleri için)
   const testiBaslat = useCallback((havuz: LiteratureItem[], baslik: string) => {
-    const uretilenSorular = sorulariUret(havuz);
-    setSecilenBaslik(baslik);
+    // Normal motor dış havuz kullanabilir
+    import("@/lib/soru").then(({ sorulariUret }) => {
+      const uretilenSorular = sorulariUret(havuz);
+      setSecilenBaslik(baslik);
+      setSorular(uretilenSorular);
+      setAktif(0);
+      setSecim(null);
+      setDogruSayi(0);
+      setBitti(false);
+      setDurum("test");
+    });
+  }, []);
+
+  // Kadın Yazarlar için Özel Soru Üretici (Şıkların HEPSİ sadece kadın yazarlardan oluşur)
+  const kadinYazarlarTestiBaslat = useCallback(() => {
+    const havuz = kadinYazarlarData as unknown as LiteratureItem[];
+    const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+    const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
+      // Sadece kadın yazarlar havuzundan yanlış şıklar (distractor) seçilir
+      const digerleri = havuz.filter((x) => x.author !== item.author);
+      const yanlisSecenekler = [...digerleri]
+        .sort(() => 0.5 - Math.random())
+        .slice(0, 3)
+        .map((x) => x.author);
+
+      const secenekler = [...yanlisSecenekler, item.author].sort(() => 0.5 - Math.random());
+
+      return {
+        id: index + 1,
+        tip: "eser" as const,
+        vurgu: item.work,
+        metin: `Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?`,
+        dogru: item.author,
+        secenekler,
+        donem: item.period,
+        osymFreq: "Özel Seçki"
+      };
+    });
+
+    setSecilenBaslik("Kadın Yazarlar Özel Testi");
     setSorular(uretilenSorular);
     setAktif(0);
     setSecim(null);
@@ -48,19 +87,9 @@ export default function TestModul({ onSonuc }: Props) {
     setDurum("test");
   }, []);
 
-  // Dönem bazlı testi başlat
   const donemTestiBaslat = useCallback((donem: AnaDonem) => {
     const havuz = anaDonemFiltrele(donem);
     testiBaslat(havuz, donem);
-  }, [testiBaslat]);
-
-  // Kadın yazarlar testini başlat (Rastgele 10 soru)
-  const kadinYazarlarTestiBaslat = useCallback(() => {
-    const karisikListe = [...kadinYazarlarData]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 10) as unknown as LiteratureItem[];
-    
-    testiBaslat(karisikListe, "Kadın Yazarlar Özel Testi");
   }, [testiBaslat]);
 
   const basaDon = () => {
@@ -138,7 +167,7 @@ export default function TestModul({ onSonuc }: Props) {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                Sadece kadın yazarlarımız ve eserleri! 🌸
+                Sadece kadın yazarlarımızın ve eserleri! 🌸
               </p>
             </div>
           </div>
@@ -148,7 +177,7 @@ export default function TestModul({ onSonuc }: Props) {
     );
   }
 
-  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde)
+  // 2. DÖNEM SEÇİMİ
   if (durum === "donem_secimi") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6">
