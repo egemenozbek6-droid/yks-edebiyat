@@ -92,16 +92,16 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI (Dönem Testleri veya Kadın Yazarlar - Dikeyde Orantılı Yerleşim)
+  // 1. ANA SEÇİM EKRANI (Üste hizalanmış ve Düello sekmeleriyle uyumlu yerleşim)
   if (durum === "ana_secim") {
     return (
-      <div className="my-auto flex flex-col justify-center max-w-xl mx-auto w-full py-8 space-y-3">
-        <div className="text-center mb-4">
-          <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
-            <Brain className="h-7 w-7" strokeWidth={1.5} />
+      <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6 space-y-3">
+        <div className="text-center mb-3">
+          <div className="mx-auto mb-2 grid h-12 w-12 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
+            <Brain className="h-6 w-6" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Test Modu</h2>
-          <p className="text-xs text-muted-foreground mt-1">Çözmek istediğin test kategorisini belirle</p>
+          <h2 className="font-serif text-lg font-bold tracking-tight text-card-foreground">Test Modu</h2>
+          <p className="text-xs text-muted-foreground mt-0.5">Çözmek istediğin test kategorisini belirle</p>
         </div>
 
         {/* Seçenek 1: Dönem Testleri */}
