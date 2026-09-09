@@ -28,6 +28,7 @@ import {
   soruPuani,
   kullaniciKaydet,
   kullaniciAdiKontrol,
+  cihazIdUret,
 } from "@/lib/user";
 import { rankBul, sonrakiRank, RANK_KADEMELERI } from "@/lib/types";
 import { rastgeleBot, botGecikme, botDogruMu, botBonus } from "@/lib/bots";
@@ -146,6 +147,7 @@ export default function DueloModulu({
   const rakipSkorRef = useRef(0);
   const dueloModuRef = useRef<DueloModu>("ranked");
   const rakipRef = useRef<Rakip | null>(null);
+  const rakipIdRef = useRef<string>("");
   const aktifSoruSayisiRef = useRef(SORU_SAYISI);
   const soruIndexRef = useRef(0);
   const matchIdRef = useRef("");
@@ -221,10 +223,9 @@ export default function DueloModulu({
         // Online: rakibe hükmen galibiyet ver (hem ranked hem friendly)
         const mId = matchIdRef.current;
         if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
-          const digerId = oyuncuNumRef.current === 1
-            ? rakipRef.current?.ad ?? ""
-            : kullaniciRef.current.kullaniciAdi;
-          matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
+          const benimId = kullaniciRef.current.cihazId || kullaniciRef.current.kullaniciAdi;
+          const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
+          matchTerk(mId, benimId, digerId).catch(() => {});
         }
       }
     };
@@ -247,7 +248,7 @@ export default function DueloModulu({
       if (katilanMatchUnsubRef.current) katilanMatchUnsubRef.current();
       if (rovanşUnsubRef.current) rovanşUnsubRef.current();
       const k = kullaniciRef.current;
-      if (k) rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
+      if (k) rankedKuyruktanCik(k.cihazId || k.kullaniciAdi).catch(() => {});
       if (olusturulanKodRef.current) odaSil(olusturulanKodRef.current).catch(() => {});
       onDueloAktifDegisti(false);
     };
@@ -263,6 +264,7 @@ export default function DueloModulu({
     }
     const yeniKullanici: Kullanici = {
       kullaniciAdi: nickInput.trim(),
+      cihazId: cihazIdUret(),
       avatar: rastgeleAvatarId(),
       olusturmaTarihi: Date.now(),
     };
@@ -320,6 +322,7 @@ export default function DueloModulu({
     rakipSkorRef.current = 0;
     setRakip(null);
     rakipRef.current = null;
+    rakipIdRef.current = "";
     setSonuc(null);
     setHukmenGalibiyet(false);
     setForfeitModal(false);
@@ -400,6 +403,7 @@ export default function DueloModulu({
       rakipSkorRef.current = 0;
       setRakip(rakipBilgi);
       rakipRef.current = rakipBilgi;
+      rakipIdRef.current = rakipBilgi.id || "";
       setDueloModu(mod);
       dueloModuRef.current = mod;
       setAktifSoruSayisi(soruSayisi);
@@ -426,7 +430,7 @@ export default function DueloModulu({
   const rovanşDinlemeyiBaslat = useCallback(
     (mId: string) => {
       if (!mId || mId.startsWith("bot_")) return;
-      const kid = kullaniciRef.current?.kullaniciAdi;
+      const kid = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi;
       if (!kid) return;
 
       if (rovanşUnsubRef.current) {
@@ -487,7 +491,7 @@ export default function DueloModulu({
 
     if (firebaseAktif) {
       const unsub = rankedKuyrugaKatil(
-        { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+        { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
         (durum) => {
           if (durum.durum === "eslesti") {
             dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.matchId, 2, durum.sorular);
@@ -516,7 +520,7 @@ export default function DueloModulu({
     if (aramaTimer.current) { clearTimeout(aramaTimer.current); aramaTimer.current = null; }
     if (rankedUnsubRef.current) { rankedUnsubRef.current(); rankedUnsubRef.current = null; }
     const k = kullaniciRef.current;
-    if (k) rankedKuyruktanCik(k.kullaniciAdi).catch(() => {});
+    if (k) rankedKuyruktanCik(k.cihazId || k.kullaniciAdi).catch(() => {});
     setAdim("lobi");
     adimRef.current = "lobi";
   }, []);
@@ -545,7 +549,7 @@ export default function DueloModulu({
 
     const unsub = odaKurOnline(
       kod,
-      { id: k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+      { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
       friendlySoruSayisi,
       (rakipBilgi, mId, soruListesi) => {
         dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, mId, 1, soruListesi);
@@ -580,7 +584,7 @@ export default function DueloModulu({
     dueloSifirla();
 
     const sonuc = await odayaKatilOnline(trimmedInput, {
-      id: k.kullaniciAdi,
+      id: k.cihazId || k.kullaniciAdi,
       ad: k.kullaniciAdi,
       avatar: k.avatar,
     });
@@ -597,7 +601,7 @@ export default function DueloModulu({
     adimRef.current = "oda_bekleme";
 
     // Match belgesini dinle (oyuncu2.id = bizim id)
-    const unsub = katilanMatchBekle(k.kullaniciAdi, (mId, mac) => {
+    const unsub = katilanMatchBekle(k.cihazId || k.kullaniciAdi, (mId, mac) => {
       // Kurucu oluşturdu — maça başla (oyuncu2 olarak)
       dueloBaslat(
         "friendly",
@@ -726,11 +730,11 @@ export default function DueloModulu({
         const rS = rakipNum === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
         const hukmen = mac.durum === "terk";
         const kazandi = hukmen
-          ? mac.kazananId === kullaniciRef.current?.kullaniciAdi
+          ? mac.kazananId === (kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi)
           : oS > rS;
         const berabere = !hukmen && oS === rS;
         // Eğer rakip terk ettiyse ve biz kazandıysak popup göster
-        if (hukmen && kazandi && mac.forfeitedBy && mac.forfeitedBy !== kullaniciRef.current?.kullaniciAdi) {
+        if (hukmen && kazandi && mac.forfeitedBy && mac.forfeitedBy !== (kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi)) {
           setForfeitModal(true);
         } else {
           maciBitir(kazandi, berabere, hukmen, oS, rS);
@@ -775,7 +779,7 @@ export default function DueloModulu({
         const kazandi = oS > rS;
         const berabere = oS === rS;
         if (!isBot) {
-          matchBitir(mId, kazandi ? kullaniciRef.current?.kullaniciAdi ?? null : null).catch(() => {});
+          matchBitir(mId, kazandi ? (kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi) ?? null : null).catch(() => {});
         }
         maciBitir(kazandi, berabere, false, oS, rS);
       } else {
@@ -809,10 +813,9 @@ export default function DueloModulu({
     // Online: rakibe hükmen galibiyet ver (ranked + friendly)
     const mId = matchIdRef.current;
     if (mId && !mId.startsWith("bot_") && kullaniciRef.current) {
-      const digerId = oyuncuNumRef.current === 1
-        ? rakipRef.current?.ad ?? ""
-        : kullaniciRef.current.kullaniciAdi;
-      matchTerk(mId, kullaniciRef.current.kullaniciAdi, digerId).catch(() => {});
+      const benimId = kullaniciRef.current.cihazId || kullaniciRef.current.kullaniciAdi;
+      const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
+      matchTerk(mId, benimId, digerId).catch(() => {});
     }
     dueloSifirla();
     onCikis();
@@ -1465,7 +1468,8 @@ export default function DueloModulu({
               onClick={async () => {
                 const mod = dueloModuRef.current;
                 const mid = matchIdRef.current;
-                const kid = kullaniciRef.current?.kullaniciAdi;
+                const kid =
+                  kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi;
 
                 if (mod === "friendly" && mid && !mid.startsWith("bot_") && kid) {
                   setRovanşBekleniyor(true);
@@ -1691,7 +1695,8 @@ export default function DueloModulu({
               <button
                 type="button"
                 onClick={async () => {
-                  const kid = kullaniciRef.current?.kullaniciAdi;
+                  const kid =
+                    kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi;
                   const mid = rovanşPopup.matchId;
                   if (!kid || !mid) return;
                   setRovanşPopup(null);
