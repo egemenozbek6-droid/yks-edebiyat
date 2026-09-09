@@ -110,13 +110,15 @@
     "keywords": ["Ernest Renan", "İslam Savunusu", "Felsefi Eser"]
   },
   {
-    "id": 211,
-    "author": "Namık Kemal",
-    "work": "Rüya",
-    "period": "Tanzimat Edebiyatı (1. Dönem)",
-    "genre": "Mensur (Alegorik Anlatı)",
-    "info": "Namık Kemal'in sürgün hayatını ve vatan özlemini rüya motifiyle anlattığı kısa mensur eseridir.",
-    "keywords": ["Rüya Motifi", "Sürgün", "Vatan Özlemi"]
+  {
+  "id": 211,
+  "author": "Ziya Paşa",
+  "work": "Rüya",
+  "period": "Tanzimat Edebiyatı (1. Dönem)",
+  "genre": "Siyasi Hiciv / Mülakat (Röportaj)",
+  "info": "Edebiyatımızda mülakat türünün ilk örneği kabul edilir. Yazar rüyasında Padişah Abdülaziz ile konuşarak Sadrazam Âli Paşa yönetimini ve dönemin siyasetini sertçe eleştirir.",
+  "keywords": ["Mülakat", "Siyasi Hiciv", "Sadrazam Âli Paşa Eleştirisi", "Rüya Motifi"]
+}
   },
   {
     "id": 212,
