@@ -479,7 +479,9 @@ export default function DueloModulu({
 
   // --- Rastgele rakip bul (ranked) — Firebase matchmaking + 5s bot fallback ---
   const rastgeleRakip = useCallback(() => {
-    if (cooldownAktif) return;
+    if (cooldownAktif) {
+      setCooldownAktif(false);
+    }
     cooldownBaslat();
     setDueloModu("ranked");
     dueloModuRef.current = "ranked";
@@ -1467,27 +1469,46 @@ export default function DueloModulu({
               type="button"
               onClick={async () => {
                 const mod = dueloModuRef.current;
-                const mid = matchIdRef.current;
-                const kid =
-                  kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi;
+                const mid = matchIdRef.current || sonFriendlyMatchRef.current;
+                const k = kullaniciRef.current;
+                const kid = k?.cihazId || k?.kullaniciAdi;
 
-                if (mod === "friendly" && mid && !mid.startsWith("bot_") && kid) {
+                // Özel oda rövanş
+                if (mod === "friendly") {
+                  if (!mid || mid.startsWith("bot_") || !kid) {
+                    setRovanşBekleniyor(false);
+                    alert("Rövanş için maç bilgisi bulunamadı. Lobiye dönüp yeni oda kur.");
+                    return;
+                  }
                   setRovanşBekleniyor(true);
                   try {
+                    // dinleyiciyi garanti et
+                    rovanşDinlemeyiBaslatRef.current?.(mid);
                     await rovanşTeklifEt(mid, kid);
-                    await rovanşBaslatIfHazir(mid);
-                  } catch {
+                    const basladi = await rovanşBaslatIfHazir(mid);
+                    if (!basladi) {
+                      // rakip henüz kabul etmedi — sonuç ekranında bekle
+                    }
+                  } catch (e) {
+                    console.error("[rovanş]", e);
                     setRovanşBekleniyor(false);
+                    alert("Rövanş teklifi gönderilemedi.");
                   }
                   return;
                 }
 
+                // Ranked rövanş — önce adımı aramaya al, sonra sıfırla (boş ekran olmasın)
                 setCooldownAktif(false);
                 if (cooldownTimer.current) {
                   clearTimeout(cooldownTimer.current);
                   cooldownTimer.current = null;
                 }
-                dueloSifirla();
+                setAdim("aratma");
+                adimRef.current = "aratma";
+                setSonuc(null);
+                setRakip(null);
+                rakipRef.current = null;
+                setSorular([]);
                 rastgeleRakip();
               }}
               disabled={rovanşBekleniyor}
@@ -1510,7 +1531,31 @@ export default function DueloModulu({
 
   // --- DUELO (aktif maç) ---
   const soru = sorular[soruIndex];
-  if (!soru || !kullanici || !rakip) return null;
+  if (!soru || !kullanici || !rakip) {
+    // Boş ekran olmasın: düello state eksikse lobiye dön
+    if (adim === "duelo" || adim === "sonuc") {
+      // sonuç silinmiş / rövanş yarım kalmış
+      return (
+        <div className="flex-1 flex items-center justify-center p-5">
+          <div className="text-center max-w-sm">
+            <p className="text-sm text-muted-foreground mb-4">Maç durumu sıfırlandı.</p>
+            <button
+              type="button"
+              onClick={() => {
+                setRovanşBekleniyor(false);
+                setAdim("lobi");
+                adimRef.current = "lobi";
+              }}
+              className="rounded-lg bg-duello px-5 py-3 text-sm font-bold text-duello-foreground"
+            >
+              Lobiye Dön
+            </button>
+          </div>
+        </div>
+      );
+    }
+    return null;
+  }
 
   const sureYuzde = (sure / SURE) * 100;
   const sonUcSaniye = sure <= 3 && sure > 0;
