@@ -647,13 +647,11 @@ export function rovanşDinle(
     const rakip = benimId === p1.id ? p2 : p1;
     const oyuncuNum: 1 | 2 = benimId === p1.id ? 1 : 2;
 
-    // Karşı taraf teklif etmiş, ben etmemişim → popup
     if (istek[rakip.id] && !istek[benimId] && !teklifBildirildi) {
       teklifBildirildi = true;
       onTeklif(rakip.ad);
     }
 
-    // Maç yeniden aktif + skorlar sıfır → başla
     if (
       data.durum === "aktif" &&
       data.rematchTur &&
