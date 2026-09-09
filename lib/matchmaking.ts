@@ -560,4 +560,113 @@ export async function matchTerk(
     kazananId: digerOyuncuId ?? null,
     forfeitedBy: terkEdenId ?? null,
   }));
+  /** Özel oda rövanş teklifi */
+export async function rovanşTeklifEt(
+  matchId: string,
+  oyuncuId: string,
+): Promise<void> {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
+  const ref = doc(db!, "matches", matchId);
+  await updateDoc(
+    ref,
+    sanitizePayload({
+      [`rematchIstek.${oyuncuId}`]: true,
+    }) as Record<string, never>,
+  );
+}
+
+/** İkisi de isteyince maçı sıfırla ve yeniden başlat */
+export async function rovanşBaslatIfHazir(matchId: string): Promise<boolean> {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return false;
+  const ref = doc(db!, "matches", matchId);
+
+  return runTransaction(db!, async (tx) => {
+    const snap = await tx.get(ref);
+    if (!snap.exists()) return false;
+    const data = snap.data() as OnlineMac & {
+      rematchIstek?: Record<string, boolean>;
+    };
+    if (data.mod !== "friendly") return false;
+    if (!data.oyuncu2) return false;
+
+    const istek = data.rematchIstek ?? {};
+    const p1 = data.oyuncu1.id;
+    const p2 = data.oyuncu2.id;
+    if (!istek[p1] || !istek[p2]) return false;
+
+    // Zaten yeniden başladıysa tekrarlama
+    if (data.durum === "aktif" && (data as { rematchTur?: number }).rematchTur) {
+      // devam
+    }
+
+    const soruSayisi = data.soruSayisi || 5;
+    const yeniSorular = soruUret(soruSayisi);
+
+    tx.update(
+      ref,
+      sanitizePayload({
+        durum: "aktif",
+        sorular: yeniSorular,
+        soruIndex: 0,
+        kazananId: null,
+        forfeitedBy: null,
+        "oyuncu1.skor": 0,
+        "oyuncu1.cevap": null,
+        "oyuncu2.skor": 0,
+        "oyuncu2.cevap": null,
+        rematchIstek: {},
+        rematchTur: Date.now(),
+      }) as Record<string, never>,
+    );
+    return true;
+  });
+}
+
+/** Sonuç / lobi: rövanş teklifini dinle */
+export function rovanşDinle(
+  matchId: string,
+  benimId: string,
+  onTeklif: (rakipAd: string) => void,
+  onBasladi: (sorular: Soru[], rakip: Rakip, oyuncuNum: 1 | 2) => void,
+): Unsubscribe | null {
+  if (!firebaseAktif || !db || matchId.startsWith("bot_")) return null;
+  const ref = doc(db!, "matches", matchId);
+  let teklifBildirildi = false;
+
+  return onSnapshot(ref, (snap) => {
+    if (!snap.exists()) return;
+    const data = snap.data() as OnlineMac & {
+      rematchIstek?: Record<string, boolean>;
+      rematchTur?: number;
+    };
+    if (data.mod !== "friendly" || !data.oyuncu2) return;
+
+    const p1 = data.oyuncu1;
+    const p2 = data.oyuncu2;
+    const istek = data.rematchIstek ?? {};
+    const rakip = benimId === p1.id ? p2 : p1;
+    const oyuncuNum: 1 | 2 = benimId === p1.id ? 1 : 2;
+
+    // Karşı taraf teklif etmiş, ben etmemişim → popup
+    if (istek[rakip.id] && !istek[benimId] && !teklifBildirildi) {
+      teklifBildirildi = true;
+      onTeklif(rakip.ad);
+    }
+
+    // Maç yeniden aktif + skorlar sıfır → başla
+    if (
+      data.durum === "aktif" &&
+      data.rematchTur &&
+      (p1.skor ?? 0) === 0 &&
+      (p2.skor ?? 0) === 0 &&
+      data.soruIndex === 0
+    ) {
+      onBasladi(
+        data.sorular ?? [],
+        { ad: rakip.ad, avatar: rakip.avatar, bot: false },
+        oyuncuNum,
+      );
+    }
+  });
+}
 }
