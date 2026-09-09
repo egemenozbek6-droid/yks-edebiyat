@@ -92,10 +92,10 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI (Dönem Testleri veya Kadın Yazarlar)
+  // 1. ANA SEÇİM EKRANI (Dönem Testleri veya Kadın Yazarlar - Dikeyde Orantılı Yerleşim)
   if (durum === "ana_secim") {
     return (
-      <div className="animate-rise flex-1 flex flex-col justify-center max-w-xl mx-auto w-full py-4 space-y-3">
+      <div className="my-auto flex flex-col justify-center max-w-xl mx-auto w-full py-8 space-y-3">
         <div className="text-center mb-4">
           <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
             <Brain className="h-7 w-7" strokeWidth={1.5} />
@@ -134,7 +134,7 @@ export default function TestModul({ onSonuc }: Props) {
               <div className="flex items-center gap-2">
                 <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
                 <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-pink-500/10 text-pink-500">
-                  10 Soru
+                  Özel
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -249,7 +249,7 @@ export default function TestModul({ onSonuc }: Props) {
             onClick={basaDon}
             className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-violet-500/30 active:scale-95"
           >
-            <RotateCcw className="h-3 w-3" /> Testi Bırak
+            <RotateCcw className="h-3 w-3" /> Testten Çık
           </button>
         </div>
       </div>
