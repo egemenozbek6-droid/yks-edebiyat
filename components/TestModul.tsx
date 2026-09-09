@@ -92,7 +92,7 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI
+  // 1. ANA SEÇİM EKRANI (Eşit uzunlukta ve tema uyumlu butonlar)
   if (durum === "ana_secim") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-2 pb-6 space-y-3">
@@ -107,7 +107,7 @@ export default function TestModul({ onSonuc }: Props) {
         {/* Seçenek 1: Dönem Testleri */}
         <button
           onClick={() => setDurum("donem_secimi")}
-          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm"
+          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm w-full"
         >
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
@@ -115,7 +115,7 @@ export default function TestModul({ onSonuc }: Props) {
             </div>
             <div className="min-w-0">
               <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
-              <p className="text-[11px] text-muted-foreground truncate">Geçiş, Divan, Tanzimat, Millî Edebiyat ve Cumhuriyet</p>
+              <p className="text-[11px] text-muted-foreground truncate">Kritik eksiklerini bul ve kapat</p>
             </div>
           </div>
           <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
@@ -124,7 +124,7 @@ export default function TestModul({ onSonuc }: Props) {
         {/* Seçenek 2: Kadın Yazar & Eserler */}
         <button
           onClick={kadinYazarlarTestiBaslat}
-          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500"
+          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-pink-500 w-full"
         >
           <div className="flex items-center gap-3.5 min-w-0">
             <div className="w-10 h-10 rounded-lg bg-pink-500/10 text-pink-500 flex items-center justify-center shrink-0">
@@ -138,7 +138,7 @@ export default function TestModul({ onSonuc }: Props) {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                Sadece kadın yazarlar ve eserleri (10 Soru)
+                Sadece kadın yazarlarımızın yazar ve eserleri
               </p>
             </div>
           </div>
