@@ -109,7 +109,9 @@ export default function TestModul({ onSonuc }: Props) {
     const dogruMu = secenek === soru.dogru;
     if (dogruMu) sfxCorrect(); else sfxWrong();
     setSecim(secenek);
-    if (dogruMu) setDogruSayi((s) => s + 1);
+    if (dogruSayi + (dogruMu ? 1 : 0)) {
+      if (dogruMu) setDogruSayi((s) => s + 1);
+    }
     onSonuc?.(dogruMu, soru.donem);
   };
 
@@ -122,7 +124,7 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // 1. ANA SEÇİM EKRANI (ÖSYM Sever Temasına Uyarlanmış Premium Kart Yapısı)
+  // 1. ANA SEÇİM EKRANI
   if (durum === "ana_secim") {
     return (
       <div className="animate-rise max-w-xl mx-auto w-full pt-1 pb-6 space-y-3">
@@ -231,34 +233,59 @@ export default function TestModul({ onSonuc }: Props) {
     );
   }
 
-  // 3. SONUÇ EKRANI
+  // 3. SONUÇ EKRANI (Başarı Oranına Göre Özel Mesajlar & CTA Butonları)
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
+    
+    // Mesaj belirleme mantığı (Kadın yazarlar ve dönem testleri için ayrı özelleştirilebilir)
+    let sonucMesaji = "";
+    if (oran > 70) {
+      sonucMesaji = isKadinTesti 
+        ? "Mükemmel! Kadın yazarlar konusunu tamamen yutmuşsun 🌸" 
+        : "Harika iş çıkarıyorsun, sınavda bu netler kaçmaz! 🚀";
+    } else if (oran >= 50) {
+      sonucMesaji = isKadinTesti 
+        : "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin." 
+        : "Fena değil! Birkaç tekrarla bu işi tamamen bitirirsin 💪";
+    } else {
+      sonucMesaji = isKadinTesti 
+        ? "Bu seçkide biraz zorlandın galiba, hemen tekrar deneyip kapatalım!" 
+        : "Biraz daha çalışmaya ihtiyacın var, kafaya takma tekrar dene! 🎯";
+    }
+
     return (
-      <div className="animate-rise rounded-xl bg-card p-6 text-center border border-border max-w-xl mx-auto w-full">
-        <div className={`mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl ${isKadinTesti ? "bg-pink-500/15 text-pink-500" : "bg-violet-500/10 text-violet-500"}`}>
-          <Target className="h-9 w-9" strokeWidth={1.5} />
+      <div className="animate-rise rounded-2xl bg-card p-6 text-center border border-border max-w-xl mx-auto w-full shadow-lg space-y-4">
+        <div className={`mx-auto grid h-20 w-20 place-items-center rounded-2xl ring-1 ${isKadinTesti ? "bg-pink-500/15 text-pink-500 ring-pink-500/30" : "bg-violet-500/15 text-violet-500 ring-violet-500/30"}`}>
+          <Target className="h-9 w-9" strokeWidth={1.75} />
         </div>
-        <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test Bitti</h2>
-        <p className="mt-2 text-sm text-muted-foreground">
-          {sorular.length} soruda <span className={`font-bold ${isKadinTesti ? "text-pink-500" : "text-violet-500"}`}>{dogruSayi}</span> doğru — %{oran}
-        </p>
-        <div className="mt-6">
+        
+        <div>
+          <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test Bitti</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            {sorular.length} soruda <span className={`font-bold ${isKadinTesti ? "text-pink-500" : "text-violet-500"}`}>{dogruSayi}</span> doğru — %{oran}
+          </p>
+          <p className={`mt-2 text-xs font-medium px-4 py-2 rounded-xl mx-auto max-w-sm ${isKadinTesti ? "bg-pink-500/10 text-pink-400" : "bg-violet-500/10 text-violet-400"}`}>
+            {sonucMesaji}
+          </p>
+        </div>
+
+        <div className="pt-2">
           <IlerlemeBari mevcut={dogruSayi} toplam={sorular.length} etiket="Doğru cevap" />
         </div>
-        <div className="mt-7 grid grid-cols-2 gap-3">
+
+        <div className="mt-4 grid grid-cols-2 gap-3 pt-2">
           <button
             onClick={() => {
               if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
               else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
             }}
-            className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] ${isKadinTesti ? "bg-pink-600" : "bg-violet-600"}`}
+            className={`flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] ${isKadinTesti ? "bg-pink-600 shadow-pink-600/25" : "bg-violet-600 shadow-violet-600/25"}`}
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
           <button
             onClick={basaDon}
-            className="rounded-lg bg-muted py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground active:scale-[0.98]"
+            className="rounded-xl bg-muted/80 hover:bg-muted py-3.5 text-sm font-semibold text-muted-foreground hover:text-foreground shadow-sm transition active:scale-[0.98]"
           >
             Test Menüsüne Dön
           </button>
@@ -290,7 +317,7 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
       </div>
 
-      <div className="rounded-xl bg-card p-5 border border-border">
+      <div className="rounded-xl bg-card p-5 border border-border shadow-md">
         <div className="flex items-start justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
@@ -358,7 +385,7 @@ export default function TestModul({ onSonuc }: Props) {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className={`mt-6 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise ${isKadinTesti ? "bg-pink-600" : "bg-violet-600"}`}
+            className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${isKadinTesti ? "bg-pink-600 shadow-pink-600/25" : "bg-violet-600 shadow-violet-600/25"}`}
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
