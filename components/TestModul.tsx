@@ -36,9 +36,11 @@ export default function TestModul({ onSonuc }: Props) {
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
+  // Kadınlar testi mi kontrolü
+  const isKadinTesti = secilenBaslik === "Kadın Yazarlar Özel Testi";
+
   // Genel Soru Üretici (Dönem testleri için)
   const testiBaslat = useCallback((havuz: LiteratureItem[], baslik: string) => {
-    // Normal motor dış havuz kullanabilir
     import("@/lib/soru").then(({ sorulariUret }) => {
       const uretilenSorular = sorulariUret(havuz);
       setSecilenBaslik(baslik);
@@ -57,7 +59,6 @@ export default function TestModul({ onSonuc }: Props) {
     const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
 
     const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
-      // Sadece kadın yazarlar havuzundan yanlış şıklar (distractor) seçilir
       const digerleri = havuz.filter((x) => x.author !== item.author);
       const yanlisSecenekler = [...digerleri]
         .sort(() => 0.5 - Math.random())
@@ -229,12 +230,12 @@ export default function TestModul({ onSonuc }: Props) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     return (
       <div className="animate-rise rounded-xl bg-card p-6 text-center border border-border max-w-xl mx-auto w-full">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
+        <div className={`mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl ${isKadinTesti ? "bg-pink-500/15 text-pink-500" : "bg-violet-500/10 text-violet-500"}`}>
           <Target className="h-9 w-9" strokeWidth={1.5} />
         </div>
         <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test Bitti</h2>
         <p className="mt-2 text-sm text-muted-foreground">
-          {sorular.length} soruda <span className="font-bold text-violet-500">{dogruSayi}</span> doğru — %{oran}
+          {sorular.length} soruda <span className={`font-bold ${isKadinTesti ? "text-pink-500" : "text-violet-500"}`}>{dogruSayi}</span> doğru — %{oran}
         </p>
         <div className="mt-6">
           <IlerlemeBari mevcut={dogruSayi} toplam={sorular.length} etiket="Doğru cevap" />
@@ -245,7 +246,7 @@ export default function TestModul({ onSonuc }: Props) {
               if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
               else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
             }}
-            className="flex items-center justify-center gap-2 rounded-lg bg-violet-600 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
+            className={`flex items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] ${isKadinTesti ? "bg-pink-600" : "bg-violet-600"}`}
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -276,7 +277,7 @@ export default function TestModul({ onSonuc }: Props) {
           <span className="text-[11px] font-semibold text-muted-foreground">{secilenBaslik || soru.donem}</span>
           <button
             onClick={basaDon}
-            className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-violet-500/30 active:scale-95"
+            className={`inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground ${isKadinTesti ? "hover:ring-pink-500/30" : "hover:ring-violet-500/30"} active:scale-95`}
           >
             <RotateCcw className="h-3 w-3" /> Testten Çık
           </button>
@@ -289,7 +290,7 @@ export default function TestModul({ onSonuc }: Props) {
             {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
           </p>
           {soru.osymFreq && (
-            <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
+            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${isKadinTesti ? "bg-pink-500/15 text-pink-500 ring-pink-500/30" : "bg-osym/15 text-osym ring-osym/30"}`}>
               <Flame className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
@@ -307,8 +308,11 @@ export default function TestModul({ onSonuc }: Props) {
             const gosterDogru = secim !== null && dogruSecenek;
             const gosterYanlis = secildi && !dogruSecenek;
 
-            let stil =
-              "bg-background border border-border text-card-foreground hover:border-violet-500/50 hover:bg-muted/40";
+            let stil = "bg-background border border-border text-card-foreground hover:bg-muted/40";
+            if (!secim) {
+              stil += isKadinTesti ? " hover:border-pink-500/50" : " hover:border-violet-500/50";
+            }
+
             if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
             else if (gosterYanlis) stil = "bg-destructive/10 border-destructive/50 text-destructive";
             else if (secim !== null) stil = "bg-background border-border text-muted-foreground opacity-50";
@@ -348,7 +352,7 @@ export default function TestModul({ onSonuc }: Props) {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-violet-600 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
+            className={`mt-6 flex w-full items-center justify-center gap-2 rounded-lg py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise ${isKadinTesti ? "bg-pink-600" : "bg-violet-600"}`}
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
