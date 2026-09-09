@@ -168,7 +168,7 @@ export function rankedKuyrugaKatil(
         if (!iptalEdildi) {
           onSonuc({
             durum: "eslesti",
-            rakip: { ad: macData.oyuncu1.ad, avatar: macData.oyuncu1.avatar, bot: false },
+            rakip: { ad: macData.oyuncu1.ad, avatar: macData.oyuncu1.avatar, bot: false, id: macData.oyuncu1.id },
             matchId: macId,
             sorular: macData.sorular ?? [],
           });
@@ -241,7 +241,7 @@ async function kuyrugaEkleVeBekle(
           botTimerTemizle();
           onSonuc({
             durum: "eslesti",
-            rakip: { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false },
+            rakip: { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false, id: data.oyuncu2.id },
             matchId,
             sorular: data.sorular ?? [],
           });
@@ -335,7 +335,7 @@ export function odaKurOnline(
     const data = snap.data() as OnlineMac;
     if (data.durum === "aktif" && data.oyuncu2) {
       onRakipKatildi(
-        { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false },
+        { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false, id: data.oyuncu2.id },
         kodStr,
         data.sorular ?? [],
       );
