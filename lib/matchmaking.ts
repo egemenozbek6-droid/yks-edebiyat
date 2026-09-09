@@ -555,12 +555,17 @@ export async function matchTerk(
 ): Promise<void> {
   if (!firebaseAktif || !db || matchId.startsWith("bot_")) return;
   const ref = doc(db!, "matches", matchId);
-  await updateDoc(ref, sanitizePayload({
-    durum: "terk",
-    kazananId: digerOyuncuId ?? null,
-    forfeitedBy: terkEdenId ?? null,
-  }));
-  /** Özel oda rövanş teklifi */
+  await updateDoc(
+    ref,
+    sanitizePayload({
+      durum: "terk",
+      kazananId: digerOyuncuId ?? null,
+      forfeitedBy: terkEdenId ?? null,
+    }),
+  );
+}
+
+/** Özel oda rövanş teklifi */
 export async function rovanşTeklifEt(
   matchId: string,
   oyuncuId: string,
@@ -593,11 +598,6 @@ export async function rovanşBaslatIfHazir(matchId: string): Promise<boolean> {
     const p1 = data.oyuncu1.id;
     const p2 = data.oyuncu2.id;
     if (!istek[p1] || !istek[p2]) return false;
-
-    // Zaten yeniden başladıysa tekrarlama
-    if (data.durum === "aktif" && (data as { rematchTur?: number }).rematchTur) {
-      // devam
-    }
 
     const soruSayisi = data.soruSayisi || 5;
     const yeniSorular = soruUret(soruSayisi);
@@ -663,10 +663,9 @@ export function rovanşDinle(
     ) {
       onBasladi(
         data.sorular ?? [],
-        { ad: rakip.ad, avatar: rakip.avatar, bot: false },
+        { ad: rakip.ad, avatar: rakip.avatar, bot: false, id: rakip.id },
         oyuncuNum,
       );
     }
   });
-}
 }
