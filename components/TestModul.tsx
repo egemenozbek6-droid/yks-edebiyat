@@ -1,33 +1,72 @@
 "use client";
 
 import { useCallback, useState } from "react";
-import { ArrowRight, Brain, Check, Flame, RotateCcw, Target, X } from "lucide-react";
+import { 
+  ArrowLeft,
+  ArrowRight, 
+  BookOpen,
+  Brain, 
+  Check, 
+  ChevronRight,
+  Flame, 
+  HeartHandshake,
+  RotateCcw, 
+  Target, 
+  X 
+} from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
-import { anaDonemler, anaDonemFiltrele, type AnaDonem } from "@/src/data";
+import { anaDonemler, anaDonemFiltrele, type AnaDonem, type LiteratureItem } from "@/src/data";
 import { sorulariUret, type Soru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
+import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
 
 type Props = {
   onSonuc?: (dogruMu: boolean, donem: string) => void;
 };
 
+type SayfaDurumu = "ana_secim" | "donem_secimi" | "test";
+
 export default function TestModul({ onSonuc }: Props) {
-  const [secilenDonem, setSecilenDonem] = useState<AnaDonem | null>(null);
+  const [durum, setDurum] = useState<SayfaDurumu>("ana_secim");
+  const [secilenBaslik, setSecilenBaslik] = useState<string>("");
   const [sorular, setSorular] = useState<Soru[]>([]);
   const [aktif, setAktif] = useState(0);
   const [secim, setSecim] = useState<string | null>(null);
   const [dogruSayi, setDogruSayi] = useState(0);
   const [bitti, setBitti] = useState(false);
 
-  const basla = useCallback((donem: AnaDonem) => {
-    const havuz = anaDonemFiltrele(donem);
-    setSecilenDonem(donem);
-    setSorular(sorulariUret(havuz));
+  // Havuzdan soru üretip testi başlatan çekirdek fonksiyon
+  const testiBaslat = useCallback((havuz: LiteratureItem[], baslik: string) => {
+    const uretilenSorular = sorulariUret(havuz);
+    setSecilenBaslik(baslik);
+    setSorular(uretilenSorular);
     setAktif(0);
     setSecim(null);
     setDogruSayi(0);
     setBitti(false);
+    setDurum("test");
   }, []);
+
+  // Dönem bazlı testi başlat
+  const donemTestiBaslat = useCallback((donem: AnaDonem) => {
+    const havuz = anaDonemFiltrele(donem);
+    testiBaslat(havuz, donem);
+  }, [testiBaslat]);
+
+  // Kadın yazarlar testini başlat
+  const kadinYazarlarTestiBaslat = useCallback(() => {
+    testiBaslat(kadinYazarlarData as unknown as LiteratureItem[], "Kadın Yazarlar");
+  }, [testiBaslat]);
+
+  const basaDon = () => {
+    setDurum("ana_secim");
+    setSecilenBaslik("");
+    setSorular([]);
+    setAktif(0);
+    setSecim(null);
+    setDogruSayi(0);
+    setBitti(false);
+  };
 
   const cevapla = (secenek: string) => {
     if (secim) return;
@@ -48,16 +87,69 @@ export default function TestModul({ onSonuc }: Props) {
     setSecim(null);
   };
 
-  // Dönem seçim ekranı
-  if (!secilenDonem || sorular.length === 0) {
+  // 1. ANA SEÇİM EKRANI (Dönem Testleri veya Kadın Yazarlar)
+  if (durum === "ana_secim") {
     return (
-      <div className="animate-rise">
-        <div className="mb-6 rounded-xl bg-card p-5 border border-border text-center ">
-          <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-lg bg-violet-500/10 text-violet-500">
-            <Brain className="h-6 w-6" strokeWidth={1.5} />
+      <div className="animate-rise flex-1 flex flex-col justify-center max-w-xl mx-auto w-full py-4 space-y-3">
+        <div className="text-center mb-4">
+          <div className="mx-auto mb-3 grid h-14 w-14 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
+            <Brain className="h-7 w-7" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-xl font-bold tracking-tight text-balance text-card-foreground">Bir dönem seç</h2>
-          <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
+          <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Test Modu</h2>
+          <p className="text-xs text-muted-foreground mt-1">Çözmek istediğin test kategorisini belirle</p>
+        </div>
+
+        {/* Seçenek 1: Dönem Testleri */}
+        <button
+          onClick={() => setDurum("donem_secimi")}
+          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-lg bg-blue-500/10 text-blue-500 flex items-center justify-center shrink-0">
+              <BookOpen className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-foreground">Dönem Testleri</h3>
+              <p className="text-[11px] text-muted-foreground">Geçiş, Divan, Tanzimat, Millî Edebiyat ve Cumhuriyet</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
+        </button>
+
+        {/* Seçenek 2: Kadın Yazar & Eserler */}
+        <button
+          onClick={kadinYazarlarTestiBaslat}
+          className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-rose-500"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="w-10 h-10 rounded-lg bg-rose-500/10 text-rose-500 flex items-center justify-center shrink-0">
+              <HeartHandshake className="w-5 h-5" />
+            </div>
+            <div>
+              <h3 className="font-bold text-sm text-foreground">Kadın Yazarlar & Eserleri</h3>
+              <p className="text-[11px] text-muted-foreground">Fatma Aliye'den Latife Tekin'e kadın yazarlar özel testi</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0" />
+        </button>
+      </div>
+    );
+  }
+
+  // 2. DÖNEM SEÇİM ALTI (Dönem Testleri Seçildiğinde)
+  if (durum === "donem_secimi") {
+    return (
+      <div className="animate-rise max-w-xl mx-auto w-full py-2">
+        <button
+          onClick={() => setDurum("ana_secim")}
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground mb-4 transition"
+        >
+          <ArrowLeft className="w-4 h-4" /> Kategorilere Dön
+        </button>
+
+        <div className="mb-6 rounded-xl bg-card p-5 border border-border text-center">
+          <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">Bir Dönem Seç</h2>
+          <p className="mx-auto mt-1 max-w-sm text-xs leading-relaxed text-muted-foreground">
             Eksik hissettiğin edebiyat dönemini seç ve kendini dene.
           </p>
         </div>
@@ -68,11 +160,11 @@ export default function TestModul({ onSonuc }: Props) {
             return (
               <button
                 key={donem}
-                onClick={() => basla(donem)}
+                onClick={() => donemTestiBaslat(donem)}
                 className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left transition active:scale-[0.99] ${
                   tumMu
                     ? "bg-violet-500 text-white shadow-md hover:brightness-110"
-                    : "bg-card text-card-foreground shadow-sm hover:shadow-md"
+                    : "bg-card text-card-foreground shadow-sm hover:shadow-md border border-border"
                 }`}
               >
                 {tumMu ? (
@@ -91,15 +183,15 @@ export default function TestModul({ onSonuc }: Props) {
     );
   }
 
-  // Sonuç ekranı
+  // 3. SONUÇ EKRANI
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
     return (
-      <div className="animate-rise rounded-xl bg-card p-6 text-center border border-border">
-        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl bg-violet-500/10 text-violet-500 ">
+      <div className="animate-rise rounded-xl bg-card p-6 text-center border border-border max-w-xl mx-auto w-full">
+        <div className="mx-auto mb-6 grid h-20 w-20 place-items-center rounded-xl bg-violet-500/10 text-violet-500">
           <Target className="h-9 w-9" strokeWidth={1.5} />
         </div>
-        <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test bitti</h2>
+        <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test Bitti</h2>
         <p className="mt-2 text-sm text-muted-foreground">
           {sorular.length} soruda <span className="font-bold text-violet-500">{dogruSayi}</span> doğru — %{oran}
         </p>
@@ -108,31 +200,31 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
         <div className="mt-7 grid grid-cols-2 gap-3">
           <button
-            onClick={() => basla(secilenDonem)}
+            onClick={() => {
+              if (secilenBaslik === "Kadın Yazarlar") kadinYazarlarTestiBaslat();
+              else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
+            }}
             className="flex items-center justify-center gap-2 rounded-lg bg-violet-600 py-3 text-sm font-semibold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
           <button
-            onClick={() => {
-              setSecilenDonem(null);
-              setSorular([]);
-            }}
+            onClick={basaDon}
             className="rounded-lg bg-muted py-3 text-sm font-semibold text-muted-foreground shadow-sm transition hover:text-foreground active:scale-[0.98]"
           >
-            Dönem Değiştir
+            Test Menüsüne Dön
           </button>
         </div>
       </div>
     );
   }
 
-  // Soru ekranı
+  // 4. AKTİF TEST / SORU EKRANI
   const soru = sorular[aktif];
 
   return (
-    <div className="animate-rise">
-      <div className="mb-6 rounded-xl bg-card border border-border p-3">
+    <div className="animate-rise max-w-xl mx-auto w-full">
+      <div className="mb-4 rounded-xl bg-card border border-border p-3">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -140,15 +232,12 @@ export default function TestModul({ onSonuc }: Props) {
           sagEtiket={`${aktif + 1} / ${sorular.length} · ${dogruSayi} doğru`}
         />
         <div className="mt-3 flex items-center justify-between">
-          <span className="text-[11px] font-semibold text-muted-foreground">{soru.donem}</span>
+          <span className="text-[11px] font-semibold text-muted-foreground">{secilenBaslik || soru.donem}</span>
           <button
-            onClick={() => {
-              setSecilenDonem(null);
-              setSorular([]);
-            }}
+            onClick={basaDon}
             className="inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground hover:ring-violet-500/30 active:scale-95"
           >
-            <RotateCcw className="h-3 w-3" /> Dönemi değiştir
+            <RotateCcw className="h-3 w-3" /> Testi Bırak
           </button>
         </div>
       </div>
