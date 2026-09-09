@@ -108,8 +108,8 @@
     "id": 310,
     "author": "Halide Edip Adıvar",
     "work": "Handan",
-    "period": "Milli Edebiyat Öncesi / Geçiş",
-    "genre": "Roman (Mektup Biçiminde)",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Roman (Mektup Biçiminde Psikolojik)",
     "info": "Türk edebiyatında mektup tarzında yazılmış ilk başarılı psikolojik romandır. Handan ile Refik Cemal arasındaki karmaşık aşkın ruh tahlillerini içerir.",
     "keywords": ["Handan", "Refik Cemal", "Neriman", "Mektup-Roman", "Ruh Tahlili"],
     "osym_stats": {
@@ -121,7 +121,7 @@
     "id": 311,
     "author": "Halide Edip Adıvar",
     "work": "Mor Salkımlı Ev",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Anı (Hatıra)",
     "info": "Yazarın Beşiktaş'taki çocukluk günlerinden başlayarak II. Meşrutiyet ve I. Dünya Savaşı yıllarına kadarki sivil hayatını anlattığı edebi hatıratıdır.",
     "keywords": ["Beşiktaş", "Çocukluk Anıları", "II. Meşrutiyet", "Edebi Hatırat"],
@@ -134,8 +134,8 @@
     "id": 312,
     "author": "Halide Edip Adıvar",
     "work": "Türk'ün Ateşle İmtihanı",
-    "period": "Milli Edebiyat / Cumhuriyet",
-    "genre": "Anı (Kurtuluş Savaşı)",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Anı (Kurtuluş Savaşı Hatıraları)",
     "info": "1918 Mondros Mütarekesi'nden başlayarak Ankara hükümetine katılması, onbaşı rütbesiyle Sakarya ve Dumlupınar cephelerinde bizzat yaşadıklarını anlattığı Kurtuluş Savaşı anısıdır.",
     "keywords": ["Kurtuluş Savaşı Anısı", "Onbaşı Halide", "Garp Cephesi", "Milli Mücadele"],
     "osym_stats": {
@@ -204,7 +204,7 @@
     "id": 318,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Ankara",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Tezli Roman",
     "info": "Selma Hanım'ın hayatı etrafında üç dönemin Ankara'sını anlatır: Millî Mücadele'nin heyecanı, zafer sonrası Cumhuriyet coşkusu ve sonrasındaki bürokratik yozlaşma.",
     "keywords": ["Selma Hanım", "Binbaşı Hakkı Bey", "Neşet Sabit", "Üç Dönem Ankara"],
@@ -226,7 +226,7 @@
     "id": 320,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Panorama",
-    "period": "Cumhuriyet Dönemi Romanı",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Nehir Roman",
     "info": "Cumhuriyet devrimlerinin toplumdaki etkilerini ve Atatürk'ün vefatından sonraki siyasi-toplumsal savrulmaları iki ciltte tahlil eden dönem romanıdır.",
     "keywords": ["Devrimlerin Eleştirisi", "Toplumsal Çözülme", "İki Cilt", "Dönem Panoraması"]
@@ -235,7 +235,7 @@
     "id": 321,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Hep O Şarkı",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Roman",
     "info": "Sultan Abdülaziz döneminin konak yaşantısını Münire Hanım ile Beylerbeyli Cemil Bey arasındaki melankolik aşk üzerinden anlatan nehir roman serisinin ilk tarihsel halkasıdır.",
     "keywords": ["Sultan Abdülaziz Dönemi", "Münire", "Cemil Bey", "Konak Yaşamı"],
@@ -248,7 +248,7 @@
     "id": 322,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Anamın Kitabı",
-    "period": "Cumhuriyet Dönemi",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Anı (Çocukluk Hatıraları)",
     "info": "Yazarın Manisa'da geçen çocukluk günlerini, aile bağlarını ve ardından taşındıkları İskenderiye yıllarını annesinin şefkati merkezinde anlattığı hatıratıdır.",
     "keywords": ["Manisa", "Çocukluk Hatıraları", "İskenderiye", "Anne Sevgisi"],
@@ -261,7 +261,7 @@
     "id": 323,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Zoraki Diplomat",
-    "period": "Cumhuriyet Dönemi",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Anı (Siyasi-Diplomatik)",
     "info": "Tiran, Prag, Lahey ve Bern gibi Avrupa başkentlerinde elçilik yaptığı diplomatlık yıllarındaki siyasi gözlem ve hatıralarını anlattığı eseridir.",
     "keywords": ["Diplomatlık Anıları", "Elçilik Yılları", "Avrupa Siyaseti", "Hatıra"]
@@ -270,7 +270,7 @@
     "id": 324,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Gençlik ve Edebiyat Hatıraları",
-    "period": "Cumhuriyet Dönemi",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Edebi Anı",
     "info": "Fecr-i Ati topluluğundan başlayarak Yahya Kemal, Ahmet Haşim gibi dönemin büyük edebiyatçılarıyla olan dostluklarını ve edebi polemiklerini anlattığı hatıratıdır.",
     "keywords": ["Edebi Portreler", "Fecr-i Ati", "Ahmet Haşim", "Yahya Kemal"]
@@ -279,7 +279,7 @@
     "id": 325,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Erenlerin Bağından",
-    "period": "Milli Edebiyat Öncesi / Fecr-i Ati",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Mensur Şiir",
     "info": "Tasavvufi ve mistik bir duyarlılıkla, son derece ritmik ve lirik bir nesir diliyle kaleme aldığı mensur şiir türündeki başyapıtıdır.",
     "keywords": ["Mensur Şiir", "Tasavvufi Duyarlılık", "Lirik Nesir"]
@@ -288,7 +288,7 @@
     "id": 326,
     "author": "Yakup Kadri Karaosmanoğlu",
     "work": "Nirvana",
-    "period": "Fecr-i Ati Dönemi",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Tiyatro (Dram)",
     "info": "Yakup Kadri'nin Fecr-i Ati yıllarında Henrik Ibsen tiyatrosunun etkisiyle yazdığı, bireysel bunalım ve psikolojik çözülmeyi işleyen tiyatro oyunudur.",
     "keywords": ["Ibsen Etkisi", "Tiyatro", "Bireysel Bunalım"]
@@ -354,7 +354,7 @@
     "id": 332,
     "author": "Reşat Nuri Güntekin",
     "work": "Yaprak Dökümü",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Roman",
     "info": "Emekli memur Ali Rıza Bey'in ailesinin, modern hayata ve tüketime kapılarak ahlaki ve maddi çöküşle dağılmasını anlatan romandır.",
     "keywords": ["Ali Rıza Bey", "Şevket", "Ferhunde", "Leyla ve Necla", "Aile Dağılması"],
@@ -367,7 +367,7 @@
     "id": 333,
     "author": "Reşat Nuri Güntekin",
     "work": "Yeşil Gece",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Tezli Roman",
     "info": "Medreseden yetişen ancak akıl ve bilimi seçen Şahin Öğretmen'in, Sarıova kasabasında din bezirganlarıyla verdiği aydınlanma mücadelesidir.",
     "keywords": ["Şahin Öğretmen", "Sarıova", "Yobazlık ile Savaş", "Cumhuriyet Devrimleri"]
@@ -376,7 +376,7 @@
     "id": 334,
     "author": "Reşat Nuri Güntekin",
     "work": "Miskinler Tekkesi",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Roman",
     "info": "Soyluluktan düşmüş bir paşa torununun dilenciliğe başlaması üzerinden Osmanlı'dan kalan tembellik felsefesini ve dilencilik kurumunu hicveder.",
     "keywords": ["Dilencilik Kurumu", "Tembellik Felsefesi", "Sosyal Hiciv", "Paşa Torunu"]
@@ -385,7 +385,7 @@
     "id": 335,
     "author": "Reşat Nuri Güntekin",
     "work": "Anadolu Notları",
-    "period": "Milli Edebiyat / Cumhuriyet",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Gezi Yazısı",
     "info": "Maarif Müfettişi olarak Anadolu'yu gezen yazarın taşra hayatını, otellerini, trenlerini ve köylülerini mizahi ve gerçekçi gözlemlerle anlattığı gezi kitabıdır.",
     "keywords": ["Maarif Müfettişliği", "Taşra Gözlemleri", "Gezi Yazısı", "Anadolu Gerçeği"],
@@ -398,7 +398,7 @@
     "id": 336,
     "author": "Reşat Nuri Güntekin",
     "work": "Balıkesir Muhasebecisi",
-    "period": "Cumhuriyet Dönemi Tiyatrosu",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Tiyatro (Komedi-Dram)",
     "info": "Dürüst bir muhasebeci olan Tahir Bey'in ailesinin para ve lüks hırsıyla ahlaki değerlerinden uzaklaşmasını ve Tahir Bey'in namus mücadelesini hicveden tiyatro oyunudur.",
     "keywords": ["Tahir Bey", "Para Hırsı", "Ahlak Çöküşü", "Tiyatro Oyunu"],
@@ -411,7 +411,7 @@
     "id": 337,
     "author": "Reşat Nuri Güntekin",
     "work": "Tanrı Dağı Ziyafeti",
-    "period": "Cumhuriyet Dönemi Tiyatrosu",
+    "period": "Milli Edebiyat Dönemi",
     "genre": "Tiyatro (Siyasi Hiciv)",
     "info": "Hayali bir Orta Asya ülkesinde geçen; siyasilerin ikiyüzlülüğünü, çıkar çatışmalarını ve koltuk sevdasını alegorik ve mizahi bir dille eleştiren oyunudur.",
     "keywords": ["Siyasi Hiciv", "Koltuk Sevdası", "Alegori", "Tiyatro"]
@@ -429,8 +429,8 @@
     "id": 339,
     "author": "Yahya Kemal Beyatlı",
     "work": "Kendi Gök Kubbemiz",
-    "period": "Milli Edebiyat Dönemi (Bağımsız)",
-    "genre": "Şiir",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir (Neoklasik / Bağımsız)",
     "info": "Türk tarihini, fetih coşkusunu, musikiyi ve İstanbul sevgisini neoklasik tarzda ve aruzun kusursuz ahengiyle işleyen başyapıtıdır (vefatından sonra basılmıştır).",
     "keywords": ["Süleymaniye'de Bayram Sabahı", "Neoklasizm", "Aruz Ustası", "İstanbul Şairi"],
     "osym_stats": {
@@ -442,8 +442,8 @@
     "id": 340,
     "author": "Mehmet Akif Ersoy",
     "work": "Safahat",
-    "period": "Milli Edebiyat Dönemi (Bağımsız)",
-    "genre": "Şiir / Manzum Hikaye",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir / Manzum Hikaye (Bağımsız)",
     "info": "Yedi kitaptan oluşan dev anıt eserdir. İslamcılık düşüncesi, cemiyet dertleri, Çanakkale Destanı ve Asım'ın Nesli ideali aruz vezniyle sokak dili birleştirilerek anlatılır.",
     "keywords": ["7 Bölüm", "Asım'ın Nesli", "Süleymaniye Kürsüsünde", "Manzum Hikaye"],
     "osym_stats": {
@@ -455,8 +455,8 @@
     "id": 341,
     "author": "Faruk Nafiz Çamlıbel",
     "work": "Han Duvarları",
-    "period": "Milli Edebiyat (Beş Hececiler)",
-    "genre": "Şiir (Epik-Lirik)",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir (Beş Hececiler)",
     "info": "Kayseri Lisesi'ne öğretmen olarak giderken bindiği yaylı arabada Maraşlı Şeyhoğlu Satılmış'ın hüzünlü koşmaları üzerinden Anadolu gerçeğini anlattığı abidevi şiirdir.",
     "keywords": ["Maraşlı Şeyhoğlu", "Yaylı Araba", "Anadolu Seferi", "Memleket Şiiri"],
     "osym_stats": {
@@ -468,8 +468,8 @@
     "id": 342,
     "author": "Faruk Nafiz Çamlıbel",
     "work": "Sanat",
-    "period": "Milli Edebiyat (Beş Hececiler)",
-    "genre": "Şiir (Manifesto)",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir (Memleketçi Manifesto)",
     "info": "'Başka sanat bilmeyiz karşımızda dururken / Yazılmamış bir destan gibi Anadolu'muz' diyerek Batı özentisi sanatı reddeden Memleketçi Edebiyat'ın ilk manifestosudur.",
     "keywords": ["Memleketçi Manifesto", "Başka Sanat Bilmeyiz", "Anadolu Aşkı"]
   },
@@ -477,8 +477,8 @@
     "id": 343,
     "author": "Halit Fahri Ozansoy",
     "work": "Aruza Veda",
-    "period": "Milli Edebiyat (Beş Hececiler)",
-    "genre": "Şiir",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Şiir (Beş Hececiler)",
     "info": "Genç şairlerin yüzyıllardır kullanılan aruz veznini terk edip millî vezin olan heceye geçişlerini hüzünlü ve sembolik bir dille özetleyen veda şiiridir.",
     "keywords": ["Aruza Veda", "Heceye Geçiş", "Beş Hececiler Eşiği"]
   },
@@ -486,118 +486,9 @@
     "id": 344,
     "author": "Yusuf Ziya Ortaç",
     "work": "Binnaz",
-    "period": "Milli Edebiyat (Beş Hececiler)",
-    "genre": "Tiyatro (Manzum)",
+    "period": "Milli Edebiyat Dönemi",
+    "genre": "Tiyatro (Manzum / Beş Hececiler)",
     "info": "Lale Devri'nde geçen ve Türk tiyatro tarihinde hece ölçüsüyle yazılmış ilk başarılı manzum piyes kabul edilen meşhur oyundur.",
     "keywords": ["Heceyle Yazılan İlk Oyun", "Lale Devri", "Binnaz", "Akbaba Dergisi"]
-  },
-  {
-    "id": 345,
-    "author": "Karacaoğlan",
-    "work": "Koşmalar ve Semailer",
-    "period": "Aşık Edebiyatı (17.yy)",
-    "genre": "Lirik Halk Şiiri",
-    "info": "Toroslar'da Türkmen aşiretleri arasında yaşayan; divan şiirinden ve aruzdan hiç etkilenmeyen, sadece heceyle doğa ve sevgili güzelliğini anlatan en büyük lirik saz şairidir.",
-    "keywords": ["Toroslar", "Güzelleme Ustası", "Arı Türkçe", "Aruz Kullanmayan"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 6 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 346,
-    "author": "Köroğlu",
-    "work": "Koçaklamalar",
-    "period": "Aşık Edebiyatı (16.yy)",
-    "genre": "Epik Halk Şiiri (Koçaklama)",
-    "info": "'Benden selam olsun Bolu Beyi'ne' dizeleriyle Bolu Beyi'nin zulmüne başkaldıran, tüfeğin icadıyla mertliğin bozulduğunu haykıran yiğitlik şairidir.",
-    "keywords": ["Bolu Beyi", "Koçaklama", "Tüfek İcat Oldu Mertlik Bozuldu", "Çamlıbel"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 347,
-    "author": "Dadaloğlu",
-    "work": "Avşar Koçaklamaları",
-    "period": "Aşık Edebiyatı (19.yy)",
-    "genre": "Koçaklama / Ağıt",
-    "info": "Fırka-i İslahiye ordusunun göçebe Avşar Türkmenlerini zorla iskân etme kararına 'Ferman padişahınsa dağlar bizimdir' diyerek sazıyla direnen son büyük isyan şairidir.",
-    "keywords": ["Ferman Padişahın Dağlar Bizimdir", "Avşar Boyu", "Zorunlu İskân", "Koçaklama"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 348,
-    "author": "Seyrani",
-    "work": "Taşlamalar",
-    "period": "Aşık Edebiyatı (19.yy)",
-    "genre": "Hiciv (Taşlama)",
-    "info": "Develili halk ozanı; İstanbul'daki rüşvetçi paşaları, sahte hocaları ve kadıları acımasızca taşladığı için sürgün edilen halk şiirinin en keskin hiciv ustasıdır.",
-    "keywords": ["Taşlama Ustası", "Sosyal Eleştiri", "Develi", "Korkusuz Hiciv"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 3 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 349,
-    "author": "Yunus Emre",
-    "work": "Risaletü'n-Nushiyye",
-    "period": "Tekke (Tasavvuf) Edebiyatı (13.yy)",
-    "genre": "Didaktik Mesnevi",
-    "info": "Yunus'un ilahilerinden farklı olarak aruz vezniyle yazdığı; akıl, sabır, kibir ve nefis terbiyesini alegorik ruh-beden savaşı üzerinden öğütleyen nasihatnamesidir.",
-    "keywords": ["Aruzla Yazılan Eser", "Nasihatname", "Nefis Terbiyesi", "Alegori"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 350,
-    "author": "Hacı Bektaş Veli",
-    "work": "Makalat",
-    "period": "Tekke (Tasavvuf) Edebiyatı (13.yy)",
-    "genre": "Tasavvuf Kitabı",
-    "info": "Kişinin nefsini yenip kâmil insan olabilmesi için geçmesi gereken 'Şeriat, Tarikat, Marifet, Hakikat'ten oluşan 'Dört Kapı Kırk Makam' esasını anlatan temel eserdir.",
-    "keywords": ["Dört Kapı Kırk Makam", "Kâmil İnsan", "Bektaşilik Esasları"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 4 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 351,
-    "author": "Pir Sultan Abdal",
-    "work": "Nefesler ve Deyişler",
-    "period": "Tekke (Tasavvuf) Edebiyatı (16.yy)",
-    "genre": "Nefes / İlahi",
-    "info": "Sivas Banaz'da yaşayan; Şah Tahmasb'ı desteklediği için Hızır Paşa tarafından asılan, sazı ve inancı uğruna ölümü göze alan Alevi-Bektaşi lirik isyan şairidir.",
-    "keywords": ["Hızır Paşa", "Sivas Banaz", "Dönen Dönsün Ben Dönmezem", "Nefes"],
-    "osym_stats": {
-      "is_banko": true,
-      "osym_freq": "Son 10 Yılda 5 Kez Çıktı 🔥"
-    }
-  },
-  {
-    "id": 352,
-    "author": "Kaygusuz Abdal",
-    "work": "Budalaname",
-    "period": "Tekke (Tasavvuf) Edebiyatı (15.yy)",
-    "genre": "Mensur Tasavvuf Eseri",
-    "info": "Alevi-Bektaşi edebiyatının kurucularından olan şairin, ham dervişlere nefis terbiyesini ve tasavvuf inceliklerini sade Türkçe ve mizahi üslupla anlattığı nesir kitabıdır.",
-    "keywords": ["Sade Nesir", "Mizahi Üslup", "Budalaname", "Nefis Eğitimi"]
-  },
-  {
-    "id": 353,
-    "author": "Kaygusuz Abdal",
-    "work": "Şathiyeler",
-    "period": "Tekke (Tasavvuf) Edebiyatı (15.yy)",
-    "genre": "Şathiye (Mizahi Tasavvuf Şiiri)",
-    "info": "'Yücelerden yüce Tanrı / Gündüzün seyrana çıktım' gibi dizelerle Allah'la şakalaşır gibi görünen ama derin tasavvufi sırlar içeren edebiyatımızın en ünlü şathiyeleridir.",
-    "keywords": ["Şathiye Türünün Zirvesi", "Alaycı Üslup", "Tasavvufi Neşe", "Nefes"]
   }
 ]
