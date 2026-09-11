@@ -28,7 +28,7 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Setup Gradle 8.11.1
+      - name: Setup Gradle 8.13
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: '8.13'
@@ -45,6 +45,12 @@ jobs:
         run: |
           cd android
           gradle bundleRelease assembleDebug --stacktrace
+
+      - name: Sign Release AAB
+        run: |
+          cd android/app/build/outputs/bundle/release
+          keytool -genkeypair -v -keystore release.keystore -alias edebikart -keyalg RSA -keysize 2048 -validity 10000 -storepass edebikart123 -keypass edebikart123 -dname "CN=Edebikart, OU=Mobile, O=Edebikart, L=Bursa, S=Bursa, C=TR"
+          jarsigner -verbose -sigalg SHA256withRSA -digestalg SHA-256 -keystore release.keystore -storepass edebikart123 -keypass edebikart123 app-release.aab edebikart
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
