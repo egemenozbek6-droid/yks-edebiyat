@@ -16,6 +16,7 @@ export type Soru = {
   // "eser2" -> Eser-Kahraman testi: kahraman verilir, eser sorulur
   tip: "eser" | "yazar" | "kahraman" | "eser2";
   osymFreq?: string;
+  aciklama?: string;
 };
 
 export function karistir<T>(dizi: T[]): T[] {
