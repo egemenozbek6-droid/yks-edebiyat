@@ -14,7 +14,8 @@ import {
   RotateCcw, 
   Target, 
   Users,
-  X 
+  X,
+  type LucideIcon
 } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
 import { anaDonemler, anaDonemFiltrele, type AnaDonem, type LiteratureItem } from "@/src/data";
@@ -29,7 +30,18 @@ type Props = {
 
 type SayfaDurumu = "ana_secim" | "donem_secimi" | "test";
 
-type EserKahramanItem = { work: string; character: string; author?: string; period?: string };
+type EserKahramanItem = {
+  id: string;
+  work: string;
+  character: string;
+  author: string;
+  period: string;
+  genre: "roman" | "hikaye" | "tiyatro" | "siir";
+  difficulty: "kolay" | "orta" | "zor";
+  isSideCharacter: boolean;
+  hint?: string;
+  tags?: string[];
+};
 
 // ---------------------------------------------------------------------------
 // AKSAN PALETİ
@@ -46,6 +58,7 @@ type Aksan = {
   hoverBorder: string;   // şık hover border rengi (soru ekranı)
   hoverRing: string;     // "Testten Çık" hover ring rengi
   rozetBg: string;       // ÖSYM/kategori rozeti arka plan + metin + ring
+  rozetIkon: LucideIcon; // rozetin ikonu — kategoriye özgü (ana seçim kartındaki ikonla aynı)
 };
 
 const AKSAN_PALETI: Record<string, Aksan> = {
@@ -57,6 +70,7 @@ const AKSAN_PALETI: Record<string, Aksan> = {
     hoverBorder: "hover:border-violet-500/50",
     hoverRing: "hover:ring-violet-500/30",
     rozetBg: "bg-osym/15 text-osym ring-osym/30",
+    rozetIkon: Flame,
   },
   "Kadın Yazarlar Özel Testi": {
     ringSoft: "bg-pink-500/15 text-pink-500 ring-pink-500/30",
@@ -66,6 +80,7 @@ const AKSAN_PALETI: Record<string, Aksan> = {
     hoverBorder: "hover:border-pink-500/50",
     hoverRing: "hover:ring-pink-500/30",
     rozetBg: "bg-pink-500/15 text-pink-500 ring-pink-500/30",
+    rozetIkon: Flower,
   },
   "Eser - Kahraman Testi": {
     ringSoft: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
@@ -75,6 +90,7 @@ const AKSAN_PALETI: Record<string, Aksan> = {
     hoverBorder: "hover:border-amber-500/50",
     hoverRing: "hover:ring-amber-500/30",
     rozetBg: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
+    rozetIkon: Users,
   },
 };
 
@@ -157,6 +173,14 @@ export default function TestModul({ onSonuc }: Props) {
     const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
       const eserSoruluyor = Math.random() < 0.5; // true: eser verilir, kahraman sorulur
 
+      // Cevaptan sonra gösterilecek bilgi notu: hint varsa onu, yoksa
+      // isSideCharacter durumuna göre kısa bir otomatik açıklama üret.
+      const aciklama =
+        item.hint ??
+        `${item.character}, "${item.work}" adlı eserin ${
+          item.isSideCharacter ? "önemli yan karakterlerinden biridir" : "başkahramanıdır"
+        }.`;
+
       if (eserSoruluyor) {
         const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character)))
           .filter((k) => k !== item.character);
@@ -164,14 +188,15 @@ export default function TestModul({ onSonuc }: Props) {
         const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
 
         return {
-          id: index + 1,
+          id: item.id ?? `ek_${index}`,
           tip: "kahraman" as const,
           vurgu: item.work,
           metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
           dogru: item.character,
           secenekler,
-          donem: item.period ?? "",
+          donem: item.period,
           osymFreq: "Eser - Kahraman",
+          aciklama,
         };
       }
 
@@ -181,14 +206,15 @@ export default function TestModul({ onSonuc }: Props) {
       const secenekler = [...yanlislar, item.work].sort(() => 0.5 - Math.random());
 
       return {
-        id: index + 1,
+        id: item.id ?? `ek_${index}`,
         tip: "eser2" as const,
         vurgu: item.character,
         metin: "Bu karakter aşağıdaki eserlerden hangisinde geçer?",
         dogru: item.work,
         secenekler,
-        donem: item.period ?? "",
+        donem: item.period,
         osymFreq: "Eser - Kahraman",
+        aciklama,
       };
     });
 
@@ -316,7 +342,7 @@ export default function TestModul({ onSonuc }: Props) {
                 <div className="flex items-center gap-2">
                   <h3 className="font-bold text-sm text-foreground">Eser - Kahraman</h3>
                   <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 shrink-0">
-                    Yeni
+                    Karakter
                   </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
@@ -471,7 +497,7 @@ export default function TestModul({ onSonuc }: Props) {
           </p>
           {soru.osymFreq && (
             <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksan.rozetBg}`}>
-              <Flame className="h-3 w-3" strokeWidth={2} />
+              <aksan.rozetIkon className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
           )}
@@ -528,6 +554,13 @@ export default function TestModul({ onSonuc }: Props) {
             );
           })}
         </div>
+
+        {secim !== null && soru.aciklama && (
+          <div className={`mt-4 rounded-lg px-3.5 py-3 text-xs leading-relaxed ${aksan.kutuYumusak}`}>
+            <span className="font-bold">Bilgi notu: </span>
+            {soru.aciklama}
+          </div>
+        )}
 
         {secim !== null && (
           <button
