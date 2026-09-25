@@ -254,19 +254,27 @@ export default function TestModul({ onSonuc }: Props) {
     setBitti(false);
   };
 
-  const cevapla = (secenek: string) => {
-    if (secim) return;
-    const soru = sorular[aktif];
-    const dogruMu = secenek === soru.dogru;
-    if (dogruMu) {
-      sfxCorrect();
-      setDogruSayi((prev) => prev + 1);
-    } else {
-      sfxWrong();
-    }
-    setSecim(secenek);
-    onSonuc?.(dogruMu, soru.donem);
-  };
+const cevapla = (secenek: string) => {
+  if (secim) return;
+  const soru = sorular[aktif];
+  const dogruMu = secenek === soru.dogru;
+  if (dogruMu) {
+    sfxCorrect();
+    setDogruSayi((prev) => prev + 1);
+  } else {
+    sfxWrong();
+  }
+  setSecim(secenek);
+  onSonuc?.(dogruMu, soru.donem);
+
+  // Bilgi notu + buton her zaman görünsün
+  setTimeout(() => {
+    document.getElementById("sonraki-btn")?.scrollIntoView({
+      behavior: "smooth",
+      block: "nearest",
+    });
+  }, 80);
+};
 
   const sonraki = () => {
     if (aktif + 1 >= sorular.length) {
