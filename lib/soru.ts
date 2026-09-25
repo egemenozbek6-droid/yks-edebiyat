@@ -11,7 +11,10 @@ export type Soru = {
   secenekler: string[];
   dogru: string;
   donem: string;
-  tip: "eser" | "yazar";
+  // "eser" | "yazar" -> mevcut Dönem/ÖSYM testleri
+  // "kahraman" -> Eser-Kahraman testi: eser verilir, kahraman sorulur
+  // "eser2" -> Eser-Kahraman testi: kahraman verilir, eser sorulur
+  tip: "eser" | "yazar" | "kahraman" | "eser2";
   osymFreq?: string;
 };
 
