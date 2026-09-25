@@ -181,27 +181,28 @@ export default function TestModul({ onSonuc }: Props) {
           item.isSideCharacter ? "önemli yan karakterlerinden biridir" : "başkahramanıdır"
         }.`;
 
-     if (eserSoruluyor) {
-  const ayniEserKarakterleri = new Set(
-    havuz.filter((x) => x.work === item.work).map((x) => x.character)
-  );
-  const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character)))
-    .filter((k) => k !== item.character && !ayniEserKarakterleri.has(k));
-  const yanlislar = digerKahramanlar.sort(() => 0.5 - Math.random()).slice(0, 3);
-  const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
+      if (eserSoruluyor) {
+        const ayniEserKarakterleri = new Set(
+          havuz.filter((x) => x.work === item.work).map((x) => x.character),
+        );
+        const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character))).filter(
+          (k) => k !== item.character && !ayniEserKarakterleri.has(k),
+        );
+        const yanlislar = digerKahramanlar.sort(() => 0.5 - Math.random()).slice(0, 3);
+        const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
 
-  return {
-    id: item.id ?? `ek_${index}`,
-    tip: "kahraman" as const,
-    vurgu: item.work,
-    metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
-    dogru: item.character,
-    secenekler,
-    donem: item.period,
-    osymFreq: "Eser - Kahraman",
-    aciklama,
-  };
-}
+        return {
+          id: item.id ?? `ek_${index}`,
+          tip: "kahraman" as const,
+          vurgu: item.work,
+          metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
+          dogru: item.character,
+          secenekler,
+          donem: item.period,
+          osymFreq: "Eser - Kahraman",
+          aciklama,
+        };
+      }
 
       const digerEserler = Array.from(new Set(havuz.map((x) => x.work)))
         .filter((e) => e !== item.work);
@@ -254,27 +255,26 @@ export default function TestModul({ onSonuc }: Props) {
     setBitti(false);
   };
 
-const cevapla = (secenek: string) => {
-  if (secim) return;
-  const soru = sorular[aktif];
-  const dogruMu = secenek === soru.dogru;
-  if (dogruMu) {
-    sfxCorrect();
-    setDogruSayi((prev) => prev + 1);
-  } else {
-    sfxWrong();
-  }
-  setSecim(secenek);
-  onSonuc?.(dogruMu, soru.donem);
+  const cevapla = (secenek: string) => {
+    if (secim) return;
+    const soru = sorular[aktif];
+    const dogruMu = secenek === soru.dogru;
+    if (dogruMu) {
+      sfxCorrect();
+      setDogruSayi((prev) => prev + 1);
+    } else {
+      sfxWrong();
+    }
+    setSecim(secenek);
+    onSonuc?.(dogruMu, soru.donem);
 
-  // Bilgi notu + buton her zaman görünsün
-  setTimeout(() => {
-    document.getElementById("sonraki-btn")?.scrollIntoView({
-      behavior: "smooth",
-      block: "nearest",
-    });
-  }, 80);
-};
+    setTimeout(() => {
+      document.getElementById("sonraki-btn")?.scrollIntoView({
+        behavior: "smooth",
+        block: "nearest",
+      });
+    }, 80);
+  };
 
   const sonraki = () => {
     if (aktif + 1 >= sorular.length) {
@@ -583,10 +583,10 @@ const cevapla = (secenek: string) => {
             </div>
           )}
           <button
-  id="sonraki-btn"
-  onClick={sonraki}
-  className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksan.buton}`}
->
+            id="sonraki-btn"
+            onClick={sonraki}
+            className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksan.buton}`}
+          >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
           </button>
