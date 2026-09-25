@@ -311,9 +311,11 @@ export default function App() {
               introAktif={introAktif}
             />
           ) : null
-        ) : mod === "test" ? (
-          <TestModul />
-        ) : mod === "osym" ? (
+       ) : mod === "test" ? (
+  <div className="flex flex-1 min-h-0 flex-col">
+    <TestModul />
+  </div>
+) : mod === "osym" ? (
           <OsymSeverModul />
         ) : (
           <DueloModulu
