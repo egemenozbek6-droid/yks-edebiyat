@@ -583,9 +583,10 @@ const cevapla = (secenek: string) => {
             </div>
           )}
           <button
-            onClick={sonraki}
-            className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksan.buton}`}
-          >
+  id="sonraki-btn"
+  onClick={sonraki}
+  className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksan.buton}`}
+>
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
           </button>
