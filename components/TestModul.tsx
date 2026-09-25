@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { 
   ArrowLeft,
   ArrowRight, 
@@ -267,14 +267,19 @@ export default function TestModul({ onSonuc }: Props) {
     }
     setSecim(secenek);
     onSonuc?.(dogruMu, soru.donem);
+  };
 
-    setTimeout(() => {
+  // Cevap seçilince bilgi notu + sonraki butonu görünsün
+  useEffect(() => {
+    if (secim === null) return;
+    const t = window.setTimeout(() => {
       document.getElementById("sonraki-btn")?.scrollIntoView({
         behavior: "smooth",
-        block: "nearest",
+        block: "end",
       });
-    }, 80);
-  };
+    }, 120);
+    return () => window.clearTimeout(t);
+  }, [secim, aktif]);
 
   const sonraki = () => {
     if (aktif + 1 >= sorular.length) {
