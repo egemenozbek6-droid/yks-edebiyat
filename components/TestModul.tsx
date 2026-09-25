@@ -13,6 +13,7 @@ import {
   HeartHandshake,
   RotateCcw, 
   Target, 
+  Users,
   X 
 } from "lucide-react";
 import IlerlemeBari from "@/components/IlerlemeBari";
@@ -20,12 +21,70 @@ import { anaDonemler, anaDonemFiltrele, type AnaDonem, type LiteratureItem } fro
 import { type Soru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
 import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
+import eserKahramanData from "@/src/data/eser_kahraman_test.json";
 
 type Props = {
   onSonuc?: (dogruMu: boolean, donem: string) => void;
 };
 
 type SayfaDurumu = "ana_secim" | "donem_secimi" | "test";
+
+type EserKahramanItem = { work: string; character: string; author?: string; period?: string };
+
+// ---------------------------------------------------------------------------
+// AKSAN PALETİ
+// Her özel test kategorisinin (Kadın Yazarlar, Eser-Kahraman, ileride
+// Şiir-Topluluk / Batı Akımları / Edebi Sanatlar) kendi rengi burada tanımlı.
+// Yeni bir kategori eklerken tek yapman gereken: buraya bir kayıt eklemek.
+// Dönem testleri ve tanımsız/varsayılan durum "violet" kullanır.
+// ---------------------------------------------------------------------------
+type Aksan = {
+  ringSoft: string;      // sonuç ikonu arka plan + ring
+  metinAna: string;      // vurgulu sayı/metin rengi
+  kutuYumusak: string;   // sonuç mesaj kutusu arka plan + metin
+  buton: string;         // "Tekrar Çöz" / "Sonraki Soru" buton arka plan + gölge
+  hoverBorder: string;   // şık hover border rengi (soru ekranı)
+  hoverRing: string;     // "Testten Çık" hover ring rengi
+  rozetBg: string;       // ÖSYM/kategori rozeti arka plan + metin + ring
+};
+
+const AKSAN_PALETI: Record<string, Aksan> = {
+  varsayilan: {
+    ringSoft: "bg-violet-500/15 text-violet-500 ring-violet-500/30",
+    metinAna: "text-violet-500",
+    kutuYumusak: "bg-violet-500/10 text-violet-400",
+    buton: "bg-violet-600 shadow-violet-600/25",
+    hoverBorder: "hover:border-violet-500/50",
+    hoverRing: "hover:ring-violet-500/30",
+    rozetBg: "bg-osym/15 text-osym ring-osym/30",
+  },
+  "Kadın Yazarlar Özel Testi": {
+    ringSoft: "bg-pink-500/15 text-pink-500 ring-pink-500/30",
+    metinAna: "text-pink-500",
+    kutuYumusak: "bg-pink-500/10 text-pink-400",
+    buton: "bg-pink-600 shadow-pink-600/25",
+    hoverBorder: "hover:border-pink-500/50",
+    hoverRing: "hover:ring-pink-500/30",
+    rozetBg: "bg-pink-500/15 text-pink-500 ring-pink-500/30",
+  },
+  "Eser - Kahraman Testi": {
+    ringSoft: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
+    metinAna: "text-amber-500",
+    kutuYumusak: "bg-amber-500/10 text-amber-400",
+    buton: "bg-amber-600 shadow-amber-600/25",
+    hoverBorder: "hover:border-amber-500/50",
+    hoverRing: "hover:ring-amber-500/30",
+    rozetBg: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
+  },
+};
+
+// Soru başlığı, soru.tip değerine göre gösterilecek üst etiket
+const TIP_ETIKETI: Record<Soru["tip"], string> = {
+  eser: "Yazarın eseri",
+  yazar: "Eserin yazarı",
+  kahraman: "Eserin kahramanı",
+  eser2: "Karakterin eseri",
+};
 
 export default function TestModul({ onSonuc }: Props) {
   const [durum, setDurum] = useState<SayfaDurumu>("ana_secim");
@@ -37,6 +96,8 @@ export default function TestModul({ onSonuc }: Props) {
   const [bitti, setBitti] = useState(false);
 
   const isKadinTesti = secilenBaslik === "Kadın Yazarlar Özel Testi";
+  const isEserKahramanTesti = secilenBaslik === "Eser - Kahraman Testi";
+  const aksan = AKSAN_PALETI[secilenBaslik] ?? AKSAN_PALETI.varsayilan;
 
   // Genel Soru Üretici (Dönem testleri için)
   const testiBaslat = useCallback((havuz: LiteratureItem[], baslik: string) => {
@@ -88,10 +149,71 @@ export default function TestModul({ onSonuc }: Props) {
     setDurum("test");
   }, []);
 
+  // Eser - Kahraman için Özel Soru Üretici (iki yönlü: eser->kahraman / kahraman->eser)
+  const eserKahramanTestiBaslat = useCallback(() => {
+    const havuz = eserKahramanData as unknown as EserKahramanItem[];
+    const karisikListe = [...havuz].sort(() => 0.5 - Math.random()).slice(0, 10);
+
+    const uretilenSorular: Soru[] = karisikListe.map((item, index) => {
+      const eserSoruluyor = Math.random() < 0.5; // true: eser verilir, kahraman sorulur
+
+      if (eserSoruluyor) {
+        const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character)))
+          .filter((k) => k !== item.character);
+        const yanlislar = digerKahramanlar.sort(() => 0.5 - Math.random()).slice(0, 3);
+        const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
+
+        return {
+          id: index + 1,
+          tip: "kahraman" as const,
+          vurgu: item.work,
+          metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
+          dogru: item.character,
+          secenekler,
+          donem: item.period ?? "",
+          osymFreq: "Eser - Kahraman",
+        };
+      }
+
+      const digerEserler = Array.from(new Set(havuz.map((x) => x.work)))
+        .filter((e) => e !== item.work);
+      const yanlislar = digerEserler.sort(() => 0.5 - Math.random()).slice(0, 3);
+      const secenekler = [...yanlislar, item.work].sort(() => 0.5 - Math.random());
+
+      return {
+        id: index + 1,
+        tip: "eser2" as const,
+        vurgu: item.character,
+        metin: "Bu karakter aşağıdaki eserlerden hangisinde geçer?",
+        dogru: item.work,
+        secenekler,
+        donem: item.period ?? "",
+        osymFreq: "Eser - Kahraman",
+      };
+    });
+
+    setSecilenBaslik("Eser - Kahraman Testi");
+    setSorular(uretilenSorular);
+    setAktif(0);
+    setSecim(null);
+    setDogruSayi(0);
+    setBitti(false);
+    setDurum("test");
+  }, []);
+
   const donemTestiBaslat = useCallback((donem: AnaDonem) => {
     const havuz = anaDonemFiltrele(donem);
     testiBaslat(havuz, donem);
   }, [testiBaslat]);
+
+  // Sonuç ekranında "Tekrar Çöz" basıldığında hangi üreticinin tekrar
+  // çağrılacağını, seçilen başlığa göre bulur. Yeni kategori eklerken
+  // buraya da bir satır eklemen yeterli.
+  const tekrarCoz = () => {
+    if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
+    else if (secilenBaslik === "Eser - Kahraman Testi") eserKahramanTestiBaslat();
+    else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
+  };
 
   const basaDon = () => {
     setDurum("ana_secim");
@@ -181,6 +303,29 @@ export default function TestModul({ onSonuc }: Props) {
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
           </button>
+
+          <button
+            onClick={eserKahramanTestiBaslat}
+            className="glass-card p-4 rounded-xl ring-1 ring-border flex items-center justify-between hover:bg-muted/40 transition group text-left shadow-sm border-l-2 border-l-amber-500 w-full"
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-amber-500/10 text-amber-500 flex items-center justify-center shrink-0">
+                <Users className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-sm text-foreground">Eser - Kahraman</h3>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-500 shrink-0">
+                    Yeni
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                  Başkahramanları ve karakterleri tanı! 🎭
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+          </button>
         </div>
       </div>
     );
@@ -236,34 +381,40 @@ export default function TestModul({ onSonuc }: Props) {
   // 3. SONUÇ EKRANI
   if (bitti) {
     const oran = Math.round((dogruSayi / sorular.length) * 100);
-    
+
     let sonucMesaji = "";
     if (oran > 70) {
-      sonucMesaji = isKadinTesti 
-        ? "Mükemmel! Kadın yazarlar konusunu tamamen yutmuşsun 🌸" 
+      sonucMesaji = isKadinTesti
+        ? "Mükemmel! Kadın yazarlar konusunu tamamen yutmuşsun 🌸"
+        : isEserKahramanTesti
+        ? "Harika! Kahramanları su gibi biliyorsun 🎭"
         : "Harika iş çıkarıyorsun, sınavda bu netler kaçmaz! 🚀";
     } else if (oran >= 50) {
-      sonucMesaji = isKadinTesti 
-        ? "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin." 
+      sonucMesaji = isKadinTesti
+        ? "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin."
+        : isEserKahramanTesti
+        ? "Fena değil ama bazı karakterleri karıştırıyorsun, tekrar bak."
         : "Fena değil! Birkaç tekrarla bu işi tamamen bitirirsin 💪";
     } else {
-      sonucMesaji = isKadinTesti 
-        ? "Bu seçkide biraz zorlandın galiba, hemen tekrar deneyip kapatalım!" 
+      sonucMesaji = isKadinTesti
+        ? "Bu seçkide biraz zorlandın galiba, hemen tekrar deneyip kapatalım!"
+        : isEserKahramanTesti
+        ? "Kahraman-eser eşleştirmede zorlanmışsın, hemen tekrar dene!"
         : "Biraz daha çalışmaya ihtiyacın var, kafaya takma tekrar dene! 🎯";
     }
 
     return (
       <div className="animate-rise rounded-2xl bg-card p-6 text-center border border-border max-w-xl mx-auto w-full shadow-lg space-y-4">
-        <div className={`mx-auto grid h-20 w-20 place-items-center rounded-2xl ring-1 ${isKadinTesti ? "bg-pink-500/15 text-pink-500 ring-pink-500/30" : "bg-violet-500/15 text-violet-500 ring-violet-500/30"}`}>
+        <div className={`mx-auto grid h-20 w-20 place-items-center rounded-2xl ring-1 ${aksan.ringSoft}`}>
           <Target className="h-9 w-9" strokeWidth={1.75} />
         </div>
-        
+
         <div>
           <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">Test Bitti</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            {sorular.length} soruda <span className={`font-bold ${isKadinTesti ? "text-pink-500" : "text-violet-500"}`}>{dogruSayi}</span> doğru — %{oran}
+            {sorular.length} soruda <span className={`font-bold ${aksan.metinAna}`}>{dogruSayi}</span> doğru — %{oran}
           </p>
-          <p className={`mt-2 text-xs font-medium px-4 py-2 rounded-xl mx-auto max-w-sm ${isKadinTesti ? "bg-pink-500/10 text-pink-400" : "bg-violet-500/10 text-violet-400"}`}>
+          <p className={`mt-2 text-xs font-medium px-4 py-2 rounded-xl mx-auto max-w-sm ${aksan.kutuYumusak}`}>
             {sonucMesaji}
           </p>
         </div>
@@ -274,11 +425,8 @@ export default function TestModul({ onSonuc }: Props) {
 
         <div className="mt-4 grid grid-cols-2 gap-3 pt-2">
           <button
-            onClick={() => {
-              if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
-              else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
-            }}
-            className={`flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] ${isKadinTesti ? "bg-pink-600 shadow-pink-600/25" : "bg-violet-600 shadow-violet-600/25"}`}
+            onClick={tekrarCoz}
+            className={`flex items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] ${aksan.buton}`}
           >
             <RotateCcw className="h-4 w-4" /> Tekrar Çöz
           </button>
@@ -309,7 +457,7 @@ export default function TestModul({ onSonuc }: Props) {
           <span className="text-[11px] font-semibold text-muted-foreground">{secilenBaslik || soru.donem}</span>
           <button
             onClick={basaDon}
-            className={`inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground ${isKadinTesti ? "hover:ring-pink-500/30" : "hover:ring-violet-500/30"} active:scale-95`}
+            className={`inline-flex items-center gap-1.5 rounded-full bg-muted/60 px-3 py-1 text-[11px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground ${aksan.hoverRing} active:scale-95`}
           >
             <RotateCcw className="h-3 w-3" /> Testten Çık
           </button>
@@ -319,10 +467,10 @@ export default function TestModul({ onSonuc }: Props) {
       <div className="rounded-xl bg-card p-5 border border-border shadow-md">
         <div className="flex items-start justify-between gap-3">
           <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-            {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
+            {TIP_ETIKETI[soru.tip]}
           </p>
           {soru.osymFreq && (
-            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${isKadinTesti ? "bg-pink-500/15 text-pink-500 ring-pink-500/30" : "bg-osym/15 text-osym ring-osym/30"}`}>
+            <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksan.rozetBg}`}>
               <Flame className="h-3 w-3" strokeWidth={2} />
               {soru.osymFreq}
             </span>
@@ -342,7 +490,7 @@ export default function TestModul({ onSonuc }: Props) {
 
             let stil = "bg-background border border-border text-card-foreground hover:bg-muted/40";
             if (!secim) {
-              stil += isKadinTesti ? " hover:border-pink-500/50" : " hover:border-violet-500/50";
+              stil += ` ${aksan.hoverBorder}`;
             }
 
             if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
@@ -384,7 +532,7 @@ export default function TestModul({ onSonuc }: Props) {
         {secim !== null && (
           <button
             onClick={sonraki}
-            className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${isKadinTesti ? "bg-pink-600 shadow-pink-600/25" : "bg-violet-600 shadow-violet-600/25"}`}
+            className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-semibold text-white shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksan.buton}`}
           >
             {aktif + 1 >= sorular.length ? "Sonucu Gör" : "Sonraki Soru"}
             <ArrowRight className="h-4 w-4" />
