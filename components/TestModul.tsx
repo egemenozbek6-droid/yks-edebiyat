@@ -181,24 +181,27 @@ export default function TestModul({ onSonuc }: Props) {
           item.isSideCharacter ? "önemli yan karakterlerinden biridir" : "başkahramanıdır"
         }.`;
 
-      if (eserSoruluyor) {
-        const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character)))
-          .filter((k) => k !== item.character);
-        const yanlislar = digerKahramanlar.sort(() => 0.5 - Math.random()).slice(0, 3);
-        const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
+     if (eserSoruluyor) {
+  const ayniEserKarakterleri = new Set(
+    havuz.filter((x) => x.work === item.work).map((x) => x.character)
+  );
+  const digerKahramanlar = Array.from(new Set(havuz.map((x) => x.character)))
+    .filter((k) => k !== item.character && !ayniEserKarakterleri.has(k));
+  const yanlislar = digerKahramanlar.sort(() => 0.5 - Math.random()).slice(0, 3);
+  const secenekler = [...yanlislar, item.character].sort(() => 0.5 - Math.random());
 
-        return {
-          id: item.id ?? `ek_${index}`,
-          tip: "kahraman" as const,
-          vurgu: item.work,
-          metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
-          dogru: item.character,
-          secenekler,
-          donem: item.period,
-          osymFreq: "Eser - Kahraman",
-          aciklama,
-        };
-      }
+  return {
+    id: item.id ?? `ek_${index}`,
+    tip: "kahraman" as const,
+    vurgu: item.work,
+    metin: "Bu eserin başkahramanı / önemli karakteri kimdir?",
+    dogru: item.character,
+    secenekler,
+    donem: item.period,
+    osymFreq: "Eser - Kahraman",
+    aciklama,
+  };
+}
 
       const digerEserler = Array.from(new Set(havuz.map((x) => x.work)))
         .filter((e) => e !== item.work);
