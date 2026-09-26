@@ -30,12 +30,63 @@ import eserKahramanData from "@/src/data/eser_kahraman_test.json";
 import batiAkimlarData from "@/src/data/bati_akimlar_test.json";
 import { osymSeverSorulari, type Soru as OsymSoru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
-import {
-  kartTekrarKaydet,
-  kartOgrenildiKaydet,
-  leitnerVerileriniGetir,
-  kartTekrarGerekiyorMu,
-} from "@/lib/leitner";
+
+/** Test-only Leitner — kartlarla paylaşılmaz */
+const TEST_LEITNER_KEY = "edebikart_test_leitner_v1";
+type TestKutu = 1 | 2 | 3;
+type TestHafiza = { kutu: TestKutu; sonTekrar: number; tekrarSayisi: number };
+
+function testLeitnerOku(): Record<string, TestHafiza> {
+  if (typeof window === "undefined") return {};
+  try {
+    return JSON.parse(localStorage.getItem(TEST_LEITNER_KEY) || "{}");
+  } catch {
+    return {};
+  }
+}
+
+function testLeitnerYaz(veriler: Record<string, TestHafiza>) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem(TEST_LEITNER_KEY, JSON.stringify(veriler));
+}
+
+function testYanlısKaydet(kartId: string) {
+  const veriler = testLeitnerOku();
+  const mevcut = veriler[kartId] ?? { kutu: 1 as TestKutu, sonTekrar: 0, tekrarSayisi: 0 };
+  veriler[kartId] = {
+    kutu: 1,
+    sonTekrar: Date.now(),
+    tekrarSayisi: mevcut.tekrarSayisi + 1,
+  };
+  testLeitnerYaz(veriler);
+}
+
+function testDogruKaydet(kartId: string) {
+  const veriler = testLeitnerOku();
+  const mevcut = veriler[kartId] ?? { kutu: 1 as TestKutu, sonTekrar: 0, tekrarSayisi: 0 };
+  veriler[kartId] = {
+    kutu: Math.min(3, mevcut.kutu + 1) as TestKutu,
+    sonTekrar: Date.now(),
+    tekrarSayisi: mevcut.tekrarSayisi + 1,
+  };
+  testLeitnerYaz(veriler);
+}
+
+function testTekrarIdleri(): string[] {
+  const veriler = testLeitnerOku();
+  // Kutu 1 her zaman; kutu 2/3 için 3/7 gün aralığı
+  const ARALIK: Record<TestKutu, number> = {
+    1: 0,
+    2: 3 * 24 * 60 * 60 * 1000,
+    3: 7 * 24 * 60 * 60 * 1000,
+  };
+  return Object.keys(veriler).filter((id) => {
+    const h = veriler[id];
+    if (h.kutu === 1) return true;
+    return Date.now() - h.sonTekrar >= ARALIK[h.kutu];
+  });
+}
+
 import IlerlemeBari from "@/components/IlerlemeBari";
 
 const OSYM_EN_IYI_KEY = "edebikart-osym-eniyi";
@@ -269,7 +320,7 @@ export default function TestModul() {
   const [standartYanlis, setStandartYanlis] = useState(0);
   const [standartBitti, setStandartBitti] = useState(false);
   const [seciliBaslik, setSeciliBaslik] = useState("");
-  const [aksan, setAksan] = useState<"primary" | "osym" | "pink" | "amber" | "sky">("primary");
+  const [aksan, setAksan] = useState<"primary" | "osym" | "pink" | "amber" | "sky" | "rose">("primary");
 
   useEffect(() => {
     const kayitli = localStorage.getItem(OSYM_EN_IYI_KEY);
@@ -278,11 +329,7 @@ export default function TestModul() {
 
   useEffect(() => {
     if (gorunum !== "menu") return;
-    const veriler = leitnerVerileriniGetir();
-    const n = Object.keys(veriler).filter(
-      (id) => veriler[id].kutu === 1 || kartTekrarGerekiyorMu(id),
-    ).length;
-    setTekrarSayisi(n);
+    setTekrarSayisi(testTekrarIdleri().length);
   }, [gorunum]);
 
   const osymBaslat = useCallback(() => {
@@ -310,10 +357,10 @@ export default function TestModul() {
     if (secenek === soru.dogru) {
       sfxCorrect();
       setOsymDogruSayi((s) => s + 1);
-      if (eslesen) kartOgrenildiKaydet(String(eslesen.id));
+      if (eslesen) testDogruKaydet(String(eslesen.id));
     } else {
       sfxWrong();
-      if (eslesen) kartTekrarKaydet(String(eslesen.id));
+      if (eslesen) testYanlısKaydet(String(eslesen.id));
     }
     setOsymSecim(secenek);
   };
@@ -340,13 +387,10 @@ export default function TestModul() {
   ) => {
     let hazir: StandartSoru[] = [];
     let baslik = "Test";
-    let renk: typeof aksan = "primary";
+    let renk: "primary" | "osym" | "pink" | "amber" | "sky" | "rose" = "primary";
 
     if (tur === "tekrar") {
-      const veriler = leitnerVerileriniGetir();
-      const tekrarIdleri = Object.keys(veriler).filter(
-        (id) => veriler[id].kutu === 1 || kartTekrarGerekiyorMu(id),
-      );
+      const tekrarIdleri = testTekrarIdleri();
       const lit = gecerliYazarlar();
       const ek = eserKahramanData as EserKahramanItem[];
       const ak = batiAkimlarData as BatiAkimItem[];
@@ -420,8 +464,8 @@ export default function TestModul() {
       }
 
       hazir = karistir(pool).slice(0, Math.min(15, pool.length));
-      baslik = "Zayıf Halkan";
-      renk = "amber";
+      baslik = "Tekrar Köşen";
+      renk = "rose";
       setSonTest({ tur: "tekrar" });
       recentYaz(hazir.map((q) => q.kartId || q.vurgu));
       setStandartSorular(hazir);
@@ -606,11 +650,11 @@ export default function TestModul() {
     if (secenek === soru.dogru) {
       sfxCorrect();
       setStandartDogru((p) => p + 1);
-      if (soru.kartId) kartOgrenildiKaydet(soru.kartId);
+      if (soru.kartId) testDogruKaydet(soru.kartId);
     } else {
       sfxWrong();
       setStandartYanlis((p) => p + 1);
-      if (soru.kartId) kartTekrarKaydet(soru.kartId);
+      if (soru.kartId) testYanlısKaydet(soru.kartId);
     }
   };
 
@@ -644,6 +688,10 @@ export default function TestModul() {
     sky: {
       badge: "bg-sky-500/15 text-sky-500 ring-sky-500/30",
       btn: "bg-sky-500 text-white",
+    },
+    rose: {
+      badge: "bg-rose-500/15 text-rose-400 ring-rose-500/30",
+      btn: "bg-rose-500 text-white",
     },
   }[aksan];
 
@@ -804,7 +852,9 @@ export default function TestModul() {
             ? "kahraman"
             : aksan === "sky"
               ? "akim"
-              : "donem";
+              : aksan === "rose" || aksan === "osym"
+                ? "osym"
+                : "donem";
       const basariBaslik = bitisMesaji(bitisMod, basariOrani);
       return (
         <div className="flex-1 flex items-center justify-center p-4 animate-rise">
@@ -818,7 +868,7 @@ export default function TestModul() {
             <p className="mt-1 text-xs text-muted-foreground">
               {seciliBaslik} testi tamamlandı.
               {/^\d+$/.test(standartSorular[0]?.kartId || "")
-                ? " Yanlışlar Leitner Kutu 1'e işlendi."
+                ? " Yanlışlar Tekrar Köşene eklendi."
                 : ""}
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -926,7 +976,9 @@ export default function TestModul() {
                         ? "hover:border-sky-500/50 hover:bg-sky-500/10"
                         : aksan === "osym"
                           ? "hover:border-osym/50 hover:bg-osym/10"
-                          : "hover:border-primary/50 hover:bg-primary/10";
+                          : aksan === "rose"
+                            ? "hover:border-rose-500/50 hover:bg-rose-500/10"
+                            : "hover:border-primary/50 hover:bg-primary/10";
 
                 let stil = `bg-background border border-border text-card-foreground ${hoverByMode}`;
                 if (gosterDogru)
@@ -1042,27 +1094,43 @@ export default function TestModul() {
   // ANA MENÜ
   return (
     <div className="flex-1 flex flex-col gap-2 p-1 animate-rise max-w-md mx-auto w-full">
-      <div className="rounded-2xl bg-card border border-border px-4 py-3 shadow-sm">
-        <div className="flex items-center gap-3">
-          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/30">
-            <Brain className="h-4.5 w-4.5" strokeWidth={1.8} />
-          </div>
-          <div className="min-w-0 text-left">
-            <h2 className="font-serif text-base font-bold text-card-foreground leading-tight">Test Modu</h2>
-            <p className="text-[11px] text-muted-foreground truncate">
-              Dönem, banko ve özel seçkilerle prova
-            </p>
-          </div>
+      <div className="rounded-2xl bg-card border border-border px-4 py-4 text-center shadow-sm">
+        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/30">
+          <Brain className="h-5 w-5" strokeWidth={1.8} />
         </div>
+        <h2 className="font-serif text-lg font-bold text-card-foreground">Test Modu</h2>
+        <p className="mt-0.5 text-[11px] text-muted-foreground">
+          Dönem, banko ve özel seçkilerle prova
+        </p>
       </div>
 
       <div className="flex flex-col gap-2">
+        {/* 1. Dönem Testleri */}
+        <button
+          onClick={() => setGorunum("donem_secim")}
+          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+        >
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
+              <BookOpen className="h-5 w-5" />
+            </div>
+            <div>
+              <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Eksiklerini bul, teste başla! 🚀
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+        </button>
+
+        {/* 2. ÖSYM Sever */}
         <button
           onClick={osymBaslat}
           className="group relative overflow-hidden rounded-2xl border border-osym/40 bg-gradient-to-br from-osym/15 via-card to-card p-3.5 text-left shadow-md transition-all hover:border-osym/70 active:scale-[0.99]"
         >
           <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3.5">
+            <div className="flex items-center gap-3">
               <div className="grid h-10 w-10 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
                 <Flame className="h-5 w-5" strokeWidth={2.2} />
               </div>
@@ -1070,7 +1138,7 @@ export default function TestModul() {
                 <div className="flex items-center gap-2">
                   <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
                   <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
-                    Banko 20
+                    Canlı
                   </span>
                 </div>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
@@ -1083,8 +1151,7 @@ export default function TestModul() {
           </div>
         </button>
 
-
-        {/* Zayıf Halka — test/kart yanlışlarından dinamik prova */}
+        {/* 3. Tekrar Köşen */}
         <button
           onClick={() => {
             if (tekrarSayisi === 0) return;
@@ -1099,11 +1166,11 @@ export default function TestModul() {
         >
           <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
-              <RotateCcw className="h-4.5 w-4.5" />
+              <RotateCcw className="h-5 w-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">Zayıf Halkan</p>
+                <p className="font-serif text-sm font-bold text-card-foreground">Tekrar Köşen</p>
                 {tekrarSayisi > 0 && (
                   <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-extrabold text-rose-400">
                     {tekrarSayisi}
@@ -1113,36 +1180,19 @@ export default function TestModul() {
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {tekrarSayisi === 0
                   ? "Boş — yanlış yaptıkça burada birikir"
-                  : "Kaçırdığın sorularla hızlı prova"}
+                  : "Yapamadığın sorular burada!"}
               </p>
             </div>
           </div>
           <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
         </button>
 
-        <button
-          onClick={() => setGorunum("donem_secim")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
-        >
-          <div className="flex items-center gap-3.5">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eksiklerini bul, teste başla! 🚀
-              </p>
-            </div>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
-
+        {/* 4. Kadın Yazarlar */}
         <button
           onClick={() => standartBaslat("kadin")}
           className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
               🌸
             </div>
@@ -1163,11 +1213,12 @@ export default function TestModul() {
           <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
         </button>
 
+        {/* 5. Eser – Kahraman */}
         <button
           onClick={() => standartBaslat("kahraman")}
           className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
               <Users className="h-5 w-5" />
             </div>
@@ -1186,11 +1237,12 @@ export default function TestModul() {
           <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
         </button>
 
+        {/* 6. Batı Edebi Akımları */}
         <button
           onClick={() => standartBaslat("akim")}
           className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
-          <div className="flex items-center gap-3.5">
+          <div className="flex items-center gap-3">
             <div className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25">
               <Compass className="h-5 w-5" />
             </div>
