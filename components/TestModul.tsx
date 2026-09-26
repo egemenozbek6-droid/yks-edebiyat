@@ -389,7 +389,7 @@ export default function TestModul({ onSonuc }: Props) {
                   </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                  Başkahramanları ve karakterleri tanı! 🎭
+                 Eser ↔ karakter eşleştir, bankoları ezberle! 🎭
                 </p>
               </div>
             </div>
@@ -454,7 +454,7 @@ export default function TestModul({ onSonuc }: Props) {
     let sonucMesaji = "";
     if (oran > 70) {
       sonucMesaji = isKadinTesti
-        ? "Mükemmel! Kadın yazarlar konusunu tamamen yutmuşsun 🌸"
+        ? "Mükemmel! Kadın yazarlar konusunu tamamen halletmişsin 🌸"
         : isEserKahramanTesti
         ? "Harika! Kahramanları su gibi biliyorsun 🎭"
         : "Harika iş çıkarıyorsun, sınavda bu netler kaçmaz! 🚀";
@@ -466,7 +466,7 @@ export default function TestModul({ onSonuc }: Props) {
         : "Fena değil! Birkaç tekrarla bu işi tamamen bitirirsin 💪";
     } else {
       sonucMesaji = isKadinTesti
-        ? "Bu seçkide biraz zorlandın galiba, hemen tekrar deneyip kapatalım!"
+        ? "Bu modda biraz zorlandın galiba, hemen tekrar deneyip kapatalım!"
         : isEserKahramanTesti
         ? "Kahraman-eser eşleştirmede zorlanmışsın, hemen tekrar dene!"
         : "Biraz daha çalışmaya ihtiyacın var, kafaya takma tekrar dene! 🎯";
