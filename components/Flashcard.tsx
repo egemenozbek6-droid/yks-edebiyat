@@ -2,7 +2,6 @@
 
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
-  BookOpen,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -11,7 +10,6 @@ import {
   Trophy,
   Undo2,
   ArrowLeftRight,
-  Sparkles,
 } from "lucide-react";
 import type { LiteratureItem } from "@/src/data";
 import {
@@ -172,22 +170,14 @@ export default function Flashcard({
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
               <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst Rozet Satırı */}
+                {/* Üst Rozet Satırı (Eser rozeti kaldırıldı, ferah zıt köşeler) */}
                 <div className="flex items-center justify-between gap-2">
-                  <div className="flex items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
-                      <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
-                      Eser
-                    </span>
-                    {/* Leitner Seviye Rozeti */}
-                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ring-1 ${rozet.bg} ${rozet.renk}`}>
-                      <Sparkles className="h-3 w-3" />
-                      {rozet.etiket}
-                    </span>
-                  </div>
+                  <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold whitespace-nowrap ring-1 ${rozet.bg} ${rozet.renk}`}>
+                    {rozet.etiket}
+                  </span>
 
                   {osymFreq && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[11px] font-bold text-osym ring-1 ring-osym/30">
+                    <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[11px] font-bold text-osym ring-1 ring-osym/30 whitespace-nowrap">
                       <Flame className="h-3.5 w-3.5" strokeWidth={2.5} />
                       {osymFreq}
                     </span>
@@ -225,7 +215,7 @@ export default function Flashcard({
               <div className="absolute inset-y-0 left-0 w-1.5 bg-emerald-500" aria-hidden="true" />
 
               <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst Dönem Rozeti */}
+                {/* Üst Bilgi Satırı */}
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500 ring-1 ring-emerald-500/25">
                     {item.period}
@@ -285,7 +275,7 @@ export default function Flashcard({
         </div>
       </div>
 
-      {/* Alt Aksiyon Butonları (Kutu Bildirimli) */}
+      {/* Alt Aksiyon Butonları */}
       <div className="mt-4 grid grid-cols-2 gap-3 shrink-0">
         <button
           onClick={() => tamamla("sol")}
@@ -338,7 +328,7 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
         Desteyi Bitirdin! 🎉
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
-        Seçtiğin dönemdeki kartları başarıyla tamamladın. Kutu durumların kaydedildi!
+        Seçtiğin dönemdeki kartları başarıyla tamamladın. Kutu durumların güncellendi!
       </p>
       <button
         onClick={onSifirla}
