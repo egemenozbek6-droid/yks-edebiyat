@@ -1,7 +1,18 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
-import { TriangleAlert as AlertTriangle, Layers, NotebookPen, Flame, Swords, Info, X, ChevronDown } from "lucide-react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  TriangleAlert as AlertTriangle,
+  Layers,
+  NotebookPen,
+  Flame,
+  Swords,
+  Info,
+  X,
+  ChevronDown,
+  Volume2,
+  VolumeX,
+} from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
 import OsymSeverModul from "@/components/OsymSeverModul";
@@ -9,15 +20,17 @@ import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
 import SplashEkran from "@/components/SplashEkran";
-import { anaDonemFiltrele, anaDonemler, type AnaDonem } from "@/src/data";
+import { anaDonemFiltrele, anaDonemler, type AnaDonem, type LiteratureItem } from "@/src/data";
+import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
+import { kartTekrarGerekiyorMu, kartHafizaGetir } from "@/lib/leitner";
 import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
 import { sfxMuted, sfxMuteToggle } from "@/lib/sfx";
-import { Volume2, VolumeX } from "lucide-react";
 
 const APP_NAME = "EdebiKart";
 const APP_SUBTITLE = "YKS Yazar Eser & Düello";
 
 type Mod = "kart" | "test" | "osym" | "duelo";
+type KategoriTuru = AnaDonem | "Tekrar Gerekenler" | "Kadın Yazarlar";
 
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary text-primary-foreground shadow-sm" },
@@ -118,19 +131,47 @@ export default function App() {
     [dueloAktif, cikisOnayGerekir],
   );
 
-  const [seciliAnaDonem, setSeciliAnaDonem] = useState<AnaDonem>("Tüm Dönemler");
-  const kartVerisi = anaDonemFiltrele(seciliAnaDonem);
+  // Kategori & Deste Yönetimi
+  const [seciliKategori, setSeciliKategori] = useState<KategoriTuru>("Tüm Dönemler");
+
+  // Deste verisini belirleme (Özel seçkiler dahil)
+  const kartVerisi = useMemo(() => {
+    if (seciliKategori === "Kadın Yazarlar") {
+      return kadinYazarlarData as unknown as LiteratureItem[];
+    }
+    if (seciliKategori === "Tekrar Gerekenler") {
+      const tumu = anaDonemFiltrele("Tüm Dönemler");
+      const tekrarlar = tumu.filter((item) => {
+        const hafiza = kartHafizaGetir(String(item.id));
+        return hafiza.kutu === 1 || kartTekrarGerekiyorMu(String(item.id));
+      });
+      return tekrarlar.length > 0 ? tekrarlar : tumu;
+    }
+    return anaDonemFiltrele(seciliKategori as AnaDonem);
+  }, [seciliKategori]);
+
   const [deste, setDeste] = useState<number[]>(() => karistir(kartVerisi.map((_, i) => i)));
   const [ogrenilenler, setOgrenilenler] = useState<Set<number>>(new Set());
 
   const { seviyeler, ogren, tekrar } = useKartSeviyeleri();
-
   const bitti = deste.length === 0;
 
-  const donemSec = useCallback((donem: AnaDonem) => {
-    setSeciliAnaDonem(donem);
-    const yeniVeri = anaDonemFiltrele(donem);
-    setDeste(karistir(yeniVeri.map((_, i) => i)));
+  const kategoriSec = useCallback((yeniKategori: KategoriTuru) => {
+    setSeciliKategori(yeniKategori);
+    let liste: LiteratureItem[] = [];
+    if (yeniKategori === "Kadın Yazarlar") {
+      liste = kadinYazarlarData as unknown as LiteratureItem[];
+    } else if (yeniKategori === "Tekrar Gerekenler") {
+      const tumu = anaDonemFiltrele("Tüm Dönemler");
+      const tekrarlar = tumu.filter((item) => {
+        const hafiza = kartHafizaGetir(String(item.id));
+        return hafiza.kutu === 1 || kartTekrarGerekiyorMu(String(item.id));
+      });
+      liste = tekrarlar.length > 0 ? tekrarlar : tumu;
+    } else {
+      liste = anaDonemFiltrele(yeniKategori as AnaDonem);
+    }
+    setDeste(karistir(liste.map((_, i) => i)));
     setOgrenilenler(new Set());
   }, []);
 
@@ -263,21 +304,27 @@ export default function App() {
           </div>
         )}
 
-        {/* Kart Modu Tek Satırlık Kompakt Kontrol Barı (Dönem Seçici + İlerleme) */}
+        {/* Kart Modu Tek Satırlık Kompakt Kontrol Barı (Dönem & Özel Seçkiler) */}
         {mod === "kart" && (
           <div className="mb-3 shrink-0 flex items-center justify-between gap-2.5 rounded-2xl bg-card border border-border p-2.5 shadow-sm">
-            {/* Dönem Dropdown */}
+            {/* Kategori Dropdown */}
             <div className="relative flex-1 min-w-0">
               <select
-                value={seciliAnaDonem}
-                onChange={(e) => donemSec(e.target.value as AnaDonem)}
+                value={seciliKategori}
+                onChange={(e) => kategoriSec(e.target.value as KategoriTuru)}
                 className="w-full appearance-none rounded-xl bg-muted/50 border border-border/80 px-3 py-2 pr-8 text-xs font-bold text-foreground outline-none transition focus:border-primary/50"
               >
-                {anaDonemler.map((donem) => (
-                  <option key={donem} value={donem}>
-                    {donem}
-                  </option>
-                ))}
+                <optgroup label="Akıllı Tekrar & Özel Deste">
+                  <option value="Tekrar Gerekenler">🔥 Tekrar Etmen Gerekenler</option>
+                  <option value="Kadın Yazarlar">🌸 Kadın Yazarlar Özel Deste</option>
+                </optgroup>
+                <optgroup label="Edebi Dönemler">
+                  {anaDonemler.map((donem) => (
+                    <option key={donem} value={donem}>
+                      {donem}
+                    </option>
+                  ))}
+                </optgroup>
               </select>
               <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             </div>
