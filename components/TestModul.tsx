@@ -90,6 +90,130 @@ function secenekUret(dogru: string, havuz: string[], yedek: string[] = []): stri
   return karistir([dogru, ...yanlislar]);
 }
 
+
+/** Mod + başarı oranına göre samimi bitiş mesajı */
+type BitisMod = "osym" | "donem" | "kadin" | "kahraman" | "akim";
+
+const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: string[]; dusuk: string[] }> = {
+  osym: {
+    super: [
+      "Banko avcısı kesilmişsin, ÖSYM seninle gurur duyar.",
+      "Bu formla sınavda kimse sana yetişemez valla.",
+      "20 üzerinden bu skor? Efsane, devam böyle.",
+    ],
+    iyi: [
+      "İyi gidiyorsun, birkaç banko daha ezberle süpersin.",
+      "Neredeyse mükemmel, ufak tefek açıklar kapatılır.",
+      "Form yerinde, bir tur daha at istersen.",
+    ],
+    orta: [
+      "Orta karar, bankoları biraz daha yokla.",
+      "Eh işte… Yanlışlar Kutu 1'e gitti, tekrar çöz.",
+      "Potansiyel var, bir tur daha basarsan toparlarsın.",
+    ],
+    dusuk: [
+      "Bu tur ısınma turu sayalım, tekrar dene.",
+      "Yanlışlar hazine: hepsi Kutu 1'de seni bekliyor.",
+      "Moral bozma, banko listesi seninle henüz tanışmadı.",
+    ],
+  },
+  donem: {
+    super: [
+      "Bu dönemi ezberlemişsin resmen, aferin.",
+      "Dönem hakimiyeti tam, sınavda işine yarar.",
+      "Bu skorla o dönemden soru gelirse gülersin.",
+    ],
+    iyi: [
+      "Sağlam bir tur, ufak boşluklar kalmış sadece.",
+      "İyi iş çıkardın, bir tur daha pekiştirir.",
+      "Neredeyse full, son dokunuşlar kaldı.",
+    ],
+    orta: [
+      "Orta seviye, o döneme biraz daha dal.",
+      "Kartlara dön, yanlışlar seni bekliyor.",
+      "Eh, idare eder; tekrar çözünce toparlarsın.",
+    ],
+    dusuk: [
+      "Bu dönem seni zorlamış, kartlarla ısın tekrar.",
+      "Sakin ol, her yanlış bir sonraki doğru demek.",
+      "Baştan bir tur daha, bu sefer daha iyi olur.",
+    ],
+  },
+  kadin: {
+    super: [
+      "Kadın edebiyatçılarımız senden razı, süpersin.",
+      "Bu seçkiyi ezberlemişsin, tebrikler.",
+      "Halide'den Adalet'e kadar herkes seninle.",
+    ],
+    iyi: [
+      "Güzel tur, birkaç isim daha pekişsin yeter.",
+      "İyi gidiyorsun, bir tur daha bas istersen.",
+      "Neredeyse harika, ufak açıklar var.",
+    ],
+    orta: [
+      "Orta karar, kadın yazar seçkisine bir daha bak.",
+      "Yanlışlar Kutu 1'de, oradan toparlarsın.",
+      "İdare eder; tekrar çözünce netleşir.",
+    ],
+    dusuk: [
+      "Bu tur ısınma oldu, tekrar dene gönül rahatlığıyla.",
+      "Moral bozma, seçki seni bekliyor.",
+      "Kartlarla bir tur at, sonra teste dön.",
+    ],
+  },
+  kahraman: {
+    super: [
+      "Karakter avcısı kesilmişsin, efsane tur.",
+      "Eser-kahraman eşlemesi sende parmak ısırtır.",
+      "Ali Bey'den Rabia'ya kadar hepsi seninle.",
+    ],
+    iyi: [
+      "İyi eşleştirmeler, birkaç karakter daha pekişsin.",
+      "Güzel form, bir tur daha basarsan fullersin.",
+      "Neredeyse hepsi tuttu, ufak tefek kaldı.",
+    ],
+    orta: [
+      "Orta seviye, karakter notlarına bir göz at.",
+      "Bilgi notları altın değerinde, tekrar çöz.",
+      "Eh işte… Bir tur daha iyi gelir.",
+    ],
+    dusuk: [
+      "Karakterler seni şaşırtmış, bilgi notlarını oku.",
+      "Isınma turu say, tekrar dene.",
+      "Sakin, her yanlış bir sonraki eşleşme demek.",
+    ],
+  },
+  akim: {
+    super: [
+      "Akımları ezberlemişsin, Breton bile alkışlar.",
+      "Klasisizmden sürrealizme kadar hakimsin.",
+      "Bu skorla Batı akımları sorusu seni korkutmaz.",
+    ],
+    iyi: [
+      "İyi tur, bir iki akım daha pekişsin yeter.",
+      "Form yerinde, tekrar çözünce fullersin.",
+      "Neredeyse harika, ufak açıklar var.",
+    ],
+    orta: [
+      "Orta karar, slogan ve temsilcilere bir daha bak.",
+      "Bilgi notları işine yarar, tekrar dene.",
+      "Eh, idare eder; bir tur daha bas.",
+    ],
+    dusuk: [
+      "Akımlar seni yormuş, bilgileri oku tekrar gel.",
+      "Isınma turu, moral bozma.",
+      "Kart değil bu ama bilgi notu her şeyi anlatıyor.",
+    ],
+  },
+};
+
+function bitisMesaji(mod: BitisMod, oran: number): string {
+  const havuz = BITIS_MESAJLARI[mod];
+  const liste =
+    oran >= 75 ? havuz.super : oran >= 50 ? havuz.iyi : oran >= 25 ? havuz.orta : havuz.dusuk;
+  return liste[Math.floor(Math.random() * liste.length)];
+}
+
 export default function TestModul() {
   const [gorunum, setGorunum] = useState<Gorunum>("menu");
 
@@ -366,8 +490,7 @@ export default function TestModul() {
   if (gorunum === "osym") {
     if (osymBitti) {
       const oran = Math.round((osymDogruSayi / Math.max(osymSorular.length, 1)) * 100);
-      const basari =
-        oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
+      const basari = bitisMesaji("osym", oran);
       const yeniRekor = osymDogruSayi >= osymEnIyiSkor && osymDogruSayi > 0;
 
       return (
@@ -375,7 +498,7 @@ export default function TestModul() {
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-osym/15 text-osym ring-1 ring-osym/30">
             <Flame className="h-8 w-8" strokeWidth={1.5} />
           </div>
-          <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
+          <h2 className="font-serif text-xl font-bold text-card-foreground text-balance px-1">{basari}</h2>
           <p className="mt-1 text-xs text-muted-foreground">
             {osymSorular.length} soruda{" "}
             <span className="font-bold text-osym">{osymDogruSayi}</span> doğru — %{oran}
@@ -513,13 +636,24 @@ export default function TestModul() {
       const basariOrani = Math.round(
         (standartDogru / Math.max(standartSorular.length, 1)) * 100,
       );
+      const bitisMod: BitisMod =
+        aksan === "pink"
+          ? "kadin"
+          : aksan === "amber"
+            ? "kahraman"
+            : aksan === "sky"
+              ? "akim"
+              : "donem";
+      const basariBaslik = bitisMesaji(bitisMod, basariOrani);
       return (
         <div className="flex-1 flex items-center justify-center p-4 animate-rise">
           <div className="rounded-2xl bg-card p-6 text-center shadow-xl max-w-sm w-full border border-border">
             <div className={`mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl ring-1 ${aksanSinif.badge}`}>
               <Sparkles className="h-8 w-8" />
             </div>
-            <h2 className="font-serif text-2xl font-bold text-card-foreground">Test Bitti!</h2>
+            <h2 className="font-serif text-xl font-bold text-card-foreground text-balance px-1">
+              {basariBaslik}
+            </h2>
             <p className="mt-1 text-xs text-muted-foreground">
               {seciliBaslik} testi tamamlandı.
               {/^\d+$/.test(standartSorular[0]?.kartId || "")
