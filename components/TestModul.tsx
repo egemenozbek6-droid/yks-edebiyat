@@ -359,8 +359,8 @@ export default function TestModul() {
           const tumE = Array.from(new Set(lit.map((x) => x.work)));
           if (Math.random() < 0.5) {
             pool.push({
-              kategoriUst: "TEKRAR",
-              rozetMetin: "Kutu 1",
+              kategoriUst: "PEKİŞTİRME",
+              rozetMetin: undefined,
               vurgu: litItem.work,
               metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
               dogru: litItem.author,
@@ -369,8 +369,8 @@ export default function TestModul() {
             });
           } else {
             pool.push({
-              kategoriUst: "TEKRAR",
-              rozetMetin: "Kutu 1",
+              kategoriUst: "PEKİŞTİRME",
+              rozetMetin: undefined,
               vurgu: litItem.author,
               metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
               dogru: litItem.work,
@@ -385,8 +385,8 @@ export default function TestModul() {
           const tumK = Array.from(new Set(ek.map((x) => x.character)));
           const tumE = Array.from(new Set(ek.map((x) => x.work)));
           pool.push({
-            kategoriUst: "TEKRAR · KARAKTER",
-            rozetMetin: "Kutu 1",
+            kategoriUst: "PEKİŞTİRME · KARAKTER",
+            rozetMetin: undefined,
             vurgu: ekItem.character,
             metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
             dogru: ekItem.work,
@@ -402,8 +402,8 @@ export default function TestModul() {
           const temsilci =
             akItem.representatives[Math.floor(Math.random() * akItem.representatives.length)];
           pool.push({
-            kategoriUst: "TEKRAR · AKIM",
-            rozetMetin: "Kutu 1",
+            kategoriUst: "PEKİŞTİRME · AKIM",
+            rozetMetin: undefined,
             vurgu: temsilci,
             metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
             dogru: akItem.name,
@@ -420,8 +420,8 @@ export default function TestModul() {
       }
 
       hazir = karistir(pool).slice(0, Math.min(15, pool.length));
-      baslik = "Tekrar Etmen Gerekenler";
-      renk = "osym";
+      baslik = "Zayıf Halkan";
+      renk = "amber";
       setSonTest({ tur: "tekrar" });
       recentYaz(hazir.map((q) => q.kartId || q.vurgu));
       setStandartSorular(hazir);
@@ -884,10 +884,10 @@ export default function TestModul() {
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {aktifSoru.kategoriUst}
               </p>
-              {(aktifSoru.rozetMetin || aksan !== "primary") && (
+              {aktifSoru.rozetMetin && (
                 <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksanSinif.badge}`}>
                   {aksan === "amber" ? "🎭 " : aksan === "sky" ? "🌐 " : aksan === "pink" ? "🌸 " : aksan === "osym" ? "🔥 " : ""}
-                  {aktifSoru.rozetMetin || seciliBaslik}
+                  {aktifSoru.rozetMetin}
                 </span>
               )}
             </div>
@@ -1041,25 +1041,29 @@ export default function TestModul() {
 
   // ANA MENÜ
   return (
-    <div className="flex-1 flex flex-col gap-3 p-1 animate-rise max-w-md mx-auto w-full">
-      <div className="rounded-2xl bg-card border border-border p-6 text-center shadow-sm">
-        <div className="mx-auto mb-3 grid h-12 w-12 place-items-center rounded-2xl bg-primary/15 text-primary ring-1 ring-primary/30">
-          <Brain className="h-6 w-6" strokeWidth={1.8} />
+    <div className="flex-1 flex flex-col gap-2 p-1 animate-rise max-w-md mx-auto w-full">
+      <div className="rounded-2xl bg-card border border-border px-4 py-3 shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/30">
+            <Brain className="h-4.5 w-4.5" strokeWidth={1.8} />
+          </div>
+          <div className="min-w-0 text-left">
+            <h2 className="font-serif text-base font-bold text-card-foreground leading-tight">Test Modu</h2>
+            <p className="text-[11px] text-muted-foreground truncate">
+              Dönem, banko ve özel seçkilerle prova
+            </p>
+          </div>
         </div>
-        <h2 className="font-serif text-xl font-bold text-card-foreground">Test Modu</h2>
-        <p className="mt-1 text-xs text-muted-foreground">
-          Dönemleri tara veya özel seçkilerle bilgilerini pekiştir. Sınav provasına başla.
-        </p>
       </div>
 
-      <div className="flex flex-col gap-2.5">
+      <div className="flex flex-col gap-2">
         <button
           onClick={osymBaslat}
-          className="group relative overflow-hidden rounded-2xl border border-osym/40 bg-gradient-to-br from-osym/15 via-card to-card p-4 text-left shadow-md transition-all hover:border-osym/70 active:scale-[0.99]"
+          className="group relative overflow-hidden rounded-2xl border border-osym/40 bg-gradient-to-br from-osym/15 via-card to-card p-3.5 text-left shadow-md transition-all hover:border-osym/70 active:scale-[0.99]"
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3.5">
-              <div className="grid h-11 w-11 place-items-center rounded-2xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
+              <div className="grid h-10 w-10 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
                 <Flame className="h-5 w-5" strokeWidth={2.2} />
               </div>
               <div>
@@ -1080,38 +1084,36 @@ export default function TestModul() {
         </button>
 
 
-        {/* Tekrar Et — dinamik Leitner havuzu */}
+        {/* Zayıf Halka — test/kart yanlışlarından dinamik prova */}
         <button
           onClick={() => {
             if (tekrarSayisi === 0) return;
             standartBaslat("tekrar");
           }}
           disabled={tekrarSayisi === 0}
-          className={`flex items-center justify-between rounded-2xl border p-4 text-left shadow-sm transition active:scale-[0.99] ${
+          className={`flex items-center justify-between rounded-2xl border p-3.5 text-left shadow-sm transition active:scale-[0.99] ${
             tekrarSayisi === 0
-              ? "bg-card/50 border-border/40 opacity-60 cursor-not-allowed"
-              : "bg-card border-amber-500/40 hover:bg-amber-500/5 hover:border-amber-500/70"
+              ? "bg-card/50 border-border/40 opacity-55 cursor-not-allowed"
+              : "bg-card border-rose-500/35 hover:bg-rose-500/5 hover:border-rose-500/60"
           }`}
         >
-          <div className="flex items-center gap-3.5">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
-              <RotateCcw className="h-5 w-5" />
+          <div className="flex items-center gap-3">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
+              <RotateCcw className="h-4.5 w-4.5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">
-                  Tekrar Etmen Gerekenler
-                </p>
+                <p className="font-serif text-sm font-bold text-card-foreground">Zayıf Halkan</p>
                 {tekrarSayisi > 0 && (
-                  <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[9px] font-extrabold text-amber-500">
+                  <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-extrabold text-rose-400">
                     {tekrarSayisi}
                   </span>
                 )}
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {tekrarSayisi === 0
-                  ? "Şimdilik boş — yanlış yaptıkça burada birikir 🌱"
-                  : "Yanlışların + Kutu 1'dekiler, dinamik prova 🔥"}
+                  ? "Boş — yanlış yaptıkça burada birikir"
+                  : "Kaçırdığın sorularla hızlı prova"}
               </p>
             </div>
           </div>
@@ -1120,10 +1122,10 @@ export default function TestModul() {
 
         <button
           onClick={() => setGorunum("donem_secim")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-4 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
           <div className="flex items-center gap-3.5">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-primary/15 text-primary ring-1 ring-primary/25">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
               <BookOpen className="h-5 w-5" />
             </div>
             <div>
@@ -1138,10 +1140,10 @@ export default function TestModul() {
 
         <button
           onClick={() => standartBaslat("kadin")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-4 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
           <div className="flex items-center gap-3.5">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-lg">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
               🌸
             </div>
             <div>
@@ -1163,10 +1165,10 @@ export default function TestModul() {
 
         <button
           onClick={() => standartBaslat("kahraman")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-4 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
           <div className="flex items-center gap-3.5">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
               <Users className="h-5 w-5" />
             </div>
             <div>
@@ -1186,10 +1188,10 @@ export default function TestModul() {
 
         <button
           onClick={() => standartBaslat("akim")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-4 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
         >
           <div className="flex items-center gap-3.5">
-            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25">
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25">
               <Compass className="h-5 w-5" />
             </div>
             <div>
