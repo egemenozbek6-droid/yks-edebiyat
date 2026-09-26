@@ -1,29 +1,39 @@
-"use client"
+"use client";
 
-import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2, ArrowLeftRight, Sparkles } from "lucide-react"
-import IlerlemeBari from "@/components/IlerlemeBari"
-import type { LiteratureItem } from "@/src/data"
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  BookOpen,
+  Check,
+  ChevronLeft,
+  ChevronRight,
+  Flame,
+  RotateCcw,
+  Trophy,
+  Undo2,
+  ArrowLeftRight,
+  Sparkles,
+} from "lucide-react";
+import type { LiteratureItem } from "@/src/data";
 import {
   kartHafizaGetir,
   kartOgrenildiKaydet,
   kartTekrarKaydet,
   kutuRozetBilgisi,
   type KartHafiza,
-} from "@/lib/leitner"
+} from "@/lib/leitner";
 
 type Props = {
-  item: LiteratureItem
-  total: number
-  ogrenilenSayi: number
-  introAktif: boolean
-  onPrev: () => void
-  onNext: () => void
-  onOgrenildi: () => void
-  onTekrar: () => void
-}
+  item: LiteratureItem;
+  total: number;
+  ogrenilenSayi: number;
+  introAktif: boolean;
+  onPrev: () => void;
+  onNext: () => void;
+  onOgrenildi: () => void;
+  onTekrar: () => void;
+};
 
-const ESIK = 110
+const ESIK = 110;
 
 export default function Flashcard({
   item,
@@ -35,87 +45,88 @@ export default function Flashcard({
   onOgrenildi,
   onTekrar,
 }: Props) {
-  const [cevrildi, setCevrildi] = useState(false)
-  const [dx, setDx] = useState(0)
-  const [surukleniyor, setSurukleniyor] = useState(false)
-  const [ucus, setUcus] = useState<"sag" | "sol" | null>(null)
-  const [hafiza, setHafiza] = useState<KartHafiza>({ kutu: 1, sonTekrar: 0, tekrarSayisi: 0 })
-  const hareket = useRef(0)
-  const baslangic = useRef(0)
+  const [cevrildi, setCevrildi] = useState(false);
+  const [dx, setDx] = useState(0);
+  const [surukleniyor, setSurukleniyor] = useState(false);
+  const [ucus, setUcus] = useState<"sag" | "sol" | null>(null);
+  const [hafiza, setHafiza] = useState<KartHafiza>({
+    kutu: 1,
+    sonTekrar: 0,
+    tekrarSayisi: 0,
+  });
+  const hareket = useRef(0);
+  const baslangic = useRef(0);
 
-  const intro = introAktif
+  const intro = introAktif;
 
   useEffect(() => {
-    setCevrildi(false)
-    setDx(0)
-    setUcus(null)
-    setHafiza(kartHafizaGetir(String(item.id)))
-  }, [item.id])
+    setCevrildi(false);
+    setDx(0);
+    setUcus(null);
+    setHafiza(kartHafizaGetir(String(item.id)));
+  }, [item.id]);
 
   const tamamla = useCallback(
     (yon: "sag" | "sol") => {
-      setUcus(yon)
-      setSurukleniyor(false)
-      setDx(yon === "sag" ? 520 : -520)
+      setUcus(yon);
+      setSurukleniyor(false);
+      setDx(yon === "sag" ? 520 : -520);
 
       if (yon === "sag") {
-        kartOgrenildiKaydet(String(item.id))
+        const yeni = kartOgrenildiKaydet(String(item.id));
+        setHafiza(yeni);
       } else {
-        kartTekrarKaydet(String(item.id))
+        const yeni = kartTekrarKaydet(String(item.id));
+        setHafiza(yeni);
       }
 
       window.setTimeout(() => {
-        if (yon === "sag") onOgrenildi()
-        else onTekrar()
-      }, 320)
+        if (yon === "sag") onOgrenildi();
+        else onTekrar();
+      }, 320);
     },
     [item.id, onOgrenildi, onTekrar],
-  )
+  );
 
   const basla = (e: React.PointerEvent) => {
-    if (ucus || intro) return
-    baslangic.current = e.clientX
-    hareket.current = 0
-    setSurukleniyor(true)
-    ;(e.target as HTMLElement).setPointerCapture?.(e.pointerId)
-  }
+    if (ucus || intro) return;
+    baslangic.current = e.clientX;
+    hareket.current = 0;
+    setSurukleniyor(true);
+    (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+  };
 
   const suruklu = (e: React.PointerEvent) => {
-    if (!surukleniyor || ucus || intro) return
-    const fark = e.clientX - baslangic.current
-    hareket.current = Math.max(hareket.current, Math.abs(fark))
-    setDx(fark)
-  }
+    if (!surukleniyor || ucus || intro) return;
+    const fark = e.clientX - baslangic.current;
+    hareket.current = Math.max(hareket.current, Math.abs(fark));
+    setDx(fark);
+  };
 
   const bitir = () => {
-    if (!surukleniyor || ucus || intro) return
-    setSurukleniyor(false)
-    if (dx > ESIK) tamamla("sag")
-    else if (dx < -ESIK) tamamla("sol")
-    else setDx(0)
-  }
+    if (!surukleniyor || ucus || intro) return;
+    setSurukleniyor(false);
+    if (dx > ESIK) tamamla("sag");
+    else if (dx < -ESIK) tamamla("sol");
+    else setDx(0);
+  };
 
   const tikla = () => {
-    if (hareket.current > 8 || ucus || intro) return
-    setCevrildi((v) => !v)
-  }
+    if (hareket.current > 8 || ucus || intro) return;
+    setCevrildi((v) => !v);
+  };
 
-  const osymFreqHam = item.osym_stats?.osym_freq
-  const osymFreq = osymFreqHam?.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim()
+  const osymFreqHam = item.osym_stats?.osym_freq;
+  const osymFreq = osymFreqHam?.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim();
 
-  const donus = Math.max(-12, Math.min(12, dx / 14))
-  const sagOran = Math.min(1, Math.max(0, dx / ESIK))
-  const solOran = Math.min(1, Math.max(0, -dx / ESIK))
+  const donus = Math.max(-12, Math.min(12, dx / 14));
+  const sagOran = Math.min(1, Math.max(0, dx / ESIK));
+  const solOran = Math.min(1, Math.max(0, -dx / ESIK));
 
-  const rozet = kutuRozetBilgisi(hafiza.kutu)
+  const rozet = kutuRozetBilgisi(hafiza.kutu);
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise max-w-xl mx-auto w-full">
-      {/* İlerleme barı */}
-      <div className="mb-3 rounded-2xl bg-card border border-border p-3 shadow-sm backdrop-blur shrink-0">
-        <IlerlemeBari mevcut={ogrenilenSayi} toplam={total} etiket="Öğrenilen Kartlar" />
-      </div>
-
       {/* Kart alanı */}
       <div className="relative select-none flex-1 min-h-0 flex items-center" style={{ perspective: "1600px" }}>
         <div className="absolute inset-x-4 top-3 h-full rounded-3xl bg-card/40 border border-border/40" aria-hidden="true" />
@@ -131,8 +142,8 @@ export default function Flashcard({
           tabIndex={0}
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
-              e.preventDefault()
-              setCevrildi((v) => !v)
+              e.preventDefault();
+              setCevrildi((v) => !v);
             }
           }}
           aria-label={cevrildi ? `Cevap: ${item.author}, ${item.period}.` : `Eser: ${item.work}.`}
@@ -161,7 +172,7 @@ export default function Flashcard({
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
               <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst badge satırı */}
+                {/* Üst Rozet Satırı */}
                 <div className="flex items-center justify-between gap-2">
                   <div className="flex items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
@@ -183,7 +194,7 @@ export default function Flashcard({
                   )}
                 </div>
 
-                {/* Orta başlık */}
+                {/* Orta Başlık */}
                 <div className="flex flex-col items-center justify-center text-center px-2 py-4">
                   <h2 className="font-serif text-3xl font-extrabold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
                     {item.work}
@@ -193,10 +204,10 @@ export default function Flashcard({
                   </span>
                 </div>
 
-                {/* Alt çevirme ipucu */}
+                {/* Alt Çevirme İpucu */}
                 <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
                   <span className="inline-flex items-center gap-1.5">
-                    <ArrowLeftRight className="h-3 w-3" /> Yazarı görmek için dokun
+                    <ArrowLeftRight className="h-3.5 w-3.5" /> Yazarı görmek için dokun
                   </span>
                 </div>
               </div>
@@ -214,7 +225,7 @@ export default function Flashcard({
               <div className="absolute inset-y-0 left-0 w-1.5 bg-emerald-500" aria-hidden="true" />
 
               <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst dönem rozeti */}
+                {/* Üst Dönem Rozeti */}
                 <div className="flex items-center justify-between">
                   <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500 ring-1 ring-emerald-500/25">
                     {item.period}
@@ -224,7 +235,7 @@ export default function Flashcard({
                   </span>
                 </div>
 
-                {/* Orta: Yazar Bilgisi */}
+                {/* Orta: Yazar */}
                 <div className="flex flex-col items-center justify-center text-center px-2">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Yazar
@@ -246,17 +257,17 @@ export default function Flashcard({
                   )}
                 </div>
 
-                {/* Alt çevirme ipucu */}
+                {/* Alt Çevirme İpucu */}
                 <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
                   <span className="inline-flex items-center gap-1.5">
-                    <ArrowLeftRight className="h-3 w-3" /> Eseri görmek için dokun
+                    <ArrowLeftRight className="h-3.5 w-3.5" /> Eseri görmek için dokun
                   </span>
                 </div>
               </div>
             </div>
           </div>
 
-          {/* Swipe göstergeleri */}
+          {/* Swipe Göstergeleri */}
           <div
             className="pointer-events-none absolute right-6 top-6 grid h-14 w-14 place-items-center rounded-2xl bg-emerald-500 text-white shadow-lg"
             style={{ opacity: sagOran, transform: `scale(${0.6 + sagOran * 0.4})` }}
@@ -274,13 +285,13 @@ export default function Flashcard({
         </div>
       </div>
 
-      {/* Alt aksiyon butonları */}
+      {/* Alt Aksiyon Butonları (Kutu Bildirimli) */}
       <div className="mt-4 grid grid-cols-2 gap-3 shrink-0">
         <button
           onClick={() => tamamla("sol")}
           className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-bold text-muted-foreground shadow-sm transition hover:bg-muted/70 hover:text-foreground active:scale-[0.98]"
         >
-          <RotateCcw className="h-4 w-4" /> Tekrar Et (Kutu 1)
+          <RotateCcw className="h-4 w-4 text-destructive" /> Tekrar Et (Kutu 1)
         </button>
         <button
           onClick={() => tamamla("sag")}
@@ -290,7 +301,7 @@ export default function Flashcard({
         </button>
       </div>
 
-      {/* Alt oklar */}
+      {/* Alt Gezinme Okları */}
       <div className="mt-2.5 flex items-center justify-between shrink-0 px-1">
         <button
           onClick={onPrev}
@@ -314,7 +325,7 @@ export default function Flashcard({
         </button>
       </div>
     </div>
-  )
+  );
 }
 
 export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifirla: () => void }) {
@@ -327,11 +338,8 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
         Desteyi Bitirdin! 🎉
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
-        Seçtiğin dönemdeki kartları başarıyla tamamladın. Kutu durumların güncellendi!
+        Seçtiğin dönemdeki kartları başarıyla tamamladın. Kutu durumların kaydedildi!
       </p>
-      <div className="mt-5">
-        <IlerlemeBari mevcut={toplam} toplam={toplam} etiket="Tamamlanan" />
-      </div>
       <button
         onClick={onSifirla}
         className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
@@ -339,5 +347,5 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
         <RotateCcw className="h-4 w-4" /> Baştan Tekrar Et
       </button>
     </div>
-  )
+  );
 }
