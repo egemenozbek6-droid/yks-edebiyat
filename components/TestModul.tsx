@@ -30,7 +30,12 @@ import eserKahramanData from "@/src/data/eser_kahraman_test.json";
 import batiAkimlarData from "@/src/data/bati_akimlar_test.json";
 import { osymSeverSorulari, type Soru as OsymSoru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
-import { kartTekrarKaydet } from "@/lib/leitner";
+import {
+  kartTekrarKaydet,
+  kartOgrenildiKaydet,
+  leitnerVerileriniGetir,
+  kartTekrarGerekiyorMu,
+} from "@/lib/leitner";
 import IlerlemeBari from "@/components/IlerlemeBari";
 
 const OSYM_EN_IYI_KEY = "edebikart-osym-eniyi";
@@ -91,6 +96,34 @@ function secenekUret(dogru: string, havuz: string[], yedek: string[] = []): stri
 }
 
 
+const RECENT_KEY = "edebikart-test-recent-v1";
+const RECENT_LIMIT = 40;
+
+function recentOku(): string[] {
+  if (typeof window === "undefined") return [];
+  try {
+    return JSON.parse(localStorage.getItem(RECENT_KEY) || "[]") as string[];
+  } catch {
+    return [];
+  }
+}
+
+function recentYaz(yeniAnahtarlar: string[]) {
+  if (typeof window === "undefined") return;
+  const onceki = recentOku();
+  const birlesik = [...yeniAnahtarlar, ...onceki.filter((k) => !yeniAnahtarlar.includes(k))];
+  localStorage.setItem(RECENT_KEY, JSON.stringify(birlesik.slice(0, RECENT_LIMIT)));
+}
+
+/** Peş peşe / yakın geçmişte çıkanları geriye at */
+function recentFiltrele<T>(liste: T[], anahtarFn: (x: T) => string): T[] {
+  const recent = new Set(recentOku());
+  const taze = liste.filter((x) => !recent.has(anahtarFn(x)));
+  // Tümü recent ise yine listeyi kullan (kilitlenmesin)
+  return taze.length >= Math.min(5, liste.length) ? taze : liste;
+}
+
+
 /** Mod + başarı oranına göre samimi bitiş mesajı */
 type BitisMod = "osym" | "donem" | "kadin" | "kahraman" | "akim";
 
@@ -148,7 +181,7 @@ const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: 
     iyi: [
       "Güzel tur, birkaç isim daha pekişsin yeter.",
       "İyi gidiyorsun, bir tur daha bas istersen.",
-      "Neredeyse harika, ufak açıklar var.",
+      "Neredeyse perfect, ufak açıklar var.",
     ],
     orta: [
       "Orta karar, kadın yazar seçkisine bir daha bak.",
@@ -192,7 +225,7 @@ const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: 
     iyi: [
       "İyi tur, bir iki akım daha pekişsin yeter.",
       "Form yerinde, tekrar çözünce fullersin.",
-      "Neredeyse harika, ufak açıklar var.",
+      "Neredeyse perfect, ufak açıklar var.",
     ],
     orta: [
       "Orta karar, slogan ve temsilcilere bir daha bak.",
@@ -200,7 +233,7 @@ const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: 
       "Eh, idare eder; bir tur daha bas.",
     ],
     dusuk: [
-      "Akımlar seni yormuş, bilgileri oku tekrar gel.",
+      "Akımlar seni yormuş, hint'leri oku tekrar gel.",
       "Isınma turu, moral bozma.",
       "Kart değil bu ama bilgi notu her şeyi anlatıyor.",
     ],
@@ -223,6 +256,11 @@ export default function TestModul() {
   const [osymDogruSayi, setOsymDogruSayi] = useState(0);
   const [osymBitti, setOsymBitti] = useState(false);
   const [osymEnIyiSkor, setOsymEnIyiSkor] = useState(0);
+  const [tekrarSayisi, setTekrarSayisi] = useState(0);
+  const [sonTest, setSonTest] = useState<{
+    tur: "donem" | "kadin" | "kahraman" | "akim" | "tekrar";
+    param?: string;
+  } | null>(null);
 
   const [standartSorular, setStandartSorular] = useState<StandartSoru[]>([]);
   const [standartIndex, setStandartIndex] = useState(0);
@@ -238,28 +276,43 @@ export default function TestModul() {
     setOsymEnIyiSkor(kayitli ? parseInt(kayitli, 10) : 0);
   }, []);
 
+  useEffect(() => {
+    if (gorunum !== "menu") return;
+    const veriler = leitnerVerileriniGetir();
+    const n = Object.keys(veriler).filter(
+      (id) => veriler[id].kutu === 1 || kartTekrarGerekiyorMu(id),
+    ).length;
+    setTekrarSayisi(n);
+  }, [gorunum]);
+
   const osymBaslat = useCallback(() => {
-    setOsymSorular(osymSeverSorulari(OSYM_SORU_SAYISI));
+    const ham = osymSeverSorulari(OSYM_SORU_SAYISI * 2);
+    const filt = recentFiltrele(ham, (q) => `${q.vurgu}::${q.dogru}`);
+    const sec = (filt.length >= OSYM_SORU_SAYISI ? filt : ham).slice(0, OSYM_SORU_SAYISI);
+    recentYaz(sec.map((q) => `${q.vurgu}::${q.dogru}`));
+    setOsymSorular(sec);
     setOsymAktif(0);
     setOsymSecim(null);
     setOsymDogruSayi(0);
     setOsymBitti(false);
+    setSonTest(null);
     setGorunum("osym");
   }, []);
 
   const osymCevapla = (secenek: string) => {
     if (osymSecim) return;
     const soru = osymSorular[osymAktif];
+    const eslesen = gecerliYazarlar().find(
+      (y) =>
+        y.work.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr") ||
+        y.author.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr"),
+    );
     if (secenek === soru.dogru) {
       sfxCorrect();
       setOsymDogruSayi((s) => s + 1);
+      if (eslesen) kartOgrenildiKaydet(String(eslesen.id));
     } else {
       sfxWrong();
-      const eslesen = gecerliYazarlar().find(
-        (y) =>
-          y.work.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr") ||
-          y.author.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr"),
-      );
       if (eslesen) kartTekrarKaydet(String(eslesen.id));
     }
     setOsymSecim(secenek);
@@ -282,17 +335,111 @@ export default function TestModul() {
   };
 
   const standartBaslat = (
-    tur: "donem" | "kadin" | "kahraman" | "akim",
+    tur: "donem" | "kadin" | "kahraman" | "akim" | "tekrar",
     param?: AnaDonem | string,
   ) => {
     let hazir: StandartSoru[] = [];
     let baslik = "Test";
     let renk: typeof aksan = "primary";
 
+    if (tur === "tekrar") {
+      const veriler = leitnerVerileriniGetir();
+      const tekrarIdleri = Object.keys(veriler).filter(
+        (id) => veriler[id].kutu === 1 || kartTekrarGerekiyorMu(id),
+      );
+      const lit = gecerliYazarlar();
+      const ek = eserKahramanData as EserKahramanItem[];
+      const ak = batiAkimlarData as BatiAkimItem[];
+      const pool: StandartSoru[] = [];
+
+      for (const id of tekrarIdleri) {
+        const litItem = lit.find((x) => String(x.id) === id);
+        if (litItem) {
+          const tumY = Array.from(new Set(lit.map((x) => x.author)));
+          const tumE = Array.from(new Set(lit.map((x) => x.work)));
+          if (Math.random() < 0.5) {
+            pool.push({
+              kategoriUst: "TEKRAR",
+              rozetMetin: "Kutu 1",
+              vurgu: litItem.work,
+              metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
+              dogru: litItem.author,
+              secenekler: secenekUret(litItem.author, tumY, tumY),
+              kartId: id,
+            });
+          } else {
+            pool.push({
+              kategoriUst: "TEKRAR",
+              rozetMetin: "Kutu 1",
+              vurgu: litItem.author,
+              metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
+              dogru: litItem.work,
+              secenekler: secenekUret(litItem.work, tumE, tumE),
+              kartId: id,
+            });
+          }
+          continue;
+        }
+        const ekItem = ek.find((x) => x.id === id);
+        if (ekItem) {
+          const tumK = Array.from(new Set(ek.map((x) => x.character)));
+          const tumE = Array.from(new Set(ek.map((x) => x.work)));
+          pool.push({
+            kategoriUst: "TEKRAR · KARAKTER",
+            rozetMetin: "Kutu 1",
+            vurgu: ekItem.character,
+            metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
+            dogru: ekItem.work,
+            secenekler: secenekUret(ekItem.work, tumE, tumE),
+            aciklama: ekItem.hint,
+            kartId: id,
+          });
+          continue;
+        }
+        const akItem = ak.find((x) => x.id === id);
+        if (akItem) {
+          const tumI = ak.map((x) => x.name);
+          const temsilci =
+            akItem.representatives[Math.floor(Math.random() * akItem.representatives.length)];
+          pool.push({
+            kategoriUst: "TEKRAR · AKIM",
+            rozetMetin: "Kutu 1",
+            vurgu: temsilci,
+            metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
+            dogru: akItem.name,
+            secenekler: secenekUret(akItem.name, tumI, tumI),
+            aciklama: akItem.hint || akItem.century,
+            kartId: id,
+          });
+        }
+      }
+
+      if (pool.length === 0) {
+        // boşsa menüde kal; UI uyarı menü kartında
+        return;
+      }
+
+      hazir = karistir(pool).slice(0, Math.min(15, pool.length));
+      baslik = "Tekrar Etmen Gerekenler";
+      renk = "osym";
+      setSonTest({ tur: "tekrar" });
+      recentYaz(hazir.map((q) => q.kartId || q.vurgu));
+      setStandartSorular(hazir);
+      setStandartIndex(0);
+      setStandartSecim(null);
+      setStandartDogru(0);
+      setStandartYanlis(0);
+      setStandartBitti(false);
+      setSeciliBaslik(baslik);
+      setAksan(renk);
+      setGorunum("standart");
+      return;
+    }
+
     if (tur === "kahraman") {
       const havuz = eserKahramanData as EserKahramanItem[];
       if (!havuz.length) return;
-      const secilenler = karistir(havuz).slice(0, Math.min(10, havuz.length));
+      const secilenler = karistir(recentFiltrele(havuz, (x) => x.id)).slice(0, Math.min(10, havuz.length));
       const tumKarakterler = Array.from(new Set(havuz.map((x) => x.character)));
       const tumEserler = Array.from(new Set(havuz.map((x) => x.work)));
       renk = "amber";
@@ -401,7 +548,7 @@ export default function TestModul() {
             : "Tüm Dönemler";
       renk = tur === "kadin" ? "pink" : "primary";
 
-      const secilenler = karistir(havuz).slice(0, Math.min(15, havuz.length));
+      const secilenler = karistir(recentFiltrele(havuz, (x) => String(x.id))).slice(0, Math.min(15, havuz.length));
       const tumYazarlarList = Array.from(new Set(havuz.map((x) => x.author)));
       const tumEserler = Array.from(new Set(havuz.map((x) => x.work)));
 
@@ -427,6 +574,8 @@ export default function TestModul() {
       });
     }
 
+    setSonTest({ tur: tur === "tekrar" ? "tekrar" : tur, param: param ? String(param) : undefined });
+    recentYaz(hazir.map((q) => q.kartId || `${q.vurgu}::${q.dogru}`));
     setStandartSorular(hazir);
     setStandartIndex(0);
     setStandartSecim(null);
@@ -438,6 +587,18 @@ export default function TestModul() {
     setGorunum("standart");
   };
 
+  const tekrarCoz = () => {
+    if (gorunum === "osym" || (sonTest === null && osymBitti)) {
+      osymBaslat();
+      return;
+    }
+    if (sonTest) {
+      if (sonTest.tur === "tekrar") standartBaslat("tekrar");
+      else if (sonTest.tur === "donem") standartBaslat("donem", sonTest.param);
+      else standartBaslat(sonTest.tur);
+    }
+  };
+
   const standartCevapla = (secenek: string) => {
     if (standartSecim !== null) return;
     setStandartSecim(secenek);
@@ -445,14 +606,14 @@ export default function TestModul() {
     if (secenek === soru.dogru) {
       sfxCorrect();
       setStandartDogru((p) => p + 1);
+      if (soru.kartId) kartOgrenildiKaydet(soru.kartId);
     } else {
       sfxWrong();
       setStandartYanlis((p) => p + 1);
-      if (soru.kartId && /^\d+$/.test(soru.kartId)) {
-        kartTekrarKaydet(soru.kartId);
-      }
+      if (soru.kartId) kartTekrarKaydet(soru.kartId);
     }
   };
+
 
   const standartSonraki = () => {
     if (standartIndex + 1 < standartSorular.length) {
@@ -673,10 +834,16 @@ export default function TestModul() {
             <div className="mt-3 rounded-xl bg-muted/40 p-2.5 text-xs font-semibold text-muted-foreground">
               Başarı Oranı: <span className="text-foreground font-bold">%{basariOrani}</span>
             </div>
-            <div className="mt-6 flex flex-col gap-2">
+            <div className="mt-6 grid grid-cols-2 gap-2.5">
+              <button
+                onClick={tekrarCoz}
+                className={`flex items-center justify-center gap-1.5 rounded-xl py-3 text-xs font-bold shadow-md transition hover:brightness-110 active:scale-[0.98] ${aksanSinif.btn}`}
+              >
+                <RotateCcw className="h-4 w-4" /> Tekrar Çöz
+              </button>
               <button
                 onClick={() => setGorunum("menu")}
-                className={`rounded-xl py-3 text-sm font-bold shadow-md transition hover:brightness-110 active:scale-[0.98] ${aksanSinif.btn}`}
+                className="rounded-xl bg-muted/60 py-3 text-xs font-semibold text-muted-foreground hover:bg-muted active:scale-[0.98]"
               >
                 Menüye Dön
               </button>
@@ -910,6 +1077,45 @@ export default function TestModul() {
             </div>
             <ChevronRight className="h-5 w-5 text-osym/70 transition-transform group-hover:translate-x-0.5" />
           </div>
+        </button>
+
+
+        {/* Tekrar Et — dinamik Leitner havuzu */}
+        <button
+          onClick={() => {
+            if (tekrarSayisi === 0) return;
+            standartBaslat("tekrar");
+          }}
+          disabled={tekrarSayisi === 0}
+          className={`flex items-center justify-between rounded-2xl border p-4 text-left shadow-sm transition active:scale-[0.99] ${
+            tekrarSayisi === 0
+              ? "bg-card/50 border-border/40 opacity-60 cursor-not-allowed"
+              : "bg-card border-amber-500/40 hover:bg-amber-500/5 hover:border-amber-500/70"
+          }`}
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
+              <RotateCcw className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-serif text-sm font-bold text-card-foreground">
+                  Tekrar Etmen Gerekenler
+                </p>
+                {tekrarSayisi > 0 && (
+                  <span className="rounded-full bg-amber-500/20 px-2 py-0.5 text-[9px] font-extrabold text-amber-500">
+                    {tekrarSayisi}
+                  </span>
+                )}
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {tekrarSayisi === 0
+                  ? "Şimdilik boş — yanlış yaptıkça burada birikir 🌱"
+                  : "Yanlışların + Kutu 1'dekiler, dinamik prova 🔥"}
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
         </button>
 
         <button
