@@ -10,17 +10,12 @@ export type KartHafiza = {
 
 const STORAGE_KEY = "edebikart_leitner_v1";
 
-// Kutu aralıkları (gün bazında)
-// Kutu 1: Her gün (0 gün)
-// Kutu 2: 3 gün sonra
-// Kutu 3: 7 gün sonra
 const KUTU_ARALIKLARI: Record<LeitnerKutusu, number> = {
   1: 0,
   2: 3 * 24 * 60 * 60 * 1000,
   3: 7 * 24 * 60 * 60 * 1000,
 };
 
-// Tüm hafıza verisini getir
 export function leitnerVerileriniGetir(): Record<string, KartHafiza> {
   if (typeof window === "undefined") return {};
   try {
@@ -31,7 +26,6 @@ export function leitnerVerileriniGetir(): Record<string, KartHafiza> {
   }
 }
 
-// Belirli bir kartın durumunu getir
 export function kartHafizaGetir(kartId: string): KartHafiza {
   const veriler = leitnerVerileriniGetir();
   return (
@@ -43,7 +37,6 @@ export function kartHafizaGetir(kartId: string): KartHafiza {
   );
 }
 
-// Kart bilindiğinde ("Kaptım"): Kutu bir üst seviyeye çıkar (max 3)
 export function kartOgrenildiKaydet(kartId: string): KartHafiza {
   const veriler = leitnerVerileriniGetir();
   const mevcut = veriler[kartId] ?? { kutu: 1, sonTekrar: 0, tekrarSayisi: 0 };
@@ -62,7 +55,6 @@ export function kartOgrenildiKaydet(kartId: string): KartHafiza {
   return guncel;
 }
 
-// Kart bilinmediğinde ("Tekrar Et"): Doğrudan Kutu 1'e geri düşer
 export function kartTekrarKaydet(kartId: string): KartHafiza {
   const veriler = leitnerVerileriniGetir();
   const mevcut = veriler[kartId] ?? { kutu: 1, sonTekrar: 0, tekrarSayisi: 0 };
@@ -80,15 +72,14 @@ export function kartTekrarKaydet(kartId: string): KartHafiza {
   return guncel;
 }
 
-// Kartın bugün tekrar zamanı gelmiş mi?
 export function kartTekrarGerekiyorMu(kartId: string): boolean {
   const hafiza = kartHafizaGetir(kartId);
-  if (hafiza.sonTekrar === 0) return true; // Hiç bakılmamışsa gerekiyor
+  if (hafiza.sonTekrar === 0) return true;
   const beklemeSuresi = KUTU_ARALIKLARI[hafiza.kutu];
   return Date.now() - hafiza.sonTekrar >= beklemeSuresi;
 }
 
-// Kutuya göre UI etiket ve renk bilgisi
+// Bitki temalı minimal rozetler
 export function kutuRozetBilgisi(kutu: LeitnerKutusu): {
   etiket: string;
   renk: string;
@@ -97,21 +88,21 @@ export function kutuRozetBilgisi(kutu: LeitnerKutusu): {
   switch (kutu) {
     case 1:
       return {
-        etiket: "Kutu 1 · Öğreniliyor",
+        etiket: "🌱 Kutu 1",
         renk: "text-amber-500",
         bg: "bg-amber-500/10 ring-amber-500/25",
       };
     case 2:
       return {
-        etiket: "Kutu 2 · Pekiştiriliyor",
-        renk: "text-sky-500",
-        bg: "bg-sky-500/10 ring-sky-500/25",
+        etiket: "🌿 Kutu 2",
+        renk: "text-sky-400",
+        bg: "bg-sky-400/10 ring-sky-400/25",
       };
     case 3:
       return {
-        etiket: "Kutu 3 · Hafızada",
-        renk: "text-emerald-500",
-        bg: "bg-emerald-500/10 ring-emerald-500/25",
+        etiket: "🌳 Kutu 3",
+        renk: "text-emerald-400",
+        bg: "bg-emerald-400/10 ring-emerald-400/25",
       };
   }
 }
