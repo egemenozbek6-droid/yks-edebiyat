@@ -304,42 +304,59 @@ export default function App() {
           </div>
         )}
 
-        {/* Kart Modu Tek Satırlık Kompakt Kontrol Barı (Dönem & Özel Seçkiler) */}
-        {mod === "kart" && (
-          <div className="mb-3 shrink-0 flex items-center justify-between gap-2.5 rounded-2xl bg-card border border-border p-2.5 shadow-sm">
-            {/* Kategori Dropdown */}
-            <div className="relative flex-1 min-w-0">
-              <select
-                value={seciliKategori}
-                onChange={(e) => kategoriSec(e.target.value as KategoriTuru)}
-                className="w-full appearance-none rounded-xl bg-muted/50 border border-border/80 px-3 py-2 pr-8 text-xs font-bold text-foreground outline-none transition focus:border-primary/50"
-              >
-                <optgroup label="Akıllı Tekrar & Özel Deste">
-                  <option value="Tekrar Gerekenler">🔥 Tekrar Etmen Gerekenler</option>
-                  <option value="Kadın Yazarlar">🌸 Kadın Yazarlar Özel Deste</option>
-                </optgroup>
-                <optgroup label="Edebi Dönemler">
-                  {anaDonemler.map((donem) => (
-                    <option key={donem} value={donem}>
-                      {donem}
-                    </option>
-                  ))}
-                </optgroup>
-              </select>
-              <ChevronDown className="pointer-events-none absolute right-2.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
-            </div>
+        {/* Kart Modu Tek Satırlık Kompakt Kontrol Barı */}
+{mod === "kart" && (
+  <div className="mb-3 shrink-0 flex items-center justify-between gap-2.5 rounded-2xl bg-card border border-border/80 p-2 shadow-sm">
+    {/* Dönem / Deste Seçim Butonu */}
+    <div className="group relative flex-1 min-w-0">
+      <div className="flex items-center gap-2 rounded-xl bg-muted/60 border border-border px-3 py-2 transition-all duration-200 group-hover:border-primary/50 group-hover:bg-muted/90 group-active:scale-[0.99] ring-1 ring-transparent group-hover:ring-primary/20">
+        {/* Sol Vurgulu İkon */}
+        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary text-[11px]">
+          📚
+        </span>
 
-            {/* İlerleme Kapsülü */}
-            <div className="shrink-0 flex items-center gap-2 rounded-xl bg-muted/40 border border-border/60 px-3 py-1.5">
-              <div className="flex flex-col text-right">
-                <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">İlerleme</span>
-                <span className="text-xs font-extrabold text-primary tabular-nums">
-                  {ogrenilenler.size} / {kartVerisi.length}
-                </span>
-              </div>
-            </div>
-          </div>
-        )}
+        {/* Seçili Başlık */}
+        <span className="flex-1 truncate text-xs font-bold text-foreground">
+          {seciliKategori}
+        </span>
+
+        {/* Belirgin Açılır Ok Rozeti */}
+        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-background/80 border border-border/60 text-muted-foreground transition group-hover:text-primary group-hover:border-primary/40">
+          <ChevronDown className="h-3.5 w-3.5 stroke-[2.5]" />
+        </div>
+      </div>
+
+      {/* Tıklanabilir Şeffaf Select (Kullanıcı tıkladığında menü fırlar) */}
+      <select
+        value={seciliKategori}
+        onChange={(e) => kategoriSec(e.target.value as KategoriTuru)}
+        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+      >
+        <optgroup label="Akıllı Tekrar & Özel Deste">
+          <option value="Tekrar Gerekenler">🔥 Tekrar Etmen Gerekenler</option>
+          <option value="Kadın Yazarlar">🌸 Kadın Yazarlar Özel Deste</option>
+        </optgroup>
+        <optgroup label="Edebi Dönemler">
+          {anaDonemler.map((donem) => (
+            <option key={donem} value={donem}>
+              {donem}
+            </option>
+          ))}
+        </optgroup>
+      </select>
+    </div>
+
+    {/* İlerleme Kapsülü */}
+    <div className="shrink-0 flex items-center gap-2 rounded-xl bg-muted/40 border border-border/60 px-3 py-1.5">
+      <div className="flex flex-col text-right">
+        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">İlerleme</span>
+        <span className="text-xs font-extrabold text-primary tabular-nums">
+          {ogrenilenler.size} / {kartVerisi.length}
+        </span>
+      </div>
+    </div>
+  </div>
+)}
 
         {/* Mod Panelleri */}
         {mod === "kart" ? (
