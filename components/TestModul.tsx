@@ -583,7 +583,7 @@ export default function TestModul({ onSonuc }: Props) {
                   </span>
                 </div>
                 <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
-                  Slogan, özellik ve temsilci — bankoları sabitle
+                  Akımları, temsilcileri ve özellikleriyle tanı! 🌐
                 </p>
               </div>
             </div>
