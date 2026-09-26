@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { Lock, X, Check, Sparkles, User } from "lucide-react";
+import { Lock, X, Sparkles } from "lucide-react";
 import {
   mevcutKullanici,
   mevcutIstatistik,
@@ -78,12 +78,12 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             ? setKilitliPreview({ emoji: a.emoji, etiket: a.etiket, minEP: a.minEP, minLig: a.minLig })
             : avatarSec(a.id, false)
         }
-        className={`group relative flex aspect-square items-center justify-center rounded-xl text-xl transition-all active:scale-95 ${
+        className={`group relative flex aspect-square items-center justify-center rounded-xl text-xl transition-all ${
           secili
-            ? "bg-duello/15 ring-2 ring-duello shadow-md scale-105"
+            ? "bg-duello/20 ring-2 ring-duello ring-offset-2 ring-offset-card shadow-md scale-105"
             : kilitli
-              ? "bg-muted/20 opacity-40 hover:opacity-60 cursor-pointer"
-              : "bg-muted/40 hover:bg-muted hover:scale-100"
+              ? "bg-muted/20 opacity-35 hover:opacity-50 cursor-pointer"
+              : "bg-muted/40 hover:bg-muted/80 active:scale-95"
         }`}
         aria-label={a.etiket}
         title={kilitli ? `${a.etiket} — Lig ${a.minLig}` : a.etiket}
@@ -98,11 +98,6 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
         ) : (
           <span>{a.emoji}</span>
         )}
-        {secili && (
-          <div className="absolute -top-1 -right-1 grid h-4 w-4 place-items-center rounded-full bg-duello text-white">
-            <Check className="h-2.5 w-2.5" strokeWidth={3} />
-          </div>
-        )}
       </button>
     );
   };
@@ -110,7 +105,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   return (
     <>
       <div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4 backdrop-blur-md"
+        className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4 backdrop-blur-md"
         onClick={onKapat}
       >
         <div
@@ -161,28 +156,24 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </div>
           </div>
 
-          {/* Kullanıcı Adı Ayarı */}
-          <div className="mb-4 rounded-xl bg-muted/30 p-2.5 ring-1 ring-border">
-            <div className="flex items-center justify-between text-[11px] mb-1.5">
-              <span className="font-semibold text-muted-foreground flex items-center gap-1">
-                <User className="h-3 w-3" /> Kullanıcı Adı
-              </span>
-              {isimKilitli ? (
-                <span className="flex items-center gap-1 font-bold text-muted-foreground">
-                  <Lock className="h-3 w-3" /> Kilitli
-                </span>
-              ) : (
-                <span className="text-[10px] font-bold text-emerald-500">1 Hakkın Var</span>
-              )}
-            </div>
-
+          {/* Kullanıcı Adı Ayarı — Kompakt & Sade */}
+          <div className="mb-4">
             {isimKilitli ? (
-              <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-xs font-medium text-muted-foreground">
-                <span className="font-bold text-foreground">{kullanici.kullaniciAdi}</span>
-                <span className="text-[10px]">Değiştirilemez</span>
+              <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3.5 py-2.5 ring-1 ring-border">
+                <div className="flex items-center gap-2">
+                  <Lock className="h-3.5 w-3.5 text-muted-foreground" />
+                  <span className="text-xs font-bold text-foreground">{kullanici.kullaniciAdi}</span>
+                </div>
+                <span className="rounded-full bg-muted/60 px-2 py-0.5 text-[9px] font-semibold text-muted-foreground">
+                  Değiştirilemez
+                </span>
               </div>
             ) : kullaniciAdiDegistirebilirMi() ? (
-              <div>
+              <div className="rounded-xl bg-muted/30 p-2.5 ring-1 ring-border">
+                <div className="mb-1.5 flex items-center justify-between text-[11px]">
+                  <span className="font-semibold text-muted-foreground">Kullanıcı Adı</span>
+                  <span className="text-[10px] font-bold text-emerald-500">1 Hakkın Var</span>
+                </div>
                 <div className="flex gap-1.5">
                   <input
                     value={isimInput}
@@ -226,15 +217,15 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
                 {isimOk && <p className="mt-1 text-[10px] font-medium text-emerald-500">İsim güncellendi!</p>}
               </div>
             ) : (
-              <div className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2 text-xs">
-                <span className="font-bold text-foreground">{kullanici.kullaniciAdi}</span>
-                <span className="text-[10px] text-amber-500 font-semibold">100 EP'de açılır</span>
+              <div className="flex items-center justify-between rounded-xl bg-muted/40 px-3.5 py-2.5 ring-1 ring-border">
+                <span className="text-xs font-bold text-foreground">{kullanici.kullaniciAdi}</span>
+                <span className="text-[10px] font-semibold text-amber-500">100 EP'de açılır</span>
               </div>
             )}
           </div>
 
           {/* Sekmeli Avatar Seçimi */}
-          <div className="flex flex-col flex-1 min-h-0">
+          <div className="flex flex-1 flex-col min-h-0">
             {/* Sekme Butonları */}
             <div className="mb-2 flex rounded-lg bg-muted/60 p-1 ring-1 ring-border">
               <button
@@ -265,7 +256,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </div>
 
             {/* Avatar Izgarası (6 sütunlu, taşmasız) */}
-            <div className="overflow-y-auto max-h-48 p-1 no-scrollbar">
+            <div className="max-h-48 overflow-y-auto p-1 no-scrollbar">
               <div className="grid grid-cols-6 gap-2">
                 {(aktifSekme === "standart" ? standartlar : prestijler).map(renderAvatarButton)}
               </div>
@@ -278,7 +269,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
             </p>
           </div>
 
-          {/* Tamamla Butonu */}
+          {/* Tamam Butonu */}
           <button
             onClick={onKapat}
             className="mt-4 w-full rounded-xl bg-duello py-2.5 text-xs font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
@@ -291,7 +282,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
       {/* Kilitli Avatar Önizleme Modalı */}
       {kilitliPreview && (
         <div
-          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/70 p-5 backdrop-blur-sm"
+          className="fixed inset-0 z-[60] flex items-center justify-center bg-black/75 p-5 backdrop-blur-sm"
           onClick={() => setKilitliPreview(null)}
         >
           <div
