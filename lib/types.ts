@@ -78,4 +78,6 @@ export type Rakip = {
   bot: boolean;
   /** Online kimlik (cihazId); botlarda yok */
   id?: string;
+  /** EP / rütbe için (botlarda rastgele, online rakipte varsa) */
+  puan?: number;
 };
