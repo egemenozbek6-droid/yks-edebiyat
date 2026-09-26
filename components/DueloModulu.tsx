@@ -849,7 +849,7 @@ export default function DueloModulu({
     );
   }
 
-  // --- LOBİ (Modernize Edilmiş Canlı Arayüz) ---
+  // --- LOBİ ---
   if (adim === "lobi" && kullanici) {
     const rp = istatistik?.puan ?? 0;
     const galibiyet = istatistik?.galibiyet ?? 0;
@@ -882,12 +882,12 @@ export default function DueloModulu({
 
           {/* 1. ÜST BLOK: PROFİL & RANK & İSTATİSTİK ŞERİDİ */}
           <div className="glass-card rounded-2xl p-4 ring-1 ring-border/80 flex flex-col bg-card/60 backdrop-blur-md">
-            {/* Profil Başlığı */}
+            {/* Profil Başlığı (Avatar ortalama ve nefes payı optimize edildi) */}
             <div className="flex items-center justify-between mb-3.5">
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3.5">
                 <div className="relative shrink-0">
                   <div
-                    className="grid h-13 w-13 place-items-center rounded-2xl bg-muted/50 text-2xl ring-2 transition-all"
+                    className="flex h-12 w-12 items-center justify-center rounded-2xl bg-muted/50 text-2xl leading-none ring-2 transition-all"
                     style={{
                       borderColor: `${simdikiRank.renk}80`,
                       boxShadow: `0 0 16px ${simdikiRank.renk}25`,
@@ -908,7 +908,7 @@ export default function DueloModulu({
                       {kullanici.kullaniciAdi}
                     </p>
                     <span
-                      className="rounded px-1.5 py-0.2 text-[9px] font-bold"
+                      className="rounded px-1.5 py-0.5 text-[9px] font-bold"
                       style={{ background: `${simdikiRank.renk}20`, color: simdikiRank.renk }}
                     >
                       {simdikiRank.ikon}
@@ -1082,9 +1082,9 @@ export default function DueloModulu({
             )}
           </div>
 
-          {/* 2. ALT BLOK: OYUN MODLARI (CANLI & DERİNLİKLİ) */}
+          {/* 2. ALT BLOK: OYUN MODLARI */}
           <div className="flex flex-col gap-2.5">
-            {/* DERECELİ MAÇ (Hero CTA Kartı) */}
+            {/* DERECELİ MAÇ */}
             <button
               onClick={rastgeleRakip}
               disabled={cooldownAktif}
