@@ -12,9 +12,20 @@ export type Soru = {
   dogru: string;
   donem: string;
   // "eser" | "yazar" -> mevcut Dönem/ÖSYM testleri
-  // "kahraman" -> Eser-Kahraman testi: eser verilir, kahraman sorulur
-  // "eser2" -> Eser-Kahraman testi: kahraman verilir, eser sorulur
-  tip: "eser" | "yazar" | "kahraman" | "eser2";
+  // "kahraman" / "eser2" -> Eser-Kahraman
+  // "akim_*" / "*_akim" -> Batı Edebi Akımları
+  tip:
+    | "eser"
+    | "yazar"
+    | "kahraman"
+    | "eser2"
+    // Batı Edebi Akımları
+    | "akim_temsilci"
+    | "temsilci_akim"
+    | "akim_slogan"
+    | "slogan_akim"
+    | "akim_ozellik"
+    | "ozellik_akim";
   osymFreq?: string;
   aciklama?: string;
 };
