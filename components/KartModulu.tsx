@@ -1,9 +1,16 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2, ArrowLeftRight } from "lucide-react"
+import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2, ArrowLeftRight, Sparkles } from "lucide-react"
 import IlerlemeBari from "@/components/IlerlemeBari"
 import type { LiteratureItem } from "@/src/data"
+import {
+  kartHafizaGetir,
+  kartOgrenildiKaydet,
+  kartTekrarKaydet,
+  kutuRozetBilgisi,
+  type KartHafiza,
+} from "@/lib/leitner"
 
 type Props = {
   item: LiteratureItem
@@ -32,6 +39,7 @@ export default function Flashcard({
   const [dx, setDx] = useState(0)
   const [surukleniyor, setSurukleniyor] = useState(false)
   const [ucus, setUcus] = useState<"sag" | "sol" | null>(null)
+  const [hafiza, setHafiza] = useState<KartHafiza>({ kutu: 1, sonTekrar: 0, tekrarSayisi: 0 })
   const hareket = useRef(0)
   const baslangic = useRef(0)
 
@@ -41,6 +49,7 @@ export default function Flashcard({
     setCevrildi(false)
     setDx(0)
     setUcus(null)
+    setHafiza(kartHafizaGetir(String(item.id)))
   }, [item.id])
 
   const tamamla = useCallback(
@@ -48,12 +57,19 @@ export default function Flashcard({
       setUcus(yon)
       setSurukleniyor(false)
       setDx(yon === "sag" ? 520 : -520)
+
+      if (yon === "sag") {
+        kartOgrenildiKaydet(String(item.id))
+      } else {
+        kartTekrarKaydet(String(item.id))
+      }
+
       window.setTimeout(() => {
         if (yon === "sag") onOgrenildi()
         else onTekrar()
       }, 320)
     },
-    [onOgrenildi, onTekrar],
+    [item.id, onOgrenildi, onTekrar],
   )
 
   const basla = (e: React.PointerEvent) => {
@@ -91,6 +107,8 @@ export default function Flashcard({
   const sagOran = Math.min(1, Math.max(0, dx / ESIK))
   const solOran = Math.min(1, Math.max(0, -dx / ESIK))
 
+  const rozet = kutuRozetBilgisi(hafiza.kutu)
+
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise max-w-xl mx-auto w-full">
       {/* İlerleme barı */}
@@ -100,7 +118,6 @@ export default function Flashcard({
 
       {/* Kart alanı */}
       <div className="relative select-none flex-1 min-h-0 flex items-center" style={{ perspective: "1600px" }}>
-        {/* Deste efekti */}
         <div className="absolute inset-x-4 top-3 h-full rounded-3xl bg-card/40 border border-border/40" aria-hidden="true" />
         <div className="absolute inset-x-2 top-1.5 h-full rounded-3xl bg-card/60 border border-border/60" aria-hidden="true" />
 
@@ -118,11 +135,7 @@ export default function Flashcard({
               setCevrildi((v) => !v)
             }
           }}
-          aria-label={
-            cevrildi
-              ? `Cevap: ${item.author}, ${item.period}.`
-              : `Eser: ${item.work}.`
-          }
+          aria-label={cevrildi ? `Cevap: ${item.author}, ${item.period}.` : `Eser: ${item.work}.`}
           className={`relative w-full h-full cursor-pointer ${intro ? "animate-card-intro" : ""} ${
             surukleniyor && !intro ? "" : "transition-all duration-300 ease-out"
           }`}
@@ -149,11 +162,19 @@ export default function Flashcard({
 
               <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
                 {/* Üst badge satırı */}
-                <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
-                    <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
-                    Eser
-                  </span>
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-2">
+                    <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
+                      <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
+                      Eser
+                    </span>
+                    {/* Leitner Seviye Rozeti */}
+                    <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[10px] font-bold ring-1 ${rozet.bg} ${rozet.renk}`}>
+                      <Sparkles className="h-3 w-3" />
+                      {rozet.etiket}
+                    </span>
+                  </div>
+
                   {osymFreq && (
                     <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[11px] font-bold text-osym ring-1 ring-osym/30">
                       <Flame className="h-3.5 w-3.5" strokeWidth={2.5} />
@@ -203,7 +224,7 @@ export default function Flashcard({
                   </span>
                 </div>
 
-                {/* Orta: Yazar Bilgisi (Mavi hap buton kaldırıldı) */}
+                {/* Orta: Yazar Bilgisi */}
                 <div className="flex flex-col items-center justify-center text-center px-2">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Yazar
@@ -259,13 +280,13 @@ export default function Flashcard({
           onClick={() => tamamla("sol")}
           className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-bold text-muted-foreground shadow-sm transition hover:bg-muted/70 hover:text-foreground active:scale-[0.98]"
         >
-          <RotateCcw className="h-4 w-4" /> Tekrar Et
+          <RotateCcw className="h-4 w-4" /> Tekrar Et (Kutu 1)
         </button>
         <button
           onClick={() => tamamla("sag")}
           className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
         >
-          <Check className="h-4 w-4" /> Kaptım
+          <Check className="h-4 w-4" /> Kaptım (+1 Kutu)
         </button>
       </div>
 
@@ -306,7 +327,7 @@ export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifir
         Desteyi Bitirdin! 🎉
       </h2>
       <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
-        Seçtiğin dönemdeki {toplam} kartın hepsini başarıyla tamamladın.
+        Seçtiğin dönemdeki kartları başarıyla tamamladın. Kutu durumların güncellendi!
       </p>
       <div className="mt-5">
         <IlerlemeBari mevcut={toplam} toplam={toplam} etiket="Tamamlanan" />
