@@ -724,29 +724,29 @@ export default function DueloModulu({
         setSure(SURE);
       }
 
-     // Maç bittiyse veya rakip terk ettiyse
-if (mac.durum === "bitti" || mac.durum === "terk") {
-  const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
-  
-  // Ben terk ettiysem bu event'i işleme (zaten forfeitOnayla halletti)
-  if (mac.durum === "terk" && mac.forfeitedBy === benimId) {
-    return;
-  }
+      // Maç bittiyse veya rakip terk ettiyse
+      if (mac.durum === "bitti" || mac.durum === "terk") {
+        const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
+        
+        // Ben terk ettiysem bu event'i işleme (zaten forfeitOnayla halletti)
+        if (mac.durum === "terk" && mac.forfeitedBy === benimId) {
+          return;
+        }
 
-  const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
-  const rS = (oyuncuNumRef.current === 1 ? mac.oyuncu2?.skor : mac.oyuncu1.skor) ?? 0;
-  const hukmen = mac.durum === "terk";
-  const kazandi = hukmen
-    ? mac.kazananId === benimId
-    : oS > rS;
-  const berabere = !hukmen && oS === rS;
+        const oS = oyuncuNumRef.current === 1 ? mac.oyuncu1.skor : mac.oyuncu2?.skor ?? 0;
+        const rS = (oyuncuNumRef.current === 1 ? mac.oyuncu2?.skor : mac.oyuncu1.skor) ?? 0;
+        const hukmen = mac.durum === "terk";
+        const kazandi = hukmen
+          ? mac.kazananId === benimId
+          : oS > rS;
+        const berabere = !hukmen && oS === rS;
 
-  if (hukmen && kazandi) {
-    setForfeitModal(true); // Rakip kaçtı → hükmen galibiyet popup
-  } else {
-    maciBitir(kazandi, berabere, hukmen, oS, rS);
-  }
-}
+        if (hukmen && kazandi) {
+          setForfeitModal(true); // Rakip kaçtı → hükmen galibiyet popup
+        } else {
+          maciBitir(kazandi, berabere, hukmen, oS, rS);
+        }
+      }
     });
     matchUnsubRef.current = unsub;
     return () => {
@@ -814,34 +814,34 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
   }, []);
 
   const forfeitOnayla = useCallback(() => {
-  setForfeitConfirm(false);
+    setForfeitConfirm(false);
 
-  const mId = matchIdRef.current;
-  const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
-  const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
+    const mId = matchIdRef.current;
+    const benimId = kullaniciRef.current?.cihazId || kullaniciRef.current?.kullaniciAdi || "";
+    const digerId = rakipIdRef.current || rakipRef.current?.ad || "";
 
-  // Önce dinleyiciyi kapat ki kendi terk event'imizi tekrar işlemeyelim
-  if (matchUnsubRef.current) {
-    matchUnsubRef.current();
-    matchUnsubRef.current = null;
-  }
+    // Önce dinleyiciyi kapat ki kendi terk event'imizi tekrar işlemeyelim
+    if (matchUnsubRef.current) {
+      matchUnsubRef.current();
+      matchUnsubRef.current = null;
+    }
 
-  // Online: rakibe hükmen galibiyet ver
-  if (mId && !mId.startsWith("bot_") && benimId) {
-    matchTerk(mId, benimId, digerId).catch(() => {});
-  }
+    // Online: rakibe hükmen galibiyet ver
+    if (mId && !mId.startsWith("bot_") && benimId) {
+      matchTerk(mId, benimId, digerId).catch(() => {});
+    }
 
-  // Terk eden taraf her zaman kaybeder (hükmen mağlubiyet)
-  maciBitir(false, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
+    // Terk eden taraf her zaman kaybeder (hükmen mağlubiyet)
+    maciBitir(false, false, true, oyuncuSkorRef.current, rakipSkorRef.current);
 
-  // Kısa gecikmeyle temizle (sonuç ekranı görünsün)
-  window.setTimeout(() => {
-    dueloSifirla();
-    onCikis();
-  }, 1800);
-}, [onCikis, dueloSifirla, maciBitir]);
+    // Kısa gecikmeyle temizle (sonuç ekranı görünsün)
+    window.setTimeout(() => {
+      dueloSifirla();
+      onCikis();
+    }, 1800);
+  }, [onCikis, dueloSifirla, maciBitir]);
 
-// --- Çıkış (lobi/sonuç ekranlarından) ---
+  // --- Çıkış (lobi/sonuç ekranlarından) ---
   const cikisIste = useCallback(() => {
     if (adim === "duelo") {
       forfeitYap();
@@ -963,39 +963,62 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
               </button>
             </div>
 
-            {/* Rank + Progress Bar */}
+            {/* Rank + Tıklanabilir Kariyer Yolu Butonu */}
             <button
               onClick={() => setKariyerAcik(true)}
-              className="mb-2.5 w-full rounded-xl bg-muted/40 p-3 ring-1 ring-border text-left transition hover:ring-duello/30 active:scale-[0.99]"
+              className="group mb-2.5 w-full rounded-xl bg-muted/40 p-3 ring-1 ring-border text-left transition hover:ring-duello/40 hover:bg-muted/60 active:scale-[0.99]"
             >
-              <div className="flex items-center justify-between mb-1.5">
-                <div className="flex items-center gap-1.5">
-                  <span className="text-base" style={{ filter: `drop-shadow(0 0 6px ${simdikiRank.renk}40)` }}>{simdikiRank.ikon}</span>
-                  <span className="font-serif text-xs font-bold text-card-foreground">{simdikiRank.ad}</span>
+              <div className="flex items-center justify-between mb-1.5 gap-2">
+                <div className="flex items-center gap-1.5 min-w-0">
+                  <span className="text-base shrink-0" style={{ filter: `drop-shadow(0 0 6px ${simdikiRank.renk}40)` }}>
+                    {simdikiRank.ikon}
+                  </span>
+                  <span className="font-serif text-xs font-bold text-card-foreground truncate">
+                    {simdikiRank.ad}
+                  </span>
                 </div>
-                <span className="text-xs font-bold text-muted-foreground">
-                  {rp} / {hedefRank ? hedefRank.min : rp} EP
-                </span>
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <span className="text-xs font-bold text-muted-foreground">
+                    {hedefRank ? `${rp} / ${hedefRank.min} EP` : `${rp} EP`}
+                  </span>
+                  <span className="inline-flex items-center text-[10px] font-semibold text-duello bg-duello/10 px-1.5 py-0.5 rounded transition group-hover:bg-duello/20">
+                    Kariyer <ChevronRight className="h-3 w-3 ml-0.5" />
+                  </span>
+                </div>
               </div>
+
+              {/* İlerleme Barı */}
               <div className="h-1.5 w-full overflow-hidden rounded-full bg-muted">
                 <div
                   className="h-full rounded-full transition-[width] duration-500 ease-out"
-                  style={{ width: `${rankProgress}%`, background: `linear-gradient(to right, ${simdikiRank.renk}80, ${simdikiRank.renk})` }}
+                  style={{
+                    width: hedefRank ? `${rankProgress}%` : "100%",
+                    background: hedefRank
+                      ? `linear-gradient(to right, ${simdikiRank.renk}80, ${simdikiRank.renk})`
+                      : "linear-gradient(to right, #f59e0b, #fbbf24)",
+                  }}
                 />
               </div>
-              <div className="mt-1 flex items-center justify-between text-[10px] text-muted-foreground">
-                <span>%{rankProgress} tamamlandı</span>
-                {hedefRank && (
-                  <span>{hedefRank.ad}'a {hedefeKalan} EP</span>
+
+              <div className="mt-1.5 flex items-center justify-between text-[10px] text-muted-foreground">
+                {hedefRank ? (
+                  <>
+                    <span>%{rankProgress} tamamlandı</span>
+                    <span>{hedefRank.ad}'a {hedefeKalan} EP</span>
+                  </>
+                ) : (
+                  <span className="w-full text-center font-bold text-amber-500 flex items-center justify-center gap-1">
+                    👑 Zirvedesin · Maksimum Rütbe
+                  </span>
                 )}
               </div>
             </button>
 
-            {/* Günlük Görevler — kompakt akordiyon (açılınca scroll normal) */}
+            {/* Günlük Görevler — kompakt akordiyon */}
             {(() => {
               const tamamlanan = gorevState.gorevler.filter((g) => gorevState.durumlar[g.tur]?.tamamlandi).length;
               return (
-                <div className="mb-2.5 rounded-xl bg-amber-500/5 ring-1 ring-amber-500/15 overflow-hidden">
+                <div className="mb-2.5 rounded-xl bg-amber-500/5 ring-1 ring-amber-500/20 overflow-hidden">
                   <button
                     onClick={() => setGorevAcik(!gorevAcik)}
                     className="flex w-full items-center justify-between px-3 py-2 transition hover:bg-amber-500/10"
@@ -1007,8 +1030,12 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
                         {tamamlanan}/{gorevState.gorevler.length}
                       </span>
                     </span>
-                    <ChevronDown className={`h-3.5 w-3.5 text-amber-500 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
+                    <div className="flex items-center gap-1 text-[10px] font-semibold text-amber-500/90">
+                      <span>{gorevAcik ? "Gizle" : "Görevler"}</span>
+                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
+                    </div>
                   </button>
+
                   {gorevAcik && (
                     <div className="space-y-2 px-3 pb-2.5 animate-rise">
                       {gorevState.gorevler.map((g) => {
@@ -1057,7 +1084,7 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
               );
             })()}
 
-            {/* Minimalist istatistik şeridi */}
+            {/* İstatistik Şeridi */}
             <div className="mt-auto grid grid-cols-3 gap-1.5 pt-1">
               <div className="text-center">
                 <p className="text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">Galibiyet</p>
@@ -1214,7 +1241,7 @@ if (mac.durum === "bitti" || mac.durum === "terk") {
                           )}
                           {simdiki && !sonraki && (
                             <p className="mt-1 text-[10px] font-bold text-amber-500">
-                              Maksimum rütbeye ulaştın!
+                              👑 Zirvedesin — Maksimum rütbeye ulaştın!
                             </p>
                           )}
                         </div>
