@@ -35,10 +35,9 @@ type StandartSoru = {
 };
 
 export default function TestModul() {
-  // Mod seçimi
   const [aktifMod, setAktifMod] = useState<"menu" | "osym" | "standart">("menu");
 
-  // --- ÖSYM SEVER STATE'LERİ (Orijinal Mantık) ---
+  // --- ÖSYM SEVER STATE'LERİ ---
   const [osymSorular, setOsymSorular] = useState<OsymSoru[]>([]);
   const [osymAktif, setOsymAktif] = useState(0);
   const [osymSecim, setOsymSecim] = useState<string | null>(null);
@@ -68,9 +67,12 @@ export default function TestModul() {
       setOsymDogruSayi((s) => s + 1);
     } else {
       sfxWrong();
-      // Yanlış yapılanı anında Leitner Kutu 1'e pasla!
+      // Türkçe karakter hassasiyeti ile Leitner Kutu 1'e paslama
+      const v = soru.vurgu.toLocaleLowerCase("tr").trim();
       const eslesenKart = tumYazarlar().find(
-        (y) => y.work.toLowerCase() === soru.vurgu.toLowerCase() || y.author.toLowerCase() === soru.vurgu.toLowerCase()
+        (y) =>
+          y.work.toLocaleLowerCase("tr").trim() === v ||
+          y.author.toLocaleLowerCase("tr").trim() === v
       );
       if (eslesenKart) {
         kartTekrarKaydet(String(eslesenKart.id));
@@ -92,7 +94,7 @@ export default function TestModul() {
     setOsymSecim(null);
   };
 
-  // --- DÖNEM VE DİĞER SEÇKİLER STATE'LERİ ---
+  // --- DÖNEM & KADIN YAZARLAR STATE'LERİ ---
   const [standartSorular, setStandartSorular] = useState<StandartSoru[]>([]);
   const [standartIndex, setStandartIndex] = useState(0);
   const [standartSecim, setStandartSecim] = useState<string | null>(null);
@@ -152,7 +154,6 @@ export default function TestModul() {
       setStandartDogru((p) => p + 1);
     } else {
       sfxWrong();
-      setStandartYanlis((p) => p + 1);
       if (soru.kartId) {
         kartTekrarKaydet(soru.kartId);
       }
@@ -176,36 +177,38 @@ export default function TestModul() {
       const oran = Math.round((osymDogruSayi / osymSorular.length) * 100);
       const basari =
         oran >= 80 ? "Süpersin!" : oran >= 60 ? "İyi gidiyorsun" : oran >= 40 ? "Gelişebilir" : "Tekrar çalış";
-      const yeniRekor = osymDogruSayi >= osymEnIyiSkor;
+      const yeniRekor = osymDogruSayi >= osymEnIyiSkor && osymDogruSayi > 0;
 
       return (
-        <div className="animate-rise rounded-2xl bg-card p-6 text-center border border-border max-w-sm mx-auto w-full my-auto">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-osym/15 text-osym ring-1 ring-osym/30">
-            <Flame className="h-8 w-8" strokeWidth={1.5} />
-          </div>
-          <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {osymSorular.length} soruda <span className="font-bold text-osym">{osymDogruSayi}</span> doğru — %{oran}
-          </p>
-          {yeniRekor && <p className="mt-1.5 text-xs font-bold text-amber-500">🏆 Yeni Rekor!</p>}
+        <div className="flex-1 flex items-center justify-center p-4 animate-rise">
+          <div className="rounded-2xl bg-card p-6 text-center border border-border shadow-xl max-w-sm w-full">
+            <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-osym/15 text-osym ring-1 ring-osym/30">
+              <Flame className="h-8 w-8" strokeWidth={1.5} />
+            </div>
+            <h2 className="font-serif text-2xl font-bold text-card-foreground">{basari}</h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {osymSorular.length} soruda <span className="font-bold text-osym">{osymDogruSayi}</span> doğru — %{oran}
+            </p>
+            {yeniRekor && <p className="mt-1.5 text-xs font-bold text-amber-500">🏆 Yeni Rekor!</p>}
 
-          <div className="mt-5">
-            <IlerlemeBari mevcut={osymDogruSayi} toplam={osymSorular.length} etiket="Doğru cevap" />
-          </div>
+            <div className="mt-5">
+              <IlerlemeBari mevcut={osymDogruSayi} toplam={osymSorular.length} etiket="Doğru cevap" />
+            </div>
 
-          <div className="mt-6 grid grid-cols-2 gap-2.5">
-            <button
-              onClick={osymBaslat}
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-osym py-3 text-xs font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
-            >
-              <RotateCcw className="h-4 w-4" /> Tekrar Çöz
-            </button>
-            <button
-              onClick={() => setAktifMod("menu")}
-              className="rounded-xl bg-muted/60 py-3 text-xs font-semibold text-muted-foreground hover:bg-muted active:scale-[0.98]"
-            >
-              Menüye Dön
-            </button>
+            <div className="mt-6 grid grid-cols-2 gap-2.5">
+              <button
+                onClick={osymBaslat}
+                className="flex items-center justify-center gap-1.5 rounded-xl bg-osym py-3 text-xs font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+              >
+                <RotateCcw className="h-4 w-4" /> Tekrar Çöz
+              </button>
+              <button
+                onClick={() => setAktifMod("menu")}
+                className="rounded-xl bg-muted/60 py-3 text-xs font-semibold text-muted-foreground hover:bg-muted active:scale-[0.98]"
+              >
+                Menüye Dön
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -215,29 +218,29 @@ export default function TestModul() {
     if (!soru) return null;
 
     return (
-      <div className="animate-rise max-w-xl mx-auto w-full flex flex-col flex-1 justify-between p-1">
-        <div>
-          <div className="mb-4 rounded-2xl bg-card border border-border p-3 shadow-sm">
-            <IlerlemeBari
-              mevcut={osymAktif + (osymSecim ? 1 : 0)}
-              toplam={osymSorular.length}
-              etiket="Soru"
-              sagEtiket={`${osymAktif + 1} / ${osymSorular.length} · ${osymDogruSayi} doğru`}
-            />
-            <div className="mt-3 flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-osym">
-                <Flame className="h-3.5 w-3.5" /> Banko ÖSYM Sorusu
-              </span>
-              <button
-                onClick={() => setAktifMod("menu")}
-                className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 active:scale-95"
-              >
-                <X className="h-3 w-3" /> Çıkış
-              </button>
-            </div>
+      <div className="animate-rise max-w-xl mx-auto w-full flex-1 flex flex-col min-h-0 overflow-y-auto no-scrollbar p-1 pb-4">
+        <div className="mb-3 rounded-2xl bg-card border border-border p-3 shadow-sm shrink-0">
+          <IlerlemeBari
+            mevcut={osymAktif + (osymSecim ? 1 : 0)}
+            toplam={osymSorular.length}
+            etiket="Soru"
+            sagEtiket={`${osymAktif + 1} / ${osymSorular.length} · ${osymDogruSayi} doğru`}
+          />
+          <div className="mt-2.5 flex items-center justify-between">
+            <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-osym">
+              <Flame className="h-3.5 w-3.5" /> Banko ÖSYM Sorusu
+            </span>
+            <button
+              onClick={() => setAktifMod("menu")}
+              className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 active:scale-95"
+            >
+              <X className="h-3 w-3" /> Çıkış
+            </button>
           </div>
+        </div>
 
-          <div className="rounded-3xl bg-card p-5 border border-border shadow-lg">
+        <div className="rounded-3xl bg-card p-5 border border-border shadow-lg flex-1 flex flex-col justify-between">
+          <div>
             <div className="flex items-start justify-between gap-3">
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
                 {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
@@ -299,17 +302,17 @@ export default function TestModul() {
                 );
               })}
             </div>
-
-            {osymSecim !== null && (
-              <button
-                onClick={osymSonraki}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-osym py-3.5 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
-              >
-                {osymAktif + 1 >= osymSorular.length ? "Sonucu Gör" : "Sonraki Soru"}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            )}
           </div>
+
+          {osymSecim !== null && (
+            <button
+              onClick={osymSonraki}
+              className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-osym py-3.5 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise shrink-0"
+            >
+              {osymAktif + 1 >= osymSorular.length ? "Sonucu Gör" : "Sonraki Soru"}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
     );
@@ -323,13 +326,13 @@ export default function TestModul() {
       const basariOrani = Math.round((standartDogru / standartSorular.length) * 100);
       return (
         <div className="flex-1 flex items-center justify-center p-4 animate-rise">
-          <div className="glass-card rounded-2xl p-6 text-center shadow-xl max-w-sm w-full ring-1 ring-border">
+          <div className="rounded-2xl bg-card p-6 text-center border border-border shadow-xl max-w-sm w-full">
             <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-primary/10 text-primary animate-pop">
               <Sparkles className="h-8 w-8" />
             </div>
             <h2 className="font-serif text-2xl font-bold text-card-foreground">Test Bitti!</h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {seciliBaslik} testi tamamlandı. Yanlışlar Leitner <b>Kutu 1</b>'e işlendi.
+              {seciliBaslik} testi tamamlandı. Yanlışlar akıllı tekrar için Leitner <b>Kutu 1</b>'e işlendi.
             </p>
 
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -364,75 +367,77 @@ export default function TestModul() {
     if (!aktifSoru) return null;
 
     return (
-      <div className="flex-1 flex flex-col justify-between p-1 max-w-xl mx-auto w-full animate-rise">
-        <div>
-          <div className="flex items-center justify-between mb-4">
-            <button
-              onClick={() => setAktifMod("menu")}
-              className="flex items-center gap-1 text-xs font-bold text-muted-foreground hover:text-foreground"
-            >
-              <ArrowLeft className="h-4 w-4" /> Vazgeç
-            </button>
-            <span className="rounded-full bg-muted/60 px-3 py-1 text-xs font-bold text-primary">
-              Soru {standartIndex + 1} / {standartSorular.length}
-            </span>
-          </div>
-
-          <div className="glass-card rounded-2xl p-6 ring-1 ring-border text-center">
-            {aktifSoru.aciklama && (
-              <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
-                {aktifSoru.aciklama}
-              </span>
-            )}
-            <h2 className="font-serif text-2xl font-bold mt-2 text-card-foreground">{aktifSoru.soruMetni}</h2>
-          </div>
-
-          <div className="mt-5 space-y-2.5">
-            {aktifSoru.secenekler.map((secenek) => {
-              const secildi = standartSecim === secenek;
-              const dogruMu = secenek === aktifSoru.dogruCevap;
-
-              let stil = "bg-card border-border text-foreground hover:border-primary/50";
-              if (standartSecim !== null) {
-                if (dogruMu) stil = "bg-emerald-500/15 border-emerald-500 text-emerald-400 font-bold";
-                else if (secildi) stil = "bg-destructive/15 border-destructive text-destructive font-bold";
-                else stil = "bg-card/50 border-border/50 text-muted-foreground opacity-50";
-              }
-
-              return (
-                <button
-                  key={secenek}
-                  onClick={() => standartCevapla(secenek)}
-                  disabled={standartSecim !== null}
-                  className={`flex w-full items-center justify-between rounded-xl border p-4 text-left text-sm font-semibold transition-all ${stil}`}
-                >
-                  <span>{secenek}</span>
-                  {standartSecim !== null &&
-                    (dogruMu ? (
-                      <CheckCircle2 className="h-5 w-5 text-emerald-500" />
-                    ) : secildi ? (
-                      <XCircle className="h-5 w-5 text-destructive" />
-                    ) : null)}
-                </button>
-              );
-            })}
-          </div>
+      <div className="animate-rise max-w-xl mx-auto w-full flex-1 flex flex-col min-h-0 overflow-y-auto no-scrollbar p-1 pb-4">
+        <div className="flex items-center justify-between mb-3 shrink-0">
+          <button
+            onClick={() => setAktifMod("menu")}
+            className="flex items-center gap-1 text-xs font-bold text-muted-foreground hover:text-foreground"
+          >
+            <ArrowLeft className="h-4 w-4" /> Vazgeç
+          </button>
+          <span className="rounded-full bg-muted/60 px-3 py-1 text-xs font-bold text-primary">
+            Soru {standartIndex + 1} / {standartSorular.length}
+          </span>
         </div>
 
-        {standartSecim !== null && (
-          <button
-            onClick={standartSonraki}
-            className="mt-6 w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-pop"
-          >
-            {standartIndex + 1 === standartSorular.length ? "Testi Bitir" : "Sonraki Soru"}
-          </button>
-        )}
+        <div className="rounded-3xl bg-card p-5 border border-border shadow-lg flex-1 flex flex-col justify-between">
+          <div>
+            <div className="rounded-2xl bg-muted/40 p-4 border border-border/80 text-center mb-5">
+              {aktifSoru.aciklama && (
+                <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+                  {aktifSoru.aciklama}
+                </span>
+              )}
+              <h2 className="font-serif text-2xl font-bold mt-1 text-card-foreground">{aktifSoru.soruMetni}</h2>
+            </div>
+
+            <div className="space-y-2.5">
+              {aktifSoru.secenekler.map((secenek) => {
+                const secildi = standartSecim === secenek;
+                const dogruMu = secenek === aktifSoru.dogruCevap;
+
+                let stil = "bg-card border-border text-foreground hover:border-primary/50";
+                if (standartSecim !== null) {
+                  if (dogruMu) stil = "bg-emerald-500/15 border-emerald-500 text-emerald-400 font-bold";
+                  else if (secildi) stil = "bg-destructive/15 border-destructive text-destructive font-bold";
+                  else stil = "bg-card/50 border-border/50 text-muted-foreground opacity-50";
+                }
+
+                return (
+                  <button
+                    key={secenek}
+                    onClick={() => standartCevapla(secenek)}
+                    disabled={standartSecim !== null}
+                    className={`flex w-full items-center justify-between rounded-xl border p-4 text-left text-sm font-semibold transition-all ${stil}`}
+                  >
+                    <span>{secenek}</span>
+                    {standartSecim !== null &&
+                      (dogruMu ? (
+                        <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                      ) : secildi ? (
+                        <XCircle className="h-5 w-5 text-destructive" />
+                      ) : null)}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {standartSecim !== null && (
+            <button
+              onClick={standartSonraki}
+              className="mt-6 w-full rounded-xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-pop shrink-0"
+            >
+              {standartIndex + 1 === standartSorular.length ? "Testi Bitir" : "Sonraki Soru"}
+            </button>
+          )}
+        </div>
       </div>
     );
   }
 
   // ============================================================
-  // GÖRÜNÜM 3: TEST ANA LİSTESİ (ÖSYM EN TEPEDE)
+  // GÖRÜNÜM 3: TEST ANA SEÇİM LİSTESİ
   // ============================================================
   return (
     <div className="flex-1 flex flex-col gap-3 p-1 animate-rise max-w-xl mx-auto w-full">
@@ -510,33 +515,31 @@ export default function TestModul() {
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </button>
 
-      {/* 4. DİĞER SEÇKİLER */}
+      {/* 4. DİĞER SEÇKİLER (Hazırlık Aşamasında - Temiz Durum) */}
       <div className="grid grid-cols-2 gap-2">
-        <button
-          onClick={() => standartTestBaslat("donem", "Tüm Dönemler")}
-          className="glass-card flex items-center gap-2.5 rounded-2xl p-3 ring-1 ring-border/80 transition hover:bg-muted/50 active:scale-[0.99] text-left"
-        >
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-amber-500/15 text-amber-500">
-            <Users className="h-4 w-4" />
+        <div className="glass-card flex items-center justify-between rounded-2xl p-3 ring-1 ring-border/60 opacity-60">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-amber-500/15 text-amber-500 shrink-0">
+              <Users className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-card-foreground truncate">Eser – Kahraman</p>
+              <span className="text-[9px] font-semibold text-amber-500">Yakında</span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-card-foreground truncate">Eser – Kahraman</p>
-            <p className="text-[10px] text-muted-foreground">Banko eşleştirmeler</p>
-          </div>
-        </button>
+        </div>
 
-        <button
-          onClick={() => standartTestBaslat("donem", "Tüm Dönemler")}
-          className="glass-card flex items-center gap-2.5 rounded-2xl p-3 ring-1 ring-border/80 transition hover:bg-muted/50 active:scale-[0.99] text-left"
-        >
-          <div className="grid h-8 w-8 place-items-center rounded-lg bg-sky-500/15 text-sky-500">
-            <Compass className="h-4 w-4" />
+        <div className="glass-card flex items-center justify-between rounded-2xl p-3 ring-1 ring-border/60 opacity-60">
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div className="grid h-8 w-8 place-items-center rounded-lg bg-sky-500/15 text-sky-500 shrink-0">
+              <Compass className="h-4 w-4" />
+            </div>
+            <div className="min-w-0">
+              <p className="text-xs font-bold text-card-foreground truncate">Edebi Akımlar</p>
+              <span className="text-[9px] font-semibold text-sky-500">Yakında</span>
+            </div>
           </div>
-          <div className="min-w-0">
-            <p className="text-xs font-bold text-card-foreground truncate">Edebi Akımlar</p>
-            <p className="text-[10px] text-muted-foreground">Temsilciler & İlkeler</p>
-          </div>
-        </button>
+        </div>
       </div>
     </div>
   );
