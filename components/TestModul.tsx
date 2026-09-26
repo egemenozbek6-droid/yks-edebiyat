@@ -10,9 +10,9 @@ import {
   ChevronRight,
   Flame, 
   Flower,
+  Globe,
   HeartHandshake,
   RotateCcw, 
-  Sparkles,
   Target, 
   Users,
   X,
@@ -115,7 +115,7 @@ const AKSAN_PALETI: Record<string, Aksan> = {
     hoverBorder: "hover:border-cyan-500/50",
     hoverRing: "hover:ring-cyan-500/30",
     rozetBg: "bg-cyan-500/15 text-cyan-500 ring-cyan-500/30",
-    rozetIkon: Sparkles,
+    rozetIkon: Globe,
   },
 };
 
@@ -303,10 +303,11 @@ export default function TestModul({ onSonuc }: Props) {
       "ozellik_akim",
     ];
 
-    const seciliAkımlar = karistirYerel(havuz).slice(0, Math.min(10, havuz.length));
+    const seciliKombinasyonlar = karistirYerel(
+      havuz.flatMap((item) => tipler.map((tip) => ({ item, tip }))),
+    ).slice(0, 10);
 
-    const uretilenSorular: Soru[] = seciliAkımlar.map((item, index) => {
-      const tip = tipler[index % tipler.length];
+    const uretilenSorular: Soru[] = seciliKombinasyonlar.map(({ item, tip }) => {
       const aciklama = item.hint ?? `${item.name}: ${item.slogan}`;
 
       if (tip === "akim_temsilci") {
@@ -573,7 +574,7 @@ export default function TestModul({ onSonuc }: Props) {
           >
             <div className="flex items-center gap-3.5 min-w-0">
               <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
-                <Sparkles className="w-5 h-5" />
+                <Globe className="w-5 h-5" />
               </div>
               <div className="min-w-0">
                 <div className="flex items-center gap-2">
