@@ -1681,9 +1681,12 @@ export default function DueloModulu({
   const benOndeyim = oyuncuSkor > rakipSkor;
   const rakipOnde = rakipSkor > oyuncuSkor;
 
+  const oyuncuRank = rankBul(istatistik?.puan ?? 0);
+  const rakipRank = rankBul(typeof rakip.puan === "number" ? rakip.puan : 0);
+
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise mx-auto w-full max-w-xl">
-      {/* 1. SKOR BARI (Üç nokta sorunu giderilmiş ve taşmayan düzen) */}
+      {/* 1. SKOR BARI */}
       <div className="mb-3 glass-card rounded-2xl p-3 ring-1 ring-border/80 shrink-0 bg-card/70 backdrop-blur-md">
         <div className="flex items-center justify-between gap-2">
           {/* Oyuncu Tarafı */}
@@ -1694,6 +1697,12 @@ export default function DueloModulu({
             <div className="min-w-0 flex-1">
               <p className="truncate text-[9.5px] font-bold uppercase tracking-tight text-muted-foreground">
                 {kullanici.kullaniciAdi}
+              </p>
+              <p
+                className="truncate text-[9px] font-semibold leading-tight"
+                style={{ color: oyuncuRank.renk }}
+              >
+                {oyuncuRank.ikon} {oyuncuRank.ad}
               </p>
               <p className={`text-xl font-black tabular-nums transition-colors ${
                 benOndeyim ? "text-emerald-500 drop-shadow-[0_0_8px_rgba(16,185,129,0.3)]" : "text-duello"
@@ -1710,11 +1719,17 @@ export default function DueloModulu({
             </span>
           </div>
 
-          {/* Rakip Tarafı (Taşma yapmayan esnek genişlik) */}
+          {/* Rakip Tarafı */}
           <div className="flex flex-1 items-center justify-end gap-2 min-w-0 text-right">
             <div className="min-w-0 flex-1">
               <p className="truncate text-[9.5px] font-bold uppercase tracking-tight text-muted-foreground">
                 {rakip.ad}
+              </p>
+              <p
+                className="truncate text-[9px] font-semibold leading-tight"
+                style={{ color: rakipRank.renk }}
+              >
+                {rakipRank.ikon} {rakipRank.ad}
               </p>
               <p className={`text-xl font-black tabular-nums transition-colors ${
                 rakipOnde ? "text-amber-500 drop-shadow-[0_0_8px_rgba(245,158,11,0.3)]" : "text-foreground"
