@@ -81,9 +81,22 @@ export const BOT_HAVUZU: { ad: string; avatar: string }[] = [
   { ad: "dereceisteyen", avatar: "yildiz" },
 ];
 
+/** Botlara gerçekçi rastgele EP (rütbe dağılımı) */
+function rastgeleBotPuan(): number {
+  const r = Math.random();
+  // Ağırlık: düşük rütbe daha sık
+  if (r < 0.28) return Math.floor(Math.random() * 100); // YKS Adayı
+  if (r < 0.50) return 100 + Math.floor(Math.random() * 150); // Eser Çırağı
+  if (r < 0.70) return 250 + Math.floor(Math.random() * 250); // Banko Avcısı
+  if (r < 0.85) return 500 + Math.floor(Math.random() * 250); // Düello Ustası
+  if (r < 0.94) return 750 + Math.floor(Math.random() * 250); // Derece Adayı
+  if (r < 0.99) return 1000 + Math.floor(Math.random() * 500); // Üstad
+  return 1500 + Math.floor(Math.random() * 500); // Efsane
+}
+
 export function rastgeleBot(): Rakip {
   const secim = BOT_HAVUZU[Math.floor(Math.random() * BOT_HAVUZU.length)];
-  return { ad: secim.ad, avatar: secim.avatar, bot: true };
+  return { ad: secim.ad, avatar: secim.avatar, bot: true, puan: rastgeleBotPuan() };
 }
 
 // Bot davranış simülasyonu
