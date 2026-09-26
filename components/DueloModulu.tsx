@@ -19,6 +19,7 @@ import {
   ChevronDown,
   ShieldCheck,
   Plus,
+  ShieldAlert,
 } from "lucide-react";
 import { type Soru, sorulariUret } from "@/lib/soru";
 import {
@@ -1479,72 +1480,96 @@ export default function DueloModulu({
     );
   }
 
-  // --- SONUÇ (Modernize Edilmiş Simetrik Butonlar) ---
+  // --- SONUÇ (Gelişmiş Başlıklar, Mesajlar & Simetrik Düzen) ---
   if (adim === "sonuc" && sonuc) {
     const kazandi = sonuc.kazandi || sonuc.hukmenGalibiyet;
     const berabere = sonuc.berabere;
+    const maglup = !kazandi && !berabere;
+
+    // Duruma özel dinamik başlık ve motive edici mesajlar
+    const baslik = sonuc.hukmenGalibiyet
+      ? "Terk Galibiyeti"
+      : kazandi
+        ? "Ezici Üstünlük"
+        : berabere
+          ? "Yenişemediniz"
+          : "Bu Sefer Olmadı";
+
+    const aciklama = sonuc.hukmenGalibiyet
+      ? "Rakip düellodan çekildi, hükmen galibiyet hanene yazıldı!"
+      : kazandi
+        ? "Kusursuz bir düello çıkardın, rakip çaresiz kaldı!"
+        : berabere
+          ? "Kıran kırana bir mücadeleydi, iki taraf da pes etmedi."
+          : "Rövanşı alıp skoru eşitlemek tamamen senin elinde.";
+
     return (
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="animate-rise glass-card rounded-2xl p-7 text-center shadow-2xl max-w-sm w-full ring-1 ring-border">
+          {/* Sonuç İkonu */}
           <div
             className={`mx-auto mb-4 grid h-18 w-18 place-items-center rounded-2xl animate-pop ${
-              kazandi
+              sonuc.hukmenGalibiyet
                 ? "bg-emerald-500/15 text-emerald-500 ring-1 ring-emerald-500/30"
-                : berabere
-                  ? "bg-duello/10 text-duello ring-1 ring-duello/30"
-                  : "bg-destructive/15 text-destructive ring-1 ring-destructive/30"
+                : kazandi
+                  ? "bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/30 shadow-[0_0_20px_rgba(245,158,11,0.2)]"
+                  : berabere
+                    ? "bg-duello/10 text-duello ring-1 ring-duello/30"
+                    : "bg-destructive/15 text-destructive ring-1 ring-destructive/30"
             }`}
           >
-            {kazandi ? (
+            {sonuc.hukmenGalibiyet ? (
+              <ShieldCheck className="h-9 w-9" strokeWidth={1.75} />
+            ) : kazandi ? (
               <Trophy className="h-9 w-9" strokeWidth={1.75} />
             ) : berabere ? (
               <Swords className="h-9 w-9" strokeWidth={1.75} />
             ) : (
-              <X className="h-9 w-9" strokeWidth={1.75} />
+              <ShieldAlert className="h-9 w-9" strokeWidth={1.75} />
             )}
           </div>
+
           <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
-            {hukmenGalibiyet
-              ? "Rakip kaçtı."
-              : kazandi
-                ? "Ezici üstünlük."
-                : berabere
-                  ? "Berabere kaldınız."
-                  : "Bu sefer olmadı."}
+            {baslik}
           </h2>
-          <p className="mt-1.5 text-xs text-muted-foreground">
-            {hukmenGalibiyet
-              ? "Rakip oyundan çıktı. Galibiyet senin."
-              : kazandi
-                ? "Mükemmel performans, galibiyet senin."
-                : berabere
-                  ? "İkiniz de aynı skoru yaptınız."
-                  : "Rövanş ister misin, yoksa kaçacak mısın?"}
+          <p className="mt-1.5 text-xs text-muted-foreground leading-relaxed">
+            {aciklama}
           </p>
 
+          {/* Karşılıklı Skor Tablosu */}
           <div className="mt-5 grid grid-cols-2 gap-2.5">
-            <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border">
+            <div className={`rounded-xl p-3 ring-1 transition-all ${
+              kazandi ? "bg-emerald-500/10 ring-emerald-500/30" : "bg-muted/40 ring-border"
+            }`}>
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {kullanici?.kullaniciAdi}
+                {kullanici?.kullaniciAdi} (Sen)
               </p>
-              <p className="mt-1 text-2xl font-black text-duello">{sonuc.oyuncuSkor} EP</p>
+              <p className={`mt-1 text-2xl font-black ${kazandi ? "text-emerald-500" : "text-duello"}`}>
+                {sonuc.oyuncuSkor} EP
+              </p>
             </div>
-            <div className="rounded-xl bg-muted/40 p-3 ring-1 ring-border">
+
+            <div className={`rounded-xl p-3 ring-1 transition-all ${
+              maglup ? "bg-emerald-500/10 ring-emerald-500/30" : "bg-muted/40 ring-border"
+            }`}>
               <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {sonuc.rakipAdi}
               </p>
-              <p className="mt-1 text-2xl font-black text-foreground">{sonuc.rakipSkor} EP</p>
+              <p className={`mt-1 text-2xl font-black ${maglup ? "text-emerald-500" : "text-foreground"}`}>
+                {sonuc.rakipSkor} EP
+              </p>
             </div>
           </div>
 
+          {/* Ranked Modunda Kazanılan/Kaybedilen EP */}
           {dueloModu === "ranked" && (
             <div className="mt-3.5 space-y-2">
               <div
                 className={`flex items-center justify-center gap-1.5 rounded-xl py-2 text-xs font-bold ring-1 ${
                   sonuc.puanKazandi > 0
-                    ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/20"
+                    ? "bg-emerald-500/10 text-emerald-500 ring-emerald-500/25"
                     : sonuc.puanKazandi < 0
-                      ? "bg-destructive/10 text-destructive ring-destructive/20"
+                      ? "bg-destructive/10 text-destructive ring-destructive/25"
                       : "bg-muted/40 text-muted-foreground ring-border"
                 }`}
               >
@@ -1555,14 +1580,16 @@ export default function DueloModulu({
                     ? `${sonuc.puanKazandi} EP Kaybettin`
                     : "±0 EP (Puan Değişmedi)"}
               </div>
+
               {sonuc.seri >= 2 && (
-                <div className="flex items-center justify-center gap-1.5 rounded-xl bg-orange-500/10 py-2 text-xs font-bold text-orange-500 ring-1 ring-orange-500/20">
-                  <Flame className="h-3.5 w-3.5" /> {sonuc.seri} Galibiyet Serisi
+                <div className="flex items-center justify-center gap-1.5 rounded-xl bg-orange-500/10 py-2 text-xs font-bold text-orange-500 ring-1 ring-orange-500/25">
+                  <Flame className="h-3.5 w-3.5" /> {sonuc.seri} Galibiyet Serisi! 🔥
                 </div>
               )}
             </div>
           )}
 
+          {/* Alt Butonlar */}
           <div className="mt-6 grid grid-cols-2 gap-2.5">
             <button
               type="button"
@@ -1623,7 +1650,7 @@ export default function DueloModulu({
     );
   }
 
-  // --- DUELO (Canlı Maç & TestModul Tarzı Şıklar) ---
+  // --- DUELO (Canlı Maç) ---
   const soru = sorular[soruIndex];
   if (!soru || !kullanici || !rakip) {
     if (adim === "duelo" || adim === "sonuc") {
@@ -1661,10 +1688,9 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise mx-auto w-full max-w-xl">
-      {/* 1. SKOR BARI (Vurgulu & Canlı) */}
+      {/* 1. SKOR BARI */}
       <div className="mb-3 glass-card rounded-2xl p-3.5 ring-1 ring-border/80 shrink-0 bg-card/70 backdrop-blur-md">
         <div className="flex items-center justify-between gap-3">
-          {/* Oyuncu Tarafı */}
           <div className="flex flex-1 items-center gap-2.5 min-w-0">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-muted/60 text-xl ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
@@ -1681,14 +1707,12 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Orta VS Rozeti */}
           <div className="flex shrink-0 items-center justify-center">
             <span className="rounded-full bg-muted/80 px-2.5 py-1 text-[10px] font-black tracking-widest text-muted-foreground ring-1 ring-border">
               VS
             </span>
           </div>
 
-          {/* Rakip Tarafı */}
           <div className="flex flex-1 items-center justify-end gap-2.5 min-w-0 text-right">
             <div className="min-w-0">
               <p className="truncate text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
@@ -1726,9 +1750,8 @@ export default function DueloModulu({
         </div>
       </div>
 
-      {/* 3. SORU KARTI (TestModul Çizgisinde Şıklar) */}
+      {/* 3. SORU KARTI */}
       <div className="relative rounded-2xl border border-border bg-card p-5 shadow-lg flex flex-col">
-        {/* Terk Et Butonu */}
         <button
           onClick={forfeitYap}
           className="absolute right-4 top-4 z-10 inline-flex items-center gap-1 rounded-full bg-destructive/10 px-2.5 py-1 text-[11px] font-semibold text-destructive transition hover:bg-destructive/20 active:scale-95 ring-1 ring-destructive/20"
@@ -1746,7 +1769,7 @@ export default function DueloModulu({
         </h2>
         <p className="mt-1 text-sm text-pretty text-muted-foreground">{soru.metin}</p>
 
-        {/* Seçenekler Listesi */}
+        {/* Şıklar */}
         <div className="mt-5 space-y-2.5">
           {soru.secenekler.map((secenek, i) => {
             const secildi = secim === secenek;
@@ -1789,7 +1812,6 @@ export default function DueloModulu({
                   <span className="text-pretty">{secenek}</span>
                 </div>
 
-                {/* Soru içi netleşen puan rozeti */}
                 {secildi && cevapDogru && ertelenmisSkor.current > 0 && (
                   <span className="shrink-0 rounded-md bg-emerald-500/15 border border-emerald-500/30 px-2 py-0.5 text-xs font-black text-emerald-400 animate-pop">
                     +{ertelenmisSkor.current} EP
@@ -1800,7 +1822,7 @@ export default function DueloModulu({
           })}
         </div>
 
-        {/* Alt Geri Bildirim Şeridi */}
+        {/* Bildirim Alanı */}
         {secim !== null && (
           <div className="mt-4 flex items-center justify-center gap-2 text-xs font-semibold">
             {bekleniyor ? (
@@ -1809,11 +1831,11 @@ export default function DueloModulu({
                 Rakip cevaplıyor...
               </span>
             ) : secim === ZAMAN_ASIMI ? (
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-destructive/10 px-3.5 py-1.5 text-destructive ring-1 ring-destructive/20 font-bold">
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-destructive/10 px-3 py-1.5 text-destructive ring-1 ring-destructive/20 font-bold">
                 <X className="h-3.5 w-3.5" strokeWidth={2.5} /> Süre doldu!
               </span>
             ) : cevapDogru ? (
-              <span className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3.5 py-1.5 text-emerald-500 ring-1 ring-emerald-500/20 font-bold">
+              <span className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-1.5 text-emerald-500 ring-1 ring-emerald-500/20 font-bold">
                 <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Doğru Cevap!
                 {dogruSeri >= 2 && (
@@ -1823,7 +1845,7 @@ export default function DueloModulu({
                 )}
               </span>
             ) : (
-              <span className="inline-flex items-center gap-1.5 rounded-xl bg-destructive/10 px-3.5 py-1.5 text-destructive ring-1 ring-destructive/20 font-bold">
+              <span className="inline-flex items-center gap-1.5 rounded-xl bg-destructive/10 px-3 py-1.5 text-destructive ring-1 ring-destructive/20 font-bold">
                 <X className="h-3.5 w-3.5" strokeWidth={2.5} /> Yanlış cevap.
               </span>
             )}
@@ -1908,7 +1930,7 @@ export default function DueloModulu({
         </div>
       )}
 
-      {/* Forfeit Popup */}
+      {/* Forfeit Bildirim Pop-up */}
       {forfeitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
           <div className="animate-pop glass-card max-w-sm w-full rounded-2xl p-8 text-center shadow-2xl ring-1 ring-emerald-500/20">
