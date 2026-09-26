@@ -5,7 +5,6 @@ import {
   TriangleAlert as AlertTriangle,
   Layers,
   NotebookPen,
-  Flame,
   Swords,
   Info,
   X,
@@ -15,7 +14,6 @@ import {
 } from "lucide-react";
 import Flashcard, { TamamlamaEkrani } from "@/components/Flashcard";
 import TestModul from "@/components/TestModul";
-import OsymSeverModul from "@/components/OsymSeverModul";
 import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
@@ -29,13 +27,13 @@ import { sfxMuted, sfxMuteToggle } from "@/lib/sfx";
 const APP_NAME = "EdebiKart";
 const APP_SUBTITLE = "YKS Yazar Eser & Düello";
 
-type Mod = "kart" | "test" | "osym" | "duelo";
+// 3'lü Mod Yapısı
+type Mod = "kart" | "test" | "duelo";
 type KategoriTuru = AnaDonem | "Tekrar Gerekenler" | "Kadın Yazarlar";
 
 const modOeleri: { mod: Mod; etiket: string; ikon: typeof Layers; aktifKlass: string }[] = [
   { mod: "kart", etiket: "Kartlar", ikon: Layers, aktifKlass: "bg-primary text-primary-foreground shadow-sm" },
   { mod: "test", etiket: "Test", ikon: NotebookPen, aktifKlass: "bg-violet-600 text-white shadow-sm" },
-  { mod: "osym", etiket: "ÖSYM", ikon: Flame, aktifKlass: "bg-osym text-osym-foreground shadow-sm" },
   { mod: "duelo", etiket: "Düello", ikon: Swords, aktifKlass: "bg-duello text-duello-foreground shadow-sm" },
 ];
 
@@ -48,7 +46,7 @@ function karistir<T>(dizi: T[]): T[] {
   return kopya;
 }
 
-export default function App() {
+export default function Page() {
   const [mod, setMod] = useState<Mod>("kart");
   const [infoAcik, setInfoAcik] = useState(false);
   const [ruhHali, setRuhHali] = useState<RuhHali | null>(null);
@@ -131,10 +129,8 @@ export default function App() {
     [dueloAktif, cikisOnayGerekir],
   );
 
-  // Kategori & Deste Yönetimi
   const [seciliKategori, setSeciliKategori] = useState<KategoriTuru>("Tüm Dönemler");
 
-  // Deste verisini belirleme (Özel seçkiler dahil)
   const kartVerisi = useMemo(() => {
     if (seciliKategori === "Kadın Yazarlar") {
       return kadinYazarlarData as unknown as LiteratureItem[];
@@ -261,9 +257,9 @@ export default function App() {
           </div>
         </div>
 
-        {/* Mod seçici — 4'lü Bar */}
+        {/* 3'lü Mod Seçici Bar */}
         <div className="max-w-3xl mx-auto px-4 pb-2.5">
-          <div className="grid grid-cols-4 gap-1 p-1 bg-card border border-border rounded-xl">
+          <div className="grid grid-cols-3 gap-1.5 p-1 bg-card border border-border rounded-xl">
             {modOeleri.map(({ mod: m, etiket, ikon: Ikon, aktifKlass }) => {
               const aktif = mod === m;
               return (
@@ -271,11 +267,11 @@ export default function App() {
                   key={m}
                   onClick={() => modDegistir(m)}
                   aria-current={aktif ? "page" : undefined}
-                  className={`flex flex-col items-center justify-center gap-1 rounded-lg py-2 text-[11px] font-semibold transition ${
+                  className={`flex flex-col items-center justify-center gap-1 rounded-lg py-2.5 text-xs font-bold transition ${
                     aktif ? aktifKlass : "text-muted-foreground hover:bg-muted/60 hover:text-foreground"
                   }`}
                 >
-                  <Ikon className="h-4 w-4" strokeWidth={aktif ? 2.4 : 1.8} />
+                  <Ikon className="h-4.5 w-4.5" strokeWidth={aktif ? 2.4 : 1.8} />
                   {etiket}
                 </button>
               );
@@ -304,61 +300,53 @@ export default function App() {
           </div>
         )}
 
-        {/* Kart Modu Tek Satırlık Kompakt Kontrol Barı */}
-{mod === "kart" && (
-  <div className="mb-3 shrink-0 flex items-center justify-between gap-2.5 rounded-2xl bg-card border border-border/80 p-2 shadow-sm">
-    {/* Dönem / Deste Seçim Butonu */}
-    <div className="group relative flex-1 min-w-0">
-      <div className="flex items-center gap-2 rounded-xl bg-muted/60 border border-border px-3 py-2 transition-all duration-200 group-hover:border-primary/50 group-hover:bg-muted/90 group-active:scale-[0.99] ring-1 ring-transparent group-hover:ring-primary/20">
-        {/* Sol Vurgulu İkon */}
-        <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary text-[11px]">
-          📚
-        </span>
+        {/* Kart Modu Kontrol Barı */}
+        {mod === "kart" && (
+          <div className="mb-3 shrink-0 flex items-center justify-between gap-2.5 rounded-2xl bg-card border border-border/80 p-2 shadow-sm">
+            <div className="group relative flex-1 min-w-0">
+              <div className="flex items-center gap-2 rounded-xl bg-muted/60 border border-border px-3 py-2 transition-all duration-200 group-hover:border-primary/50 group-hover:bg-muted/90 group-active:scale-[0.99] ring-1 ring-transparent group-hover:ring-primary/20">
+                <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary text-[11px]">
+                  📚
+                </span>
+                <span className="flex-1 truncate text-xs font-bold text-foreground">
+                  {seciliKategori}
+                </span>
+                <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-background/80 border border-border/60 text-muted-foreground transition group-hover:text-primary group-hover:border-primary/40">
+                  <ChevronDown className="h-3.5 w-3.5 stroke-[2.5]" />
+                </div>
+              </div>
 
-        {/* Seçili Başlık */}
-        <span className="flex-1 truncate text-xs font-bold text-foreground">
-          {seciliKategori}
-        </span>
+              <select
+                value={seciliKategori}
+                onChange={(e) => kategoriSec(e.target.value as KategoriTuru)}
+                className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
+              >
+                <optgroup label="Akıllı Tekrar & Özel Deste">
+                  <option value="Tekrar Gerekenler">🔥 Tekrar Etmen Gerekenler</option>
+                  <option value="Kadın Yazarlar">🌸 Kadın Yazarlar Özel Deste</option>
+                </optgroup>
+                <optgroup label="Edebi Dönemler">
+                  {anaDonemler.map((donem) => (
+                    <option key={donem} value={donem}>
+                      {donem}
+                    </option>
+                  ))}
+                </optgroup>
+              </select>
+            </div>
 
-        {/* Belirgin Açılır Ok Rozeti */}
-        <div className="flex h-5 w-5 shrink-0 items-center justify-center rounded-md bg-background/80 border border-border/60 text-muted-foreground transition group-hover:text-primary group-hover:border-primary/40">
-          <ChevronDown className="h-3.5 w-3.5 stroke-[2.5]" />
-        </div>
-      </div>
+            <div className="shrink-0 flex items-center gap-2 rounded-xl bg-muted/40 border border-border/60 px-3 py-1.5">
+              <div className="flex flex-col text-right">
+                <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">İlerleme</span>
+                <span className="text-xs font-extrabold text-primary tabular-nums">
+                  {ogrenilenler.size} / {kartVerisi.length}
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
 
-      {/* Tıklanabilir Şeffaf Select (Kullanıcı tıkladığında menü fırlar) */}
-      <select
-        value={seciliKategori}
-        onChange={(e) => kategoriSec(e.target.value as KategoriTuru)}
-        className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
-      >
-        <optgroup label="Akıllı Tekrar & Özel Deste">
-          <option value="Tekrar Gerekenler">🔥 Tekrar Etmen Gerekenler</option>
-          <option value="Kadın Yazarlar">🌸 Kadın Yazarlar Özel Deste</option>
-        </optgroup>
-        <optgroup label="Edebi Dönemler">
-          {anaDonemler.map((donem) => (
-            <option key={donem} value={donem}>
-              {donem}
-            </option>
-          ))}
-        </optgroup>
-      </select>
-    </div>
-
-    {/* İlerleme Kapsülü */}
-    <div className="shrink-0 flex items-center gap-2 rounded-xl bg-muted/40 border border-border/60 px-3 py-1.5">
-      <div className="flex flex-col text-right">
-        <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider">İlerleme</span>
-        <span className="text-xs font-extrabold text-primary tabular-nums">
-          {ogrenilenler.size} / {kartVerisi.length}
-        </span>
-      </div>
-    </div>
-  </div>
-)}
-
-        {/* Mod Panelleri */}
+        {/* 3'lü Mod İçerikleri */}
         {mod === "kart" ? (
           bitti ? (
             <div className="flex-1 flex items-center justify-center">
@@ -381,8 +369,6 @@ export default function App() {
           <div className="flex flex-1 min-h-0 flex-col">
             <TestModul />
           </div>
-        ) : mod === "osym" ? (
-          <OsymSeverModul />
         ) : (
           <DueloModulu
             onCikis={() => {
@@ -405,12 +391,10 @@ export default function App() {
         onModSec={(hedefMod) => modDegistir(hedefMod)}
       />
 
-      {/* Profil Modalı */}
       {profilAcik && (
         <ProfilModal onKapat={() => setProfilAcik(false)} onGuncellendi={() => {}} />
       )}
 
-      {/* Navigation Guard Onay Modalı */}
       {cikisOnayAcik && (
         <div
           className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-5"
@@ -490,21 +474,9 @@ export default function App() {
                   <NotebookPen className="h-5 w-5" strokeWidth={1.8} />
                 </div>
                 <div className="min-w-0">
-                  <p className="text-sm font-bold text-card-foreground">Test</p>
+                  <p className="text-sm font-bold text-card-foreground">Test & ÖSYM Sever</p>
                   <p className="text-[11px] leading-relaxed text-muted-foreground">
-                    Dönemlere özel 4 şıklı sorularla kendini sına.
-                  </p>
-                </div>
-              </div>
-
-              <div className="flex items-start gap-3 rounded-xl bg-slate-500/5 p-3.5 ring-1 ring-slate-500/15">
-                <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-osym/15 text-osym ring-1 ring-osym/20">
-                  <Flame className="h-5 w-5" strokeWidth={1.8} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-bold text-card-foreground">ÖSYM Sever</p>
-                  <p className="text-[11px] leading-relaxed text-muted-foreground">
-                    YKS'de çıkma ihtimali en yüksek banko eserlerden oluşan özel denemeler.
+                    Dönem testleri, kadın yazarlar seçkisi ve 20 soruluk ÖSYM banko sınav provasıyla kendini sına.
                   </p>
                 </div>
               </div>
