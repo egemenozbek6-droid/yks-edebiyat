@@ -1,0 +1,151 @@
+[
+  {
+    "id": "akim_001",
+    "name": "Klasisizm",
+    "century": "17. yy",
+    "difficulty": "kolay",
+    "slogan": "Akıl ve sağduyu rehberdir",
+    "keyFeatures": [
+      "Akıl, sağduyu ve erdemi her şeyin üstünde tutar",
+      "Antik Yunan ve Latin edebiyatını örnek alır",
+      "Tiyatroda üç birlik kuralına kesinlikle uyar",
+      "Kahramanlarını soylular ve yüksek zümreden seçer"
+    ],
+    "representatives": [
+      "Molière",
+      "Corneille",
+      "Racine",
+      "Boileau",
+      "La Fontaine"
+    ],
+    "hint": "Akıl, sağduyu, ölçü ve kuralları merkeze alan 17. yüzyıl Fransız edebiyatı akımıdır.",
+    "tags": ["banko", "tiyatro", "kuralcı", "akıl"]
+  },
+  {
+    "id": "akim_002",
+    "name": "Romantizm",
+    "century": "18. yy sonu - 19. yy",
+    "difficulty": "kolay",
+    "slogan": "Duygu, hayal ve özgürlük",
+    "keyFeatures": [
+      "Akla karşı duygu, hayal ve coşkuyu öne çıkarır",
+      "Üç birlik kuralını yıkarak dram türünü geliştirir",
+      "İyi-kötü, ak-kara gibi zıtlıklardan yararlanır",
+      "Sanatçı eserinde kendi kişiliğini ve duygularını gizlemez"
+    ],
+    "representatives": [
+      "Victor Hugo",
+      "Jean-Jacques Rousseau",
+      "Goethe",
+      "Schiller",
+      "Lamartine"
+    ],
+    "hint": "Klasisizme tepki olarak doğan; duygu, hayal ve coşkuyu öne çıkaran akımdır. Victor Hugo'nun Cromwell önsözü akımın bildirisi niteliğindedir.",
+    "tags": ["banko", "coşumculuk", "dram", "özgürlük"]
+  },
+  {
+    "id": "akim_003",
+    "name": "Realizm",
+    "century": "19. yy",
+    "difficulty": "kolay",
+    "slogan": "Sanat gerçeği olduğu gibi yansıtır",
+    "keyFeatures": [
+      "Gözlem ve somut gerçeklere dayanır",
+      "Yazar anlatımda tarafsız kalır ve kişiliğini gizler",
+      "Karakterin oluşumunda çevre ve mekân betimlemelerine önem verir",
+      "Günlük hayatı ve sıradan insanları neden-sonuç bağıyla ele alır"
+    ],
+    "representatives": [
+      "Gustave Flaubert",
+      "Honoré de Balzac",
+      "Stendhal",
+      "Lev Tolstoy",
+      "Anton Çehov"
+    ],
+    "hint": "Romantizme tepki olarak doğan; gözlem, gerçeklik ve nesnelliği esas alan 19. yüzyıl akımıdır.",
+    "tags": ["banko", "roman", "gerçekçilik", "gözlem"]
+  },
+  {
+    "id": "akim_004",
+    "name": "Naturalizm",
+    "century": "19. yy sonu",
+    "difficulty": "kolay",
+    "slogan": "İnsanı çevre ve kalıtım belirler",
+    "keyFeatures": [
+      "Determinizm ve soyaçekim yasalarını edebiyata uygular",
+      "Romanı bir laboratuvar, yazarı bilim insanı gibi görür",
+      "Toplumun dışlanan alt tabakalarını ve çirkinlikleri sansürsüz yansıtır",
+      "Kişileri yetiştikleri çevrenin sokak dili ve şivesiyle konuşturur"
+    ],
+    "representatives": [
+      "Émile Zola",
+      "Alphonse Daudet",
+      "Edmond de Goncourt",
+      "Jules de Goncourt"
+    ],
+    "hint": "Realizmi bilimsel ve deneysel bir anlayışla ileri götüren; determinizm, soyaçekim ve çevre etkisini temel alan akımdır.",
+    "tags": ["banko", "roman", "determinizm", "soyaçekim"]
+  },
+  {
+    "id": "akim_005",
+    "name": "Parnasizm",
+    "century": "19. yy",
+    "difficulty": "kolay",
+    "slogan": "Sanat sanat içindir",
+    "keyFeatures": [
+      "Romantik şiirdeki aşırı duygusallığı ve lirizmi reddeder",
+      "Ölçü ve uyağa dayalı biçim kusursuzluğunu amaçlar",
+      "Kelimelerle adeta resim çizer gibi dış dünyayı tasvir eder",
+      "Şiirde nesnel ve sağlam bir plastik yapı kurar"
+    ],
+    "representatives": [
+      "Théophile Gautier",
+      "Leconte de Lisle",
+      "José-Maria de Heredia",
+      "François Coppée"
+    ],
+    "hint": "Romantik şiire tepki olarak doğan; biçim kusursuzluğunu, nesnel anlatımı ve sanat için sanatı savunan şiir akımıdır.",
+    "tags": ["banko", "şiir", "biçimcilik", "sanat için sanat"]
+  },
+  {
+    "id": "akim_006",
+    "name": "Sembolizm",
+    "century": "19. yy sonu",
+    "difficulty": "kolay",
+    "slogan": "Şiir anlamaktan çok hissetmektir",
+    "keyFeatures": [
+      "Duyguları doğrudan anlatmak yerine semboller ve mecazlarla sezdirir",
+      "Anlam kapalılığını savunarak şiiri çoklu yoruma açar",
+      "Şiirde ahenk, ritim ve musikiyi en temel unsur sayar",
+      "Alacakaranlık, melankoli ve sararmış yapraklar gibi hüzünlü temaları işler"
+    ],
+    "representatives": [
+      "Charles Baudelaire",
+      "Paul Verlaine",
+      "Arthur Rimbaud",
+      "Stéphane Mallarmé"
+    ],
+    "hint": "Parnasizme tepki olarak gelişen; sembol, çağrışım, musiki ve anlam kapalılığını öne çıkaran şiir akımıdır.",
+    "tags": ["banko", "şiir", "musiki", "sembol"]
+  },
+  {
+    "id": "akim_007",
+    "name": "Sürrealizm",
+    "century": "20. yy",
+    "difficulty": "kolay",
+    "slogan": "Bilinçaltının sınırsız özgürlüğü",
+    "keyFeatures": [
+      "Freud'un psikanaliz kuramına dayanarak bilinçaltını temel alır",
+      "Aklın ve ahlakın denetimini dışlayan otomatik yazı yöntemini uygular",
+      "Rüyaları ve serbest çağrışımları sanatın ana kaynağı sayar",
+      "Akılcı ve geleneksel mantık zincirini tamamen reddeder"
+    ],
+    "representatives": [
+      "André Breton",
+      "Louis Aragon",
+      "Paul Éluard"
+    ],
+    "hint": "Bilinçaltını, rüyaları ve serbest çağrışımı merkeze alan; akıl ve mantığın sınırlarını aşmayı amaçlayan gerçeküstücülük akımıdır.",
+    "tags": ["banko", "modern", "bilinçaltı", "rüya"]
+  }
+]
