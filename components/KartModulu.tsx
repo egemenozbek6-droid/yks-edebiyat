@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef, useState } from "react"
-import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2 } from "lucide-react"
+import { BookOpen, Check, ChevronLeft, ChevronRight, Flame, RotateCcw, Trophy, Undo2, ArrowLeftRight } from "lucide-react"
 import IlerlemeBari from "@/components/IlerlemeBari"
 import type { LiteratureItem } from "@/src/data"
 
@@ -84,9 +84,7 @@ export default function Flashcard({
     setCevrildi((v) => !v)
   }
 
-  const kisaIpucu = `${item.period} · ${item.genre}`
   const osymFreqHam = item.osym_stats?.osym_freq
-  // Veride emoji gömülü gelebiliyor, ikonla çakışmasın diye temizliyoruz.
   const osymFreq = osymFreqHam?.replace(/[\u{1F300}-\u{1FAFF}\u{2600}-\u{27BF}]/gu, "").trim()
 
   const donus = Math.max(-12, Math.min(12, dx / 14))
@@ -94,17 +92,17 @@ export default function Flashcard({
   const solOran = Math.min(1, Math.max(0, -dx / ESIK))
 
   return (
-    <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* İlerleme barı — kompakt */}
-      <div className="mb-3 rounded-2xl bg-card/70 p-3 shadow-[0_4px_24px_-8px_rgba(0,0,0,0.06)] backdrop-blur shrink-0">
-        <IlerlemeBari mevcut={ogrenilenSayi} toplam={total} etiket="Öğrenilen" />
+    <div className="flex flex-col flex-1 min-h-0 animate-rise max-w-xl mx-auto w-full">
+      {/* İlerleme barı */}
+      <div className="mb-3 rounded-2xl bg-card border border-border p-3 shadow-sm backdrop-blur shrink-0">
+        <IlerlemeBari mevcut={ogrenilenSayi} toplam={total} etiket="Öğrenilen Kartlar" />
       </div>
 
-      {/* Kart alanı — flex-1, ekranı doldur */}
+      {/* Kart alanı */}
       <div className="relative select-none flex-1 min-h-0 flex items-center" style={{ perspective: "1600px" }}>
-        {/* Arkadaki deste yığını — sayfa kenarları gibi */}
-        <div className="absolute inset-x-4 top-3 h-full rounded-[1.75rem] bg-card/40" aria-hidden="true" />
-        <div className="absolute inset-x-2 top-1.5 h-full rounded-[1.75rem] bg-card/60" aria-hidden="true" />
+        {/* Deste efekti */}
+        <div className="absolute inset-x-4 top-3 h-full rounded-3xl bg-card/40 border border-border/40" aria-hidden="true" />
+        <div className="absolute inset-x-2 top-1.5 h-full rounded-3xl bg-card/60 border border-border/60" aria-hidden="true" />
 
         <div
           onPointerDown={basla}
@@ -125,7 +123,7 @@ export default function Flashcard({
               ? `Cevap: ${item.author}, ${item.period}.`
               : `Eser: ${item.work}.`
           }
-          className={`relative w-full h-full ${intro ? "animate-card-intro" : ""} ${
+          className={`relative w-full h-full cursor-pointer ${intro ? "animate-card-intro" : ""} ${
             surukleniyor && !intro ? "" : "transition-all duration-300 ease-out"
           }`}
           style={{
@@ -144,80 +142,94 @@ export default function Flashcard({
           >
             {/* ÖN YÜZ */}
             <div
-              className="absolute inset-0 overflow-hidden rounded-[1.75rem] bg-card shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 overflow-hidden rounded-3xl border border-border bg-card shadow-xl"
               style={{ backfaceVisibility: "hidden", WebkitBackfaceVisibility: "hidden" }}
             >
-              {/* Kitap sırtı — sol kenar şeridi */}
-              <div className="absolute inset-y-0 left-0 w-1.5 bg-primary/60" aria-hidden="true" />
+              <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col p-5">
+              <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
                 {/* Üst badge satırı */}
                 <div className="flex items-center justify-between gap-3">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary ring-1 ring-primary/20">
                     <BookOpen className="h-3.5 w-3.5" strokeWidth={2} />
                     Eser
                   </span>
                   {osymFreq && (
-                    <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
-                      <Flame className="h-3 w-3" strokeWidth={2.5} />
+                    <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[11px] font-bold text-osym ring-1 ring-osym/30">
+                      <Flame className="h-3.5 w-3.5" strokeWidth={2.5} />
                       {osymFreq}
                     </span>
                   )}
                 </div>
 
-                {/* Orta içerik — sıkılaştırılmış */}
-                <div className="flex flex-1 flex-col items-center justify-center text-center px-1">
-                  <h2 className="font-serif text-3xl font-bold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
+                {/* Orta başlık */}
+                <div className="flex flex-col items-center justify-center text-center px-2 py-4">
+                  <h2 className="font-serif text-3xl font-extrabold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
                     {item.work}
                   </h2>
-                  <p className="mt-1.5 text-sm font-medium italic text-muted-foreground">
+                  <span className="mt-3 rounded-full bg-muted/60 px-3 py-1 text-xs font-semibold text-muted-foreground ring-1 ring-border">
                     {item.genre}
-                  </p>
+                  </span>
                 </div>
 
-                {/* Alt dönem etiketi — güçlendirilmiş */}
-                <div className="flex items-center justify-center pt-1">
-                  <p className="rounded-full bg-muted/40 px-3.5 py-1.5 text-center text-[12px] font-medium leading-snug text-pretty text-muted-foreground">
-                    {kisaIpucu}
-                  </p>
+                {/* Alt çevirme ipucu */}
+                <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
+                  <span className="inline-flex items-center gap-1.5">
+                    <ArrowLeftRight className="h-3 w-3" /> Yazarı görmek için dokun
+                  </span>
                 </div>
               </div>
             </div>
 
             {/* ARKA YÜZ */}
             <div
-              className="absolute inset-0 overflow-hidden rounded-[1.75rem] bg-card shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)]"
+              className="absolute inset-0 overflow-hidden rounded-3xl border border-border bg-card shadow-xl"
               style={{
                 backfaceVisibility: "hidden",
                 WebkitBackfaceVisibility: "hidden",
                 transform: "rotateY(180deg)",
               }}
             >
-              {/* Kitap sırtı — sol kenar şeridi */}
-              <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
+              <div className="absolute inset-y-0 left-0 w-1.5 bg-emerald-500" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col p-5">
-                <span className="inline-flex w-fit items-center gap-1.5 rounded-full bg-primary/10 px-2.5 py-1 text-[11px] font-semibold text-primary">
-                  {item.period}
-                </span>
+              <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
+                {/* Üst dönem rozeti */}
+                <div className="flex items-center justify-between">
+                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500 ring-1 ring-emerald-500/25">
+                    {item.period}
+                  </span>
+                  <span className="text-xs font-semibold text-muted-foreground">
+                    {item.genre}
+                  </span>
+                </div>
 
-                <div className="flex flex-1 flex-col items-center justify-center text-center">
-                  <p className="mb-1.5 text-[10px] font-semibold uppercase tracking-[0.22em] text-muted-foreground">
+                {/* Orta: Yazar Bilgisi (Mavi hap buton kaldırıldı) */}
+                <div className="flex flex-col items-center justify-center text-center px-2">
+                  <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Yazar
                   </p>
-                  <h2 className="font-serif text-3xl font-bold leading-tight text-balance text-card-foreground sm:text-4xl">
+                  <h2 className="mt-1 font-serif text-3xl font-extrabold leading-tight text-balance text-card-foreground sm:text-4xl">
                     {item.author}
                   </h2>
-                  <p className="mt-2.5 inline-flex items-center rounded-full bg-primary px-3.5 py-1.5 text-xs font-bold uppercase tracking-wide text-primary-foreground shadow-md">
-                    {item.period}
-                  </p>
 
-                  <div className="mt-4 w-full rounded-2xl border border-border/60 bg-accent/40 p-3">
-                    <p className="mb-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-accent-foreground">
-                      Bilgi
-                    </p>
-                    <p className="text-xs leading-relaxed text-pretty text-muted-foreground">{item.info}</p>
-                  </div>
+                  {/* Bilgi Kutusu */}
+                  {item.info && (
+                    <div className="mt-4 w-full rounded-2xl border border-border bg-muted/40 p-3.5 text-left">
+                      <p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">
+                        Eser Özeti & Bilgi
+                      </p>
+                      <p className="text-xs leading-relaxed text-pretty text-muted-foreground">
+                        {item.info}
+                      </p>
+                    </div>
+                  )}
+                </div>
+
+                {/* Alt çevirme ipucu */}
+                <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
+                  <span className="inline-flex items-center gap-1.5">
+                    <ArrowLeftRight className="h-3 w-3" /> Eseri görmek için dokun
+                  </span>
                 </div>
               </div>
             </div>
@@ -241,40 +253,43 @@ export default function Flashcard({
         </div>
       </div>
 
-      {/* Alt butonlar — kompakt */}
-      <div className="mt-3 grid grid-cols-2 gap-2.5 shrink-0">
+      {/* Alt aksiyon butonları */}
+      <div className="mt-4 grid grid-cols-2 gap-3 shrink-0">
         <button
           onClick={() => tamamla("sol")}
-          className="btn-press-muted flex items-center justify-center gap-2 rounded-2xl bg-card py-3.5 text-sm font-bold text-muted-foreground"
+          className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-bold text-muted-foreground shadow-sm transition hover:bg-muted/70 hover:text-foreground active:scale-[0.98]"
         >
-          <RotateCcw className="h-4 w-4" /> Bir daha
+          <RotateCcw className="h-4 w-4" /> Tekrar Et
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="btn-press flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground"
+          className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
         >
           <Check className="h-4 w-4" /> Kaptım
         </button>
       </div>
 
-      <div className="mt-2.5 flex items-center justify-between shrink-0">
+      {/* Alt oklar */}
+      <div className="mt-2.5 flex items-center justify-between shrink-0 px-1">
         <button
           onClick={onPrev}
-          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          className="flex items-center gap-1 rounded-xl p-2 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          aria-label="Önceki kart"
         >
-          <ChevronLeft className="h-4 w-4" />
+          <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={() => setCevrildi((v) => !v)}
-          className="rounded-lg px-3 py-1.5 text-xs font-semibold text-primary transition hover:bg-primary/10"
+          className="rounded-xl px-3 py-1.5 text-xs font-bold text-primary transition hover:bg-primary/10"
         >
-          Arkasına bakalım
+          {cevrildi ? "Ön Yüzü Gör" : "Arka Yüzü Gör"}
         </button>
         <button
           onClick={onNext}
-          className="flex items-center gap-1 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          className="flex items-center gap-1 rounded-xl p-2 text-xs font-semibold text-muted-foreground transition hover:bg-muted hover:text-foreground"
+          aria-label="Sonraki kart"
         >
-          <ChevronRight className="h-4 w-4" />
+          <ChevronRight className="h-5 w-5" />
         </button>
       </div>
     </div>
@@ -283,24 +298,24 @@ export default function Flashcard({
 
 export function TamamlamaEkrani({ toplam, onSifirla }: { toplam: number; onSifirla: () => void }) {
   return (
-    <div className="animate-rise rounded-[1.75rem] bg-card p-8 text-center shadow-[0_12px_40px_-12px_rgba(0,0,0,0.12)] max-w-sm">
-      <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-3xl bg-primary/10 text-primary animate-pop">
-        <Trophy className="h-8 w-8" strokeWidth={1.5} />
+    <div className="animate-rise rounded-3xl border border-border bg-card p-8 text-center shadow-xl max-w-sm mx-auto">
+      <div className="mx-auto mb-5 grid h-18 w-18 place-items-center rounded-2xl bg-primary/10 text-primary animate-pop ring-1 ring-primary/25">
+        <Trophy className="h-8 w-8" strokeWidth={1.75} />
       </div>
-      <h2 className="font-sans text-xl font-black tracking-tight text-balance text-card-foreground">
-        Bu desteyi ezdin.
+      <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
+        Desteyi Bitirdin! 🎉
       </h2>
-      <p className="mx-auto mt-2 max-w-sm text-sm leading-relaxed text-pretty text-muted-foreground">
-        {toplam} kartın hepsini bitirdin. Başka dönem mi bakıyoruz?
+      <p className="mx-auto mt-2 max-w-sm text-xs leading-relaxed text-muted-foreground">
+        Seçtiğin dönemdeki {toplam} kartın hepsini başarıyla tamamladın.
       </p>
       <div className="mt-5">
         <IlerlemeBari mevcut={toplam} toplam={toplam} etiket="Tamamlanan" />
       </div>
       <button
         onClick={onSifirla}
-        className="btn-press mt-6 inline-flex items-center gap-2 rounded-2xl bg-primary px-6 py-3.5 text-sm font-bold text-primary-foreground"
+        className="mt-6 inline-flex w-full items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
       >
-        <RotateCcw className="h-4 w-4" /> Tekrar baştan
+        <RotateCcw className="h-4 w-4" /> Baştan Tekrar Et
       </button>
     </div>
   )
