@@ -1480,13 +1480,12 @@ export default function DueloModulu({
     );
   }
 
-  // --- SONUÇ (Gelişmiş Başlıklar, Mesajlar & Simetrik Düzen) ---
+  // --- SONUÇ ---
   if (adim === "sonuc" && sonuc) {
     const kazandi = sonuc.kazandi || sonuc.hukmenGalibiyet;
     const berabere = sonuc.berabere;
     const maglup = !kazandi && !berabere;
 
-    // Duruma özel dinamik başlık ve motive edici mesajlar
     const baslik = sonuc.hukmenGalibiyet
       ? "Terk Galibiyeti"
       : kazandi
@@ -1506,7 +1505,6 @@ export default function DueloModulu({
     return (
       <div className="flex-1 flex items-center justify-center p-4">
         <div className="animate-rise glass-card rounded-2xl p-7 text-center shadow-2xl max-w-sm w-full ring-1 ring-border">
-          {/* Sonuç İkonu */}
           <div
             className={`mx-auto mb-4 grid h-18 w-18 place-items-center rounded-2xl animate-pop ${
               sonuc.hukmenGalibiyet
@@ -1536,7 +1534,6 @@ export default function DueloModulu({
             {aciklama}
           </p>
 
-          {/* Karşılıklı Skor Tablosu */}
           <div className="mt-5 grid grid-cols-2 gap-2.5">
             <div className={`rounded-xl p-3 ring-1 transition-all ${
               kazandi ? "bg-emerald-500/10 ring-emerald-500/30" : "bg-muted/40 ring-border"
@@ -1561,7 +1558,6 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Ranked Modunda Kazanılan/Kaybedilen EP */}
           {dueloModu === "ranked" && (
             <div className="mt-3.5 space-y-2">
               <div
@@ -1589,7 +1585,6 @@ export default function DueloModulu({
             </div>
           )}
 
-          {/* Alt Butonlar */}
           <div className="mt-6 grid grid-cols-2 gap-2.5">
             <button
               type="button"
@@ -1688,15 +1683,16 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise mx-auto w-full max-w-xl">
-      {/* 1. SKOR BARI */}
-      <div className="mb-3 glass-card rounded-2xl p-3.5 ring-1 ring-border/80 shrink-0 bg-card/70 backdrop-blur-md">
-        <div className="flex items-center justify-between gap-3">
-          <div className="flex flex-1 items-center gap-2.5 min-w-0">
+      {/* 1. SKOR BARI (Üç nokta sorunu giderilmiş ve taşmayan düzen) */}
+      <div className="mb-3 glass-card rounded-2xl p-3 ring-1 ring-border/80 shrink-0 bg-card/70 backdrop-blur-md">
+        <div className="flex items-center justify-between gap-2">
+          {/* Oyuncu Tarafı */}
+          <div className="flex flex-1 items-center gap-2 min-w-0">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-muted/60 text-xl ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[9.5px] font-bold uppercase tracking-tight text-muted-foreground">
                 {kullanici.kullaniciAdi}
               </p>
               <p className={`text-xl font-black tabular-nums transition-colors ${
@@ -1707,15 +1703,17 @@ export default function DueloModulu({
             </div>
           </div>
 
-          <div className="flex shrink-0 items-center justify-center">
-            <span className="rounded-full bg-muted/80 px-2.5 py-1 text-[10px] font-black tracking-widest text-muted-foreground ring-1 ring-border">
+          {/* Orta VS Rozeti */}
+          <div className="flex shrink-0 items-center justify-center px-1">
+            <span className="rounded-full bg-muted/80 px-2 py-0.5 text-[9px] font-black tracking-widest text-muted-foreground ring-1 ring-border">
               VS
             </span>
           </div>
 
-          <div className="flex flex-1 items-center justify-end gap-2.5 min-w-0 text-right">
-            <div className="min-w-0">
-              <p className="truncate text-[10px] font-bold uppercase tracking-wider text-muted-foreground">
+          {/* Rakip Tarafı (Taşma yapmayan esnek genişlik) */}
+          <div className="flex flex-1 items-center justify-end gap-2 min-w-0 text-right">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-[9.5px] font-bold uppercase tracking-tight text-muted-foreground">
                 {rakip.ad}
               </p>
               <p className={`text-xl font-black tabular-nums transition-colors ${
@@ -1899,7 +1897,6 @@ export default function DueloModulu({
         </div>
       )}
 
-      {/* Forfeit Onay Modalı */}
       {forfeitConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
           <div className="animate-pop glass-card max-w-sm w-full rounded-2xl p-7 text-center shadow-2xl ring-1 ring-destructive/20">
@@ -1930,7 +1927,6 @@ export default function DueloModulu({
         </div>
       )}
 
-      {/* Forfeit Bildirim Pop-up */}
       {forfeitModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-5 backdrop-blur-sm">
           <div className="animate-pop glass-card max-w-sm w-full rounded-2xl p-8 text-center shadow-2xl ring-1 ring-emerald-500/20">
