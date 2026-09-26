@@ -23,6 +23,12 @@ export const BOT_HAVUZU: { ad: string; avatar: string }[] = [
   { ad: "ituhayali_27", avatar: "yildiz" },
   { ad: "baykusyiyen", avatar: "baykus" },
   { ad: "hedefmsku_48", avatar: "gunes" },
+  { ad: "çılgınyusuf", avatar: "kalem" },
+  { ad: "egmnozbk", avatar: "gunes" },
+  { ad: "hasansabbah", avatar: "tilki" },
+  { ad: "novazeka", avatar: "tilki" },
+  { ad: "metayhan", avatar: "ay" },
+  { ad: "sapkinysf", avatar: "gunes" },
 
   // --- Gıcık & Tilt Eden Rekabetçi Nickler ---
   { ad: "ez_win_bb", avatar: "tac" },
