@@ -56,6 +56,7 @@ type EserKahramanItem = {
   author: string;
   period: string;
   genre: string;
+  hint?: string;
 };
 
 type BatiAkimItem = {
@@ -65,6 +66,7 @@ type BatiAkimItem = {
   slogan: string;
   keyFeatures: string[];
   representatives: string[];
+  hint?: string;
 };
 
 function karistir<T>(dizi: T[]): T[] {
@@ -173,6 +175,9 @@ export default function TestModul() {
       baslik = "Eser – Kahraman";
 
       hazir = secilenler.map((item) => {
+        const ipucu = item.hint
+          ? item.hint
+          : `${item.period} · ${item.author}`;
         if (Math.random() < 0.5) {
           return {
             kategoriUst: "ESER – KARAKTER",
@@ -181,7 +186,7 @@ export default function TestModul() {
             metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
             dogru: item.work,
             secenekler: secenekUret(item.work, tumEserler, tumEserler),
-            aciklama: `${item.period} · ${item.author}`,
+            aciklama: ipucu,
             kartId: item.id,
           };
         }
@@ -192,7 +197,7 @@ export default function TestModul() {
           metin: "Aşağıdaki karakterlerden hangisi bu eserde yer alır?",
           dogru: item.character,
           secenekler: secenekUret(item.character, tumKarakterler, tumKarakterler),
-          aciklama: `${item.period} · ${item.author}`,
+          aciklama: ipucu,
           kartId: item.id,
         };
       });
@@ -216,7 +221,7 @@ export default function TestModul() {
           metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
           dogru: akim.name,
           secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.century,
+          aciklama: akim.hint || akim.century,
           kartId: akim.id,
         });
 
@@ -227,7 +232,7 @@ export default function TestModul() {
           metin: "Bu slogan / ilke hangi edebiyat akımına aittir?",
           dogru: akim.name,
           secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.century,
+          aciklama: akim.hint || akim.century,
           kartId: akim.id,
         });
 
@@ -239,7 +244,7 @@ export default function TestModul() {
           metin: "Bu özellik aşağıdaki akımlardan hangisine aittir?",
           dogru: akim.name,
           secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.century,
+          aciklama: akim.hint || akim.century,
           kartId: akim.id,
         });
 
@@ -251,7 +256,7 @@ export default function TestModul() {
           metin: "Aşağıdakilerden hangisi bu akımın temsilcilerinden biridir?",
           dogru: temsilci,
           secenekler: secenekUret(temsilci, yanlisTemsilciler, tumTemsilciler),
-          aciklama: akim.century,
+          aciklama: akim.hint || akim.century,
           kartId: akim.id,
         });
       }
@@ -284,7 +289,6 @@ export default function TestModul() {
             metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
             dogru: item.author,
             secenekler: secenekUret(item.author, tumYazarlarList, tumYazarlarList),
-            aciklama: `${item.period} · ${item.genre}`,
             kartId: String(item.id),
           };
         }
@@ -294,7 +298,6 @@ export default function TestModul() {
           metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
           dogru: item.work,
           secenekler: secenekUret(item.work, tumEserler, tumEserler),
-          aciklama: `${item.period} · ${item.genre}`,
           kartId: String(item.id),
         };
       });
@@ -358,7 +361,8 @@ export default function TestModul() {
       btn: "bg-sky-500 text-white",
     },
   }[aksan];
-    // ÖSYM EKRANI
+
+  // ÖSYM EKRANI
   if (gorunum === "osym") {
     if (osymBitti) {
       const oran = Math.round((osymDogruSayi / Math.max(osymSorular.length, 1)) * 100);
@@ -593,10 +597,15 @@ export default function TestModul() {
             <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">
               {aktifSoru.metin}
             </p>
-            {aktifSoru.aciklama && (
-              <div className="mt-2.5 inline-flex max-w-full items-start gap-1.5 rounded-xl bg-muted/50 px-3 py-1.5 text-[11px] font-medium leading-snug text-muted-foreground ring-1 ring-border/60">
-                <span className="shrink-0 opacity-70">💡</span>
-                <span className="text-pretty">{aktifSoru.aciklama}</span>
+            {/* Cevap sonrası Bilgi notu (kahraman / akım hint) */}
+            {standartSecim !== null && aktifSoru.aciklama && (
+              <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-left animate-rise">
+                <p className="text-[10px] font-bold uppercase tracking-wider text-amber-500">
+                  Bilgi notu
+                </p>
+                <p className="mt-1 text-xs leading-relaxed text-card-foreground/90 text-pretty">
+                  {aktifSoru.aciklama}
+                </p>
               </div>
             )}
 
@@ -607,8 +616,18 @@ export default function TestModul() {
                 const gosterDogru = standartSecim !== null && dogruMu;
                 const gosterYanlis = secildi && !dogruMu;
 
-                let stil =
-                  "bg-background border border-border text-card-foreground hover:border-primary/50 hover:bg-muted/40";
+                const hoverByMode =
+                  aksan === "pink"
+                    ? "hover:border-pink-500/50 hover:bg-pink-500/10"
+                    : aksan === "amber"
+                      ? "hover:border-amber-500/50 hover:bg-amber-500/10"
+                      : aksan === "sky"
+                        ? "hover:border-sky-500/50 hover:bg-sky-500/10"
+                        : aksan === "osym"
+                          ? "hover:border-osym/50 hover:bg-osym/10"
+                          : "hover:border-primary/50 hover:bg-primary/10";
+
+                let stil = `bg-background border border-border text-card-foreground ${hoverByMode}`;
                 if (gosterDogru)
                   stil =
                     "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 font-semibold";
@@ -655,16 +674,19 @@ export default function TestModul() {
               })}
             </div>
 
-            {standartSecim !== null && (
+          </div>
+
+          {standartSecim !== null && (
+            <div className="sticky bottom-0 z-10 mt-4 -mx-1 px-1 pb-1 pt-2 bg-gradient-to-t from-background via-background to-transparent">
               <button
                 onClick={standartSonraki}
-                className={`mt-6 flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksanSinif.btn}`}
+                className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksanSinif.btn}`}
               >
                 {standartIndex + 1 >= standartSorular.length ? "Testi Bitir" : "Sonraki Soru"}
                 <ArrowRight className="h-4 w-4" />
               </button>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     );
