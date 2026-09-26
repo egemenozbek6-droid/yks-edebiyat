@@ -77,7 +77,6 @@ function karistir<T>(dizi: T[]): T[] {
   return kopya;
 }
 
-/** 3 yanlış şık üret; havuz yetersizse yedekten tamamla */
 function secenekUret(dogru: string, havuz: string[], yedekHavuz: string[] = []): string[] {
   const tekil = Array.from(new Set(havuz.filter((x) => x && x !== dogru)));
   let yanlislar = karistir(tekil).slice(0, 3);
@@ -124,7 +123,6 @@ export default function TestModul() {
     setGorunum("test_ekrani");
   }, []);
 
-  // 1. ÖSYM SEVER (20 Soru)
   const osymBaslat = useCallback(() => {
     const raw = osymSeverSorulari();
     const hazir: SoruYapisi[] = raw.map((s) => ({
@@ -138,9 +136,7 @@ export default function TestModul() {
     testBaslat(hazir, "ÖSYM Sever Banko 20");
   }, [testBaslat]);
 
-  // 2. STANDART TESTLER
   const standartBaslat = (tur: "donem" | "kadin" | "kahraman" | "akim", param?: string) => {
-    // ---------- ESER – KAHRAMAN ----------
     if (tur === "kahraman") {
       const havuz = eserKahramanData as EserKahramanItem[];
       if (havuz.length === 0) return;
@@ -183,20 +179,17 @@ export default function TestModul() {
       return;
     }
 
-    // ---------- BATI EDEBİ AKIMLARI ----------
     if (tur === "akim") {
       const akimlar = batiAkimlarData as BatiAkimItem[];
       if (akimlar.length === 0) return;
 
       const tumIsimler = akimlar.map((a) => a.name);
       const tumTemsilciler = Array.from(new Set(akimlar.flatMap((a) => a.representatives)));
-
       const soruHavuzu: SoruYapisi[] = [];
 
       for (const akim of akimlar) {
         const temsilci = akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
 
-        // 1) Temsilci → Akım
         soruHavuzu.push({
           kategoriUst: "BATI EDEBİ AKIMLARI",
           rozetMetin: "Akım",
@@ -207,18 +200,16 @@ export default function TestModul() {
           kartId: akim.id,
         });
 
-        // 2) Slogan → Akım
         soruHavuzu.push({
           kategoriUst: "BATI EDEBİ AKIMLARI",
           rozetMetin: "Akım",
-          vurgu: `“${akim.slogan}”`,
+          vurgu: `"${akim.slogan}"`,
           metin: "Bu slogan / ilke hangi edebiyat akımına aittir?",
           dogru: akim.name,
           secenekler: secenekUret(akim.name, tumIsimler.filter((n) => n !== akim.name), tumIsimler),
           kartId: akim.id,
         });
 
-        // 3) Özellik → Akım
         const ozellik = akim.keyFeatures[Math.floor(Math.random() * akim.keyFeatures.length)];
         soruHavuzu.push({
           kategoriUst: "BATI EDEBİ AKIMLARI",
@@ -230,7 +221,6 @@ export default function TestModul() {
           kartId: akim.id,
         });
 
-        // 4) Akım → Temsilci
         const yanlisTemsilciler = tumTemsilciler.filter((t) => !akim.representatives.includes(t));
         soruHavuzu.push({
           kategoriUst: "BATI EDEBİ AKIMLARI",
@@ -248,7 +238,6 @@ export default function TestModul() {
       return;
     }
 
-    // ---------- DÖNEM / KADIN YAZARLAR ----------
     let havuz: LiteratureItem[] = anaDonemFiltrele("Tüm Dönemler");
     let baslik = "Test";
     let rozet = "Özel Seçki";
@@ -353,11 +342,7 @@ export default function TestModul() {
       setBitti(true);
     }
   };
-
-  // ============================================================
-  // EKRAN 1: TEST / SORU
-  // ============================================================
-  if (gorunum === "test_ekrani") {
+    if (gorunum === "test_ekrani") {
     if (bitti) {
       const basariOrani = sorular.length
         ? Math.round((dogruSayisi / sorular.length) * 100)
@@ -489,6 +474,7 @@ export default function TestModul() {
                   harfStil = "bg-emerald-500 text-white";
                 } else if (gosterYanlis) {
                   kutuStil = "bg-destructive/20 border-destructive text-destructive font-bold";
+                  harfStil = "bg-destructive text-white";
                 } else if (secim !== null) {
                   kutuStil = "bg-[#111927]/40 border-border/20 text-slate-500 opacity-40";
                 }
@@ -528,9 +514,6 @@ export default function TestModul() {
     );
   }
 
-  // ============================================================
-  // EKRAN 2: DÖNEM SEÇİM
-  // ============================================================
   if (gorunum === "donem_secim") {
     return (
       <div className="flex-1 flex flex-col gap-3 p-1 animate-rise max-w-md mx-auto w-full">
@@ -574,9 +557,6 @@ export default function TestModul() {
     );
   }
 
-  // ============================================================
-  // EKRAN 3: ANA MENÜ
-  // ============================================================
   return (
     <div className="flex-1 flex flex-col gap-3 p-1 animate-rise max-w-md mx-auto w-full">
       <div className="rounded-3xl bg-[#0c121e] border border-border/60 p-6 text-center shadow-lg">
@@ -657,3 +637,46 @@ export default function TestModul() {
         >
           <div className="flex items-center gap-3.5">
             <div className="grid h-11 w-11 place-items-center rounded-2xl bg-amber-500/15 text-amber-400 ring-1 ring-amber-500/25">
+              <Users className="h-5 w-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-serif text-sm font-bold text-white">Eser – Kahraman</p>
+                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold text-amber-400">
+                  Karakter
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Eser ↔ karakter eşleştir, bankoları ezberle! 🎭
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+        </button>
+
+        <button
+          onClick={() => standartBaslat("akim")}
+          className="flex items-center justify-between rounded-2xl bg-[#0c121e] border border-border/60 p-4 transition hover:bg-[#111927] hover:border-border active:scale-[0.99] text-left shadow-md"
+        >
+          <div className="flex items-center gap-3.5">
+            <div className="grid h-11 w-11 place-items-center rounded-2xl bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/25 text-lg">
+              🌐
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <p className="font-serif text-sm font-bold text-white">Batı Edebi Akımları</p>
+                <span className="rounded-full bg-sky-500/15 px-1.5 py-0.5 text-[9px] font-bold text-sky-400">
+                  Akım
+                </span>
+              </div>
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                Akımları, temsilcileri ve özellikleriyle tanı! 🌐
+              </p>
+            </div>
+          </div>
+          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+        </button>
+      </div>
+    </div>
+  );
+}
