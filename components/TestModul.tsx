@@ -269,15 +269,42 @@ export default function TestModul({ onSonuc }: Props) {
     onSonuc?.(dogruMu, soru.donem);
   };
 
-  // Cevap seçilince bilgi notu + sonraki butonu görünsün
+  // Cevap seçilince bilgi notu + sonraki butonunu görünür yap
   useEffect(() => {
     if (secim === null) return;
+
     const t = window.setTimeout(() => {
-      document.getElementById("sonraki-btn")?.scrollIntoView({
-        behavior: "smooth",
-        block: "end",
-      });
-    }, 120);
+      const el = document.getElementById("sonraki-btn");
+      if (!el) return;
+
+      // 1) En yakın scrollable parent'ı bul ve butona kadar kaydır
+      let node: HTMLElement | null = el;
+      while (node) {
+        const parent = node.parentElement;
+        if (!parent) break;
+        const style = window.getComputedStyle(parent);
+        const oy = style.overflowY;
+        const canScroll =
+          (oy === "auto" || oy === "scroll" || oy === "overlay") &&
+          parent.scrollHeight > parent.clientHeight + 4;
+        if (canScroll) {
+          const parentRect = parent.getBoundingClientRect();
+          const elRect = el.getBoundingClientRect();
+          const delta = elRect.bottom - parentRect.bottom + 16;
+          if (delta > 0) {
+            parent.scrollTo({
+              top: parent.scrollTop + delta,
+              behavior: "smooth",
+            });
+          }
+        }
+        node = parent;
+      }
+
+      // 2) Yedek: klasik scrollIntoView (instant — Android WebView'de daha stabil)
+      el.scrollIntoView({ behavior: "auto", block: "nearest" });
+    }, 50);
+
     return () => window.clearTimeout(t);
   }, [secim, aktif]);
 
@@ -487,9 +514,9 @@ export default function TestModul({ onSonuc }: Props) {
   const soru = sorular[aktif];
 
   return (
-    <div className="animate-rise max-w-xl mx-auto w-full flex flex-col flex-1 min-h-0">
-      {/* Üst — progress (sabit) */}
-      <div className="mb-3 shrink-0 rounded-xl bg-card border border-border p-3">
+    <div className="animate-rise mx-auto flex w-full max-w-xl flex-col">
+      {/* Üst — progress */}
+      <div className="mb-3 shrink-0 rounded-xl border border-border bg-card p-3">
         <IlerlemeBari
           mevcut={aktif + (secim ? 1 : 0)}
           toplam={sorular.length}
@@ -509,80 +536,87 @@ export default function TestModul({ onSonuc }: Props) {
         </div>
       </div>
 
-      {/* Orta — soru + şıklar (scroll) */}
-      <div className="flex-1 min-h-0 overflow-y-auto no-scrollbar">
-        <div className="rounded-xl bg-card p-5 border border-border shadow-md">
-          <div className="flex items-start justify-between gap-3">
-            <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-              {TIP_ETIKETI[soru.tip]}
-            </p>
-            {soru.osymFreq && (
-              <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksan.rozetBg}`}>
-                <aksan.rozetIkon className="h-3 w-3" strokeWidth={2} />
-                {soru.osymFreq}
-              </span>
-            )}
-          </div>
-
-          <h2 className="mt-2 font-serif text-xl font-bold tracking-tight leading-snug text-balance text-card-foreground">
-            {soru.vurgu}
-          </h2>
-          <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">
-            {soru.metin}
+      {/* Soru kartı */}
+      <div className="rounded-xl border border-border bg-card p-5 shadow-md">
+        <div className="flex items-start justify-between gap-3">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
+            {TIP_ETIKETI[soru.tip]}
           </p>
+          {soru.osymFreq && (
+            <span
+              className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksan.rozetBg}`}
+            >
+              <aksan.rozetIkon className="h-3 w-3" strokeWidth={2} />
+              {soru.osymFreq}
+            </span>
+          )}
+        </div>
 
-          <div className="mt-6 space-y-2.5">
-            {soru.secenekler.map((secenek, i) => {
-              const secildi = secim === secenek;
-              const dogruSecenek = secenek === soru.dogru;
-              const gosterDogru = secim !== null && dogruSecenek;
-              const gosterYanlis = secildi && !dogruSecenek;
+        <h2 className="mt-2 text-balance font-serif text-xl font-bold leading-snug tracking-tight text-card-foreground">
+          {soru.vurgu}
+        </h2>
+        <p className="mt-2 text-pretty text-sm leading-relaxed text-muted-foreground">
+          {soru.metin}
+        </p>
 
-              let stil = "bg-background border border-border text-card-foreground hover:bg-muted/40";
-              if (!secim) stil += ` ${aksan.hoverBorder}`;
-              if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
-              else if (gosterYanlis) stil = "bg-destructive/10 border-destructive/50 text-destructive";
-              else if (secim !== null) stil = "bg-background border-border text-muted-foreground opacity-50";
+        <div className="mt-6 space-y-2.5">
+          {soru.secenekler.map((secenek, i) => {
+            const secildi = secim === secenek;
+            const dogruSecenek = secenek === soru.dogru;
+            const gosterDogru = secim !== null && dogruSecenek;
+            const gosterYanlis = secildi && !dogruSecenek;
 
-              return (
-                <button
-                  key={secenek}
-                  onClick={() => cevapla(secenek)}
-                  disabled={secim !== null}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
-                    gosterYanlis ? "animate-shake" : ""
-                  } ${secim === null ? "active:scale-[0.99]" : ""}`}
+            let stil =
+              "bg-background border border-border text-card-foreground hover:bg-muted/40";
+            if (!secim) stil += ` ${aksan.hoverBorder}`;
+            if (gosterDogru)
+              stil =
+                "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
+            else if (gosterYanlis)
+              stil = "bg-destructive/10 border-destructive/50 text-destructive";
+            else if (secim !== null)
+              stil = "bg-background border-border text-muted-foreground opacity-50";
+
+            return (
+              <button
+                key={secenek}
+                onClick={() => cevapla(secenek)}
+                disabled={secim !== null}
+                className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
+                  gosterYanlis ? "animate-shake" : ""
+                } ${secim === null ? "active:scale-[0.99]" : ""}`}
+              >
+                <span
+                  className={`grid h-7 w-7 shrink-0 place-items-center rounded-md text-xs font-bold tabular-nums ${
+                    gosterDogru
+                      ? "bg-emerald-500 text-white"
+                      : gosterYanlis
+                        ? "bg-destructive text-white"
+                        : "bg-muted text-muted-foreground"
+                  }`}
                 >
-                  <span
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-md text-xs font-bold tabular-nums ${
-                      gosterDogru
-                        ? "bg-emerald-500 text-white"
-                        : gosterYanlis
-                          ? "bg-destructive text-white"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {gosterDogru ? (
-                      <Check className="h-4 w-4" strokeWidth={3} />
-                    ) : gosterYanlis ? (
-                      <X className="h-4 w-4" strokeWidth={3} />
-                    ) : (
-                      String.fromCharCode(65 + i)
-                    )}
-                  </span>
-                  <span className="text-pretty">{secenek}</span>
-                </button>
-              );
-            })}
-          </div>
+                  {gosterDogru ? (
+                    <Check className="h-4 w-4" strokeWidth={3} />
+                  ) : gosterYanlis ? (
+                    <X className="h-4 w-4" strokeWidth={3} />
+                  ) : (
+                    String.fromCharCode(65 + i)
+                  )}
+                </span>
+                <span className="text-pretty">{secenek}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
-      {/* Alt — bilgi notu + sonraki (sabit, her zaman görünür) */}
+      {/* Bilgi notu + sonraki — sticky, ekranın altında sabit kalır */}
       {secim !== null && (
-        <div className="shrink-0 pt-3 space-y-2.5">
+        <div className="sticky bottom-0 z-20 mt-3 space-y-2.5 bg-background/95 pb-2 pt-2 backdrop-blur supports-[backdrop-filter]:bg-background/90">
           {soru.aciklama && (
-            <div className={`rounded-lg px-3.5 py-3 text-xs leading-relaxed ${aksan.kutuYumusak}`}>
+            <div
+              className={`rounded-lg px-3.5 py-3 text-xs leading-relaxed ${aksan.kutuYumusak}`}
+            >
               <span className="font-bold">Bilgi notu: </span>
               {soru.aciklama}
             </div>
@@ -599,3 +633,4 @@ export default function TestModul({ onSonuc }: Props) {
       )}
     </div>
   );
+}
