@@ -16,7 +16,7 @@ import {
   X,
   XCircle,
 } from "lucide-react";
-import { anaDonemler, type AnaDonem, type LiteratureItem, tumYazarlar } from "@/src/data";
+import { anaDonemler, anaDonemFiltrele, type AnaDonem, type LiteratureItem } from "@/src/data";
 import kadinYazarlarTest from "@/src/data/kadin_yazarlar_test.json";
 import { osymSeverSorulari, type Soru as OsymSoru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
@@ -69,7 +69,8 @@ export default function TestModul() {
       sfxWrong();
       // Türkçe karakter hassasiyeti ile Leitner Kutu 1'e paslama
       const v = soru.vurgu.toLocaleLowerCase("tr").trim();
-      const eslesenKart = tumYazarlar().find(
+      const tumu = anaDonemFiltrele("Tüm Dönemler");
+      const eslesenKart = tumu.find(
         (y) =>
           y.work.toLocaleLowerCase("tr").trim() === v ||
           y.author.toLocaleLowerCase("tr").trim() === v
@@ -104,7 +105,7 @@ export default function TestModul() {
   const [seciliBaslik, setSeciliBaslik] = useState("");
 
   const standartTestBaslat = (tur: "donem" | "kadin", param?: AnaDonem) => {
-    let havuz: LiteratureItem[] = tumYazarlar();
+    let havuz: LiteratureItem[] = anaDonemFiltrele("Tüm Dönemler");
     let baslik = "Dönem Testi";
 
     if (tur === "donem" && param) {
@@ -515,7 +516,7 @@ export default function TestModul() {
         <ChevronRight className="h-4 w-4 text-muted-foreground" />
       </button>
 
-      {/* 4. DİĞER SEÇKİLER (Hazırlık Aşamasında - Temiz Durum) */}
+      {/* 4. DİĞER SEÇKİLER */}
       <div className="grid grid-cols-2 gap-2">
         <div className="glass-card flex items-center justify-between rounded-2xl p-3 ring-1 ring-border/60 opacity-60">
           <div className="flex items-center gap-2.5 min-w-0">
