@@ -12,6 +12,7 @@ import {
   Flower,
   HeartHandshake,
   RotateCcw, 
+  Sparkles,
   Target, 
   Users,
   X,
@@ -23,12 +24,26 @@ import { type Soru } from "@/lib/soru";
 import { sfxCorrect, sfxWrong } from "@/lib/sfx";
 import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
 import eserKahramanData from "@/src/data/eser_kahraman_test.json";
+import batiAkimlarData from "@/src/data/bati_akimlar_test.json";
 
 type Props = {
   onSonuc?: (dogruMu: boolean, donem: string) => void;
 };
 
 type SayfaDurumu = "ana_secim" | "donem_secimi" | "test";
+
+
+type BatiAkimItem = {
+  id: string;
+  name: string;
+  century?: string;
+  difficulty: "kolay" | "orta" | "zor";
+  slogan: string;
+  keyFeatures: string[];
+  representatives: string[];
+  hint?: string;
+  tags?: string[];
+};
 
 type EserKahramanItem = {
   id: string;
@@ -92,6 +107,16 @@ const AKSAN_PALETI: Record<string, Aksan> = {
     rozetBg: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
     rozetIkon: Users,
   },
+  "Batı Edebi Akımları Testi": {
+    ringSoft: "bg-cyan-500/15 text-cyan-500 ring-cyan-500/30",
+    metinAna: "text-cyan-500",
+    kutuYumusak: "bg-cyan-500/10 text-cyan-400",
+    buton: "bg-cyan-600 shadow-cyan-600/25",
+    hoverBorder: "hover:border-cyan-500/50",
+    hoverRing: "hover:ring-cyan-500/30",
+    rozetBg: "bg-cyan-500/15 text-cyan-500 ring-cyan-500/30",
+    rozetIkon: Sparkles,
+  },
 };
 
 // Soru başlığı, soru.tip değerine göre gösterilecek üst etiket
@@ -100,6 +125,12 @@ const TIP_ETIKETI: Record<Soru["tip"], string> = {
   yazar: "Eserin yazarı",
   kahraman: "Eserin kahramanı",
   eser2: "Karakterin eseri",
+  akim_temsilci: "Akımın temsilcisi",
+  temsilci_akim: "Temsilcinin akımı",
+  akim_slogan: "Akımın ilkesi",
+  slogan_akim: "İlkenin akımı",
+  akim_ozellik: "Akımın özelliği",
+  ozellik_akim: "Özelliğin akımı",
 };
 
 export default function TestModul({ onSonuc }: Props) {
@@ -113,6 +144,7 @@ export default function TestModul({ onSonuc }: Props) {
 
   const isKadinTesti = secilenBaslik === "Kadın Yazarlar Özel Testi";
   const isEserKahramanTesti = secilenBaslik === "Eser - Kahraman Testi";
+  const isBatiAkimTesti = secilenBaslik === "Batı Edebi Akımları Testi";
   const aksan = AKSAN_PALETI[secilenBaslik] ?? AKSAN_PALETI.varsayilan;
 
   // Genel Soru Üretici (Dönem testleri için)
@@ -231,6 +263,143 @@ export default function TestModul({ onSonuc }: Props) {
     setDurum("test");
   }, []);
 
+
+  // Batı Edebi Akımları — sadece kendi JSON havuzu (6 soru tipi)
+  const batiAkimlarTestiBaslat = useCallback(() => {
+    const havuz = batiAkimlarData as unknown as BatiAkimItem[];
+    const allNames = havuz.map((a) => a.name);
+    const allSlogans = havuz.map((a) => a.slogan);
+    const allReps = Array.from(new Set(havuz.flatMap((a) => a.representatives)));
+    const allFeatures = Array.from(new Set(havuz.flatMap((a) => a.keyFeatures)));
+
+    const karistirYerel = <T,>(dizi: T[]): T[] => {
+      const k = [...dizi];
+      for (let i = k.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [k[i], k[j]] = [k[j], k[i]];
+      }
+      return k;
+    };
+
+    const secenekUret = (dogru: string, havuzSecenek: string[], adet = 3): string[] => {
+      const yanlislar = karistirYerel(havuzSecenek.filter((x) => x !== dogru)).slice(0, adet);
+      return karistirYerel([dogru, ...yanlislar]);
+    };
+
+    type TipKod =
+      | "akim_temsilci"
+      | "temsilci_akim"
+      | "akim_slogan"
+      | "slogan_akim"
+      | "akim_ozellik"
+      | "ozellik_akim";
+
+    const tipler: TipKod[] = [
+      "akim_temsilci",
+      "temsilci_akim",
+      "akim_slogan",
+      "slogan_akim",
+      "akim_ozellik",
+      "ozellik_akim",
+    ];
+
+    const seciliAkımlar = karistirYerel(havuz).slice(0, Math.min(10, havuz.length));
+
+    const uretilenSorular: Soru[] = seciliAkımlar.map((item, index) => {
+      const tip = tipler[index % tipler.length];
+      const aciklama = item.hint ?? `${item.name}: ${item.slogan}`;
+
+      if (tip === "akim_temsilci") {
+        const dogru = karistirYerel(item.representatives)[0];
+        return {
+          tip: "akim_temsilci" as const,
+          vurgu: item.name,
+          metin: "Bu akımın önemli temsilcilerinden hangisidir?",
+          dogru,
+          secenekler: secenekUret(dogru, allReps),
+          donem: item.name,
+          osymFreq: "Batı Akımları",
+          aciklama,
+        };
+      }
+
+      if (tip === "temsilci_akim") {
+        const temsilci = karistirYerel(item.representatives)[0];
+        return {
+          tip: "temsilci_akim" as const,
+          vurgu: temsilci,
+          metin: "Bu sanatçı hangi akıma aittir?",
+          dogru: item.name,
+          secenekler: secenekUret(item.name, allNames),
+          donem: item.name,
+          osymFreq: "Batı Akımları",
+          aciklama,
+        };
+      }
+
+      if (tip === "akim_slogan") {
+        return {
+          tip: "akim_slogan" as const,
+          vurgu: item.name,
+          metin: "Bu akımın temel ilkesi / sloganı hangisidir?",
+          dogru: item.slogan,
+          secenekler: secenekUret(item.slogan, allSlogans),
+          donem: item.name,
+          osymFreq: "Batı Akımları",
+          aciklama,
+        };
+      }
+
+      if (tip === "slogan_akim") {
+        return {
+          tip: "slogan_akim" as const,
+          vurgu: item.slogan,
+          metin: "Bu ilke hangi akıma aittir?",
+          dogru: item.name,
+          secenekler: secenekUret(item.name, allNames),
+          donem: item.name,
+          osymFreq: "Batı Akımları",
+          aciklama,
+        };
+      }
+
+      if (tip === "akim_ozellik") {
+        const dogru = karistirYerel(item.keyFeatures)[0];
+        return {
+          tip: "akim_ozellik" as const,
+          vurgu: item.name,
+          metin: "Aşağıdakilerden hangisi bu akımın özelliğidir?",
+          dogru,
+          secenekler: secenekUret(dogru, allFeatures),
+          donem: item.name,
+          osymFreq: "Batı Akımları",
+          aciklama,
+        };
+      }
+
+      // ozellik_akim
+      const ozellik = karistirYerel(item.keyFeatures)[0];
+      return {
+        tip: "ozellik_akim" as const,
+        vurgu: ozellik,
+        metin: "Bu özellik hangi akıma aittir?",
+        dogru: item.name,
+        secenekler: secenekUret(item.name, allNames),
+        donem: item.name,
+        osymFreq: "Batı Akımları",
+        aciklama,
+      };
+    });
+
+    setSecilenBaslik("Batı Edebi Akımları Testi");
+    setSorular(karistirYerel(uretilenSorular));
+    setAktif(0);
+    setSecim(null);
+    setDogruSayi(0);
+    setBitti(false);
+    setDurum("test");
+  }, []);
+
   const donemTestiBaslat = useCallback((donem: AnaDonem) => {
     const havuz = anaDonemFiltrele(donem);
     testiBaslat(havuz, donem);
@@ -242,6 +411,7 @@ export default function TestModul({ onSonuc }: Props) {
   const tekrarCoz = () => {
     if (secilenBaslik === "Kadın Yazarlar Özel Testi") kadinYazarlarTestiBaslat();
     else if (secilenBaslik === "Eser - Kahraman Testi") eserKahramanTestiBaslat();
+    else if (secilenBaslik === "Batı Edebi Akımları Testi") batiAkimlarTestiBaslat();
     else if (secilenBaslik) donemTestiBaslat(secilenBaslik as AnaDonem);
   };
 
@@ -395,6 +565,30 @@ export default function TestModul({ onSonuc }: Props) {
             </div>
             <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
           </button>
+
+          {/* Batı Edebi Akımları */}
+          <button
+            onClick={batiAkimlarTestiBaslat}
+            className="group flex items-center justify-between w-full p-3.5 rounded-xl bg-card border border-border shadow-sm hover:shadow-md hover:border-cyan-500/40 transition-all active:scale-[0.99] text-left"
+          >
+            <div className="flex items-center gap-3.5 min-w-0">
+              <div className="w-10 h-10 rounded-lg bg-cyan-500/10 text-cyan-500 flex items-center justify-center shrink-0">
+                <Sparkles className="w-5 h-5" />
+              </div>
+              <div className="min-w-0">
+                <div className="flex items-center gap-2">
+                  <h3 className="font-bold text-sm text-foreground">Batı Edebi Akımları</h3>
+                  <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-500 shrink-0">
+                    Akım
+                  </span>
+                </div>
+                <p className="text-[11px] text-muted-foreground mt-0.5 truncate">
+                  Slogan, özellik ve temsilci — bankoları sabitle
+                </p>
+              </div>
+            </div>
+            <ChevronRight className="w-4 h-4 text-muted-foreground group-hover:translate-x-0.5 transition shrink-0 ml-2" />
+          </button>
         </div>
       </div>
     );
@@ -457,18 +651,24 @@ export default function TestModul({ onSonuc }: Props) {
         ? "Mükemmel! Kadın yazarlar konusunu tamamen halletmişsin 🌸"
         : isEserKahramanTesti
         ? "Harika! Kahramanları su gibi biliyorsun 🎭"
+        : isBatiAkimTesti
+        ? "Akımlar cepte ✨"
         : "Harika iş çıkarıyorsun, sınavda bu netler kaçmaz! 🚀";
     } else if (oran >= 50) {
       sonucMesaji = isKadinTesti
         ? "Fena değil ama eksik kalan kadın yazarları bir kez daha gözden geçirmelisin."
         : isEserKahramanTesti
         ? "Fena değil ama bazı karakterleri karıştırıyorsun, tekrar bak."
+        : isBatiAkimTesti
+        ? "Slogan ve özellikler biraz daha otursun"
         : "Fena değil! Birkaç tekrarla bu işi tamamen bitirirsin 💪";
     } else {
       sonucMesaji = isKadinTesti
         ? "Bu modda biraz zorlandın galiba, hemen tekrar deneyip kapatalım!"
         : isEserKahramanTesti
         ? "Kahraman-eser eşleştirmede zorlanmışsın, hemen tekrar dene!"
+        : isBatiAkimTesti
+        ? "Tekrar çöz, akımlar oturur"
         : "Biraz daha çalışmaya ihtiyacın var, kafaya takma tekrar dene! 🎯";
     }
 
