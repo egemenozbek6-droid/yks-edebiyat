@@ -1117,7 +1117,7 @@ export default function TestModul() {
             <div>
               <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eksiklerini bul, teste başla! 🚀
+                Eksiklerini dönemi bul, teste başla! 🚀
               </p>
             </div>
           </div>
@@ -1142,7 +1142,7 @@ export default function TestModul() {
                   </span>
                 </div>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
-                  Dönem sınırı yok! Banko sorularla gerçek prova 🔥
+                  Sadece çıkmış yazar ve eserler, özel denemeler ile kendini sına! 🔥
                   {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
                 </p>
               </div>
@@ -1179,7 +1179,7 @@ export default function TestModul() {
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {tekrarSayisi === 0
-                  ? "Boş — yanlış yaptıkça burada birikir"
+                  ? "Boş/yanlış yaptıkça burada birikir"
                   : "Yapamadığın sorular burada!"}
               </p>
             </div>
@@ -1230,7 +1230,7 @@ export default function TestModul() {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eser ↔ karakter eşleştir, bankoları ezberle! 🎭
+                Eser ↔ karakter eşleştir, sınavda kaçrıma! 🎭
               </p>
             </div>
           </div>
