@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Fraunces } from "next/font/google";
+import { Swords } from "lucide-react";
 
 const baslikFont = Fraunces({
   subsets: ["latin"],
@@ -53,69 +54,34 @@ const ADIMLAR: {
   },
 ];
 
-/**
- * Küçük boyutta da okunan çizgi illüstrasyonlar.
- * Düello: açıkça kılıç (X değil). Test: kalem gövdesi + uç + tik.
- */
-function Illu({ id, className }: { id: AdimId; className?: string }) {
-  if (id === "kart") {
-    return (
-      <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
-        {/* arka kart */}
-        <rect x="14" y="6" width="26" height="36" rx="3" stroke="currentColor" strokeWidth="1.8" opacity="0.45" />
-        {/* ön kart */}
-        <rect x="8" y="12" width="26" height="36" rx="3" stroke="currentColor" strokeWidth="1.8" />
-        <path d="M14 22h14M14 28h10M14 34h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
-      </svg>
-    );
-  }
-
-  if (id === "test") {
-    return (
-      <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
-        {/* kalem gövdesi (yatay değil, hafif eğik) */}
-        <path
-          d="M18 44 L18 20 L24 12 L30 20 L30 44 Z"
-          stroke="currentColor"
-          strokeWidth="1.8"
-          strokeLinejoin="round"
-        />
-        {/* metal halka */}
-        <path d="M18 22h12" stroke="currentColor" strokeWidth="1.5" />
-        {/* uç üçgen */}
-        <path d="M24 12 L20 6 L28 6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
-        {/* kırık çizgi */}
-        <path d="M22 8 L26 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
-        {/* tik — kalemin sağında net */}
-        <path
-          d="M32 30 L36 34 L44 22"
-          stroke="currentColor"
-          strokeWidth="2.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
-    );
-  }
-
-  // Düello — klasik çapraz kılıçlar (tüy/X değil)
+/** Kartlar: üst üste iki kart — net */
+function IlluKart({ className }: { className?: string }) {
   return (
     <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
-      {/* kılıç 1 */}
-      <path d="M14 42 L34 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      {/* kabza 1 */}
-      <path d="M12 40 L16 44" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M10 44 L18 40" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      {/* sivri uç 1 */}
-      <path d="M34 14 L32 10 L36 12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+      <rect x="14" y="8" width="24" height="32" rx="3" stroke="currentColor" strokeWidth="1.85" opacity="0.4" />
+      <rect x="8" y="14" width="24" height="32" rx="3" stroke="currentColor" strokeWidth="1.85" />
+      <path d="M14 24h12M14 30h9M14 36h11" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.85" />
+    </svg>
+  );
+}
 
-      {/* kılıç 2 */}
-      <path d="M34 42 L14 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
-      {/* kabza 2 */}
-      <path d="M32 40 L36 44" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-      <path d="M30 44 L38 40" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
-      {/* sivri uç 2 */}
-      <path d="M14 14 L12 10 L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+/**
+ * Test: A B C D şık listesi — şişe/kalem karışıklığı yok.
+ * Bir şık dolu daire + tik ile seçilmiş.
+ */
+function IlluTest({ className }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
+      {/* A — seçili */}
+      <circle cx="12" cy="16" r="5" stroke="currentColor" strokeWidth="1.7" />
+      <circle cx="12" cy="16" r="2.2" fill="currentColor" />
+      <path d="M20 16h18" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" />
+      {/* B */}
+      <circle cx="12" cy="28" r="5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M20 28h14" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity="0.7" />
+      {/* C */}
+      <circle cx="12" cy="40" r="5" stroke="currentColor" strokeWidth="1.7" />
+      <path d="M20 40h16" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" opacity="0.7" />
     </svg>
   );
 }
@@ -141,7 +107,11 @@ export default function OnboardingEkran({ onBitti }: Props) {
           <div
             className={`mb-6 grid h-[4.75rem] w-[4rem] place-items-center rounded-md border ${mevcut.kutu} ${mevcut.etiketRenk}`}
           >
-            <Illu id={mevcut.id} className="h-11 w-10" />
+            {mevcut.id === "kart" && <IlluKart className="h-11 w-10" />}
+            {mevcut.id === "test" && <IlluTest className="h-11 w-10" />}
+            {mevcut.id === "duelo" && (
+              <Swords className="h-9 w-9" strokeWidth={1.75} aria-hidden />
+            )}
           </div>
 
           <p
