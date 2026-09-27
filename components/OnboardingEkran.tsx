@@ -1,6 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import { Fraunces } from "next/font/google";
+
+/**
+ * Not: app layout'ta --font-serif şu an sans'a bağlanmış.
+ * Onboarding kimliği için Fraunces'i burada ayrıca yüklüyoruz.
+ */
+const baslikFont = Fraunces({
+  subsets: ["latin"],
+  weight: ["600", "700"],
+  display: "swap",
+});
 
 type AdimId = "kart" | "test" | "duelo";
 
@@ -9,149 +20,116 @@ const ADIMLAR: {
   etiket: string;
   baslik: string;
   metin: string;
-  /** mürekkep / kehribar / bordo */
-  accent: string;
-  accentSoft: string;
-  accentRing: string;
+  kutu: string;
+  etiketRenk: string;
   buton: string;
-  cta: string;
+  accentBar: string;
+  stroke: string;
 }[] = [
   {
     id: "kart",
     etiket: "Kartlar",
-    baslik: "Ön yüz eser, arka yüz yazar",
+    baslik: "Kartlarla ezberle",
     metin:
-      "Kartı çevir. Biliyorsan Kaptım — üst kutuya çıkar. Takıldıysan Tekrar Et, aynı kart geri gelir. Sağa sola basarak desteyi gezersin.",
-    accent: "#C9A227",
-    accentSoft: "rgba(201,162,39,0.12)",
-    accentRing: "rgba(201,162,39,0.35)",
-    buton: "bg-[#C9A227] text-[#0B0F17]",
-    cta: "Devam",
+      "Ön yüzde eser, arkada yazar. Kartı çevir: biliyorsan Kaptım (kutun yükselir), takıldıysan Tekrar Et (Kutu 1). Dönem seçip sağa-sola kaydırarak desteyi gezersin.",
+    kutu: "border-primary/35 bg-primary/10",
+    etiketRenk: "text-primary",
+    buton: "bg-primary text-primary-foreground",
+    accentBar: "bg-primary",
+    stroke: "currentColor",
   },
   {
     id: "test",
     etiket: "Test",
-    baslik: "Yanlışın kaybolmaz",
+    baslik: "Çoktan seçmeli prova",
     metin:
-      "Dönem, ÖSYM Sever, eser–kahraman, akımlar… Kaçırdığın soru Tekrar Köşen’e düşer. Oradan tekrar çözersin; net oradan toparlanır.",
-    accent: "#8B7EC8",
-    accentSoft: "rgba(139,126,200,0.12)",
-    accentRing: "rgba(139,126,200,0.35)",
-    buton: "bg-[#8B7EC8] text-white",
-    cta: "Devam",
+      "Dönem testleri, ÖSYM Sever, kadın yazarlar, eser–kahraman ve Batı akımları. Yanlışlar Tekrar Köşen’e düşer; oradan tekrar çözüp eksiğini kapatırsın.",
+    kutu: "border-violet-500/35 bg-violet-500/10",
+    etiketRenk: "text-violet-400",
+    buton: "bg-violet-600 text-white",
+    accentBar: "bg-violet-600",
+    stroke: "currentColor",
   },
   {
     id: "duelo",
     etiket: "Düello",
-    baslik: "EP ile lig yürür",
+    baslik: "Rakiple yarış, EP kazan",
     metin:
-      "Canlı rakip veya oda koduyla arkadaşın. Kazanınca EP gelir, rütbe atarsın. Prestij avatar maçtan açılır — lig buradan ilerler.",
-    accent: "#B33A3A",
-    accentSoft: "rgba(179,58,58,0.12)",
-    accentRing: "rgba(179,58,58,0.35)",
-    buton: "bg-[#B33A3A] text-white",
-    cta: "Hadi başla",
+      "Ranked’de canlı rakip (veya bot); özel odada arkadaşınla oda kodu. Ranked galibiyetinde EP gelir, Kariyer Yolu’nda rütbe atarsın.",
+    kutu: "border-duello/35 bg-duello/10",
+    etiketRenk: "text-duello",
+    buton: "bg-duello text-duello-foreground",
+    accentBar: "bg-duello",
+    stroke: "currentColor",
   },
 ];
 
-/** İnce çizgi illüstrasyonlar — Lucide kutu yok */
-function Illu({ id, color }: { id: AdimId; color: string }) {
+/** Anlamlı ince çizgi illüstrasyonlar */
+function Illu({ id, className }: { id: AdimId; className?: string }) {
   if (id === "kart") {
+    // Eğik fiş + tüy kalem
     return (
-      <svg viewBox="0 0 80 96" className="h-16 w-14" fill="none" aria-hidden>
-        {/* kütüphane fişi */}
+      <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
         <rect
-          x="14"
-          y="10"
-          width="44"
-          height="68"
-          rx="3"
-          stroke={color}
-          strokeWidth="1.6"
-          transform="rotate(-8 36 44)"
+          x="10"
+          y="8"
+          width="36"
+          height="52"
+          rx="2.5"
+          stroke="currentColor"
+          strokeWidth="1.75"
+          transform="rotate(-7 28 34)"
         />
         <path
-          d="M22 28h28M22 38h22M22 48h26"
-          stroke={color}
-          strokeWidth="1.4"
+          d="M16 24h24M16 33h18M16 42h21"
+          stroke="currentColor"
+          strokeWidth="1.5"
           strokeLinecap="round"
-          opacity="0.7"
-          transform="rotate(-8 36 44)"
+          opacity="0.75"
+          transform="rotate(-7 28 34)"
         />
-        {/* tüy kalem */}
-        <path
-          d="M52 62 L68 22"
-          stroke={color}
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M68 22 l-6 2 2 6"
-          stroke={color}
-          strokeWidth="1.4"
-          strokeLinejoin="round"
-        />
-        <path d="M52 62 l4-1 -1 4" stroke={color} strokeWidth="1.3" />
+        <path d="M42 50 L54 18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
+        <path d="M54 18l-5 1.5 1.5 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
       </svg>
     );
   }
   if (id === "test") {
+    // Kurşun kalem + kırık uç + tik
     return (
-      <svg viewBox="0 0 80 96" className="h-16 w-14" fill="none" aria-hidden>
-        {/* kurşun kalem gövde */}
+      <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
         <path
-          d="M28 72 L28 28 L40 18 L52 28 L52 72 Z"
-          stroke={color}
-          strokeWidth="1.6"
+          d="M24 58 V26 L32 16 L40 26 V58 Z"
+          stroke="currentColor"
+          strokeWidth="1.75"
           strokeLinejoin="round"
         />
-        <path d="M28 28 L52 28" stroke={color} strokeWidth="1.4" />
-        {/* kırık uç */}
+        <path d="M24 26h16" stroke="currentColor" strokeWidth="1.5" />
         <path
-          d="M40 18 L36 10 M40 18 L44 10"
-          stroke={color}
-          strokeWidth="1.5"
+          d="M32 16 L28 8 M32 16 L36 8"
+          stroke="currentColor"
+          strokeWidth="1.6"
           strokeLinecap="round"
         />
-        {/* tik */}
         <path
-          d="M34 52 L40 58 L50 44"
-          stroke={color}
-          strokeWidth="2"
+          d="M26 44 L31 49 L40 36"
+          stroke="currentColor"
+          strokeWidth="2.1"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
     );
   }
-  // duelo — çapraz tüy kalemler
+  // Düello: çapraz tüy kalemler (X / iptal değil)
   return (
-    <svg viewBox="0 0 80 96" className="h-16 w-14" fill="none" aria-hidden>
-      <path
-        d="M18 70 L58 22"
-        stroke={color}
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M58 22 l-6 1 1 6"
-        stroke={color}
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <path
-        d="M62 70 L22 22"
-        stroke={color}
-        strokeWidth="1.7"
-        strokeLinecap="round"
-      />
-      <path
-        d="M22 22 l6 1 -1 6"
-        stroke={color}
-        strokeWidth="1.4"
-        strokeLinejoin="round"
-      />
-      <circle cx="40" cy="46" r="5" stroke={color} strokeWidth="1.4" opacity="0.8" />
+    <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
+      <path d="M14 56 L46 16" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" />
+      <path d="M46 16l-5 1 1 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M18 18c2-1 5-1 7 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity="0.7" />
+      <path d="M50 56 L18 16" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" />
+      <path d="M18 16l5 1 -1 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+      <path d="M46 18c-2-1-5-1-7 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity="0.7" />
+      <circle cx="32" cy="36" r="4" stroke="currentColor" strokeWidth="1.4" opacity="0.85" />
     </svg>
   );
 }
@@ -167,54 +145,50 @@ export default function OnboardingEkran({ onBitti }: Props) {
 
   return (
     <div
-      className="fixed inset-0 z-[80] flex flex-col"
-      style={{ background: "#0B0F17" }}
+      className="fixed inset-0 z-[80] flex flex-col bg-background"
       role="dialog"
       aria-modal="true"
       aria-label="EdebiKart tanıtım"
     >
-      <div className="flex flex-1 flex-col items-center justify-center px-8">
-        {/* Fiş / mühür alanı */}
-        <div
-          className="mb-8 grid place-items-center rounded-md px-5 py-6"
-          style={{
-            background: mevcut.accentSoft,
-            boxShadow: `0 0 0 1px ${mevcut.accentRing}`,
-          }}
-        >
-          <Illu id={mevcut.id} color={mevcut.accent} />
+      {/* İçerik: masaüstünde aşırı boşluk olmasın diye max yükseklik + ortala */}
+      <div className="flex flex-1 flex-col items-center justify-center px-8 py-6">
+        <div className="flex w-full max-w-[22rem] flex-col items-center">
+          <div
+            className={`mb-6 grid h-[5.25rem] w-[4.25rem] place-items-center rounded-md border ${mevcut.kutu} ${mevcut.etiketRenk}`}
+          >
+            <Illu id={mevcut.id} className="h-12 w-11" />
+          </div>
+
+          <p
+            className={`mb-2.5 text-[10px] font-semibold uppercase tracking-[0.22em] ${mevcut.etiketRenk}`}
+          >
+            {mevcut.etiket}
+          </p>
+
+          <h2
+            className={`${baslikFont.className} text-balance text-center text-[1.75rem] font-semibold leading-[1.25] tracking-tight text-foreground`}
+          >
+            {mevcut.baslik}
+          </h2>
+
+          <p className="mt-4 text-pretty text-center text-[14px] leading-relaxed text-muted-foreground">
+            {mevcut.metin}
+          </p>
         </div>
-
-        <p
-          className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.22em]"
-          style={{ color: mevcut.accent }}
-        >
-          {mevcut.etiket}
-        </p>
-
-        <h2 className="font-serif text-balance text-center text-[1.65rem] font-bold leading-snug tracking-tight text-white">
-          {mevcut.baslik}
-        </h2>
-
-        <p className="mt-4 max-w-[34ch] text-pretty text-center text-[14px] leading-relaxed text-white/55">
-          {mevcut.metin}
-        </p>
       </div>
 
-      <div className="px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
-        {/* Fiş ilerleme */}
+      <div className="mx-auto w-full max-w-md px-6 pb-[max(1.5rem,env(safe-area-inset-bottom))]">
         <div className="mb-5 flex flex-col items-center gap-2">
-          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-white/35">
+          <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-muted-foreground/70">
             Fiş {adim + 1} / {ADIMLAR.length}
           </p>
           <div className="flex w-full max-w-[200px] gap-1.5">
             {ADIMLAR.map((a, i) => (
               <span
                 key={a.id}
-                className="h-[3px] flex-1 rounded-full transition-colors"
-                style={{
-                  background: i <= adim ? mevcut.accent : "rgba(255,255,255,0.12)",
-                }}
+                className={`h-[3px] flex-1 rounded-full transition-colors ${
+                  i <= adim ? mevcut.accentBar : "bg-muted"
+                }`}
               />
             ))}
           </div>
@@ -224,16 +198,16 @@ export default function OnboardingEkran({ onBitti }: Props) {
           <button
             type="button"
             onClick={onBitti}
-            className="w-[4.5rem] py-3.5 text-sm font-medium text-white/40 transition hover:text-white/60"
+            className="w-20 py-3.5 text-sm font-medium text-muted-foreground transition hover:text-foreground"
           >
             Atla
           </button>
           <button
             type="button"
             onClick={() => (sonMu ? onBitti() : setAdim((n) => n + 1))}
-            className={`flex-1 rounded-lg py-3.5 text-[15px] font-bold tracking-wide transition hover:brightness-110 active:scale-[0.99] ${mevcut.buton}`}
+            className={`flex-1 rounded-lg py-3.5 text-[15px] font-bold tracking-wide shadow-md transition hover:brightness-110 active:scale-[0.99] ${mevcut.buton}`}
           >
-            {mevcut.cta}
+            {sonMu ? "Hadi başla" : "Devam"}
           </button>
         </div>
       </div>
