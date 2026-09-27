@@ -18,6 +18,7 @@ import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
 import SplashEkran from "@/components/SplashEkran";
+import { ensureAnonymousAuth } from "@/lib/firebase";
 import OnboardingEkran from "@/components/OnboardingEkran";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem, type LiteratureItem } from "@/src/data";
 import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
@@ -65,6 +66,11 @@ export default function Page() {
   useEffect(() => {
     const t = window.setTimeout(() => setSplashAktif(false), 1200);
     return () => clearTimeout(t);
+  }, []);
+
+  // Firebase Anonymous Auth — online düello için
+  useEffect(() => {
+    ensureAnonymousAuth().catch(() => {});
   }, []);
       const [onboardingHazir, setOnboardingHazir] = useState(false);
   const [onboardingAktif, setOnboardingAktif] = useState(false);
