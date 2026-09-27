@@ -62,7 +62,7 @@ export default function Page() {
   const [splashAktif, setSplashAktif] = useState(true);
 
   useEffect(() => {
-    const t = window.setTimeout(() => setSplashAktif(false), 1500);
+    const t = window.setTimeout(() => setSplashAktif(false), 1200);
     return () => clearTimeout(t);
   }, []);
 
