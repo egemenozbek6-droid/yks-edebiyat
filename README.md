@@ -1,4 +1,4 @@
-[README.md](https://github.com/user-attachments/files/32710805/README.md)
+[README (1).md](https://github.com/user-attachments/files/32711025/README.1.md)
 # EdebiKart
 
 **EZBERLEME, NOKTA ATIŞI YAP!** — YKS/AYT edebiyat yazar–eser ezber ve prova uygulaması.
@@ -11,55 +11,32 @@ Canlı: [v0-yks-edebiyat.vercel.app](https://v0-yks-edebiyat.vercel.app)
 
 ### Kartlar
 - Leitner (3 kutu) ile aralıklı tekrar
-- Ön yüz eser, arka yüz yazar
-- **Kaptım** → kutu yükselir · **Tekrar Et** → Kutu 1
-- Dönem filtreleri ve “tekrar gerekenler” destesi
+- Ön yüz eser, arka yüz yazar — **Kaptım** / **Tekrar Et**
+- Dönem filtreleri ve kart “tekrar gerekenler” destesi
 
 ### Test
-- **Dönem testleri** — 8 ana dönem + tüm dönemler
-- **ÖSYM Sever** — banko eserlerden 20 soruluk prova (en iyi skor kaydı)
-- **Kadın Yazarlar & Eserleri** — her tur **10** karışık soru
-- **Eser – Kahraman** — karakter ↔ eser eşleştirme + bilgi notu
-- **Batı Edebi Akımları** — temsilci, slogan, özellik soruları + hint
-- **Tekrar Köşen** — test yanlışlarından dinamik prova (kart Leitner’ından ayrı)
-- Moda özel bitiş mesajları, sticky “Sonraki Soru”, peş peşe aynı soruyu azaltma
+- Dönem testleri (8 ana dönem)
+- **ÖSYM Sever** — banko eserler, 20 soru
+- **Kadın Yazarlar** — 10 soru / tur
+- **Eser – Kahraman** & **Batı Edebi Akımları** (+ bilgi notu)
+- **Tekrar Köşen** — yalnızca test yanlışları (kart Leitner’ından ayrı)
 
 ### Düello
-- **Ranked** — canlı rakip veya bot, EP ve rütbe
-- **Özel oda** — oda koduyla arkadaş maçı
-- Kariyer Yolu: YKS Adayı → … → Edebiyat Efsanesi
-- Maç sırasında isim altında rütbe görünümü
+- Ranked (canlı / bot) + özel oda (oda kodu)
+- EP, Kariyer Yolu rütbeleri
+- Firebase ile online eşleşme
 
 ### Diğer
-- Ruh hali / odak önerileri
-- Onboarding (Kartlar · Test · Düello)
-- Web Audio SFX
-- Mobil & web (PWA / Capacitor)
-
----
-
-## Kapsanan edebiyat dönemleri
-
-1. Geçiş Dönemi (Kutadgu Bilig, DLT, Atabetü’l-Hakayık, Divan-ı Hikmet)
-2. Divan Edebiyatı
-3. Halk Edebiyatı (Âşık & Tekke)
-4. Tanzimat Edebiyatı
-5. Servet-i Fünun & Fecr-i Ati
-6. Milli Edebiyat
-7. Cumhuriyet Dönemi (Saf Şiir, Toplumcu Gerçekçiler, Garip, İkinci Yeni, modernist roman/tiyatro)
+- Onboarding, ruh hali önerileri, Web Audio SFX
+- PWA / Capacitor (Android)
 
 ---
 
 ## Teknolojiler
 
-| Katman | Stack |
-|--------|--------|
-| Frontend | Next.js, React, TypeScript |
-| Stil | Tailwind CSS, Lucide Icons |
-| Mobil | Capacitor (Android) |
-| Ses | Web Audio API |
-| Online düello | Firebase (Firestore) |
-| Dağıtım | Vercel |
+Next.js · React · TypeScript · Tailwind · Firebase · Capacitor · Vercel
+
+**Paket yöneticisi:** `pnpm` (`packageManager` alanı tanımlı)
 
 ---
 
@@ -68,15 +45,24 @@ Canlı: [v0-yks-edebiyat.vercel.app](https://v0-yks-edebiyat.vercel.app)
 ```bash
 git clone https://github.com/egemenozbek6-droid/yks-edebiyat.git
 cd yks-edebiyat
-
-pnpm install   # veya: npm install
-pnpm dev       # veya: npm run dev
+pnpm install
+pnpm dev
 ```
 
-Tarayıcıda: [http://localhost:3000](http://localhost:3000)
+[http://localhost:3000](http://localhost:3000)
+
+### Firebase
+
+Client config şu an `lib/firebase.ts` içinde. Firestore **Security Rules**’ı Firebase Console’dan sıkı tut:
+- Geliştirme dışı `allow read, write: if true` bırakma
+- `matches` / kuyruk koleksiyonlarına kontrollü yazma
 
 ---
 
-## Lisans / katkı
+## Build
 
-Öğrenci projesi — YKS edebiyat hazırlığı için. PR ve issue’lar memnuniyetle karşılanır.
+```bash
+pnpm build   # out/ üretir (static export)
+```
+
+`out/` ve `.next/` git’e eklenmez.
