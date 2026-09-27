@@ -176,7 +176,7 @@ function recentFiltrele<T>(liste: T[], anahtarFn: (x: T) => string): T[] {
 
 
 /** Mod + başarı oranına göre samimi bitiş mesajı */
-type BitisMod = "osym" | "donem" | "kadin" | "kahraman" | "akim";
+type BitisMod = "osym" | "donem" | "kadin" | "kahraman" | "akim" | "tekrar";
 
 const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: string[]; dusuk: string[] }> = {
   osym: {
@@ -289,6 +289,28 @@ const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: 
       "Kart değil bu ama bilgi notu her şeyi anlatıyor.",
     ],
   },
+  tekrar: {
+    super: [
+      "Eksiklerini kapattın, Tekrar Köşen gurur duyuyor.",
+      "Zayıf halkalar çelik oldu, böyle devam.",
+      "Bu tur eksiğini bitirdin — net oradan gelir.",
+    ],
+    iyi: [
+      "İyi pekiştirme, bir tur daha basarsan temizlenir.",
+      "Çoğunu toparladın, kalanları da halledersin.",
+      "Form yükseliyor, Tekrar Köşen azalıyor.",
+    ],
+    orta: [
+      "Bir kısmı oturdu, kalan yanlışlar hâlâ köşede.",
+      "İdare eder; aynı soruları bir daha çöz.",
+      "Orta karar — doğru bildiklerin kutudan çıktı say.",
+    ],
+    dusuk: [
+      "Bu sorular seni hâlâ zorluyor, bir tur daha.",
+      "Moral bozma; Tekrar Köşen tam bunun için var.",
+      "Isınma turu — aynı listeyi tekrar çöz.",
+    ],
+  },
 };
 
 function bitisMesaji(mod: BitisMod, oran: number): string {
@@ -392,19 +414,24 @@ export default function TestModul() {
     if (tur === "tekrar") {
       const tekrarIdleri = testTekrarIdleri();
       const lit = gecerliYazarlar();
+      const kadinHavuz = kadinYazarlarTest as unknown as LiteratureItem[];
       const ek = eserKahramanData as EserKahramanItem[];
       const ak = batiAkimlarData as BatiAkimItem[];
       const pool: StandartSoru[] = [];
 
       for (const id of tekrarIdleri) {
-        const litItem = lit.find((x) => String(x.id) === id);
+        // Ana literatür VEYA kadın yazar seçkisi (id 501+ burada)
+        const litItem =
+          lit.find((x) => String(x.id) === id) ||
+          kadinHavuz.find((x) => String(x.id) === id);
         if (litItem) {
-          const tumY = Array.from(new Set(lit.map((x) => x.author)));
-          const tumE = Array.from(new Set(lit.map((x) => x.work)));
+          const secenekKaynak =
+            kadinHavuz.some((x) => String(x.id) === id) ? kadinHavuz : lit;
+          const tumY = Array.from(new Set(secenekKaynak.map((x) => x.author)));
+          const tumE = Array.from(new Set(secenekKaynak.map((x) => x.work)));
           if (Math.random() < 0.5) {
             pool.push({
               kategoriUst: "PEKİŞTİRME",
-              rozetMetin: undefined,
               vurgu: litItem.work,
               metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
               dogru: litItem.author,
@@ -414,7 +441,6 @@ export default function TestModul() {
           } else {
             pool.push({
               kategoriUst: "PEKİŞTİRME",
-              rozetMetin: undefined,
               vurgu: litItem.author,
               metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
               dogru: litItem.work,
@@ -592,7 +618,8 @@ export default function TestModul() {
             : "Tüm Dönemler";
       renk = tur === "kadin" ? "pink" : "primary";
 
-      const secilenler = karistir(recentFiltrele(havuz, (x) => String(x.id))).slice(0, Math.min(15, havuz.length));
+      const soruAdedi = tur === "kadin" ? 10 : 15;
+      const secilenler = karistir(recentFiltrele(havuz, (x) => String(x.id))).slice(0, Math.min(soruAdedi, havuz.length));
       const tumYazarlarList = Array.from(new Set(havuz.map((x) => x.author)));
       const tumEserler = Array.from(new Set(havuz.map((x) => x.work)));
 
@@ -852,9 +879,11 @@ export default function TestModul() {
             ? "kahraman"
             : aksan === "sky"
               ? "akim"
-              : aksan === "rose" || aksan === "osym"
-                ? "osym"
-                : "donem";
+              : aksan === "rose"
+                ? "tekrar"
+                : aksan === "osym"
+                  ? "osym"
+                  : "donem";
       const basariBaslik = bitisMesaji(bitisMod, basariOrani);
       return (
         <div className="flex-1 flex items-center justify-center p-4 animate-rise">
@@ -866,10 +895,12 @@ export default function TestModul() {
               {basariBaslik}
             </h2>
             <p className="mt-1 text-xs text-muted-foreground">
-              {seciliBaslik} testi tamamlandı.
-              {/^\d+$/.test(standartSorular[0]?.kartId || "")
-                ? " Yanlışlar Tekrar Köşene eklendi."
-                : ""}
+              {seciliBaslik} tamamlandı.
+              {aksan === "rose"
+                ? " Doğru bildiklerin köşeden düşer; yanlışlar kalır."
+                : standartSorular[0]?.kartId
+                  ? " Yanlışlar Tekrar Köşen’e eklendi."
+                  : ""}
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3">
               <div className="rounded-xl bg-emerald-500/10 p-3 ring-1 ring-emerald-500/20">
@@ -1117,7 +1148,7 @@ export default function TestModul() {
             <div>
               <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eksiklerini dönemi bul, teste başla! 🚀
+                Eksiklerini bul, teste başla! 🚀
               </p>
             </div>
           </div>
@@ -1138,11 +1169,11 @@ export default function TestModul() {
                 <div className="flex items-center gap-2">
                   <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
                   <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
-                    Çıkmış Soru
+                    Canlı
                   </span>
                 </div>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
-                  Sadece çıkmış yazar ve eserler, özel denemelerle kendini sına!🔥
+                  Dönem sınırı yok! Banko sorularla gerçek prova 🔥
                   {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
                 </p>
               </div>
@@ -1179,7 +1210,7 @@ export default function TestModul() {
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {tekrarSayisi === 0
-                  ? "Boş/yanlış yaptıkça burada birikir"
+                  ? "Boş — yanlış yaptıkça burada birikir"
                   : "Yapamadığın sorular burada!"}
               </p>
             </div>
@@ -1230,7 +1261,7 @@ export default function TestModul() {
                 </span>
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eser ↔ karakter eşleştir, sınavda kaçrıma! 🎭
+                Eser ↔ karakter eşleştir, bankoları ezberle! 🎭
               </p>
             </div>
           </div>
