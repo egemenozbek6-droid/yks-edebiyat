@@ -147,6 +147,44 @@ function secenekUret(dogru: string, havuz: string[], yedek: string[] = []): stri
 }
 
 
+/** Aynı yazarın diğer eserlerini yanlış şık olarak koyma */
+function eserHavuzuBaskaYazarlar(
+  dogruEser: string,
+  dogruYazar: string,
+  havuz: { author: string; work: string }[],
+): string[] {
+  return Array.from(
+    new Set(
+      havuz
+        .filter(
+          (x) =>
+            x.work &&
+            x.work !== dogruEser &&
+            x.author.toLocaleLowerCase("tr") !== dogruYazar.toLocaleLowerCase("tr"),
+        )
+        .map((x) => x.work),
+    ),
+  );
+}
+
+function yazarHavuzuBaska(
+  dogruYazar: string,
+  havuz: { author: string }[],
+): string[] {
+  return Array.from(
+    new Set(
+      havuz
+        .filter(
+          (x) =>
+            x.author &&
+            x.author.toLocaleLowerCase("tr") !== dogruYazar.toLocaleLowerCase("tr"),
+        )
+        .map((x) => x.author),
+    ),
+  );
+}
+
+
 const RECENT_KEY = "edebikart-test-recent-v1";
 const RECENT_LIMIT = 40;
 
@@ -430,21 +468,27 @@ export default function TestModul() {
           const tumY = Array.from(new Set(secenekKaynak.map((x) => x.author)));
           const tumE = Array.from(new Set(secenekKaynak.map((x) => x.work)));
           if (Math.random() < 0.5) {
+            const yazarHavuz = yazarHavuzuBaska(litItem.author, secenekKaynak);
             pool.push({
               kategoriUst: "PEKİŞTİRME",
               vurgu: litItem.work,
               metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
               dogru: litItem.author,
-              secenekler: secenekUret(litItem.author, tumY, tumY),
+              secenekler: secenekUret(litItem.author, yazarHavuz, tumY),
               kartId: id,
             });
           } else {
+            const eserHavuz = eserHavuzuBaskaYazarlar(
+              litItem.work,
+              litItem.author,
+              secenekKaynak,
+            );
             pool.push({
               kategoriUst: "PEKİŞTİRME",
               vurgu: litItem.author,
               metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
               dogru: litItem.work,
-              secenekler: secenekUret(litItem.work, tumE, tumE),
+              secenekler: secenekUret(litItem.work, eserHavuz, tumE),
               kartId: id,
             });
           }
@@ -489,7 +533,8 @@ export default function TestModul() {
         return;
       }
 
-      hazir = karistir(pool).slice(0, Math.min(15, pool.length));
+      // Sınır yok: yanlış sayısı kadar soru
+      hazir = karistir(pool);
       baslik = "Tekrar Köşen";
       renk = "rose";
       setSonTest({ tur: "tekrar" });
@@ -618,28 +663,30 @@ export default function TestModul() {
             : "Tüm Dönemler";
       renk = tur === "kadin" ? "pink" : "primary";
 
-      const soruAdedi = tur === "kadin" ? 10 : 15;
+      const soruAdedi = 10;
       const secilenler = karistir(recentFiltrele(havuz, (x) => String(x.id))).slice(0, Math.min(soruAdedi, havuz.length));
       const tumYazarlarList = Array.from(new Set(havuz.map((x) => x.author)));
       const tumEserler = Array.from(new Set(havuz.map((x) => x.work)));
 
       hazir = secilenler.map((item) => {
         if (Math.random() < 0.5) {
+          const yazarHavuz = yazarHavuzuBaska(item.author, havuz);
           return {
             kategoriUst: "ESERİN YAZARI",
             vurgu: item.work,
             metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
             dogru: item.author,
-            secenekler: secenekUret(item.author, tumYazarlarList, tumYazarlarList),
+            secenekler: secenekUret(item.author, yazarHavuz, tumYazarlarList),
             kartId: String(item.id),
           };
         }
+        const eserHavuz = eserHavuzuBaskaYazarlar(item.work, item.author, havuz);
         return {
           kategoriUst: "YAZARIN ESERİ",
           vurgu: item.author,
           metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
           dogru: item.work,
-          secenekler: secenekUret(item.work, tumEserler, tumEserler),
+          secenekler: secenekUret(item.work, eserHavuz, tumEserler),
           kartId: String(item.id),
         };
       });
