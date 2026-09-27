@@ -18,6 +18,7 @@ import RuhHaliModal, { type RuhHali } from "@/components/RuhHaliModal";
 import DueloModulu from "@/components/DueloModulu";
 import ProfilModal from "@/components/ProfilModal";
 import SplashEkran from "@/components/SplashEkran";
+import OnboardingEkran from "@/components/OnboardingEkran";
 import { anaDonemFiltrele, anaDonemler, type AnaDonem, type LiteratureItem } from "@/src/data";
 import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
 import { kartTekrarGerekiyorMu, kartHafizaGetir } from "@/lib/leitner";
@@ -65,7 +66,28 @@ export default function Page() {
     const t = window.setTimeout(() => setSplashAktif(false), 1200);
     return () => clearTimeout(t);
   }, []);
+      const [onboardingHazir, setOnboardingHazir] = useState(false);
+  const [onboardingAktif, setOnboardingAktif] = useState(false);
 
+  useEffect(() => {
+    try {
+      const bitti = window.localStorage.getItem("edebikart-onboarding-done") === "1";
+      setOnboardingAktif(!bitti);
+    } catch {
+      setOnboardingAktif(true);
+    }
+    setOnboardingHazir(true);
+  }, []);
+
+  const onboardingBitir = () => {
+    try {
+      window.localStorage.setItem("edebikart-onboarding-done", "1");
+    } catch {
+      /* sessiz */
+    }
+    setOnboardingAktif(false);
+  };
+  
   const [introAktif, setIntroAktif] = useState(false);
   const [modalKapandi, setModalKapandi] = useState(false);
   const introYapildi = useRef(false);
@@ -217,6 +239,9 @@ export default function Page() {
   return (
     <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col">
       {splashAktif && <SplashEkran />}
+      {onboardingHazir && onboardingAktif && (
+  <OnboardingEkran onBitti={onboardingBitir} />
+)}
       <div
         className="fixed inset-0 pointer-events-none opacity-[0.04]"
         style={{
@@ -382,14 +407,16 @@ export default function Page() {
         )}
       </main>
 
-      <RuhHaliModal
-        onSecim={(rh) => {
-          setRuhHali(rh);
-          window.setTimeout(() => setModalKapandi(true), 2800);
-        }}
-        onKapat={() => setModalKapandi(true)}
-        onModSec={(hedefMod) => modDegistir(hedefMod)}
-      />
+            {onboardingHazir && !onboardingAktif && (
+        <RuhHaliModal
+          onSecim={(rh) => {
+            setRuhHali(rh);
+            window.setTimeout(() => setModalKapandi(true), 2800);
+          }}
+          onKapat={() => setModalKapandi(true)}
+          onModSec={(hedefMod) => modDegistir(hedefMod)}
+        />
+      )}
 
       {profilAcik && (
         <ProfilModal onKapat={() => setProfilAcik(false)} onGuncellendi={() => {}} />
