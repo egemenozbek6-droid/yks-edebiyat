@@ -1,4 +1,4 @@
-# v0 sandbox internal files
+# v0 sandbox
 __v0_runtime_loader.js
 __v0_devtools.tsx
 __v0_jsx-dev-runtime.ts
@@ -6,11 +6,28 @@ __v0_jsx-dev-runtime.ts
 .v0-trash/
 .vercel/
 
-# Environment variables
-.env*.local
-
-# Common ignores
-node_modules
-.next/
-.DS_Store
+# Env
 .env
+.env*.local
+.env.local
+
+# Dependencies & caches
+node_modules/
+.pnpm-store/
+
+# Next.js
+.next/
+out/
+*.tsbuildinfo
+next-env.d.ts
+
+# OS / IDE
+.DS_Store
+*.log
+.idea/
+.vscode/
+
+# Capacitor / Android local
+android/.gradle/
+android/app/build/
+android/build/
