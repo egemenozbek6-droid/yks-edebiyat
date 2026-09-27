@@ -3,10 +3,6 @@
 import { useState } from "react";
 import { Fraunces } from "next/font/google";
 
-/**
- * Not: app layout'ta --font-serif şu an sans'a bağlanmış.
- * Onboarding kimliği için Fraunces'i burada ayrıca yüklüyoruz.
- */
 const baslikFont = Fraunces({
   subsets: ["latin"],
   weight: ["600", "700"],
@@ -24,112 +20,102 @@ const ADIMLAR: {
   etiketRenk: string;
   buton: string;
   accentBar: string;
-  stroke: string;
 }[] = [
   {
     id: "kart",
     etiket: "Kartlar",
     baslik: "Kartlarla ezberle",
-    metin:
-      "Ön yüzde eser, arkada yazar. Kartı çevir: biliyorsan Kaptım (kutun yükselir), takıldıysan Tekrar Et (Kutu 1). Dönem seçip sağa-sola kaydırarak desteyi gezersin.",
+    metin: "Eser–yazar kartını çevir. Biliyorsan Kaptım, takıldıysan Tekrar Et.",
     kutu: "border-primary/35 bg-primary/10",
     etiketRenk: "text-primary",
     buton: "bg-primary text-primary-foreground",
     accentBar: "bg-primary",
-    stroke: "currentColor",
   },
   {
     id: "test",
     etiket: "Test",
     baslik: "Çoktan seçmeli prova",
-    metin:
-      "Dönem testleri, ÖSYM Sever, kadın yazarlar, eser–kahraman ve Batı akımları. Yanlışlar Tekrar Köşen’e düşer; oradan tekrar çözüp eksiğini kapatırsın.",
+    metin: "Dönemden ÖSYM’ye kadar soru çöz. Yanlışların Tekrar Köşen’de birikir.",
     kutu: "border-violet-500/35 bg-violet-500/10",
     etiketRenk: "text-violet-400",
     buton: "bg-violet-600 text-white",
     accentBar: "bg-violet-600",
-    stroke: "currentColor",
   },
   {
     id: "duelo",
     etiket: "Düello",
     baslik: "Rakiple yarış, EP kazan",
-    metin:
-      "Ranked’de canlı rakip (veya bot); özel odada arkadaşınla oda kodu. Ranked galibiyetinde EP gelir, Kariyer Yolu’nda rütbe atarsın.",
+    metin: "Canlı rakiple ya da arkadaşınla yarış; kazandıkça rütbe atla.",
     kutu: "border-duello/35 bg-duello/10",
     etiketRenk: "text-duello",
     buton: "bg-duello text-duello-foreground",
     accentBar: "bg-duello",
-    stroke: "currentColor",
   },
 ];
 
-/** Anlamlı ince çizgi illüstrasyonlar */
+/**
+ * Küçük boyutta da okunan çizgi illüstrasyonlar.
+ * Düello: açıkça kılıç (X değil). Test: kalem gövdesi + uç + tik.
+ */
 function Illu({ id, className }: { id: AdimId; className?: string }) {
   if (id === "kart") {
-    // Eğik fiş + tüy kalem
     return (
-      <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
-        <rect
-          x="10"
-          y="8"
-          width="36"
-          height="52"
-          rx="2.5"
-          stroke="currentColor"
-          strokeWidth="1.75"
-          transform="rotate(-7 28 34)"
-        />
-        <path
-          d="M16 24h24M16 33h18M16 42h21"
-          stroke="currentColor"
-          strokeWidth="1.5"
-          strokeLinecap="round"
-          opacity="0.75"
-          transform="rotate(-7 28 34)"
-        />
-        <path d="M42 50 L54 18" stroke="currentColor" strokeWidth="1.75" strokeLinecap="round" />
-        <path d="M54 18l-5 1.5 1.5 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
+      <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
+        {/* arka kart */}
+        <rect x="14" y="6" width="26" height="36" rx="3" stroke="currentColor" strokeWidth="1.8" opacity="0.45" />
+        {/* ön kart */}
+        <rect x="8" y="12" width="26" height="36" rx="3" stroke="currentColor" strokeWidth="1.8" />
+        <path d="M14 22h14M14 28h10M14 34h12" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" opacity="0.8" />
       </svg>
     );
   }
+
   if (id === "test") {
-    // Kurşun kalem + kırık uç + tik
     return (
-      <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
+      <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
+        {/* kalem gövdesi (yatay değil, hafif eğik) */}
         <path
-          d="M24 58 V26 L32 16 L40 26 V58 Z"
+          d="M18 44 L18 20 L24 12 L30 20 L30 44 Z"
           stroke="currentColor"
-          strokeWidth="1.75"
+          strokeWidth="1.8"
           strokeLinejoin="round"
         />
-        <path d="M24 26h16" stroke="currentColor" strokeWidth="1.5" />
+        {/* metal halka */}
+        <path d="M18 22h12" stroke="currentColor" strokeWidth="1.5" />
+        {/* uç üçgen */}
+        <path d="M24 12 L20 6 L28 6 Z" stroke="currentColor" strokeWidth="1.6" strokeLinejoin="round" />
+        {/* kırık çizgi */}
+        <path d="M22 8 L26 5" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" opacity="0.7" />
+        {/* tik — kalemin sağında net */}
         <path
-          d="M32 16 L28 8 M32 16 L36 8"
+          d="M32 30 L36 34 L44 22"
           stroke="currentColor"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-        />
-        <path
-          d="M26 44 L31 49 L40 36"
-          stroke="currentColor"
-          strokeWidth="2.1"
+          strokeWidth="2.2"
           strokeLinecap="round"
           strokeLinejoin="round"
         />
       </svg>
     );
   }
-  // Düello: çapraz tüy kalemler (X / iptal değil)
+
+  // Düello — klasik çapraz kılıçlar (tüy/X değil)
   return (
-    <svg viewBox="0 0 64 72" className={className} fill="none" aria-hidden>
-      <path d="M14 56 L46 16" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" />
-      <path d="M46 16l-5 1 1 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M18 18c2-1 5-1 7 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity="0.7" />
-      <path d="M50 56 L18 16" stroke="currentColor" strokeWidth="1.85" strokeLinecap="round" />
-      <path d="M18 16l5 1 -1 5" stroke="currentColor" strokeWidth="1.4" strokeLinejoin="round" />
-      <path d="M46 18c-2-1-5-1-7 1" stroke="currentColor" strokeWidth="1.3" strokeLinecap="round" opacity="0.7" />
-      <circle cx="32" cy="36" r="4" stroke="currentColor" strokeWidth="1.4" opacity="0.85" />
+    <svg viewBox="0 0 48 56" className={className} fill="none" aria-hidden>
+      {/* kılıç 1 */}
+      <path d="M14 42 L34 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      {/* kabza 1 */}
+      <path d="M12 40 L16 44" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M10 44 L18 40" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      {/* sivri uç 1 */}
+      <path d="M34 14 L32 10 L36 12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
+
+      {/* kılıç 2 */}
+      <path d="M34 42 L14 14" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+      {/* kabza 2 */}
+      <path d="M32 40 L36 44" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
+      <path d="M30 44 L38 40" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
+      {/* sivri uç 2 */}
+      <path d="M14 14 L12 10 L16 12" stroke="currentColor" strokeWidth="1.5" strokeLinejoin="round" />
     </svg>
   );
 }
@@ -150,13 +136,12 @@ export default function OnboardingEkran({ onBitti }: Props) {
       aria-modal="true"
       aria-label="EdebiKart tanıtım"
     >
-      {/* İçerik: masaüstünde aşırı boşluk olmasın diye max yükseklik + ortala */}
       <div className="flex flex-1 flex-col items-center justify-center px-8 py-6">
-        <div className="flex w-full max-w-[22rem] flex-col items-center">
+        <div className="flex w-full max-w-[20rem] flex-col items-center">
           <div
-            className={`mb-6 grid h-[5.25rem] w-[4.25rem] place-items-center rounded-md border ${mevcut.kutu} ${mevcut.etiketRenk}`}
+            className={`mb-6 grid h-[4.75rem] w-[4rem] place-items-center rounded-md border ${mevcut.kutu} ${mevcut.etiketRenk}`}
           >
-            <Illu id={mevcut.id} className="h-12 w-11" />
+            <Illu id={mevcut.id} className="h-11 w-10" />
           </div>
 
           <p
@@ -171,7 +156,7 @@ export default function OnboardingEkran({ onBitti }: Props) {
             {mevcut.baslik}
           </h2>
 
-          <p className="mt-4 text-pretty text-center text-[14px] leading-relaxed text-muted-foreground">
+          <p className="mt-3.5 text-pretty text-center text-[14px] leading-relaxed text-muted-foreground">
             {mevcut.metin}
           </p>
         </div>
