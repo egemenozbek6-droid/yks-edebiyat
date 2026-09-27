@@ -1,18 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  Crosshair,
-  Flame,
-  Focus,
-  CloudFog,
-  Moon,
-  Swords,
-  Layers,
-  NotebookPen,
-  X,
-  type LucideIcon,
-} from "lucide-react";
+import { Swords, Layers, NotebookPen, X, type LucideIcon } from "lucide-react";
 
 export type RuhHali = {
   id: string;
@@ -21,14 +10,12 @@ export type RuhHali = {
   mesaj: string;
 };
 
-/** page.tsx Mod ile birebir uyumlu */
 type HedefMod = "kart" | "test" | "duelo";
 
 type Yonlendirme = {
   mod: HedefMod;
   etiket: string;
   ikon: LucideIcon;
-  /** buton rengi — tema sekme renkleri */
   sinif: string;
 };
 
@@ -41,8 +28,6 @@ type Duygu = {
   id: string;
   etiket: string;
   emoji: string;
-  ikon: LucideIcon;
-  ikonSinif: string;
   kartSinif: string;
   mesajlar: Mesaj[];
 };
@@ -71,8 +56,6 @@ const duyguHavuzu: Duygu[] = [
     id: "formdayim",
     etiket: "Formdayım",
     emoji: "🔥",
-    ikon: Flame,
-    ikonSinif: "text-emerald-400",
     kartSinif: "hover:ring-emerald-500/40 hover:bg-emerald-500/10",
     mesajlar: [
       {
@@ -94,8 +77,6 @@ const duyguHavuzu: Duygu[] = [
     id: "odak",
     etiket: "Odaklıyım",
     emoji: "🎯",
-    ikon: Focus,
-    ikonSinif: "text-sky-400",
     kartSinif: "hover:ring-sky-500/40 hover:bg-sky-500/10",
     mesajlar: [
       {
@@ -117,8 +98,6 @@ const duyguHavuzu: Duygu[] = [
     id: "daginik",
     etiket: "Dağınık",
     emoji: "🌥",
-    ikon: CloudFog,
-    ikonSinif: "text-amber-400",
     kartSinif: "hover:ring-amber-500/40 hover:bg-amber-500/10",
     mesajlar: [
       {
@@ -140,8 +119,6 @@ const duyguHavuzu: Duygu[] = [
     id: "yorgun",
     etiket: "Yorgunum",
     emoji: "🌙",
-    ikon: Moon,
-    ikonSinif: "text-orange-400",
     kartSinif: "hover:ring-orange-500/40 hover:bg-orange-500/10",
     mesajlar: [
       {
@@ -163,8 +140,6 @@ const duyguHavuzu: Duygu[] = [
     id: "motive",
     etiket: "Motive",
     emoji: "⚡",
-    ikon: Crosshair,
-    ikonSinif: "text-violet-400",
     kartSinif: "hover:ring-violet-500/40 hover:bg-violet-500/10",
     mesajlar: [
       {
@@ -218,7 +193,6 @@ export default function RuhHaliModal({ onSecim, onKapat, onModSec }: Props) {
     } catch {
       setAcik(true);
     }
-    // sadece mount
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -269,20 +243,11 @@ export default function RuhHaliModal({ onSecim, onKapat, onModSec }: Props) {
       <div className="w-full max-w-md animate-pop rounded-3xl border border-border bg-card p-6 shadow-2xl ring-1 ring-white/5">
         {secilen ? (
           <div className="py-2 text-center">
-            {(() => {
-              const d = duyguHavuzu.find((x) => x.id === secilen.id);
-              if (!d) return null;
-              const Ikon = d.ikon;
-              return (
-                <div
-                  className={`mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-muted/80 ring-1 ring-border ${d.ikonSinif}`}
-                >
-                  <span className="text-2xl leading-none" aria-hidden>
-                    {d.emoji}
-                  </span>
-                </div>
-              );
-            })()}
+            <div className="mx-auto mb-4 grid h-14 w-14 place-items-center rounded-2xl bg-muted/80 ring-1 ring-border">
+              <span className="text-3xl leading-none" aria-hidden>
+                {secilen.emoji}
+              </span>
+            </div>
 
             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-muted-foreground">
               {secilen.etiket}
@@ -329,24 +294,20 @@ export default function RuhHaliModal({ onSecim, onKapat, onModSec }: Props) {
             </div>
 
             <div className="mt-5 grid grid-cols-5 gap-2">
-              {duyguHavuzu.map((d) => {
-                const Ikon = d.ikon;
-                return (
-                  <button
-                    key={d.id}
-                    onClick={() => sec(d)}
-                    className={`flex flex-col items-center gap-1.5 rounded-2xl border border-border/80 bg-muted/40 px-1 py-3 ring-1 ring-transparent transition active:scale-[0.96] ${d.kartSinif}`}
-                  >
-                    <span className="text-xl leading-none" aria-hidden>
-                      {d.emoji}
-                    </span>
-                    <Ikon className={`h-3.5 w-3.5 opacity-70 ${d.ikonSinif}`} strokeWidth={2} />
-                    <span className="text-center text-[9px] font-semibold leading-tight text-muted-foreground">
-                      {d.etiket}
-                    </span>
-                  </button>
-                );
-              })}
+              {duyguHavuzu.map((d) => (
+                <button
+                  key={d.id}
+                  onClick={() => sec(d)}
+                  className={`flex flex-col items-center gap-2 rounded-2xl border border-border/80 bg-muted/40 px-1 py-3.5 ring-1 ring-transparent transition active:scale-[0.96] ${d.kartSinif}`}
+                >
+                  <span className="text-[1.65rem] leading-none" aria-hidden>
+                    {d.emoji}
+                  </span>
+                  <span className="text-center text-[10px] font-semibold leading-tight text-muted-foreground">
+                    {d.etiket}
+                  </span>
+                </button>
+              ))}
             </div>
 
             <button
