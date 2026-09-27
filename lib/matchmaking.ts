@@ -22,7 +22,7 @@ import {
   Timestamp,
   Unsubscribe,
 } from "firebase/firestore";
-import { db, firebaseAktif } from "./firebase";
+import { db, firebaseAktif, ensureAnonymousAuth } from "./firebase";
 import { rastgeleBot } from "./bots";
 import { sorulariUret, type Soru } from "./soru";
 import { gecerliYazarlar } from "@/src/data";
@@ -131,6 +131,9 @@ export function rankedKuyrugaKatil(
   }, RANKED_BOT_FALLBACK_SURESI);
 
   (async () => {
+    await ensureAnonymousAuth();
+    if (iptalEdildi) return;
+
     const q = query(
       collection(db!, "matches"),
       where("mod", "==", "ranked"),
@@ -280,21 +283,26 @@ export function odaKurOnline(
 ): Unsubscribe | null {
   if (!firebaseAktif || !db) {
     console.error("[odaKurOnline] Firebase aktif değil! Oda kurulamıyor.");
-    alert("Firebase bağlantısı yok!\n.env dosyasındaki NEXT_PUBLIC_FIREBASE_* anahtarlarını kontrol edin.");
+    alert("Firebase bağlantısı yok!");
     return null;
   }
 
-  // odaKodu her zaman trim'lenmiş string olarak kaydedilir
   const kodStr = String(odaKodu ?? "").trim();
   if (!kodStr) {
     console.error("[odaKurOnline] Geçersiz oda kodu (boş)");
     alert("Oda kodu boş!");
     return null;
   }
+
   const macRef = doc(db!, "matches", kodStr);
+  let unsub: Unsubscribe | null = null;
+  let iptal = false;
 
   (async () => {
     try {
+      await ensureAnonymousAuth();
+      if (iptal) return;
+
       const uretilenSorular = soruUret(soruSayisi);
       const payload = sanitizePayload({
         mod: "friendly",
@@ -315,38 +323,49 @@ export function odaKurOnline(
         forfeitedBy: null,
         olusturmaZamani: serverTimestamp(),
       });
-      console.log("[odaKurOnline] Firestore'a yazılıyor... matches/" + kodStr, {
-        mod: "friendly",
-        durum: "bekliyor",
-        odaKodu: kodStr,
-        soruSayisi: Number(soruSayisi) || 5,
-      });
+
       await setDoc(macRef, payload);
-      console.log("[odaKurOnline] ✓ Firestore'a yazıldı: matches/" + kodStr);
+      console.log("[odaKurOnline] ✓ yazıldı matches/" + kodStr);
+      if (iptal) return;
+
+      unsub = onSnapshot(
+        macRef,
+        (snap) => {
+          if (!snap.exists()) return;
+          const data = snap.data() as OnlineMac;
+          if (data.durum === "aktif" && data.oyuncu2) {
+            onRakipKatildi(
+              {
+                ad: data.oyuncu2.ad,
+                avatar: data.oyuncu2.avatar,
+                bot: false,
+                id: data.oyuncu2.id,
+              },
+              kodStr,
+              data.sorular ?? [],
+            );
+            unsub?.();
+          }
+        },
+        (err) => {
+          console.error("[odaKurOnline] onSnapshot hatası:", err);
+          alert(
+            "Oda dinleme hatası!\n\nHata: " +
+              (err instanceof Error ? err.message : String(err)),
+          );
+        },
+      );
     } catch (e) {
       const msg = e instanceof Error ? e.message : String(e);
-      console.error("[odaKurOnline] ✗ Firestore yazma hatası:", e);
-      alert("Oda kurma hatası!\nFirestore'a yazılamadı.\n\nHata: " + msg);
+      console.error("[odaKurOnline] hata:", e);
+      alert("Oda kurma hatası!\n\nHata: " + msg);
     }
   })();
 
-  const unsub = onSnapshot(macRef, (snap) => {
-    if (!snap.exists()) return;
-    const data = snap.data() as OnlineMac;
-    if (data.durum === "aktif" && data.oyuncu2) {
-      onRakipKatildi(
-        { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false, id: data.oyuncu2.id },
-        kodStr,
-        data.sorular ?? [],
-      );
-      unsub();
-    }
-  }, (err) => {
-    console.error("[odaKurOnline] onSnapshot hatası:", err);
-    alert("Oda dinleme hatası!\n\nHata: " + (err instanceof Error ? err.message : String(err)));
-  });
-
-  return unsub;
+  return () => {
+    iptal = true;
+    unsub?.();
+  };
 }
 
 export async function odayaKatilOnline(
@@ -357,6 +376,8 @@ export async function odayaKatilOnline(
     console.error("[odayaKatilOnline] Firebase aktif değil!");
     return { tamam: false, hata: "Firebase bağlantısı yok! .env anahtarlarını kontrol edin." };
   }
+
+  await ensureAnonymousAuth();
 
   // odaKodu her zaman trim'lenmiş string olarak karşılaştırılır
   const kodStr = String(odaKodu ?? "").trim();
