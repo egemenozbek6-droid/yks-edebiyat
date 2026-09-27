@@ -1138,7 +1138,7 @@ export default function TestModul() {
                 <div className="flex items-center gap-2">
                   <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
                   <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
-                    Çıkmış Soru
+                    CANLI
                   </span>
                 </div>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
