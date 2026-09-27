@@ -1142,7 +1142,7 @@ export default function TestModul() {
                   </span>
                 </div>
                 <p className="mt-0.5 text-[11px] text-muted-foreground">
-                  Sadece çıkmış yazar ve eserler, özel denemeler ile kendini sına! 🔥
+                  Sadece çıkmış yazar ve eserler, özel denemelerle kendini sına!🔥
                   {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
                 </p>
               </div>
