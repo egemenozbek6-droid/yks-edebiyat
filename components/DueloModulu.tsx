@@ -36,7 +36,7 @@ import {
 import { rankBul, sonrakiRank, RANK_KADEMELERI } from "@/lib/types";
 import { rastgeleBot, botGecikme, botDogruMu, botBonus } from "@/lib/bots";
 import { avatarEmoji, rastgeleAvatarId } from "@/lib/avatars";
-import { firebaseAktif } from "@/lib/firebase";
+import { firebaseAktif, ensureAnonymousAuth } from "@/lib/firebase";
 import {
   rankedKuyrugaKatil,
   rankedKuyruktanCik,
@@ -466,28 +466,31 @@ export default function DueloModulu({
     const k = kullaniciRef.current;
     if (!k) return;
 
-    if (firebaseAktif) {
-      const unsub = rankedKuyrugaKatil(
-        { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
-        (durum) => {
-          if (durum.durum === "eslesti") {
-            dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.matchId, 2, durum.sorular);
-          } else if (durum.durum === "iptal") {
-            setAdim("lobi");
-            adimRef.current = "lobi";
-          }
-        },
-      );
-      rankedUnsubRef.current = unsub;
-    } else {
-      const gecikme = 3000 + Math.random() * 2000;
-      aramaTimer.current = window.setTimeout(() => {
-        const bot = rastgeleBot();
-        const havuz = gecerliYazarlar();
-        const s = sorulariUret(havuz).slice(0, SORU_SAYISI);
-        dueloBaslat("ranked", bot, SORU_SAYISI, "bot_" + Date.now(), 1, s);
-      }, gecikme);
-    }
+    void (async () => {
+      if (firebaseAktif) {
+        await ensureAnonymousAuth();
+        const unsub = rankedKuyrugaKatil(
+          { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+          (durum) => {
+            if (durum.durum === "eslesti") {
+              dueloBaslat("ranked", durum.rakip, SORU_SAYISI, durum.matchId, 2, durum.sorular);
+            } else if (durum.durum === "iptal") {
+              setAdim("lobi");
+              adimRef.current = "lobi";
+            }
+          },
+        );
+        rankedUnsubRef.current = unsub;
+      } else {
+        const gecikme = 3000 + Math.random() * 2000;
+        aramaTimer.current = window.setTimeout(() => {
+          const bot = rastgeleBot();
+          const havuz = gecerliYazarlar();
+          const s = sorulariUret(havuz).slice(0, SORU_SAYISI);
+          dueloBaslat("ranked", bot, SORU_SAYISI, "bot_" + Date.now(), 1, s);
+        }, gecikme);
+      }
+    })();
   }, [dueloBaslat, cooldownAktif, cooldownBaslat]);
 
   const aramaIptal = useCallback(() => {
@@ -519,15 +522,18 @@ export default function DueloModulu({
       return;
     }
 
-    const unsub = odaKurOnline(
-      kod,
-      { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
-      friendlySoruSayisi,
-      (rakipBilgi, mId, soruListesi) => {
-        dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, mId, 1, soruListesi);
-      },
-    );
-    odaUnsubRef.current = unsub;
+    void (async () => {
+      await ensureAnonymousAuth();
+      const unsub = odaKurOnline(
+        kod,
+        { id: k.cihazId || k.kullaniciAdi, ad: k.kullaniciAdi, avatar: k.avatar },
+        friendlySoruSayisi,
+        (rakipBilgi, mId, soruListesi) => {
+          dueloBaslat("friendly", rakipBilgi, friendlySoruSayisi, mId, 1, soruListesi);
+        },
+      );
+      odaUnsubRef.current = unsub;
+    })();
   }, [dueloBaslat, friendlySoruSayisi, dueloSifirla, cooldownAktif, cooldownBaslat]);
 
   const odaBeklemeIptal = useCallback(() => {
@@ -551,6 +557,7 @@ export default function DueloModulu({
       return;
     }
 
+    await ensureAnonymousAuth();
     dueloSifirla();
 
     const sonuc = await odayaKatilOnline(trimmedInput, {
