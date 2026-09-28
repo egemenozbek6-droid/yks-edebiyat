@@ -92,7 +92,8 @@ export default function DueloModulu({
   const [nickHata, setNickHata] = useState("");
   const [nickKontrol, setNickKontrol] = useState<{ musait: boolean; mesaj: string } | null>(null);
 
-  const [odaInput, setOdaInput] = useState("");
+  const [odaHaneler, setOdaHaneler] = useState<string[]>(["", "", "", ""]);
+  const odaKutuRefs = useRef<(HTMLInputElement | null)[]>([]);
   const [olusturulanKod, setOlusturulanKod] = useState("");
   const [odaHata, setOdaHata] = useState("");
  const [kodKopyalandi, setKodKopyalandi] = useState(false);
@@ -607,7 +608,7 @@ export default function DueloModulu({
 
   // --- Odaya katıl — Gerçek online, bot yok ---
   const odayaKatil = useCallback(async () => {
-    const trimmedInput = odaInput.trim();
+    const trimmedInput = odaHaneler.join("");
     if (trimmedInput.length !== 4) return;
     const k = kullaniciRef.current;
     if (!k) return;
@@ -628,6 +629,8 @@ export default function DueloModulu({
 
     if (!sonuc.tamam) {
       setOdaHata(sonuc.hata ?? "Geçersiz oda kodu!");
+      setOdaHaneler(["", "", "", ""]);
+      odaKutuRefs.current[0]?.focus();
       return;
     }
 
@@ -651,7 +654,7 @@ export default function DueloModulu({
       if (katilanMatchUnsubRef.current) { katilanMatchUnsubRef.current(); katilanMatchUnsubRef.current = null; }
     });
     katilanMatchUnsubRef.current = unsub;
-  }, [odaInput, dueloBaslat, dueloSifirla]);
+  }, [odaHaneler, dueloBaslat, dueloSifirla]);
 
   // --- Cevapla (oyuncu) ---
   const cevapla = useCallback(
@@ -1342,24 +1345,68 @@ export default function DueloModulu({
             Arkadaşının paylaştığı 4 haneli kodu gir.
           </p>
 
-          <input
-            type="text"
-            value={odaInput}
-            onChange={(e) => {
-              setOdaInput(e.target.value.replace(/\D/g, "").slice(0, 4));
-              setOdaHata("");
-            }}
-            onKeyDown={(e) => e.key === "Enter" && odayaKatil()}
-            placeholder="4 haneli kod..."
-            maxLength={4}
-            className="mt-5 w-full rounded-lg bg-muted/60 px-4 py-3.5 text-lg font-bold tracking-widest text-center text-foreground placeholder:text-muted-foreground/60 placeholder:tracking-normal placeholder:font-normal outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
-          />
+          <div className="mt-5 flex items-center justify-center gap-2.5">
+            {[0, 1, 2, 3].map((i) => (
+              <input
+                key={i}
+                ref={(el) => {
+                  odaKutuRefs.current[i] = el;
+                }}
+                type="text"
+                inputMode="numeric"
+                autoComplete="one-time-code"
+                value={odaHaneler[i]}
+                onChange={(e) => {
+                  const basilan = e.target.value.replace(/\D/g, "");
+                  if (!basilan) {
+                    // Silme: kutuyu boşalt
+                    setOdaHaneler((prev) => {
+                      const yeni = [...prev];
+                      yeni[i] = "";
+                      return yeni;
+                    });
+                    return;
+                  }
+                  const hane = basilan.slice(-1);
+                  setOdaHaneler((prev) => {
+                    const yeni = [...prev];
+                    yeni[i] = hane;
+                    return yeni;
+                  });
+                  setOdaHata("");
+                  if (i < 3) odaKutuRefs.current[i + 1]?.focus();
+                }}
+                onKeyDown={(e) => {
+                  if (e.key === "Backspace" && !odaHaneler[i] && i > 0) {
+                    odaKutuRefs.current[i - 1]?.focus();
+                  }
+                  if (e.key === "Enter" && odaHaneler.every((h) => h)) {
+                    odayaKatil();
+                  }
+                }}
+                onPaste={(e) => {
+                  e.preventDefault();
+                  const yapistirilan = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 4);
+                  if (!yapistirilan) return;
+                  const yeni = ["", "", "", ""];
+                  for (let j = 0; j < yapistirilan.length; j++) yeni[j] = yapistirilan[j];
+                  setOdaHaneler(yeni);
+                  setOdaHata("");
+                  const sonrakiIndex = Math.min(yapistirilan.length, 3);
+                  odaKutuRefs.current[sonrakiIndex]?.focus();
+                }}
+                maxLength={1}
+                aria-label={`Oda kodu hane ${i + 1}`}
+                className="h-14 w-14 rounded-lg bg-muted/60 text-center text-2xl font-bold text-foreground outline-none focus:ring-2 focus:ring-duello/40 transition ring-1 ring-border"
+              />
+            ))}
+          </div>
           {odaHata && (
             <p className="mt-2 text-xs font-semibold text-destructive text-center">{odaHata}</p>
           )}
           <button
             onClick={odayaKatil}
-            disabled={odaInput.length !== 4}
+            disabled={odaHaneler.some((h) => !h)}
             className="mt-4 w-full rounded-lg bg-duello py-3.5 text-sm font-bold text-duello-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             Katıl
