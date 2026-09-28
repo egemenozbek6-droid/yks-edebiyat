@@ -12,13 +12,28 @@ import {
   type User,
 } from "firebase/auth";
 
+// Önce Vercel ortam değişkenleri kullanılır, yoksa aşağıdaki değerlere düşer.
+// NOT: Next.js'in değerleri koda gömebilmesi için process.env.NEXT_PUBLIC_...
+// ifadeleri bu şekilde tam adıyla yazılmalı.
 const firebaseConfig = {
-  apiKey: "AIzaSyBTIZ40tegC1RidklH58XVv7aRkrs0vMb8",
-  authDomain: "edebikart-yks-yazareser.firebaseapp.com",
-  projectId: "edebikart-yks-yazareser",
-  storageBucket: "edebikart-yks-yazareser.firebasestorage.app",
-  messagingSenderId: "116357634453",
-  appId: "1:116357634453:web:1e38118a8a6d879fabbe9c",
+  apiKey:
+    process.env.NEXT_PUBLIC_FIREBASE_API_KEY?.trim() ||
+    "AIzaSyBTIZ40tegC1Ridklh58XVv7aRkrs0vMb8",
+  authDomain:
+    process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN?.trim() ||
+    "edebikart-yks-yazareser.firebaseapp.com",
+  projectId:
+    process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID?.trim() ||
+    "edebikart-yks-yazareser",
+  storageBucket:
+    process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET?.trim() ||
+    "edebikart-yks-yazareser.firebasestorage.app",
+  messagingSenderId:
+    process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID?.trim() ||
+    "116357634453",
+  appId:
+    process.env.NEXT_PUBLIC_FIREBASE_APP_ID?.trim() ||
+    "1:116357634453:web:1e38118a8a6d879fabbe9c",
   measurementId: "G-5ZKLBGCXH7",
 };
 
