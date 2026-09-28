@@ -9,8 +9,6 @@ const config: CapacitorConfig = {
     allowMixedContent: false,
     webContentsDebuggingEnabled: false,
     captureInput: true,
-    captureFocus: true,
-    captureKeyboard: true,
   },
   server: {
     androidScheme: "https",

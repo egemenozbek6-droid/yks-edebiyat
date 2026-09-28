@@ -21,6 +21,8 @@ import {
   runTransaction,
   Timestamp,
   Unsubscribe,
+  type DocumentData,
+  type UpdateData,
 } from "firebase/firestore";
 import { db, firebaseAktif, ensureAnonymousAuth } from "./firebase";
 import { rastgeleBot } from "./bots";
@@ -110,6 +112,44 @@ export async function kullaniciAdiKaydetOnline(
   } catch (e) {
     if (e instanceof Error && e.message === "ALINMIS") return "alinmis";
     console.error("[username] kayıt hatası:", e);
+    return "hata";
+  }
+}
+
+export async function kullaniciAdiDegistirOnline(
+  eskiAd: string,
+  yeniAd: string,
+  kullaniciId: string,
+): Promise<"ok" | "alinmis" | "hata"> {
+  if (!firebaseAktif || !db) return "ok";
+
+  const eskiAnahtar = eskiAd.trim().toLowerCase();
+  const yeniAnahtar = yeniAd.trim().toLowerCase();
+  if (eskiAnahtar === yeniAnahtar) return "ok";
+
+  try {
+    if (!(await ensureAnonymousAuth())) return "hata";
+    const eskiRef = doc(db, "usernames", eskiAnahtar);
+    const yeniRef = doc(db, "usernames", yeniAnahtar);
+
+    await runTransaction(db, async (tx) => {
+      const yeniSnap = await tx.get(yeniRef);
+      if (yeniSnap.exists()) throw new Error("ALINMIS");
+
+      const eskiSnap = await tx.get(eskiRef);
+      tx.set(yeniRef, {
+        ad: yeniAd.trim(),
+        kullaniciId,
+        olusturmaZamani: serverTimestamp(),
+      });
+      if (eskiSnap.exists() && eskiSnap.data().kullaniciId === kullaniciId) {
+        tx.delete(eskiRef);
+      }
+    });
+    return "ok";
+  } catch (e) {
+    if (e instanceof Error && e.message === "ALINMIS") return "alinmis";
+    console.error("[username] değişiklik hatası:", e);
     return "hata";
   }
 }
@@ -594,7 +634,7 @@ export async function sonrakiSoru(matchId: string): Promise<void> {
       soruIndex: (data.soruIndex ?? 0) + 1,
       "oyuncu1.cevap": null,
       "oyuncu2.cevap": null,
-    }) as Record<string, never>);
+    }) as UpdateData<DocumentData>);
   });
 }
 
@@ -672,7 +712,7 @@ export async function rovanşBaslatIfHazir(matchId: string): Promise<boolean> {
         "oyuncu2.cevap": null,
         rematchIstek: {},
         rematchTur: Date.now(),
-      }) as Record<string, never>,
+      }) as UpdateData<DocumentData>,
     );
     return true;
   });

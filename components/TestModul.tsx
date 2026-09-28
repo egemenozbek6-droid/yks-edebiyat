@@ -692,7 +692,7 @@ export default function TestModul() {
       });
     }
 
-    setSonTest({ tur: tur === "tekrar" ? "tekrar" : tur, param: param ? String(param) : undefined });
+    setSonTest({ tur, param: param ? String(param) : undefined });
     recentYaz(hazir.map((q) => q.kartId || `${q.vurgu}::${q.dogru}`));
     setStandartSorular(hazir);
     setStandartIndex(0);

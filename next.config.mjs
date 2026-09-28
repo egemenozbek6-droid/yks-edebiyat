@@ -6,10 +6,6 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
-  // TODO: tip hataları temizlenince false yap
-  typescript: {
-    ignoreBuildErrors: true,
-  },
 }
 
 export default nextConfig

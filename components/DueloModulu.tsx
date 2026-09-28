@@ -355,7 +355,7 @@ export default function DueloModulu({
         oyuncuSkor: oS,
         rakipSkor: rS,
         rakipAdi: rak?.ad ?? "",
-        puanKazandi: mod === "ranked" ? (kazandi ? puanKazandi : 0) : 0,
+        puanKazandi: mod === "ranked" ? puanKazandi : 0,
         seri: 0,
         ranked: mod === "ranked",
       };

@@ -10,6 +10,7 @@ import {
   kullaniciAdiGuncelle,
   kullaniciAdiKontrol,
 } from "@/lib/user";
+import { kullaniciAdiDegistirOnline, kullaniciAdiMusaitMiOnline } from "@/lib/matchmaking";
 import { AVATARLAR, avatarEmoji, avatarLigKilitli, RANK_KADEMELERI } from "@/lib/avatars";
 import { rankBul } from "@/lib/types";
 import type { Kullanici } from "@/lib/types";
@@ -30,6 +31,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
   const [isimHata, setIsimHata] = useState("");
   const [isimOk, setIsimOk] = useState(false);
   const [isimKontrol, setIsimKontrol] = useState<{ musait: boolean; mesaj: string } | null>(null);
+  const [isimKaydediliyor, setIsimKaydediliyor] = useState(false);
   const [aktifSekme, setAktifSekme] = useState<"standart" | "prestij">("standart");
 
   useEffect(() => {
@@ -46,8 +48,28 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
       setIsimKontrol(null);
       return;
     }
-    const t = setTimeout(() => setIsimKontrol(kullaniciAdiKontrol(isimInput)), 250);
-    return () => clearTimeout(t);
+    let iptal = false;
+    const t = setTimeout(async () => {
+      const yerelKontrol = kullaniciAdiKontrol(isimInput);
+      if (!yerelKontrol.musait) {
+        setIsimKontrol(yerelKontrol);
+        return;
+      }
+      try {
+        const musait = await kullaniciAdiMusaitMiOnline(isimInput.trim());
+        if (!iptal) {
+          setIsimKontrol(
+            musait ? yerelKontrol : { musait: false, mesaj: "Bu kullanıcı adı alınmış" },
+          );
+        }
+      } catch {
+        if (!iptal) setIsimKontrol({ musait: false, mesaj: "Kullanıcı adı kontrol edilemedi" });
+      }
+    }, 250);
+    return () => {
+      iptal = true;
+      clearTimeout(t);
+    };
   }, [isimInput]);
 
   const avatarSec = (avatarId: string, kilitli: boolean) => {
@@ -181,6 +203,7 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
                       setIsimInput(e.target.value);
                       setIsimHata("");
                       setIsimOk(false);
+                      setIsimKontrol(null);
                     }}
                     placeholder={kullanici.kullaniciAdi}
                     maxLength={20}
@@ -188,24 +211,45 @@ export default function ProfilModal({ onKapat, onGuncellendi }: Props) {
                   />
                   <button
                     type="button"
-                    disabled={!isimInput.trim() || (isimKontrol !== null && !isimKontrol.musait)}
-                    onClick={() => {
-                      const sonuc = kullaniciAdiGuncelle(isimInput);
-                      if (!sonuc.tamam) {
-                        setIsimHata(sonuc.hata ?? "Değiştirilemedi");
-                        setIsimOk(false);
-                        return;
+                    disabled={!isimInput.trim() || isimKontrol === null || !isimKontrol.musait || isimKaydediliyor}
+                    onClick={async () => {
+                      if (!kullanici) return;
+                      setIsimKaydediliyor(true);
+                      try {
+                        const onlineSonuc = await kullaniciAdiDegistirOnline(
+                          kullanici.kullaniciAdi,
+                          isimInput,
+                          kullanici.cihazId,
+                        );
+                        if (onlineSonuc !== "ok") {
+                          setIsimHata(
+                            onlineSonuc === "alinmis"
+                              ? "Bu kullanıcı adı alınmış"
+                              : "Kullanıcı adı güncellenemedi. Bağlantınızı kontrol edip tekrar deneyin.",
+                          );
+                          setIsimOk(false);
+                          return;
+                        }
+
+                        const sonuc = kullaniciAdiGuncelle(isimInput);
+                        if (!sonuc.tamam) {
+                          setIsimHata(sonuc.hata ?? "Değiştirilemedi");
+                          setIsimOk(false);
+                          return;
+                        }
+                        setIsimHata("");
+                        setIsimOk(true);
+                        setIsimInput("");
+                        const k = mevcutKullanici();
+                        if (k) setKullanici(k);
+                        onGuncellendi();
+                      } finally {
+                        setIsimKaydediliyor(false);
                       }
-                      setIsimHata("");
-                      setIsimOk(true);
-                      setIsimInput("");
-                      const k = mevcutKullanici();
-                      if (k) setKullanici(k);
-                      onGuncellendi();
                     }}
                     className="shrink-0 rounded-lg bg-duello px-3 py-1.5 text-xs font-bold text-duello-foreground transition hover:brightness-110 disabled:opacity-40"
                   >
-                    Değiştir
+                    {isimKaydediliyor ? "Kaydediliyor..." : "Değiştir"}
                   </button>
                 </div>
                 {isimKontrol && isimInput.trim() && (

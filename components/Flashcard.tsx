@@ -54,6 +54,7 @@ export default function Flashcard({
   });
   const hareket = useRef(0);
   const baslangic = useRef(0);
+  const tamamlandiRef = useRef(false);
 
   const intro = introAktif;
 
@@ -66,6 +67,8 @@ export default function Flashcard({
 
   const tamamla = useCallback(
     (yon: "sag" | "sol") => {
+      if (tamamlandiRef.current) return;
+      tamamlandiRef.current = true;
       setUcus(yon);
       setSurukleniyor(false);
       setDx(yon === "sag" ? 520 : -520);
