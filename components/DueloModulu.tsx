@@ -399,7 +399,7 @@ export default function DueloModulu({
       // Özel oda: rövanş tekliflerini dinle (ref ile — sıra sorunu olmasın)
       if (mod === "friendly" && matchIdRef.current && !matchIdRef.current.startsWith("bot_")) {
         const mid = matchIdRef.current;
-        queue.setTimeout(() => {
+        window.setTimeout(() => {
           rovanşDinlemeyiBaslatRef.current?.(mid);
         }, 0);
       }
