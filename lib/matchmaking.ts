@@ -74,26 +74,29 @@ function soruUret(soruSayisi: number): Soru[] {
 
 export async function kullaniciAdiMusaitMiOnline(ad: string): Promise<boolean> {
   if (!firebaseAktif || !db) return true;
-  const ref = doc(db, "usernames", ad.toLowerCase());
-  const snap = await getDoc(ref);
+  await ensureAnonymousAuth();
+  const snap = await getDoc(doc(db, "usernames", ad.toLowerCase()));
   return !snap.exists();
 }
 
 export async function kullaniciAdiKaydetOnline(
   ad: string,
   kullaniciId: string,
-): Promise<boolean> {
-  if (!firebaseAktif || !db) return true;
+): Promise<"ok" | "alinmis" | "hata"> {
+  if (!firebaseAktif || !db) return "ok";
+  await ensureAnonymousAuth();
   const ref = doc(db, "usernames", ad.toLowerCase());
   try {
     await runTransaction(db, async (tx) => {
       const snap = await tx.get(ref);
-      if (snap.exists()) throw new Error("Bu kullanıcı adı alınmış");
+      if (snap.exists()) throw new Error("ALINMIS");
       tx.set(ref, { ad, kullaniciId, olusturmaZamani: serverTimestamp() });
     });
-    return true;
-  } catch {
-    return false;
+    return "ok";
+  } catch (e) {
+    if (e instanceof Error && e.message === "ALINMIS") return "alinmis";
+    console.error("[username] kayıt hatası:", e);
+    return "hata";
   }
 }
 
