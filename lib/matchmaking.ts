@@ -28,16 +28,29 @@ import { sorulariUret, type Soru } from "./soru";
 import { gecerliYazarlar } from "@/src/data";
 import type { Rakip } from "./types";
 
-export const RANKED_BOT_FALLBACK_SURESI = 5000;
+// Bot'a düşmeden önce gerçek rakip bekleme süresi (ms)
+export const RANKED_BOT_FALLBACK_SURESI = 12000;
+
+// Kuyrukta bu süreden eski "bekliyor" odalar terk edilmiş sayılır (ms)
+const KUYRUK_TAZELIK_MS = 20000;
 
 // --- Payload sanitizer: undefined -> null ---
 // Firestore, undefined alan değerlerini reddeder. Bu yardımcı,
 // bir objenin tüm iç içe geçmiş alanlarındaki undefined değerlerini
 // null'a dönüştürür.
+// DİKKAT: serverTimestamp() gibi FieldValue'ları bunun İÇİNE KOYMA,
+// JSON'a çevrilince sentinel bozulur. Sanitize'dan sonra ekle.
 function sanitizePayload<T>(obj: T): T {
   return JSON.parse(
     JSON.stringify(obj, (_key, value) => (value === undefined ? null : value)),
   ) as T;
+}
+
+function tazeMi(olusturmaZamani: unknown): boolean {
+  const ts = olusturmaZamani as { toMillis?: () => number } | null | undefined;
+  const ms = ts?.toMillis?.() ?? 0;
+  // ms === 0: zaman damgası okunamadı (eski format / henüz sunucuda çözülmedi) → kabul et
+  return ms === 0 || Date.now() - ms < KUYRUK_TAZELIK_MS;
 }
 
 export type MacDurumu = "bekliyor" | "aktif" | "bitti" | "terk";
@@ -75,7 +88,8 @@ function soruUret(soruSayisi: number): Soru[] {
 export async function kullaniciAdiMusaitMiOnline(ad: string): Promise<boolean> {
   if (!firebaseAktif || !db) return true;
   await ensureAnonymousAuth();
-  const snap = await getDoc(doc(db, "usernames", ad.toLowerCase()));
+  const ref = doc(db, "usernames", ad.toLowerCase());
+  const snap = await getDoc(ref);
   return !snap.exists();
 }
 
@@ -104,7 +118,7 @@ export async function kullaniciAdiKaydetOnline(
 
 export type KuyrukDurumu =
   | { durum: "bekliyor" }
-  | { durum: "eslesti"; rakip: Rakip; matchId: string; sorular: Soru[] }
+  | { durum: "eslesti"; rakip: Rakip; matchId: string; sorular: Soru[]; oyuncuNum: 1 | 2 }
   | { durum: "iptal" };
 
 export function rankedKuyrugaKatil(
@@ -115,7 +129,7 @@ export function rankedKuyrugaKatil(
     const t = setTimeout(() => {
       const bot = rastgeleBot();
       const sorular = soruUret(10);
-      onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
+      onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular, oyuncuNum: 1 });
     }, 3000 + Math.random() * 2000);
     return () => clearTimeout(t);
   }
@@ -126,11 +140,13 @@ export function rankedKuyrugaKatil(
 
   botFallbackTimer = setTimeout(() => {
     if (iptalEdildi) return;
+    // Geç kalan setDoc / snapshot'lar artık sonucu etkilemesin
+    iptalEdildi = true;
     rankedKuyruktanCik(oyuncu.id).catch(() => {});
     if (kuyrukUnsub) { kuyrukUnsub(); kuyrukUnsub = null; }
     const bot = rastgeleBot();
     const sorular = soruUret(10);
-    onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular });
+    onSonuc({ durum: "eslesti", rakip: bot, matchId: "bot_" + Date.now(), sorular, oyuncuNum: 1 });
   }, RANKED_BOT_FALLBACK_SURESI);
 
   (async () => {
@@ -141,12 +157,18 @@ export function rankedKuyrugaKatil(
       collection(db!, "matches"),
       where("mod", "==", "ranked"),
       where("durum", "==", "bekliyor"),
-      limit(1),
+      limit(5),
     );
     const snap = await getDocs(q);
+    if (iptalEdildi) return;
 
-    if (!snap.empty) {
-      const macDoc = snap.docs[0];
+    // Kendi odanı ve terk edilmiş (bayat) odaları atla
+    const macDoc = snap.docs.find((d) => {
+      const v = d.data() as { oyuncu1?: { id?: string }; olusturmaZamani?: unknown };
+      return v.oyuncu1?.id !== oyuncu.id && tazeMi(v.olusturmaZamani);
+    });
+
+    if (macDoc) {
       const macId = macDoc.id;
       const macData = macDoc.data() as OnlineMac;
 
@@ -177,6 +199,7 @@ export function rankedKuyrugaKatil(
             rakip: { ad: macData.oyuncu1.ad, avatar: macData.oyuncu1.avatar, bot: false, id: macData.oyuncu1.id },
             matchId: macId,
             sorular: macData.sorular ?? [],
+            oyuncuNum: 2, // katılan taraf = oyuncu2
           });
         }
       } catch {
@@ -216,26 +239,34 @@ async function kuyrugaEkleVeBekle(
   if (!db) return;
   const matchId = "m_" + Date.now() + "_" + Math.random().toString(36).slice(2, 7);
   const uretilenSorular = soruUret(10);
-  const payload = sanitizePayload({
-    mod: "ranked",
-    durum: "bekliyor",
-    oyuncu1: {
-      id: oyuncu.id,
-      ad: oyuncu.ad,
-      avatar: oyuncu.avatar,
-      skor: 0,
-      cevap: null,
-    },
-    oyuncu2: null,
-    odaKodu: null,
-    soruSayisi: 10,
-    sorular: uretilenSorular,
-    soruIndex: 0,
-    kazananId: null,
-    forfeitedBy: null,
+  const payload = {
+    ...sanitizePayload({
+      mod: "ranked",
+      durum: "bekliyor",
+      oyuncu1: {
+        id: oyuncu.id,
+        ad: oyuncu.ad,
+        avatar: oyuncu.avatar,
+        skor: 0,
+        cevap: null,
+      },
+      oyuncu2: null,
+      odaKodu: null,
+      soruSayisi: 10,
+      sorular: uretilenSorular,
+      soruIndex: 0,
+      kazananId: null,
+      forfeitedBy: null,
+    }),
     olusturmaZamani: serverTimestamp(),
-  });
+  };
   await setDoc(doc(db, "matches", matchId), payload);
+
+  // İptal / bot fallback araya girdiyse belge yetim kalmasın
+  if (iptalEdildiRef()) {
+    deleteDoc(doc(db, "matches", matchId)).catch(() => {});
+    return;
+  }
 
   const unsub = onSnapshot(
     doc(db, "matches", matchId),
@@ -250,6 +281,7 @@ async function kuyrugaEkleVeBekle(
             rakip: { ad: data.oyuncu2.ad, avatar: data.oyuncu2.avatar, bot: false, id: data.oyuncu2.id },
             matchId,
             sorular: data.sorular ?? [],
+            oyuncuNum: 1, // bekleyen taraf = oyuncu1
           });
         }
         unsub();
@@ -267,7 +299,7 @@ export async function rankedKuyruktanCik(oyuncuId: string): Promise<void> {
       where("mod", "==", "ranked"),
       where("durum", "==", "bekliyor"),
       where("oyuncu1.id", "==", oyuncuId),
-      limit(1),
+      limit(5),
     );
     const snap = await getDocs(q);
     snap.forEach((d) => deleteDoc(d.ref).catch(() => {}));
@@ -307,25 +339,27 @@ export function odaKurOnline(
       if (iptal) return;
 
       const uretilenSorular = soruUret(soruSayisi);
-      const payload = sanitizePayload({
-        mod: "friendly",
-        durum: "bekliyor",
-        oyuncu1: {
-          id: oyuncu.id,
-          ad: oyuncu.ad,
-          avatar: oyuncu.avatar,
-          skor: 0,
-          cevap: null,
-        },
-        oyuncu2: null,
-        odaKodu: kodStr,
-        soruSayisi: Number(soruSayisi) || 5,
-        sorular: uretilenSorular,
-        soruIndex: 0,
-        kazananId: null,
-        forfeitedBy: null,
+      const payload = {
+        ...sanitizePayload({
+          mod: "friendly",
+          durum: "bekliyor",
+          oyuncu1: {
+            id: oyuncu.id,
+            ad: oyuncu.ad,
+            avatar: oyuncu.avatar,
+            skor: 0,
+            cevap: null,
+          },
+          oyuncu2: null,
+          odaKodu: kodStr,
+          soruSayisi: Number(soruSayisi) || 5,
+          sorular: uretilenSorular,
+          soruIndex: 0,
+          kazananId: null,
+          forfeitedBy: null,
+        }),
         olusturmaZamani: serverTimestamp(),
-      });
+      };
 
       await setDoc(macRef, payload);
       console.log("[odaKurOnline] ✓ yazıldı matches/" + kodStr);
@@ -374,7 +408,7 @@ export function odaKurOnline(
 export async function odayaKatilOnline(
   odaKodu: string,
   oyuncu: SiradakiOyuncu,
-): Promise<{ tamam: boolean; hata?: string }> {
+): Promise<{ tamam: boolean; hata?: string; matchId?: string; mac?: OnlineMac }> {
   if (!firebaseAktif || !db) {
     console.error("[odayaKatilOnline] Firebase aktif değil!");
     return { tamam: false, hata: "Firebase bağlantısı yok! .env anahtarlarını kontrol edin." };
@@ -431,7 +465,8 @@ export async function odayaKatilOnline(
       });
     });
     console.log("[odayaKatilOnline] ✓ Oyuncu2 eklendi, durum=aktif: " + macId);
-    return { tamam: true };
+    // Maç bilgisini doğrudan döndür: dinleyiciye / ikinci sorguya gerek yok
+    return { tamam: true, matchId: macId, mac: data };
   } catch (e) {
     const msg = e instanceof Error ? e.message : String(e);
     console.error("[odayaKatilOnline] ✗ Hata:", e);
