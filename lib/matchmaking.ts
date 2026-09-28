@@ -31,7 +31,7 @@ import { gecerliYazarlar } from "@/src/data";
 import type { Rakip } from "./types";
 
 // Bot'a düşmeden önce gerçek rakip bekleme süresi (ms)
-export const RANKED_BOT_FALLBACK_SURESI = 12000;
+export const RANKED_BOT_FALLBACK_SURESI = 6000;
 
 // Kuyrukta bu süreden eski "bekliyor" odalar terk edilmiş sayılır (ms)
 const KUYRUK_TAZELIK_MS = 20000;
