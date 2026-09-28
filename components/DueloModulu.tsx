@@ -305,11 +305,15 @@ export default function DueloModulu({
       olusturmaTarihi: Date.now(),
     };
       if (firebaseAktif) {
-      await kullaniciAdiKaydetOnline(
-        yeniKullanici.kullaniciAdi,
-        yeniKullanici.kullaniciAdi,
-      ).catch(() => false);
-    }
+  const r = await kullaniciAdiKaydetOnline(
+    yeniKullanici.kullaniciAdi,
+    yeniKullanici.cihazId ?? yeniKullanici.kullaniciAdi,
+  );
+  if (r === "alinmis") {
+    setNickHata("Bu kullanıcı adı alınmış");
+    return;
+  }
+}
     kullaniciKaydet(yeniKullanici);
     setKullanici(yeniKullanici);
     kullaniciRef.current = yeniKullanici;
