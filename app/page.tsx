@@ -313,7 +313,7 @@ export default function Page() {
 
       {/* Ana İçerik */}
       <main className="relative flex-1 overflow-y-auto no-scrollbar max-w-3xl mx-auto w-full px-4 py-2.5 flex flex-col">
-        {ruhHali && (
+        {ruhHali && mod !== "duelo" && (
           <div className="mb-2.5 flex items-start gap-3 rounded-xl glass-card p-3 ring-1 ring-border animate-rise shrink-0">
             <span className="text-xl leading-none" aria-hidden="true">
               {ruhHali.emoji || "💬"}
