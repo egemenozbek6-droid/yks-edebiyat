@@ -124,7 +124,7 @@ export default function DueloModulu({
   const sonFriendlyMatchRef = useRef("");
   const rovanşDinlemeyiBaslatRef = useRef<(mId: string) => void>(() => {});
 
-  // Tur sonu puan göstergesi (uçan animasyon YOK — "Doğru Cevap" yanında sabit durur)
+  // Kazanılan EP (doğru şıkta, rakip cevaplayınca gösterilir)
   const [gosterilenPuan, setGosterilenPuan] = useState<number | null>(null);
 
   // Ertelenmiş skor (her iki taraf cevaplayana kadar beklet — iç kullanım)
@@ -816,7 +816,7 @@ export default function DueloModulu({
     const mId = matchIdRef.current;
     const isBot = mId.startsWith("bot_");
 
-    // Ertelenmiş skoru uygula — uçan animasyon YOK, skor "Doğru Cevap" yanında sabit görünür
+    // Ertelenmiş skoru uygula (her iki taraf cevaplayınca skora yansır)
     const ertelenen = ertelenmisSkor.current;
     if (ertelenen > 0) {
       const yeniSkor = oyuncuSkorRef.current + ertelenen;
@@ -1680,63 +1680,8 @@ export default function DueloModulu({
   const bekleniyor = secim !== null && !rakipCevapladi;
   const cevapDogru = secim !== null && secim !== ZAMAN_ASIMI && secim === soru.dogru;
 
-  // Skorboard rütbeleri
-  const oyuncuRank = rankBul(istatistik?.puan ?? 0);
-  const rakipRank = rankBul((rakip as any).puan ?? 0);
-
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-            {/* Skor barı — skor büyük, önde yeşil / geride+berabere kırmızı */}
-      <div className="mb-3 glass-card rounded-xl px-3 py-2.5 ring-1 ring-border shrink-0">
-        <div className="flex items-center gap-2">
-          {/* Oyuncu */}
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
-              {avatarEmoji(kullanici.avatar)}
-            </div>
-            <div className="min-w-0 flex-1">
-              <p className="truncate text-xs font-bold text-card-foreground">
-                {kullanici.kullaniciAdi}
-              </p>
-              <p
-                className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold leading-none"
-                style={{ color: oyuncuRank.renk }}
-              >
-                <span className="shrink-0 text-sm leading-none">{oyuncuRank.ikon}</span>
-                <span className="truncate">{oyuncuRank.ad}</span>
-              </p>
-            </div>
-            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
-              {oyuncuSkor}
-            </p>
-          </div>
-
-          <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-[10px] font-bold text-muted-foreground">
-            VS
-          </span>
-
-          {/* Rakip */}
-          <div className="flex min-w-0 flex-1 items-center gap-2">
-            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
-              {rakipSkor}
-            </p>
-            <div className="min-w-0 flex-1 text-right">
-              <p className="truncate text-xs font-bold text-card-foreground">{rakip.ad}</p>
-              <p
-                className="mt-0.5 flex items-center justify-end gap-1 text-[10px] font-semibold leading-none"
-                style={{ color: rakipRank.renk }}
-              >
-                <span className="truncate">{rakipRank.ad}</span>
-                <span className="shrink-0 text-sm leading-none">{rakipRank.ikon}</span>
-              </p>
-            </div>
-            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
-              {avatarEmoji(rakip.avatar)}
-            </div>
-          </div>
-        </div>
-      </div>      
-      
       {/* Skor barı — skor büyük, önde yeşil / geride+berabere kırmızı */}
       <div className="mb-3 glass-card rounded-xl px-3 py-2.5 ring-1 ring-border shrink-0">
         <div className="flex items-center gap-2">
@@ -1829,8 +1774,17 @@ export default function DueloModulu({
           {soru.secenekler.map((secenek, i) => {
             const secildi = secim === secenek;
             const dogruSecenek = secenek === soru.dogru;
+            // Rakip de cevaplayınca doğru/yanlış + EP birlikte
             const gosterDogru = secim !== null && rakipCevapladi && dogruSecenek;
-            const gosterYanlis = secildi && !dogruSecenek;
+            const gosterYanlis = secildi && !dogruSecenek && rakipCevapladi;
+            const epGoster =
+              rakipCevapladi &&
+              secim !== null &&
+              secim !== ZAMAN_ASIMI &&
+              dogruSecenek &&
+              secim === soru.dogru &&
+              gosterilenPuan !== null &&
+              gosterilenPuan > 0;
 
             let stil = "bg-background border border-border text-card-foreground hover:border-duello/50 hover:bg-muted/40";
             if (gosterDogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
@@ -1863,7 +1817,12 @@ export default function DueloModulu({
                     String.fromCharCode(65 + i)
                   )}
                 </span>
-                <span className="text-pretty">{secenek}</span>
+                <span className="text-pretty flex-1">{secenek}</span>
+                {epGoster && (
+                  <span className="shrink-0 rounded-md bg-emerald-500/20 px-2 py-0.5 text-[11px] font-bold text-emerald-500 ring-1 ring-emerald-500/30">
+                    +{gosterilenPuan} EP
+                  </span>
+                )}
               </button>
             );
           })}
