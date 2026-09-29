@@ -60,8 +60,8 @@
    ============================================================ */
 
 @theme inline {
-  --font-sans: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-serif), ui-serif, Georgia, serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
   --animate-shake: v0-shake 0.4s ease-in-out;
   --animate-pop: v0-pop 0.2s ease-out;
   --animate-rise: v0-rise 0.25s ease-out both;
