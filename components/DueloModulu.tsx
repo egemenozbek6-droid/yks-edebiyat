@@ -1666,6 +1666,13 @@ export default function DueloModulu({
     return null;
   }
 
+  const oyuncuRank = rankBul(istatistik?.puan ?? 0);
+  const rakipRank = rankBul((rakip as { puan?: number }).puan ?? 0);
+  const oyuncuOnde = oyuncuSkor > rakipSkor;
+  const rakipOnde = rakipSkor > oyuncuSkor;
+  // berabere → ikisi de kırmızı
+  const oyuncuSkorRenk = oyuncuOnde ? "text-emerald-500" : "text-destructive";
+  const rakipSkorRenk = rakipOnde ? "text-emerald-500" : "text-destructive";
   const sureYuzde = (sure / SURE) * 100;
   const sonUcSaniye = sure <= 3 && sure > 0;
   const sureRenk = sure > 5 ? "bg-duello" : sure > 3 ? "bg-amber-500" : "bg-destructive";
@@ -1679,35 +1686,100 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* Skor barı — rütbe + VS rozeti */}
-      <div className="mb-3 glass-card rounded-xl p-3 ring-1 ring-border shrink-0">
+            {/* Skor barı — skor büyük, önde yeşil / geride+berabere kırmızı */}
+      <div className="mb-3 glass-card rounded-xl px-3 py-2.5 ring-1 ring-border shrink-0">
         <div className="flex items-center gap-2">
+          {/* Oyuncu */}
           <div className="flex min-w-0 flex-1 items-center gap-2">
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
             </div>
-            <div className="min-w-0">
-              <p className="truncate text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-bold text-card-foreground">
                 {kullanici.kullaniciAdi}
               </p>
-              <p className="truncate text-[10px] font-semibold" style={{ color: oyuncuRank.renk }}>
-                {oyuncuRank.ikon} {oyuncuRank.ad}
+              <p
+                className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold leading-none"
+                style={{ color: oyuncuRank.renk }}
+              >
+                <span className="shrink-0 text-sm leading-none">{oyuncuRank.ikon}</span>
+                <span className="truncate">{oyuncuRank.ad}</span>
               </p>
-              <p className="text-lg font-bold leading-tight text-duello">{oyuncuSkor}</p>
             </div>
+            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+              {oyuncuSkor}
+            </p>
           </div>
-          <span className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[10px] font-bold text-muted-foreground">
+
+          <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-[10px] font-bold text-muted-foreground">
             VS
           </span>
-          <div className="flex min-w-0 flex-1 items-center justify-end gap-2">
-            <div className="min-w-0 text-right">
-              <p className="truncate text-[11px] font-bold uppercase tracking-wide text-muted-foreground">
-                {rakip.ad}
+
+          {/* Rakip */}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+              {rakipSkor}
+            </p>
+            <div className="min-w-0 flex-1 text-right">
+              <p className="truncate text-xs font-bold text-card-foreground">{rakip.ad}</p>
+              <p
+                className="mt-0.5 flex items-center justify-end gap-1 text-[10px] font-semibold leading-none"
+                style={{ color: rakipRank.renk }}
+              >
+                <span className="truncate">{rakipRank.ad}</span>
+                <span className="shrink-0 text-sm leading-none">{rakipRank.ikon}</span>
               </p>
-              <p className="truncate text-[10px] font-semibold" style={{ color: rakipRank.renk }}>
-                {rakipRank.ikon} {rakipRank.ad}
+            </div>
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
+              {avatarEmoji(rakip.avatar)}
+            </div>
+          </div>
+        </div>
+      </div>      
+      
+      {/* Skor barı — skor büyük, önde yeşil / geride+berabere kırmızı */}
+      <div className="mb-3 glass-card rounded-xl px-3 py-2.5 ring-1 ring-border shrink-0">
+        <div className="flex items-center gap-2">
+          {/* Oyuncu */}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
+              {avatarEmoji(kullanici.avatar)}
+            </div>
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-xs font-bold text-card-foreground">
+                {kullanici.kullaniciAdi}
               </p>
-              <p className="text-lg font-bold leading-tight text-foreground">{rakipSkor}</p>
+              <p
+                className="mt-0.5 flex items-center gap-1 text-[10px] font-semibold leading-none"
+                style={{ color: oyuncuRank.renk }}
+              >
+                <span className="shrink-0 text-sm leading-none">{oyuncuRank.ikon}</span>
+                <span className="truncate">{oyuncuRank.ad}</span>
+              </p>
+            </div>
+            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+              {oyuncuSkor}
+            </p>
+          </div>
+
+          <span className="shrink-0 rounded-full bg-muted px-2 py-1 text-[10px] font-bold text-muted-foreground">
+            VS
+          </span>
+
+          {/* Rakip */}
+          <div className="flex min-w-0 flex-1 items-center gap-2">
+            <p className={`shrink-0 text-2xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+              {rakipSkor}
+            </p>
+            <div className="min-w-0 flex-1 text-right">
+              <p className="truncate text-xs font-bold text-card-foreground">{rakip.ad}</p>
+              <p
+                className="mt-0.5 flex items-center justify-end gap-1 text-[10px] font-semibold leading-none"
+                style={{ color: rakipRank.renk }}
+              >
+                <span className="truncate">{rakipRank.ad}</span>
+                <span className="shrink-0 text-sm leading-none">{rakipRank.ikon}</span>
+              </p>
             </div>
             <div className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-muted text-lg ring-1 ring-border">
               {avatarEmoji(rakip.avatar)}
@@ -1797,7 +1869,7 @@ export default function DueloModulu({
           })}
         </div>
 
-        {/* Bekleme / sonuç göstergesi */}
+               {/* Bekleme / sonuç göstergesi */}
         {secim !== null && (
           <div className="mt-3 flex items-center justify-center gap-2 text-xs font-semibold">
             {bekleniyor ? (
@@ -1813,9 +1885,6 @@ export default function DueloModulu({
               <span className="inline-flex items-center gap-2 rounded-xl bg-emerald-500/10 px-3 py-1.5 text-emerald-500 ring-1 ring-emerald-500/20">
                 <Check className="h-3.5 w-3.5" strokeWidth={2.5} />
                 Doğru Cevap!
-                {gosterilenPuan !== null && gosterilenPuan > 0 && (
-                  <span className="font-bold">+{gosterilenPuan} EP</span>
-                )}
                 {dogruSeri >= 2 && (
                   <span className="inline-flex items-center gap-0.5 text-orange-500">
                     <Flame className="h-3 w-3" /> {dogruSeri}
