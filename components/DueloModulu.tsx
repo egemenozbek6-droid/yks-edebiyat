@@ -142,6 +142,9 @@ export default function DueloModulu({
   const [gorevler, setGorevler] = useState<GunlukGorevState | null>(null);
   const [gorevAcik, setGorevAcik] = useState(false);
   const [kariyerAcik, setKariyerAcik] = useState(false);
+  // Günlük görev ödülü alındığında Toplam EP kutusunda +EP hissi
+  const [odulToast, setOdulToast] = useState<number | null>(null);
+  const odulToastTimer = useRef<number | null>(null);
 
   // Refs for reliable reads inside async callbacks
   const oyuncuSkorRef = useRef(0);
@@ -954,14 +957,20 @@ export default function DueloModulu({
 
     // Günlük görevler
     const gorevState = gorevler ?? gunlukGorevleriGetir();
+    const bekleyenOdul = gorevState.gorevler.filter(
+      (g) => gorevState.durumlar[g.tur]?.tamamlandi && !gorevState.durumlar[g.tur]?.odulAlindi,
+    ).length;
     const gorevOduluAl = (tur: string) => {
       const { odul } = gorevOdulAl(tur as any);
       if (odul > 0) {
-        // EP'yi profile ekle
         const guncelIstatistik = mevcutIstatistik();
         const yeniIstatistik = { ...guncelIstatistik, puan: guncelIstatistik.puan + odul };
         istatistikYaz(yeniIstatistik);
         setIstatistik(yeniIstatistik);
+        // Toplam EP kutusunda +EP hissi
+        if (odulToastTimer.current) clearTimeout(odulToastTimer.current);
+        setOdulToast(odul);
+        odulToastTimer.current = window.setTimeout(() => setOdulToast(null), 1800);
       }
       setGorevler(gunlukGorevleriGetir());
     };
@@ -1054,64 +1063,108 @@ export default function DueloModulu({
 
             {(() => {
               const tamamlanan = gorevState.gorevler.filter((g) => gorevState.durumlar[g.tur]?.tamamlandi).length;
+              const alinan = gorevState.gorevler.filter((g) => gorevState.durumlar[g.tur]?.odulAlindi).length;
               return (
-                <div className="mb-2.5 rounded-xl bg-amber-500/5 ring-1 ring-amber-500/15 overflow-hidden">
+                <div
+                  className={`mb-2.5 rounded-xl overflow-hidden transition ring-1 ${
+                    bekleyenOdul > 0
+                      ? "bg-amber-500/10 ring-amber-500/40 shadow-[0_0_18px_rgba(245,158,11,0.15)]"
+                      : "bg-amber-500/5 ring-amber-500/15"
+                  }`}
+                >
                   <button
+                    type="button"
                     onClick={() => setGorevAcik(!gorevAcik)}
-                    className="flex w-full items-center justify-between px-3 py-2 transition hover:bg-amber-500/10"
+                    className="flex w-full items-center justify-between gap-2 px-3 py-2.5 text-left transition hover:bg-amber-500/10 active:scale-[0.99]"
                   >
-                    <span className="inline-flex items-center gap-1.5 text-xs font-bold text-card-foreground">
-                      <span className="text-sm">🎯</span>
-                      Günlük Görevler
-                      <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[10px] font-bold text-amber-500">
+                    <span className="inline-flex min-w-0 items-center gap-1.5 text-xs font-bold text-card-foreground">
+                      <span className="text-base leading-none">🎯</span>
+                      <span className="truncate">Günlük Görevler</span>
+                      <span className="shrink-0 rounded-full bg-amber-500/20 px-1.5 py-0.5 text-[10px] font-bold text-amber-500 ring-1 ring-amber-500/25">
                         {tamamlanan}/{gorevState.gorevler.length}
                       </span>
                     </span>
-                    <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-500">
-                      Görevler
-                      <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`} />
+                    <span className="inline-flex shrink-0 items-center gap-1.5">
+                      {bekleyenOdul > 0 && (
+                        <span className="animate-pulse rounded-full bg-emerald-500 px-2 py-0.5 text-[10px] font-bold text-white shadow-sm">
+                          {bekleyenOdul} ödül hazır!
+                        </span>
+                      )}
+                      {bekleyenOdul === 0 && alinan === gorevState.gorevler.length && gorevState.gorevler.length > 0 && (
+                        <span className="rounded-full bg-emerald-500/15 px-2 py-0.5 text-[10px] font-bold text-emerald-500">
+                          Tamam ✓
+                        </span>
+                      )}
+                      <ChevronDown
+                        className={`h-4 w-4 text-amber-500 transition-transform duration-300 ${gorevAcik ? "rotate-180" : ""}`}
+                      />
                     </span>
                   </button>
                   {gorevAcik && (
-                    <div className="space-y-2 px-3 pb-2.5 animate-rise">
+                    <div className="space-y-2 px-3 pb-3 animate-rise">
+                      <p className="text-[10px] text-muted-foreground">
+                        Görevleri bitir, ödülü al — EP doğrudan Toplam EP&apos;ne eklenir.
+                      </p>
                       {gorevState.gorevler.map((g) => {
                         const durum = gorevState.durumlar[g.tur];
                         if (!durum) return null;
                         const yuzde = Math.min(100, Math.round((durum.ilerleme / g.hedef) * 100));
+                        const odulHazir = durum.tamamlandi && !durum.odulAlindi;
                         return (
-                          <div key={g.tur} className="rounded-lg bg-muted/40 p-2 ring-1 ring-border">
+                          <div
+                            key={g.tur}
+                            className={`rounded-lg p-2.5 ring-1 transition ${
+                              odulHazir
+                                ? "bg-emerald-500/10 ring-emerald-500/35"
+                                : durum.odulAlindi
+                                  ? "bg-muted/30 ring-border/60 opacity-80"
+                                  : "bg-muted/40 ring-border"
+                            }`}
+                          >
                             <div className="flex items-start justify-between gap-2">
-                              <div className="flex items-center gap-1.5 min-w-0">
-                                <span className="text-sm shrink-0">{g.ikon}</span>
+                              <div className="flex min-w-0 items-center gap-1.5">
+                                <span className="shrink-0 text-base leading-none">{g.ikon}</span>
                                 <div className="min-w-0">
-                                  <p className="text-[11px] font-bold text-card-foreground truncate">{g.etiket}</p>
-                                  <p className="text-[9px] text-muted-foreground truncate">{g.aciklama}</p>
+                                  <p className="truncate text-[11px] font-bold text-card-foreground">{g.etiket}</p>
+                                  <p className="truncate text-[9px] text-muted-foreground">{g.aciklama}</p>
                                 </div>
                               </div>
-                              <span className="shrink-0 rounded-full bg-amber-500/10 px-1.5 py-0.5 text-[9px] font-bold text-amber-500">
+                              <span className="shrink-0 rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold text-amber-500 ring-1 ring-amber-500/20">
                                 +{g.odul} EP
                               </span>
                             </div>
-                            <div className="mt-1.5 h-1 w-full overflow-hidden rounded-full bg-muted">
+                            <div className="mt-2 h-1.5 w-full overflow-hidden rounded-full bg-muted">
                               <div
-                                className={`h-full rounded-full transition-[width] duration-500 ${durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"}`}
+                                className={`h-full rounded-full transition-[width] duration-500 ${
+                                  durum.tamamlandi ? "bg-emerald-500" : "bg-amber-500"
+                                }`}
                                 style={{ width: `${yuzde}%` }}
                               />
                             </div>
-                            <div className="mt-1 flex items-center justify-between">
-                              <span className="text-[9px] text-muted-foreground">
+                            <div className="mt-1.5 flex items-center justify-between gap-2">
+                              <span className="text-[10px] font-medium text-muted-foreground">
                                 {durum.ilerleme} / {g.hedef}
                               </span>
-                              {durum.tamamlandi && !durum.odulAlindi ? (
+                              {odulHazir ? (
                                 <button
-                                  onClick={() => gorevOduluAl(g.tur)}
-                                  className="rounded-md bg-emerald-500 px-2.5 py-0.5 text-[9px] font-bold text-white transition hover:brightness-110 active:scale-95"
+                                  type="button"
+                                  onClick={(e) => {
+                                    e.stopPropagation();
+                                    gorevOduluAl(g.tur);
+                                  }}
+                                  className="inline-flex items-center gap-1 rounded-lg bg-emerald-500 px-3 py-1.5 text-[11px] font-bold text-white shadow-md shadow-emerald-500/25 transition hover:brightness-110 active:scale-95"
                                 >
-                                  Ödülü Al
+                                  <Zap className="h-3 w-3" /> Ödülü Al · +{g.odul} EP
                                 </button>
                               ) : durum.odulAlindi ? (
-                                <span className="text-[9px] font-bold text-emerald-500">✓ Alındı</span>
-                              ) : null}
+                                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-emerald-500">
+                                  <Check className="h-3 w-3" /> Alındı · +{g.odul} EP
+                                </span>
+                              ) : (
+                                <span className="text-[9px] font-semibold text-muted-foreground/80">
+                                  Devam et
+                                </span>
+                              )}
                             </div>
                           </div>
                         );
@@ -1135,11 +1188,18 @@ export default function DueloModulu({
                 </p>
                 <p className="mt-1 text-lg font-bold text-destructive">{istatistik?.maglubiyet ?? 0}</p>
               </div>
-              <div className="rounded-xl bg-muted/40 p-2.5 text-center ring-1 ring-border">
+              <div className="relative rounded-xl bg-muted/40 p-2.5 text-center ring-1 ring-border overflow-hidden">
                 <p className="flex items-center justify-center gap-1 text-[9px] font-semibold uppercase tracking-wider text-muted-foreground">
                   <Zap className="h-3 w-3 text-duello" /> Toplam EP
                 </p>
-                <p className="mt-1 text-lg font-bold text-duello">{rp}</p>
+                <p className={`mt-1 text-lg font-bold text-duello transition-transform duration-300 ${odulToast ? "scale-110" : ""}`}>
+                  {rp}
+                </p>
+                {odulToast !== null && (
+                  <span className="pointer-events-none absolute inset-x-0 top-1 animate-[floatUp_1.6s_ease-out_forwards] text-sm font-black text-emerald-500 drop-shadow-sm">
+                    +{odulToast} EP
+                  </span>
+                )}
               </div>
             </div>
             <div className="mt-2 flex items-center justify-between rounded-lg bg-muted/30 px-3 py-1.5 text-[10px] text-muted-foreground ring-1 ring-border/60">
