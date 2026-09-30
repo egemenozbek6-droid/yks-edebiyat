@@ -1054,7 +1054,18 @@ export default function TestModul() {
   }
 
   return (
-    <div className="flex flex-1 min-h-0 flex-col gap-2.5 pb-4">
+    <div className="flex flex-1 min-h-0 flex-col gap-2 pb-2">
+      {/* Test Modu tanıtım tabelası */}
+      <div className="shrink-0 rounded-2xl bg-card border border-border px-3.5 py-2.5 text-center shadow-sm">
+        <div className="mx-auto mb-1 grid h-9 w-9 place-items-center rounded-full bg-violet-500/15 text-violet-400 ring-1 ring-violet-500/25">
+          <Brain className="h-4 w-4" strokeWidth={2} />
+        </div>
+        <p className="font-serif text-sm font-bold leading-tight text-card-foreground">Test Modu</p>
+        <p className="mt-0.5 text-[11px] leading-snug text-muted-foreground">
+          Dönem, banko ve özel seçkilerle prova
+        </p>
+      </div>
+
       <button
         onClick={() => setGorunum("donem_secim")}
         className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 text-left shadow-sm transition hover:bg-muted/40 active:scale-[0.99]"
