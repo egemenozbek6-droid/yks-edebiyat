@@ -39,7 +39,22 @@ type TestHafiza = { kutu: TestKutu; sonTekrar: number; tekrarSayisi: number };
 function testLeitnerOku(): Record<string, TestHafiza> {
   if (typeof window === "undefined") return {};
   try {
-    return JSON.parse(localStorage.getItem(TEST_LEITNER_KEY) || "{}");
+    const ham = JSON.parse(localStorage.getItem(TEST_LEITNER_KEY) || "{}") as Record<string, TestHafiza>;
+    const temiz: Record<string, TestHafiza> = {};
+    let kirli = false;
+    for (const [id, h] of Object.entries(ham)) {
+      // Eski sürüm doğru cevapları kutu 2/3'e koyuyordu — yığın değil.
+      if (h && h.kutu === 1) temiz[id] = h;
+      else kirli = true;
+    }
+    if (kirli) {
+      try {
+        localStorage.setItem(TEST_LEITNER_KEY, JSON.stringify(temiz));
+      } catch {
+        /* sessiz */
+      }
+    }
+    return temiz;
   } catch {
     return {};
   }
@@ -51,40 +66,28 @@ function testLeitnerYaz(veriler: Record<string, TestHafiza>) {
 }
 
 function testYanlısKaydet(kartId: string) {
+  if (!kartId) return;
   const veriler = testLeitnerOku();
-  const mevcut = veriler[kartId] ?? { kutu: 1 as TestKutu, sonTekrar: 0, tekrarSayisi: 0 };
+  const mevcut = veriler[kartId];
   veriler[kartId] = {
     kutu: 1,
     sonTekrar: Date.now(),
-    tekrarSayisi: mevcut.tekrarSayisi + 1,
+    tekrarSayisi: (mevcut?.tekrarSayisi ?? 0) + 1,
   };
   testLeitnerYaz(veriler);
 }
 
 function testDogruKaydet(kartId: string) {
+  if (!kartId) return;
   const veriler = testLeitnerOku();
-  const mevcut = veriler[kartId] ?? { kutu: 1 as TestKutu, sonTekrar: 0, tekrarSayisi: 0 };
-  veriler[kartId] = {
-    kutu: Math.min(3, mevcut.kutu + 1) as TestKutu,
-    sonTekrar: Date.now(),
-    tekrarSayisi: mevcut.tekrarSayisi + 1,
-  };
+  // Yığına hiç düşmemişse dokunma. Düşmüşse doğru = çıktı.
+  if (!veriler[kartId]) return;
+  delete veriler[kartId];
   testLeitnerYaz(veriler);
 }
 
 function testTekrarIdleri(): string[] {
-  const veriler = testLeitnerOku();
-  // Kutu 1 her zaman; kutu 2/3 için 3/7 gün aralığı
-  const ARALIK: Record<TestKutu, number> = {
-    1: 0,
-    2: 3 * 24 * 60 * 60 * 1000,
-    3: 7 * 24 * 60 * 60 * 1000,
-  };
-  return Object.keys(veriler).filter((id) => {
-    const h = veriler[id];
-    if (h.kutu === 1) return true;
-    return Date.now() - h.sonTekrar >= ARALIK[h.kutu];
-  });
+  return Object.keys(testLeitnerOku());
 }
 
 import IlerlemeBari from "@/components/IlerlemeBari";
@@ -204,105 +207,79 @@ function recentYaz(yeniAnahtarlar: string[]) {
   localStorage.setItem(RECENT_KEY, JSON.stringify(birlesik.slice(0, RECENT_LIMIT)));
 }
 
-/** Peş peşe / yakın geçmişte çıkanları geriye at */
-function recentFiltrele<T>(liste: T[], anahtarFn: (x: T) => string): T[] {
+function recentFiltrele<T>(havuz: T[], anahtar: (x: T) => string): T[] {
   const recent = new Set(recentOku());
-  const taze = liste.filter((x) => !recent.has(anahtarFn(x)));
-  // Tümü recent ise yine listeyi kullan (kilitlenmesin)
-  return taze.length >= Math.min(5, liste.length) ? taze : liste;
+  const taze = havuz.filter((x) => !recent.has(anahtar(x)));
+  return taze.length >= 8 ? taze : havuz;
 }
 
-
-/** Mod + başarı oranına göre samimi bitiş mesajı */
-type BitisMod = "osym" | "donem" | "kadin" | "kahraman" | "akim" | "tekrar";
+type BitisMod = "donem" | "kadin" | "kahraman" | "akim" | "osym" | "tekrar";
 
 const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: string[]; dusuk: string[] }> = {
-  osym: {
-    super: [
-      "Banko avcısı kesilmişsin, ÖSYM seninle gurur duyar.",
-      "Bu formla sınavda kimse sana yetişemez valla.",
-      "20 üzerinden bu skor? Efsane, devam böyle.",
-    ],
-    iyi: [
-      "İyi gidiyorsun, birkaç banko daha ezberle süpersin.",
-      "Neredeyse mükemmel, ufak tefek açıklar kapatılır.",
-      "Form yerinde, bir tur daha at istersen.",
-    ],
-    orta: [
-      "Orta karar, bankoları biraz daha yokla.",
-      "Eh işte… Yanlışlar Kutu 1'e gitti, tekrar çöz.",
-      "Potansiyel var, bir tur daha basarsan toparlarsın.",
-    ],
-    dusuk: [
-      "Bu tur ısınma turu sayalım, tekrar dene.",
-      "Yanlışlar hazine: hepsi Kutu 1'de seni bekliyor.",
-      "Moral bozma, banko listesi seninle henüz tanışmadı.",
-    ],
-  },
   donem: {
     super: [
-      "Bu dönemi ezberlemişsin resmen, aferin.",
-      "Dönem hakimiyeti tam, sınavda işine yarar.",
-      "Bu skorla o dönemden soru gelirse gülersin.",
+      "Bu dönemi ezberlemişsin, ÖSYM’nin eli ayağı titrer.",
+      "Kartlar işe yaramış, bu skor rastgele değil.",
+      "Banko net. Bu dönem senden soru kaçmaz.",
     ],
     iyi: [
-      "Sağlam bir tur, ufak boşluklar kalmış sadece.",
-      "İyi iş çıkardın, bir tur daha pekiştirir.",
-      "Neredeyse full, son dokunuşlar kaldı.",
+      "İyi tur, bir iki açık kalsa da form yerinde.",
+      "Devam et, full’e çok kaldı.",
+      "Sağlam. Bir tur daha bas, kilitlenir.",
     ],
     orta: [
-      "Orta seviye, o döneme biraz daha dal.",
-      "Kartlara dön, yanlışlar seni bekliyor.",
-      "Eh, idare eder; tekrar çözünce toparlarsın.",
+      "Orta karar, kartlara bir daha bakıp gel.",
+      "Biraz dağınık, ama toparlanır.",
+      "Eh, idare eder. Tekrar çöz, oturur.",
     ],
     dusuk: [
-      "Bu dönem seni zorlamış, kartlarla ısın tekrar.",
-      "Sakin ol, her yanlış bir sonraki doğru demek.",
-      "Baştan bir tur daha, bu sefer daha iyi olur.",
+      "Bu dönem henüz oturmamış, kartlara dön.",
+      "Isınma turu say, moral bozma.",
+      "Şimdi kaçtı, kartla bakıp bir daha gel.",
     ],
   },
   kadin: {
     super: [
-      "Kadın edebiyatçılarımız senden razı, süpersin.",
-      "Bu seçkiyi ezberlemişsin, tebrikler.",
-      "Halide'den Adalet'e kadar herkes seninle.",
+      "Kadın yazarlar seçkisi senden soru kaçırmadı.",
+      "Bu isimler artık aklında, net oradan gelir.",
+      "Seçkiyi bitirmişsin, tebrikler.",
     ],
     iyi: [
-      "Güzel tur, birkaç isim daha pekişsin yeter.",
-      "İyi gidiyorsun, bir tur daha bas istersen.",
+      "İyi iş, bir iki isim daha pekişsin yeter.",
+      "Form yerinde, tekrar çözünce fullersin.",
       "Neredeyse perfect, ufak açıklar var.",
     ],
     orta: [
-      "Orta karar, kadın yazar seçkisine bir daha bak.",
-      "Yanlışlar Kutu 1'de, oradan toparlarsın.",
-      "İdare eder; tekrar çözünce netleşir.",
+      "Orta. Seçkiye bir daha bak, oturur.",
+      "İdare eder, bir tur daha bas.",
+      "Biraz karışmış, kartlarla toparla.",
     ],
     dusuk: [
-      "Bu tur ısınma oldu, tekrar dene gönül rahatlığıyla.",
-      "Moral bozma, seçki seni bekliyor.",
-      "Kartlarla bir tur at, sonra teste dön.",
+      "Bu seçki henüz oturmamış, sakince tekrar.",
+      "Isınma, moral bozma.",
+      "Kaçtı; bir daha çöz, yerleşir.",
     ],
   },
   kahraman: {
     super: [
-      "Karakter avcısı kesilmişsin, efsane tur.",
-      "Eser-kahraman eşlemesi sende parmak ısırtır.",
-      "Ali Bey'den Rabia'ya kadar hepsi seninle.",
+      "Karakter–eser eşlemesi oturmuş, bravo.",
+      "Kahramanlar senden kaçamaz.",
+      "Bu tur temiz, banko soru tipi bu.",
     ],
     iyi: [
-      "İyi eşleştirmeler, birkaç karakter daha pekişsin.",
-      "Güzel form, bir tur daha basarsan fullersin.",
-      "Neredeyse hepsi tuttu, ufak tefek kaldı.",
+      "İyi tur, bir iki karakter daha pekişsin.",
+      "Form yerinde, tekrar çöz fullersin.",
+      "Neredeyse kilit, ufak açıklar var.",
     ],
     orta: [
-      "Orta seviye, karakter notlarına bir göz at.",
-      "Bilgi notları altın değerinde, tekrar çöz.",
-      "Eh işte… Bir tur daha iyi gelir.",
+      "Orta. Hint’leri oku, bir daha gel.",
+      "Karışmış biraz, tekrar dene.",
+      "İdare eder; eser–kahraman biraz daha iş ister.",
     ],
     dusuk: [
-      "Karakterler seni şaşırtmış, bilgi notlarını oku.",
-      "Isınma turu say, tekrar dene.",
-      "Sakin, her yanlış bir sonraki eşleşme demek.",
+      "Karakterler henüz oturmamış, bilgi notuna bak.",
+      "Isınma turu, moral bozma.",
+      "Kaçtı; aynı testi bir daha çöz.",
     ],
   },
   akim: {
@@ -327,25 +304,47 @@ const BITIS_MESAJLARI: Record<BitisMod, { super: string[]; iyi: string[]; orta: 
       "Kart değil bu ama bilgi notu her şeyi anlatıyor.",
     ],
   },
-  tekrar: {
+  osym: {
     super: [
-      "Eksiklerini kapattın, Tekrar Köşen gurur duyuyor.",
-      "Zayıf halkalar çelik oldu, böyle devam.",
-      "Bu tur eksiğini bitirdin — net oradan gelir.",
+      "ÖSYM Sever’de bu skor ciddi iş.",
+      "Banko sorular senden kaçmadı.",
+      "Prova temiz, sınavda da böyle git.",
     ],
     iyi: [
-      "İyi pekiştirme, bir tur daha basarsan temizlenir.",
-      "Çoğunu toparladın, kalanları da halledersin.",
-      "Form yükseliyor, Tekrar Köşen azalıyor.",
+      "İyi prova, birkaç banko daha pekişsin.",
+      "Form yerinde, bir 20’lik daha bas.",
+      "Neredeyse full, ufak açıklar kapanır.",
     ],
     orta: [
-      "Bir kısmı oturdu, kalan yanlışlar hâlâ köşede.",
+      "Orta prova, kartlara dönüp bir daha gel.",
+      "İdare eder; bankoları bir tur daha çöz.",
+      "Eh. Yanlışlar Kaçırdıkların’a düştü.",
+    ],
+    dusuk: [
+      "Prova ısınma say, kartlarla toparla.",
+      "Moral bozma, banko bu yüzden tekrar edilir.",
+      "Kaçtı; aynı 20’liği bir daha çöz.",
+    ],
+  },
+  tekrar: {
+    super: [
+      "Kaçırdıklarını kapattın, net oradan gelir.",
+      "Zayıf halkalar çelik oldu, böyle devam.",
+      "Bu tur eksiğini bitirdin.",
+    ],
+    iyi: [
+      "İyi tur, bir daha basarsan liste temizlenir.",
+      "Çoğunu toparladın, kalanları da halledersin.",
+      "Açıkların azalıyor, böyle git.",
+    ],
+    orta: [
+      "Bir kısmı oturdu, kalan yanlışlar hâlâ listede.",
       "İdare eder; aynı soruları bir daha çöz.",
-      "Orta karar — doğru bildiklerin kutudan çıktı say.",
+      "Orta karar — doğru bildiklerin listeden çıktı.",
     ],
     dusuk: [
       "Bu sorular seni hâlâ zorluyor, bir tur daha.",
-      "Moral bozma; Tekrar Köşen tam bunun için var.",
+      "Moral bozma; kaçırdığın soru burada durur.",
       "Isınma turu — aynı listeyi tekrar çöz.",
     ],
   },
@@ -409,7 +408,11 @@ export default function TestModul() {
   const osymCevapla = (secenek: string) => {
     if (osymSecim) return;
     const soru = osymSorular[osymAktif];
-    const eslesen = gecerliYazarlar().find(
+    const havuz = [
+      ...gecerliYazarlar(),
+      ...(kadinYazarlarTest as unknown as LiteratureItem[]),
+    ];
+    const eslesen = havuz.find(
       (y) =>
         y.work.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr") ||
         y.author.toLocaleLowerCase("tr") === soru.vurgu.toLocaleLowerCase("tr"),
@@ -451,14 +454,16 @@ export default function TestModul() {
 
     if (tur === "tekrar") {
       const tekrarIdleri = testTekrarIdleri();
-      const lit = gecerliYazarlar();
+      const lit = [
+        ...gecerliYazarlar(),
+        ...anaDonemFiltrele("Tüm Dönemler"),
+      ];
       const kadinHavuz = kadinYazarlarTest as unknown as LiteratureItem[];
       const ek = eserKahramanData as EserKahramanItem[];
       const ak = batiAkimlarData as BatiAkimItem[];
       const pool: StandartSoru[] = [];
 
       for (const id of tekrarIdleri) {
-        // Ana literatür VEYA kadın yazar seçkisi (id 501+ burada)
         const litItem =
           lit.find((x) => String(x.id) === id) ||
           kadinHavuz.find((x) => String(x.id) === id);
@@ -470,7 +475,7 @@ export default function TestModul() {
           if (Math.random() < 0.5) {
             const yazarHavuz = yazarHavuzuBaska(litItem.author, secenekKaynak);
             pool.push({
-              kategoriUst: "PEKİŞTİRME",
+              kategoriUst: "KAÇIRDIĞIN",
               vurgu: litItem.work,
               metin: "Aşağıdaki yazarlardan hangisi bu eserin yazarıdır?",
               dogru: litItem.author,
@@ -484,7 +489,7 @@ export default function TestModul() {
               secenekKaynak,
             );
             pool.push({
-              kategoriUst: "PEKİŞTİRME",
+              kategoriUst: "KAÇIRDIĞIN",
               vurgu: litItem.author,
               metin: "Aşağıdaki eserlerden hangisi bu yazara aittir?",
               dogru: litItem.work,
@@ -499,7 +504,7 @@ export default function TestModul() {
           const tumK = Array.from(new Set(ek.map((x) => x.character)));
           const tumE = Array.from(new Set(ek.map((x) => x.work)));
           pool.push({
-            kategoriUst: "PEKİŞTİRME · KARAKTER",
+            kategoriUst: "KAÇIRDIĞIN · KARAKTER",
             rozetMetin: undefined,
             vurgu: ekItem.character,
             metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
@@ -516,7 +521,7 @@ export default function TestModul() {
           const temsilci =
             akItem.representatives[Math.floor(Math.random() * akItem.representatives.length)];
           pool.push({
-            kategoriUst: "PEKİŞTİRME · AKIM",
+            kategoriUst: "KAÇIRDIĞIN · AKIM",
             rozetMetin: undefined,
             vurgu: temsilci,
             metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
@@ -529,13 +534,12 @@ export default function TestModul() {
       }
 
       if (pool.length === 0) {
-        // boşsa menüde kal; UI uyarı menü kartında
+        setTekrarSayisi(0);
         return;
       }
 
-      // Sınır yok: yanlış sayısı kadar soru
       hazir = karistir(pool);
-      baslik = "Tekrar Köşen";
+      baslik = "Kaçırdıkların";
       renk = "rose";
       setSonTest({ tur: "tekrar" });
       recentYaz(hazir.map((q) => q.kartId || q.vurgu));
@@ -557,96 +561,93 @@ export default function TestModul() {
       const secilenler = karistir(recentFiltrele(havuz, (x) => x.id)).slice(0, Math.min(10, havuz.length));
       const tumKarakterler = Array.from(new Set(havuz.map((x) => x.character)));
       const tumEserler = Array.from(new Set(havuz.map((x) => x.work)));
-      renk = "amber";
-      baslik = "Eser – Kahraman";
-
       hazir = secilenler.map((item) => {
-        const ipucu = item.hint
-          ? item.hint
-          : `${item.period} · ${item.author}`;
+        const ayniEser = new Set(havuz.filter((x) => x.work === item.work).map((x) => x.character));
         if (Math.random() < 0.5) {
+          const diger = tumKarakterler.filter((k) => k !== item.character && !ayniEser.has(k));
           return {
-            kategoriUst: "ESER – KARAKTER",
-            rozetMetin: "Karakter",
-            vurgu: item.character,
-            metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
-            dogru: item.work,
-            secenekler: secenekUret(item.work, tumEserler, tumEserler),
-            aciklama: ipucu,
+            kategoriUst: "ESER – KAHRAMAN",
+            vurgu: item.work,
+            metin: "Bu eserin kahramanı / önemli karakteri hangisidir?",
+            dogru: item.character,
+            secenekler: secenekUret(item.character, diger, tumKarakterler),
+            aciklama: item.hint,
             kartId: item.id,
           };
         }
+        const digerE = tumEserler.filter((e) => e !== item.work);
         return {
-          kategoriUst: "ESER – KARAKTER",
-          rozetMetin: "Karakter",
-          vurgu: item.work,
-          metin: "Aşağıdaki karakterlerden hangisi bu eserde yer alır?",
-          dogru: item.character,
-          secenekler: secenekUret(item.character, tumKarakterler, tumKarakterler),
-          aciklama: ipucu,
+          kategoriUst: "KAHRAMAN – ESER",
+          vurgu: item.character,
+          metin: "Bu karakter aşağıdaki eserlerin hangisinde yer alır?",
+          dogru: item.work,
+          secenekler: secenekUret(item.work, digerE, tumEserler),
+          aciklama: item.hint,
           kartId: item.id,
         };
       });
+      baslik = "Eser – Kahraman";
+      renk = "amber";
     } else if (tur === "akim") {
-      const akimlar = batiAkimlarData as BatiAkimItem[];
-      if (!akimlar.length) return;
-      const tumIsimler = akimlar.map((a) => a.name);
-      const tumTemsilciler = Array.from(new Set(akimlar.flatMap((a) => a.representatives)));
-      const pool: StandartSoru[] = [];
+      const havuz = batiAkimlarData as BatiAkimItem[];
+      if (!havuz.length) return;
+      const secilenler = karistir(recentFiltrele(havuz, (x) => x.id)).slice(0, Math.min(10, havuz.length));
+      const tumIsimler = havuz.map((x) => x.name);
+      const tumTemsil = Array.from(new Set(havuz.flatMap((x) => x.representatives)));
+      const tumSlogan = havuz.map((x) => x.slogan);
+      const tumOzellik = havuz.flatMap((x) => x.keyFeatures);
+      hazir = secilenler.map((akim) => {
+        const tip = Math.floor(Math.random() * 4);
+        if (tip === 0) {
+          const t = akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
+          return {
+            kategoriUst: "TEMSİLCİ → AKIM",
+            vurgu: t,
+            metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
+            dogru: akim.name,
+            secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
+            aciklama: akim.hint || akim.century,
+            kartId: akim.id,
+          };
+        }
+        if (tip === 1) {
+          const t = akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
+          const yabanci = tumTemsil.filter((x) => !akim.representatives.includes(x));
+          return {
+            kategoriUst: "AKIM → TEMSİLCİ",
+            vurgu: akim.name,
+            metin: "Bu akımın temsilcisi hangisidir?",
+            dogru: t,
+            secenekler: secenekUret(t, yabanci, tumTemsil),
+            aciklama: akim.hint || akim.century,
+            kartId: akim.id,
+          };
+        }
+        if (tip === 2) {
+          return {
+            kategoriUst: "SLOGAN → AKIM",
+            vurgu: akim.slogan,
+            metin: "Bu söz hangi akımı özetler?",
+            dogru: akim.name,
+            secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
+            aciklama: akim.hint || akim.century,
+            kartId: akim.id,
+          };
+        }
+        const oz = akim.keyFeatures[Math.floor(Math.random() * akim.keyFeatures.length)];
+        const yabanciOz = tumOzellik.filter((x) => !akim.keyFeatures.includes(x));
+        return {
+          kategoriUst: "ÖZELLİK → AKIM",
+          vurgu: oz,
+          metin: "Bu özellik hangi akıma aittir?",
+          dogru: akim.name,
+          secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
+          aciklama: akim.hint || oz,
+          kartId: akim.id,
+        };
+      });
+      baslik = "Batı Edebi Akımlar";
       renk = "sky";
-      baslik = "Batı Edebi Akımları";
-
-      for (const akim of akimlar) {
-        const temsilci =
-          akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
-
-        pool.push({
-          kategoriUst: "BATI EDEBİ AKIMLARI",
-          rozetMetin: "Akım",
-          vurgu: temsilci,
-          metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
-          dogru: akim.name,
-          secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.hint || akim.century,
-          kartId: akim.id,
-        });
-
-        pool.push({
-          kategoriUst: "BATI EDEBİ AKIMLARI",
-          rozetMetin: "Akım",
-          vurgu: `"${akim.slogan}"`,
-          metin: "Bu slogan / ilke hangi edebiyat akımına aittir?",
-          dogru: akim.name,
-          secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.hint || akim.century,
-          kartId: akim.id,
-        });
-
-        const ozellik = akim.keyFeatures[Math.floor(Math.random() * akim.keyFeatures.length)];
-        pool.push({
-          kategoriUst: "BATI EDEBİ AKIMLARI",
-          rozetMetin: "Akım",
-          vurgu: ozellik,
-          metin: "Bu özellik aşağıdaki akımlardan hangisine aittir?",
-          dogru: akim.name,
-          secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.hint || akim.century,
-          kartId: akim.id,
-        });
-
-        const yanlisTemsilciler = tumTemsilciler.filter((t) => !akim.representatives.includes(t));
-        pool.push({
-          kategoriUst: "BATI EDEBİ AKIMLARI",
-          rozetMetin: "Akım",
-          vurgu: akim.name,
-          metin: "Aşağıdakilerden hangisi bu akımın temsilcilerinden biridir?",
-          dogru: temsilci,
-          secenekler: secenekUret(temsilci, yanlisTemsilciler, tumTemsilciler),
-          aciklama: akim.hint || akim.century,
-          kartId: akim.id,
-        });
-      }
-      hazir = karistir(pool).slice(0, 10);
     } else {
       let havuz: LiteratureItem[] =
         tur === "kadin"
@@ -732,7 +733,6 @@ export default function TestModul() {
     }
   };
 
-
   const standartSonraki = () => {
     if (standartIndex + 1 < standartSorular.length) {
       setStandartIndex((p) => p + 1);
@@ -752,57 +752,53 @@ export default function TestModul() {
       btn: "bg-osym text-osym-foreground",
     },
     pink: {
-      badge: "bg-pink-500/15 text-pink-500 ring-pink-500/30",
-      btn: "bg-pink-500 text-white",
+      badge: "bg-pink-500/15 text-pink-400 ring-pink-500/30",
+      btn: "bg-pink-600 text-white",
     },
     amber: {
-      badge: "bg-amber-500/15 text-amber-500 ring-amber-500/30",
-      btn: "bg-amber-500 text-white",
+      badge: "bg-amber-500/15 text-amber-400 ring-amber-500/30",
+      btn: "bg-amber-600 text-white",
     },
     sky: {
-      badge: "bg-sky-500/15 text-sky-500 ring-sky-500/30",
-      btn: "bg-sky-500 text-white",
+      badge: "bg-sky-500/15 text-sky-400 ring-sky-500/30",
+      btn: "bg-sky-600 text-white",
     },
     rose: {
       badge: "bg-rose-500/15 text-rose-400 ring-rose-500/30",
-      btn: "bg-rose-500 text-white",
+      btn: "bg-rose-600 text-white",
     },
   }[aksan];
 
-  // ÖSYM EKRANI
   if (gorunum === "osym") {
     if (osymBitti) {
-      const oran = Math.round((osymDogruSayi / Math.max(osymSorular.length, 1)) * 100);
-      const basari = bitisMesaji("osym", oran);
-      const yeniRekor = osymDogruSayi >= osymEnIyiSkor && osymDogruSayi > 0;
-
+      const oran = Math.round((osymDogruSayi / Math.max(1, osymSorular.length)) * 100);
       return (
-        <div className="animate-rise rounded-2xl bg-card p-6 text-center border border-border max-w-sm mx-auto w-full my-auto">
-          <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-2xl bg-osym/15 text-osym ring-1 ring-osym/30">
-            <Flame className="h-8 w-8" strokeWidth={1.5} />
-          </div>
-          <h2 className="font-serif text-xl font-bold text-card-foreground text-balance px-1">{basari}</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            {osymSorular.length} soruda{" "}
-            <span className="font-bold text-osym">{osymDogruSayi}</span> doğru — %{oran}
-          </p>
-          {yeniRekor && <p className="mt-1.5 text-xs font-bold text-amber-500">🏆 Yeni Rekor!</p>}
-          <div className="mt-5">
-            <IlerlemeBari mevcut={osymDogruSayi} toplam={osymSorular.length} etiket="Doğru cevap" />
-          </div>
-          <div className="mt-6 grid grid-cols-2 gap-2.5">
-            <button
-              onClick={osymBaslat}
-              className="flex items-center justify-center gap-1.5 rounded-xl bg-osym py-3 text-xs font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
-            >
-              <RotateCcw className="h-4 w-4" /> Tekrar Çöz
-            </button>
-            <button
-              onClick={() => setGorunum("menu")}
-              className="rounded-xl bg-muted/60 py-3 text-xs font-semibold text-muted-foreground hover:bg-muted active:scale-[0.98]"
-            >
-              Menüye Dön
-            </button>
+        <div className="flex-1 flex items-center justify-center p-4 animate-rise">
+          <div className="rounded-2xl bg-card p-6 text-center shadow-xl max-w-sm w-full border border-border">
+            <div className="mx-auto mb-4 grid h-16 w-16 place-items-center rounded-2xl bg-osym/15 text-osym ring-1 ring-osym/30">
+              <Sparkles className="h-8 w-8" />
+            </div>
+            <h2 className="font-serif text-xl font-bold text-card-foreground">
+              {bitisMesaji("osym", oran)}
+            </h2>
+            <p className="mt-1 text-xs text-muted-foreground">
+              {osymDogruSayi}/{osymSorular.length} doğru
+              {osymEnIyiSkor > 0 ? ` · En iyi ${osymEnIyiSkor}/20` : ""}
+            </p>
+            <div className="mt-5 flex flex-col gap-2">
+              <button
+                onClick={osymBaslat}
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-osym py-3 text-sm font-bold text-osym-foreground"
+              >
+                <RotateCcw className="h-4 w-4" /> Tekrar Çöz
+              </button>
+              <button
+                onClick={() => setGorunum("menu")}
+                className="rounded-xl bg-muted/60 py-3 text-sm font-semibold text-foreground"
+              >
+                Menüye Dön
+              </button>
+            </div>
           </div>
         </div>
       );
@@ -810,127 +806,95 @@ export default function TestModul() {
 
     const soru = osymSorular[osymAktif];
     if (!soru) return null;
-
     return (
-      <div className="animate-rise max-w-xl mx-auto w-full flex flex-col flex-1 justify-between p-1">
-        <div>
-          <div className="mb-4 rounded-2xl bg-card border border-border p-3 shadow-sm">
-            <IlerlemeBari
-              mevcut={osymAktif + (osymSecim ? 1 : 0)}
-              toplam={osymSorular.length}
-              etiket="Soru"
-              sagEtiket={`${osymAktif + 1} / ${osymSorular.length} · ${osymDogruSayi} doğru`}
-            />
-            <div className="mt-3 flex items-center justify-between">
-              <span className="inline-flex items-center gap-1.5 text-[11px] font-bold text-osym">
-                <Flame className="h-3.5 w-3.5" /> Banko ÖSYM Sorusu
-              </span>
-              <button
-                onClick={() => setGorunum("menu")}
-                className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 active:scale-95"
-              >
-                <X className="h-3 w-3" /> Çıkış
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-3xl bg-card p-5 border border-border shadow-lg">
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
-              </p>
-              {soru.osymFreq && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-osym/15 px-2.5 py-1 text-[10px] font-bold text-osym ring-1 ring-osym/30">
-                  <Flame className="h-3 w-3" strokeWidth={2} />
-                  {soru.osymFreq}
-                </span>
-              )}
-            </div>
-            <h2 className="mt-2 font-serif text-2xl font-bold leading-snug text-balance text-card-foreground">
-              {soru.vurgu}
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">{soru.metin}</p>
-
-            <div className="mt-5 space-y-2.5">
-              {soru.secenekler.map((secenek, i) => {
-                const secildi = osymSecim === secenek;
-                const dogruSecenek = secenek === soru.dogru;
-                const gosterDogru = osymSecim !== null && dogruSecenek;
-                const gosterYanlis = secildi && !dogruSecenek;
-
-                let stil =
-                  "bg-background border border-border text-card-foreground hover:border-osym/60 hover:bg-muted/40";
-                if (gosterDogru)
-                  stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400";
-                else if (gosterYanlis) stil = "bg-destructive/10 border-destructive/50 text-destructive";
-                else if (osymSecim !== null)
-                  stil = "bg-background border-border text-muted-foreground opacity-50";
-
-                return (
-                  <button
-                    key={secenek}
-                    onClick={() => osymCevapla(secenek)}
-                    disabled={osymSecim !== null}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
-                      gosterYanlis ? "animate-shake" : ""
-                    } ${osymSecim === null ? "active:scale-[0.99]" : ""}`}
+      <div className="flex flex-1 min-h-0 flex-col">
+        <div className="mb-3 flex items-center justify-between shrink-0">
+          <button
+            onClick={() => setGorunum("menu")}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Menü
+          </button>
+          <span className="text-[11px] font-bold text-osym">
+            {osymAktif + 1} / {osymSorular.length}
+          </span>
+        </div>
+        <IlerlemeBari simdiki={osymAktif} toplam={osymSorular.length} />
+        <div className="mt-3 rounded-2xl bg-card p-4 border border-border">
+          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-osym">
+            {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
+          </p>
+          <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
+            {soru.vurgu}
+          </h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
+          <div className="mt-3 space-y-2">
+            {soru.secenekler.map((secenek, i) => {
+              const secildi = osymSecim === secenek;
+              const dogru = secenek === soru.dogru;
+              let stil = "bg-background border border-border text-card-foreground";
+              if (osymSecim) {
+                if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
+                else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+                else stil = "bg-background border-border text-muted-foreground opacity-50";
+              }
+              return (
+                <button
+                  key={secenek}
+                  onClick={() => osymCevapla(secenek)}
+                  disabled={osymSecim !== null}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
+                >
+                  <span
+                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
+                      osymSecim && dogru
+                        ? "bg-emerald-500 text-white"
+                        : osymSecim && secildi
+                          ? "bg-destructive text-white"
+                          : "bg-muted text-muted-foreground"
+                    }`}
                   >
-                    <span
-                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold tabular-nums ${
-                        gosterDogru
-                          ? "bg-emerald-500 text-white"
-                          : gosterYanlis
-                            ? "bg-destructive text-white"
-                            : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {gosterDogru ? (
-                        <Check className="h-4 w-4" strokeWidth={3} />
-                      ) : gosterYanlis ? (
-                        <X className="h-4 w-4" strokeWidth={3} />
-                      ) : (
-                        String.fromCharCode(65 + i)
-                      )}
-                    </span>
-                    <span className="text-pretty">{secenek}</span>
-                  </button>
-                );
-              })}
-            </div>
-
-            {osymSecim !== null && (
-              <button
-                onClick={osymSonraki}
-                className="mt-6 flex w-full items-center justify-center gap-2 rounded-xl bg-osym py-3.5 text-sm font-bold text-osym-foreground shadow-md transition hover:brightness-110 active:scale-[0.98] animate-rise"
-              >
-                {osymAktif + 1 >= osymSorular.length ? "Sonucu Gör" : "Sonraki Soru"}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            )}
+                    {osymSecim && dogru ? (
+                      <Check className="h-4 w-4" strokeWidth={3} />
+                    ) : osymSecim && secildi ? (
+                      <X className="h-4 w-4" strokeWidth={3} />
+                    ) : (
+                      String.fromCharCode(65 + i)
+                    )}
+                  </span>
+                  {secenek}
+                </button>
+              );
+            })}
           </div>
+          {osymSecim && (
+            <button
+              onClick={osymSonraki}
+              className="mt-4 flex w-full items-center justify-center gap-1 rounded-xl bg-osym py-3 text-sm font-bold text-osym-foreground"
+            >
+              {osymAktif + 1 >= osymSorular.length ? "Sonuç" : "Sonraki"}
+              <ArrowRight className="h-4 w-4" />
+            </button>
+          )}
         </div>
       </div>
     );
   }
 
-  // STANDART TEST EKRANI
   if (gorunum === "standart") {
     if (standartBitti) {
-      const basariOrani = Math.round(
-        (standartDogru / Math.max(standartSorular.length, 1)) * 100,
-      );
+      const toplam = Math.max(1, standartSorular.length);
+      const basariOrani = Math.round((standartDogru / toplam) * 100);
       const bitisMod: BitisMod =
-        aksan === "pink"
-          ? "kadin"
-          : aksan === "amber"
-            ? "kahraman"
-            : aksan === "sky"
-              ? "akim"
-              : aksan === "rose"
-                ? "tekrar"
-                : aksan === "osym"
-                  ? "osym"
-                  : "donem";
+        aksan === "rose"
+          ? "tekrar"
+          : aksan === "pink"
+            ? "kadin"
+            : aksan === "amber"
+              ? "kahraman"
+              : aksan === "sky"
+                ? "akim"
+                : "donem";
       const basariBaslik = bitisMesaji(bitisMod, basariOrani);
       return (
         <div className="flex-1 flex items-center justify-center p-4 animate-rise">
@@ -944,9 +908,9 @@ export default function TestModul() {
             <p className="mt-1 text-xs text-muted-foreground">
               {seciliBaslik} tamamlandı.
               {aksan === "rose"
-                ? " Doğru bildiklerin köşeden düşer; yanlışlar kalır."
+                ? " Doğru bildiklerin listeden düşer; yanlışlar kalır."
                 : standartSorular[0]?.kartId
-                  ? " Yanlışlar Tekrar Köşen’e eklendi."
+                  ? " Yanlışlar Kaçırdıkların’a eklendi."
                   : ""}
             </p>
             <div className="mt-5 grid grid-cols-2 gap-3">
@@ -959,19 +923,16 @@ export default function TestModul() {
                 <p className="mt-0.5 text-2xl font-black text-destructive">{standartYanlis}</p>
               </div>
             </div>
-            <div className="mt-3 rounded-xl bg-muted/40 p-2.5 text-xs font-semibold text-muted-foreground">
-              Başarı Oranı: <span className="text-foreground font-bold">%{basariOrani}</span>
-            </div>
-            <div className="mt-6 grid grid-cols-2 gap-2.5">
+            <div className="mt-5 flex flex-col gap-2">
               <button
                 onClick={tekrarCoz}
-                className={`flex items-center justify-center gap-1.5 rounded-xl py-3 text-xs font-bold shadow-md transition hover:brightness-110 active:scale-[0.98] ${aksanSinif.btn}`}
+                className={`inline-flex items-center justify-center gap-2 rounded-xl py-3 text-sm font-bold ${aksanSinif.btn}`}
               >
                 <RotateCcw className="h-4 w-4" /> Tekrar Çöz
               </button>
               <button
                 onClick={() => setGorunum("menu")}
-                className="rounded-xl bg-muted/60 py-3 text-xs font-semibold text-muted-foreground hover:bg-muted active:scale-[0.98]"
+                className="rounded-xl bg-muted/60 py-3 text-sm font-semibold text-foreground"
               >
                 Menüye Dön
               </button>
@@ -981,366 +942,244 @@ export default function TestModul() {
       );
     }
 
-    const aktifSoru = standartSorular[standartIndex];
-    if (!aktifSoru) return null;
-
+    const soru = standartSorular[standartIndex];
+    if (!soru) return null;
+    const cevapDogru = standartSecim === soru.dogru;
     return (
-      <div className="flex-1 flex flex-col justify-between p-1 max-w-xl mx-auto w-full animate-rise">
-        <div>
-          <div className="mb-4 rounded-2xl bg-card border border-border p-3 shadow-sm">
-            <IlerlemeBari
-              mevcut={standartIndex + (standartSecim ? 1 : 0)}
-              toplam={standartSorular.length}
-              etiket="Soru"
-              sagEtiket={`${standartIndex + 1} / ${standartSorular.length} · ${standartDogru} doğru`}
-            />
-            <div className="mt-3 flex items-center justify-between">
-              <span className="text-[11px] font-semibold text-muted-foreground truncate max-w-[200px]">
-                {seciliBaslik}
-              </span>
-              <button
-                onClick={() => setGorunum("menu")}
-                className="inline-flex items-center gap-1 rounded-full bg-destructive/10 px-3 py-1 text-[11px] font-semibold text-destructive ring-1 ring-destructive/20 transition hover:bg-destructive/15 active:scale-95"
-              >
-                <X className="h-3 w-3" /> Çıkış
-              </button>
-            </div>
-          </div>
-
-          <div className="rounded-3xl bg-card p-5 border border-border shadow-lg">
-            <div className="flex items-start justify-between gap-3">
-              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-muted-foreground">
-                {aktifSoru.kategoriUst}
-              </p>
-              {aktifSoru.rozetMetin && (
-                <span className={`inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-bold ring-1 ${aksanSinif.badge}`}>
-                  {aksan === "amber" ? "🎭 " : aksan === "sky" ? "🌐 " : aksan === "pink" ? "🌸 " : aksan === "osym" ? "🔥 " : ""}
-                  {aktifSoru.rozetMetin}
-                </span>
-              )}
-            </div>
-
-            <h2 className="mt-2 font-serif text-2xl font-bold leading-snug text-balance text-card-foreground">
-              {aktifSoru.vurgu}
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-pretty text-muted-foreground">
-              {aktifSoru.metin}
-            </p>
-            {/* Cevap sonrası Bilgi notu (kahraman / akım hint) */}
-            {standartSecim !== null && aktifSoru.aciklama && (
-              <div className="mt-4 rounded-xl border border-amber-500/30 bg-amber-500/10 px-3.5 py-2.5 text-left animate-rise">
-                <p className="text-[10px] font-bold uppercase tracking-wider text-amber-500">
-                  Bilgi notu
-                </p>
-                <p className="mt-1 text-xs leading-relaxed text-card-foreground/90 text-pretty">
-                  {aktifSoru.aciklama}
-                </p>
-              </div>
-            )}
-
-            <div className="mt-5 space-y-2.5">
-              {aktifSoru.secenekler.map((secenek, i) => {
-                const secildi = standartSecim === secenek;
-                const dogruMu = secenek === aktifSoru.dogru;
-                const gosterDogru = standartSecim !== null && dogruMu;
-                const gosterYanlis = secildi && !dogruMu;
-
-                const hoverByMode =
-                  aksan === "pink"
-                    ? "hover:border-pink-500/50 hover:bg-pink-500/10"
-                    : aksan === "amber"
-                      ? "hover:border-amber-500/50 hover:bg-amber-500/10"
-                      : aksan === "sky"
-                        ? "hover:border-sky-500/50 hover:bg-sky-500/10"
-                        : aksan === "osym"
-                          ? "hover:border-osym/50 hover:bg-osym/10"
-                          : aksan === "rose"
-                            ? "hover:border-rose-500/50 hover:bg-rose-500/10"
-                            : "hover:border-primary/50 hover:bg-primary/10";
-
-                let stil = `bg-background border border-border text-card-foreground ${hoverByMode}`;
-                if (gosterDogru)
-                  stil =
-                    "bg-emerald-500/10 border-emerald-500/50 text-emerald-600 dark:text-emerald-400 font-semibold";
-                else if (gosterYanlis)
-                  stil = "bg-destructive/10 border-destructive/50 text-destructive font-semibold";
-                else if (standartSecim !== null)
-                  stil = "bg-background border-border text-muted-foreground opacity-50";
-
-                return (
-                  <button
-                    key={`${secenek}-${i}`}
-                    onClick={() => standartCevapla(secenek)}
-                    disabled={standartSecim !== null}
-                    className={`flex w-full items-center gap-3 rounded-xl px-3.5 py-3 text-left text-sm font-medium transition-colors ${stil} ${
-                      gosterYanlis ? "animate-shake" : ""
-                    } ${standartSecim === null ? "active:scale-[0.99]" : ""}`}
+      <div className="flex flex-1 min-h-0 flex-col">
+        <div className="mb-3 flex items-center justify-between shrink-0">
+          <button
+            onClick={() => setGorunum("menu")}
+            className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
+          >
+            <ArrowLeft className="h-3.5 w-3.5" /> Menü
+          </button>
+          <span className="text-[11px] font-bold text-muted-foreground">
+            {standartIndex + 1} / {standartSorular.length}
+          </span>
+        </div>
+        <IlerlemeBari simdiki={standartIndex} toplam={standartSorular.length} />
+        <div className="mt-3 rounded-2xl bg-card p-4 border border-border">
+          <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${aksan === "rose" ? "text-rose-400" : aksan === "pink" ? "text-pink-400" : aksan === "amber" ? "text-amber-400" : aksan === "sky" ? "text-sky-400" : "text-primary"}`}>
+            {soru.kategoriUst}
+          </p>
+          <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
+            {soru.vurgu}
+          </h2>
+          <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
+          <div className="mt-3 space-y-2">
+            {soru.secenekler.map((secenek, i) => {
+              const secildi = standartSecim === secenek;
+              const dogru = secenek === soru.dogru;
+              let stil = "bg-background border border-border text-card-foreground";
+              if (standartSecim) {
+                if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
+                else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+                else stil = "bg-background border-border text-muted-foreground opacity-50";
+              }
+              return (
+                <button
+                  key={secenek}
+                  onClick={() => standartCevapla(secenek)}
+                  disabled={standartSecim !== null}
+                  className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
+                >
+                  <span
+                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
+                      standartSecim && dogru
+                        ? "bg-emerald-500 text-white"
+                        : standartSecim && secildi
+                          ? "bg-destructive text-white"
+                          : "bg-muted text-muted-foreground"
+                    }`}
                   >
-                    <span
-                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold tabular-nums ${
-                        gosterDogru
-                          ? "bg-emerald-500 text-white"
-                          : gosterYanlis
-                            ? "bg-destructive text-white"
-                            : "bg-muted text-muted-foreground"
-                      }`}
-                    >
-                      {gosterDogru ? (
-                        <Check className="h-4 w-4" strokeWidth={3} />
-                      ) : gosterYanlis ? (
-                        <X className="h-4 w-4" strokeWidth={3} />
-                      ) : (
-                        String.fromCharCode(65 + i)
-                      )}
-                    </span>
-                    <span className="flex-1 text-pretty">{secenek}</span>
-                    {standartSecim !== null && dogruMu && (
-                      <CheckCircle2 className="h-5 w-5 text-emerald-500 shrink-0" />
+                    {standartSecim && dogru ? (
+                      <Check className="h-4 w-4" strokeWidth={3} />
+                    ) : standartSecim && secildi ? (
+                      <X className="h-4 w-4" strokeWidth={3} />
+                    ) : (
+                      String.fromCharCode(65 + i)
                     )}
-                    {standartSecim !== null && secildi && !dogruMu && (
-                      <XCircle className="h-5 w-5 text-destructive shrink-0" />
-                    )}
-                  </button>
-                );
-              })}
-            </div>
-
+                  </span>
+                  <span className="flex-1">{secenek}</span>
+                </button>
+              );
+            })}
           </div>
-
-          {standartSecim !== null && (
-            <div className="sticky bottom-0 z-10 mt-4 -mx-1 px-1 pb-1 pt-2 bg-gradient-to-t from-background via-background to-transparent">
-              <button
-                onClick={standartSonraki}
-                className={`flex w-full items-center justify-center gap-2 rounded-xl py-3.5 text-sm font-bold shadow-lg transition hover:brightness-110 active:scale-[0.98] animate-rise ${aksanSinif.btn}`}
-              >
-                {standartIndex + 1 >= standartSorular.length ? "Testi Bitir" : "Sonraki Soru"}
-                <ArrowRight className="h-4 w-4" />
-              </button>
-            </div>
+          {standartSecim && soru.aciklama && (
+            <p className="mt-3 text-[12px] leading-relaxed text-muted-foreground rounded-xl bg-muted/40 p-3">
+              {soru.aciklama}
+            </p>
+          )}
+          {standartSecim && (
+            <button
+              onClick={standartSonraki}
+              className={`mt-4 flex w-full items-center justify-center gap-1 rounded-xl py-3 text-sm font-bold ${aksanSinif.btn}`}
+            >
+              {standartIndex + 1 >= standartSorular.length ? "Sonuç" : "Sonraki"}
+              <ArrowRight className="h-4 w-4" />
+            </button>
           )}
         </div>
       </div>
     );
   }
 
-  // DÖNEM SEÇİM
   if (gorunum === "donem_secim") {
     return (
-      <div className="flex-1 flex flex-col gap-3 p-1 animate-rise max-w-md mx-auto w-full">
+      <div className="flex flex-1 min-h-0 flex-col">
         <button
           onClick={() => setGorunum("menu")}
-          className="flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground transition px-1 py-1"
+          className="mb-3 inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground shrink-0"
         >
-          <ArrowLeft className="h-4 w-4" /> Kategorilere Dön
+          <ArrowLeft className="h-3.5 w-3.5" /> Menü
         </button>
-
-        <div className="rounded-2xl bg-card border border-border p-5 text-center shadow-sm">
-          <h2 className="font-serif text-lg font-bold text-card-foreground">Bir Dönem Seç</h2>
-          <p className="mt-0.5 text-xs text-muted-foreground">
-            Eksiğin olan dönemi belirle ve teste dal!
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-2">
-          <button
-            onClick={() => standartBaslat("donem", "Tüm Dönemler")}
-            className="flex items-center gap-3 rounded-2xl bg-primary px-4 py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.99]"
-          >
-            <Target className="h-5 w-5" />
-            <span>Tüm Dönemler</span>
-          </button>
-
-          {anaDonemler
-            .filter((d) => d !== "Tüm Dönemler")
-            .map((donem, i) => (
-              <button
-                key={donem}
-                onClick={() => standartBaslat("donem", donem)}
-                className="flex items-center gap-3.5 rounded-2xl bg-card border border-border px-4 py-3.5 text-left text-sm font-semibold text-card-foreground shadow-sm transition hover:bg-muted/50 active:scale-[0.99]"
-              >
-                <span className="grid h-6 w-6 shrink-0 place-items-center rounded-lg bg-muted text-xs font-bold text-muted-foreground">
-                  {i + 1}
-                </span>
-                <span className="flex-1 truncate">{donem}</span>
-              </button>
-            ))}
+        <h2 className="font-serif text-lg font-bold text-card-foreground mb-3">Dönem seç</h2>
+        <div className="grid gap-2">
+          {anaDonemler.map((d) => (
+            <button
+              key={d}
+              onClick={() => standartBaslat("donem", d)}
+              className="flex items-center justify-between rounded-xl bg-card border border-border p-3.5 text-left"
+            >
+              <span className="text-sm font-semibold text-card-foreground">{d}</span>
+              <ChevronRight className="h-4 w-4 text-muted-foreground" />
+            </button>
+          ))}
         </div>
       </div>
     );
   }
 
-  // ANA MENÜ
   return (
-    <div className="flex-1 flex flex-col gap-2 p-1 animate-rise max-w-md mx-auto w-full">
-      <div className="rounded-2xl bg-card border border-border px-4 py-4 text-center shadow-sm">
-        <div className="mx-auto mb-2 grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/30">
-          <Brain className="h-5 w-5" strokeWidth={1.8} />
+    <div className="flex flex-1 min-h-0 flex-col gap-2.5 pb-4">
+      <button
+        onClick={() => setGorunum("donem_secim")}
+        className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 text-left shadow-sm transition hover:bg-muted/40 active:scale-[0.99]"
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
+            <BookOpen className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testi</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Yazar–eser, döneme göre</p>
+          </div>
         </div>
-        <h2 className="font-serif text-lg font-bold text-card-foreground">Test Modu</h2>
-        <p className="mt-0.5 text-[11px] text-muted-foreground">
-          Dönem, banko ve özel seçkilerle prova
-        </p>
-      </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+      </button>
 
-      <div className="flex flex-col gap-2">
-        {/* 1. Dönem Testleri */}
-        <button
-          onClick={() => setGorunum("donem_secim")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
-        >
+      <button
+        onClick={osymBaslat}
+        className="group flex items-center justify-between rounded-2xl bg-card border border-osym/30 p-3.5 text-left shadow-sm transition hover:bg-osym/5 active:scale-[0.99]"
+      >
+        <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-primary/15 text-primary ring-1 ring-primary/25">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <div>
-              <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eksiklerini bul, teste başla! 🚀
-              </p>
-            </div>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
-
-        {/* 2. ÖSYM Sever */}
-        <button
-          onClick={osymBaslat}
-          className="group relative overflow-hidden rounded-2xl border border-osym/40 bg-gradient-to-br from-osym/15 via-card to-card p-3.5 text-left shadow-md transition-all hover:border-osym/70 active:scale-[0.99]"
-        >
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <div className="grid h-10 w-10 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
-                <Flame className="h-5 w-5" strokeWidth={2.2} />
-              </div>
-              <div>
-                <div className="flex items-center gap-2">
-                  <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
-                  <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
-                    Çıkmış Soru
-                  </span>
-                </div>
-                <p className="mt-0.5 text-[11px] text-muted-foreground">
-                  Dönem sınırı yok! Banko sorularla gerçek prova 🔥
-                  {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
-                </p>
-              </div>
-            </div>
-            <ChevronRight className="h-5 w-5 text-osym/70 transition-transform group-hover:translate-x-0.5" />
-          </div>
-        </button>
-
-        {/* 3. Tekrar Köşen */}
-        <button
-          onClick={() => {
-            if (tekrarSayisi === 0) return;
-            standartBaslat("tekrar");
-          }}
-          disabled={tekrarSayisi === 0}
-          className={`flex items-center justify-between rounded-2xl border p-3.5 text-left shadow-sm transition active:scale-[0.99] ${
-            tekrarSayisi === 0
-              ? "bg-card/50 border-border/40 opacity-55 cursor-not-allowed"
-              : "bg-card border-rose-500/35 hover:bg-rose-500/5 hover:border-rose-500/60"
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
-              <RotateCcw className="h-5 w-5" />
+            <div className="grid h-10 w-10 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
+              <Flame className="h-5 w-5" strokeWidth={2.2} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">Tekrar Köşen</p>
-                {tekrarSayisi > 0 && (
-                  <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-extrabold text-rose-400">
-                    {tekrarSayisi}
-                  </span>
-                )}
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                {tekrarSayisi === 0
-                  ? "Boş — yanlış yaptıkça burada birikir"
-                  : "Yapamadığın sorular burada!"}
-              </p>
-            </div>
-          </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
-
-        {/* 4. Kadın Yazarlar */}
-        <button
-          onClick={() => standartBaslat("kadin")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
-        >
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
-              🌸
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">
-                  Kadın Yazarlar & Eserleri
-                </p>
-                <span className="rounded-full bg-pink-500/15 px-1.5 py-0.5 text-[9px] font-bold text-pink-500">
-                  Özel
+                <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
+                <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
+                  Çıkmış Soru
                 </span>
               </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Sadece kadın yazar ve eserleri! 🌸
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                Dönem sınırı yok! Banko sorularla gerçek prova 🔥
+                {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
               </p>
             </div>
           </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
+          <ChevronRight className="h-5 w-5 text-osym/70 transition-transform group-hover:translate-x-0.5" />
+        </div>
+      </button>
 
-        {/* 5. Eser – Kahraman */}
-        <button
-          onClick={() => standartBaslat("kahraman")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
-        >
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
-              <Users className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">Eser – Kahraman</p>
-                <span className="rounded-full bg-amber-500/15 px-1.5 py-0.5 text-[9px] font-bold text-amber-500">
-                  Karakter
-                </span>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Eser ↔ karakter eşleştir, bankoları ezberle! 🎭
-              </p>
-            </div>
+      {/* 3. Kaçırdıkların */}
+      <button
+        onClick={() => {
+          if (tekrarSayisi === 0) return;
+          standartBaslat("tekrar");
+        }}
+        disabled={tekrarSayisi === 0}
+        className={`flex items-center justify-between rounded-2xl border p-3.5 text-left shadow-sm transition active:scale-[0.99] ${
+          tekrarSayisi === 0
+            ? "bg-card/50 border-border/40 opacity-55 cursor-not-allowed"
+            : "bg-card border-rose-500/35 hover:bg-rose-500/5 hover:border-rose-500/60"
+        }`}
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
+            <RotateCcw className="h-5 w-5" />
           </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-serif text-sm font-bold text-card-foreground">Kaçırdıkların</p>
+              {tekrarSayisi > 0 && (
+                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-extrabold text-rose-400">
+                  {tekrarSayisi}
+                </span>
+              )}
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {tekrarSayisi === 0
+                ? "Boş — yanlışın buraya düşer, doğru yapınca çıkar"
+                : `${tekrarSayisi} açık — buradan kapat`}
+            </p>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+      </button>
 
-        {/* 6. Batı Edebi Akımları */}
-        <button
-          onClick={() => standartBaslat("akim")}
-          className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
-        >
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/15 text-sky-500 ring-1 ring-sky-500/25">
-              <Compass className="h-5 w-5" />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">
-                  Batı Edebi Akımları
-                </p>
-                <span className="rounded-full bg-sky-500/15 px-1.5 py-0.5 text-[9px] font-bold text-sky-500">
-                  Akım
-                </span>
-              </div>
-              <p className="text-[11px] text-muted-foreground mt-0.5">
-                Akımları, temsilcileri ve özellikleriyle tanı! 🌐
-              </p>
-            </div>
+      <button
+        onClick={() => standartBaslat("kadin")}
+        className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
+            🌸
           </div>
-          <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
-        </button>
-      </div>
+          <div>
+            <div className="flex items-center gap-2">
+              <p className="font-serif text-sm font-bold text-card-foreground">Kadın Yazarlar</p>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Seçki · yazar–eser</p>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+      </button>
+
+      <button
+        onClick={() => standartBaslat("kahraman")}
+        className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
+            <Users className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-serif text-sm font-bold text-card-foreground">Eser – Kahraman</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Karakter eşlemesi</p>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+      </button>
+
+      <button
+        onClick={() => standartBaslat("akim")}
+        className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
+      >
+        <div className="flex items-center gap-3">
+          <div className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/25">
+            <Compass className="h-5 w-5" />
+          </div>
+          <div>
+            <p className="font-serif text-sm font-bold text-card-foreground">Batı Edebi Akımlar</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Parnasizm, sembolizm…</p>
+          </div>
+        </div>
+        <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
+      </button>
     </div>
   );
 }
