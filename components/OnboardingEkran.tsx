@@ -36,7 +36,7 @@ const ADIMLAR: {
     id: "test",
     etiket: "Test",
     baslik: "Çoktan seçmeli prova",
-    metin: "Dönemden ÖSYM’ye kadar soru çöz. Yanlışların Tekrar Köşen’de birikir.",
+    metin: "Dönemden ÖSYM’ye kadar soru çöz. Yanlışın Kaçırdıkların’a düşer, doğru yapınca çıkar.",
     kutu: "border-violet-500/35 bg-violet-500/10",
     etiketRenk: "text-violet-400",
     buton: "bg-violet-600 text-white",
