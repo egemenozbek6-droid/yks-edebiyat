@@ -43,6 +43,7 @@ function testLeitnerOku(): Record<string, TestHafiza> {
     const temiz: Record<string, TestHafiza> = {};
     let kirli = false;
     for (const [id, h] of Object.entries(ham)) {
+      // Eski sürüm doğru cevapları kutu 2/3'e koyuyordu — yığın değil.
       if (h && h.kutu === 1) temiz[id] = h;
       else kirli = true;
     }
@@ -79,6 +80,7 @@ function testYanlısKaydet(kartId: string) {
 function testDogruKaydet(kartId: string) {
   if (!kartId) return;
   const veriler = testLeitnerOku();
+  // Yığına hiç düşmemişse dokunma. Düşmüşse doğru = çıktı.
   if (!veriler[kartId]) return;
   delete veriler[kartId];
   testLeitnerYaz(veriler);
@@ -88,18 +90,7 @@ function testTekrarIdleri(): string[] {
   return Object.keys(testLeitnerOku());
 }
 
-// Harici import tip hatası vermesin diye yerel bileşen olarak tanımlandı
-function IlerlemeBari({ simdiki, toplam }: { simdiki: number; toplam: number }) {
-  const yuzde = toplam > 0 ? Math.min(100, Math.max(0, (simdiki / toplam) * 100)) : 0;
-  return (
-    <div className="w-full bg-muted/60 rounded-full h-1.5 overflow-hidden">
-      <div
-        className="bg-primary h-full rounded-full transition-all duration-300 ease-out"
-        style={{ width: `${yuzde}%` }}
-      />
-    </div>
-  );
-}
+import IlerlemeBari from "@/components/IlerlemeBari";
 
 const OSYM_EN_IYI_KEY = "edebikart-osym-eniyi";
 const OSYM_SORU_SAYISI = 20;
@@ -158,6 +149,7 @@ function secenekUret(dogru: string, havuz: string[], yedek: string[] = []): stri
   return karistir([dogru, ...yanlislar]);
 }
 
+
 /** Aynı yazarın diğer eserlerini yanlış şık olarak koyma */
 function eserHavuzuBaskaYazarlar(
   dogruEser: string,
@@ -194,6 +186,7 @@ function yazarHavuzuBaska(
     ),
   );
 }
+
 
 const RECENT_KEY = "edebikart-test-recent-v1";
 const RECENT_LIMIT = 40;
@@ -951,6 +944,7 @@ export default function TestModul() {
 
     const soru = standartSorular[standartIndex];
     if (!soru) return null;
+    const cevapDogru = standartSecim === soru.dogru;
     return (
       <div className="flex flex-1 min-h-0 flex-col">
         <div className="mb-3 flex items-center justify-between shrink-0">
@@ -1101,6 +1095,7 @@ export default function TestModul() {
         </div>
       </button>
 
+      {/* 3. Kaçırdıkların */}
       <button
         onClick={() => {
           if (tekrarSayisi === 0) return;
