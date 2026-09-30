@@ -807,77 +807,92 @@ export default function TestModul() {
     const soru = osymSorular[osymAktif];
     if (!soru) return null;
     return (
-      <div className="flex flex-1 min-h-0 flex-col">
-        <div className="mb-3 flex items-center justify-between shrink-0">
-          <button
-            onClick={() => setGorunum("menu")}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Menü
-          </button>
-          <span className="text-[11px] font-bold text-osym">
-            {osymAktif + 1} / {osymSorular.length}
-          </span>
-        </div>
-        {/* @ts-expect-error ilerleme bari props uyumu */}
-<IlerlemeBari simdiki={osymAktif} toplam={osymSorular.length} />
-        <div className="mt-3 rounded-2xl bg-card p-4 border border-border">
-          <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-osym">
-            {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
-          </p>
-          <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
-            {soru.vurgu}
-          </h2>
-          <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
-          <div className="mt-3 space-y-2">
-            {soru.secenekler.map((secenek, i) => {
-              const secildi = osymSecim === secenek;
-              const dogru = secenek === soru.dogru;
-              let stil = "bg-background border border-border text-card-foreground";
-              if (osymSecim) {
-                if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
-                else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
-                else stil = "bg-background border-border text-muted-foreground opacity-50";
-              }
-              return (
-                <button
-                  key={secenek}
-                  onClick={() => osymCevapla(secenek)}
-                  disabled={osymSecim !== null}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
-                >
-                  <span
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
-                      osymSecim && dogru
-                        ? "bg-emerald-500 text-white"
-                        : osymSecim && secildi
-                          ? "bg-destructive text-white"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {osymSecim && dogru ? (
-                      <Check className="h-4 w-4" strokeWidth={3} />
-                    ) : osymSecim && secildi ? (
-                      <X className="h-4 w-4" strokeWidth={3} />
-                    ) : (
-                      String.fromCharCode(65 + i)
-                    )}
-                  </span>
-                  {secenek}
-                </button>
-              );
-            })}
-          </div>
-          {osymSecim && (
+      <div className="flex flex-1 min-h-0 flex-col gap-2">
+        <div className="shrink-0 rounded-2xl bg-card border border-border p-3 shadow-sm">
+          <IlerlemeBari
+            mevcut={osymAktif + 1}
+            toplam={osymSorular.length}
+            etiket="SORU"
+            sagEtiket={`${osymAktif + 1} / ${osymSorular.length} · ${osymDogruSayi} doğru`}
+          />
+          <div className="mt-2.5 flex items-center justify-between gap-2">
+            <p className="truncate text-[11px] font-semibold text-muted-foreground">ÖSYM Sever</p>
             <button
-              onClick={osymSonraki}
-              className="mt-4 flex w-full items-center justify-center gap-1 rounded-xl bg-osym py-3 text-sm font-bold text-osym-foreground"
+              type="button"
+              onClick={() => setGorunum("menu")}
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1 text-[10px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground"
             >
-              {osymAktif + 1 >= osymSorular.length ? "Sonuç" : "Sonraki"}
-              <ArrowRight className="h-4 w-4" />
+              <RotateCcw className="h-3 w-3" /> Testten Çık
             </button>
-          )}
+          </div>
         </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto no-scrollbar">
+          <div className="rounded-2xl bg-card p-4 border border-border">
+            <div className="flex items-start justify-between gap-2">
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-osym">
+                {soru.tip === "eser" ? "Yazarın eseri" : "Eserin yazarı"}
+              </p>
+              <span className="shrink-0 rounded-full bg-osym/15 px-2 py-0.5 text-[9px] font-bold text-osym ring-1 ring-osym/25">
+                ÖSYM
+              </span>
+            </div>
+            <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
+              {soru.vurgu}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
+            <div className="mt-3 space-y-2">
+              {soru.secenekler.map((secenek, i) => {
+                const secildi = osymSecim === secenek;
+                const dogru = secenek === soru.dogru;
+                let stil = "bg-background border border-border text-card-foreground";
+                if (osymSecim) {
+                  if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
+                  else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+                  else stil = "bg-background border-border text-muted-foreground opacity-50";
+                }
+                return (
+                  <button
+                    key={secenek}
+                    onClick={() => osymCevapla(secenek)}
+                    disabled={osymSecim !== null}
+                    className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
+                  >
+                    <span
+                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
+                        osymSecim && dogru
+                          ? "bg-emerald-500 text-white"
+                          : osymSecim && secildi
+                            ? "bg-destructive text-white"
+                            : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {osymSecim && dogru ? (
+                        <Check className="h-4 w-4" strokeWidth={3} />
+                      ) : osymSecim && secildi ? (
+                        <X className="h-4 w-4" strokeWidth={3} />
+                      ) : (
+                        String.fromCharCode(65 + i)
+                      )}
+                    </span>
+                    <span className="flex-1">{secenek}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {osymSecim && (
+          <button
+            type="button"
+            onClick={osymSonraki}
+            className="shrink-0 flex w-full items-center justify-center gap-1 rounded-xl bg-osym py-3.5 text-sm font-bold text-osym-foreground shadow-md"
+          >
+            {osymAktif + 1 >= osymSorular.length ? "Sonuç" : "Sonraki"}
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        )}
       </div>
     );
   }
@@ -945,84 +960,126 @@ export default function TestModul() {
 
     const soru = standartSorular[standartIndex];
     if (!soru) return null;
-    const cevapDogru = standartSecim === soru.dogru;
+    const kategoriRenk =
+      aksan === "rose"
+        ? "text-rose-400"
+        : aksan === "pink"
+          ? "text-pink-400"
+          : aksan === "amber"
+            ? "text-amber-400"
+            : aksan === "sky"
+              ? "text-sky-400"
+              : "text-primary";
+    const rozet =
+      aksan === "amber"
+        ? { yazi: "Eser – Kahraman", cls: "bg-amber-500/15 text-amber-400 ring-amber-500/25" }
+        : aksan === "sky"
+          ? { yazi: "Akım", cls: "bg-sky-500/15 text-sky-400 ring-sky-500/25" }
+          : aksan === "pink"
+            ? { yazi: "Kadın Yazar", cls: "bg-pink-500/15 text-pink-400 ring-pink-500/25" }
+            : aksan === "rose"
+              ? { yazi: "Kaçırdığın", cls: "bg-rose-500/15 text-rose-400 ring-rose-500/25" }
+              : { yazi: "Dönem", cls: "bg-primary/15 text-primary ring-primary/25" };
+
     return (
-      <div className="flex flex-1 min-h-0 flex-col">
-        <div className="mb-3 flex items-center justify-between shrink-0">
-          <button
-            onClick={() => setGorunum("menu")}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground"
-          >
-            <ArrowLeft className="h-3.5 w-3.5" /> Menü
-          </button>
-          <span className="text-[11px] font-bold text-muted-foreground">
-            {standartIndex + 1} / {standartSorular.length}
-          </span>
-        </div>
-        {/* @ts-expect-error ilerleme bari props uyumu */}
-<IlerlemeBari simdiki={standartIndex} toplam={standartSorular.length} />
-        <div className="mt-3 rounded-2xl bg-card p-4 border border-border">
-          <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${aksan === "rose" ? "text-rose-400" : aksan === "pink" ? "text-pink-400" : aksan === "amber" ? "text-amber-400" : aksan === "sky" ? "text-sky-400" : "text-primary"}`}>
-            {soru.kategoriUst}
-          </p>
-          <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
-            {soru.vurgu}
-          </h2>
-          <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
-          <div className="mt-3 space-y-2">
-            {soru.secenekler.map((secenek, i) => {
-              const secildi = standartSecim === secenek;
-              const dogru = secenek === soru.dogru;
-              let stil = "bg-background border border-border text-card-foreground";
-              if (standartSecim) {
-                if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
-                else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
-                else stil = "bg-background border-border text-muted-foreground opacity-50";
-              }
-              return (
-                <button
-                  key={secenek}
-                  onClick={() => standartCevapla(secenek)}
-                  disabled={standartSecim !== null}
-                  className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
-                >
-                  <span
-                    className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
-                      standartSecim && dogru
-                        ? "bg-emerald-500 text-white"
-                        : standartSecim && secildi
-                          ? "bg-destructive text-white"
-                          : "bg-muted text-muted-foreground"
-                    }`}
-                  >
-                    {standartSecim && dogru ? (
-                      <Check className="h-4 w-4" strokeWidth={3} />
-                    ) : standartSecim && secildi ? (
-                      <X className="h-4 w-4" strokeWidth={3} />
-                    ) : (
-                      String.fromCharCode(65 + i)
-                    )}
-                  </span>
-                  <span className="flex-1">{secenek}</span>
-                </button>
-              );
-            })}
-          </div>
-          {standartSecim && soru.aciklama && (
-            <p className="mt-3 text-[12px] leading-relaxed text-muted-foreground rounded-xl bg-muted/40 p-3">
-              {soru.aciklama}
+      <div className="flex flex-1 min-h-0 flex-col gap-2">
+        <div className="shrink-0 rounded-2xl bg-card border border-border p-3 shadow-sm">
+          <IlerlemeBari
+            mevcut={standartIndex + 1}
+            toplam={standartSorular.length}
+            etiket="SORU"
+            sagEtiket={`${standartIndex + 1} / ${standartSorular.length} · ${standartDogru} doğru`}
+          />
+          <div className="mt-2.5 flex items-center justify-between gap-2">
+            <p className="truncate text-[11px] font-semibold text-muted-foreground">
+              {seciliBaslik}
+              {seciliBaslik && !seciliBaslik.toLocaleLowerCase("tr").includes("test") ? " Testi" : ""}
             </p>
-          )}
-          {standartSecim && (
             <button
-              onClick={standartSonraki}
-              className={`mt-4 flex w-full items-center justify-center gap-1 rounded-xl py-3 text-sm font-bold ${aksanSinif.btn}`}
+              type="button"
+              onClick={() => setGorunum("menu")}
+              className="inline-flex shrink-0 items-center gap-1 rounded-full bg-muted/60 px-2.5 py-1 text-[10px] font-semibold text-muted-foreground ring-1 ring-border transition hover:text-foreground"
             >
-              {standartIndex + 1 >= standartSorular.length ? "Sonuç" : "Sonraki"}
-              <ArrowRight className="h-4 w-4" />
+              <RotateCcw className="h-3 w-3" /> Testten Çık
             </button>
-          )}
+          </div>
         </div>
+
+        <div className="min-h-0 flex-1 overflow-y-auto no-scrollbar">
+          <div className="rounded-2xl bg-card p-4 border border-border">
+            <div className="flex items-start justify-between gap-2">
+              <p className={`text-[11px] font-semibold uppercase tracking-[0.18em] ${kategoriRenk}`}>
+                {soru.kategoriUst}
+              </p>
+              <span className={`shrink-0 rounded-full px-2 py-0.5 text-[9px] font-bold ring-1 ${rozet.cls}`}>
+                {rozet.yazi}
+              </span>
+            </div>
+            <h2 className="mt-1.5 font-serif text-xl font-bold leading-snug text-card-foreground">
+              {soru.vurgu}
+            </h2>
+            <p className="mt-1.5 text-sm text-muted-foreground">{soru.metin}</p>
+            <div className="mt-3 space-y-2">
+              {soru.secenekler.map((secenek, i) => {
+                const secildi = standartSecim === secenek;
+                const dogru = secenek === soru.dogru;
+                let stil = "bg-background border border-border text-card-foreground";
+                if (standartSecim) {
+                  if (dogru) stil = "bg-emerald-500/10 border-emerald-500/50 text-emerald-500";
+                  else if (secildi) stil = "bg-destructive/10 border-destructive/50 text-destructive";
+                  else stil = "bg-background border-border text-muted-foreground opacity-50";
+                }
+                return (
+                  <button
+                    key={secenek}
+                    onClick={() => standartCevapla(secenek)}
+                    disabled={standartSecim !== null}
+                    className={`flex w-full items-center gap-3 rounded-lg px-3.5 py-3 text-left text-sm font-medium ${stil}`}
+                  >
+                    <span
+                      className={`grid h-7 w-7 shrink-0 place-items-center rounded-lg text-xs font-bold ${
+                        standartSecim && dogru
+                          ? "bg-emerald-500 text-white"
+                          : standartSecim && secildi
+                            ? "bg-destructive text-white"
+                            : "bg-muted text-muted-foreground"
+                      }`}
+                    >
+                      {standartSecim && dogru ? (
+                        <Check className="h-4 w-4" strokeWidth={3} />
+                      ) : standartSecim && secildi ? (
+                        <X className="h-4 w-4" strokeWidth={3} />
+                      ) : (
+                        String.fromCharCode(65 + i)
+                      )}
+                    </span>
+                    <span className="flex-1">{secenek}</span>
+                  </button>
+                );
+              })}
+            </div>
+
+            {standartSecim && soru.aciklama && (
+              <div className="mt-3 rounded-xl bg-amber-500/10 p-3 ring-1 ring-amber-500/25">
+                <p className="text-[12px] leading-relaxed text-amber-200/95">
+                  <span className="font-bold text-amber-400">Bilgi notu: </span>
+                  {soru.aciklama}
+                </p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {standartSecim && (
+          <button
+            type="button"
+            onClick={standartSonraki}
+            className={`shrink-0 flex w-full items-center justify-center gap-1 rounded-xl py-3.5 text-sm font-bold shadow-md ${aksanSinif.btn}`}
+          >
+            {standartIndex + 1 >= standartSorular.length ? "Sonuç" : "Sonraki"}
+            <ArrowRight className="h-4 w-4" />
+          </button>
+        )}
       </div>
     );
   }
@@ -1075,8 +1132,8 @@ export default function TestModul() {
             <BookOpen className="h-5 w-5" />
           </div>
           <div>
-            <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testi</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Yazar–eser, döneme göre</p>
+            <p className="font-serif text-sm font-bold text-card-foreground">Dönem Testleri</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Eksiklerini bul, teste başla! 🚀</p>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
@@ -1086,29 +1143,26 @@ export default function TestModul() {
         onClick={osymBaslat}
         className="group flex items-center justify-between rounded-2xl bg-card border border-osym/30 p-3.5 text-left shadow-sm transition hover:bg-osym/5 active:scale-[0.99]"
       >
-        <div className="flex items-center justify-between w-full">
-          <div className="flex items-center gap-3">
-            <div className="grid h-10 w-10 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
-              <Flame className="h-5 w-5" strokeWidth={2.2} />
-            </div>
-            <div>
-              <div className="flex items-center gap-2">
-                <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
-                <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
-                  Çıkmış Soru
-                </span>
-              </div>
-              <p className="mt-0.5 text-[11px] text-muted-foreground">
-                Dönem sınırı yok! Banko sorularla gerçek prova 🔥
-                {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
-              </p>
-            </div>
+        <div className="flex items-center gap-3 min-w-0 flex-1">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-osym text-osym-foreground shadow-[0_0_16px_rgba(249,115,22,0.3)]">
+            <Flame className="h-5 w-5" strokeWidth={2.2} />
           </div>
-          <ChevronRight className="h-5 w-5 text-osym/70 transition-transform group-hover:translate-x-0.5" />
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-serif text-sm font-bold text-card-foreground">ÖSYM Sever</p>
+              <span className="rounded-full bg-osym/20 px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider text-osym">
+                Çıkmış Soru
+              </span>
+            </div>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
+              Dönem sınırı yok! Banko sorularla gerçek prova 🔥
+              {osymEnIyiSkor > 0 ? ` · En iyi: ${osymEnIyiSkor}/20` : ""}
+            </p>
+          </div>
         </div>
+        <ChevronRight className="h-5 w-5 shrink-0 text-osym/70" />
       </button>
 
-      {/* 3. Kaçırdıkların */}
       <button
         onClick={() => {
           if (tekrarSayisi === 0) return;
@@ -1116,28 +1170,24 @@ export default function TestModul() {
         }}
         disabled={tekrarSayisi === 0}
         className={`flex items-center justify-between rounded-2xl border p-3.5 text-left shadow-sm transition active:scale-[0.99] ${
-          tekrarSayisi === 0
-            ? "bg-card/50 border-border/40 opacity-55 cursor-not-allowed"
-            : "bg-card border-rose-500/35 hover:bg-rose-500/5 hover:border-rose-500/60"
+          tekrarSayisi > 0
+            ? "bg-card border-rose-500/25 hover:bg-rose-500/5"
+            : "bg-card/50 border-border opacity-50 pointer-events-none"
         }`}
       >
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="relative grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-rose-500/15 text-rose-400 ring-1 ring-rose-500/25">
             <RotateCcw className="h-5 w-5" />
+            {tekrarSayisi > 0 && (
+              <span className="absolute -right-1 -top-1 grid h-5 min-w-5 place-items-center rounded-full bg-rose-500 px-1 text-[10px] font-bold text-white">
+                {tekrarSayisi}
+              </span>
+            )}
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-serif text-sm font-bold text-card-foreground">Kaçırdıkların</p>
-              {tekrarSayisi > 0 && (
-                <span className="rounded-full bg-rose-500/20 px-2 py-0.5 text-[9px] font-extrabold text-rose-400">
-                  {tekrarSayisi}
-                </span>
-              )}
-            </div>
+          <div className="min-w-0">
+            <p className="font-serif text-sm font-bold text-card-foreground">Kaçırdıkların</p>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {tekrarSayisi === 0
-                ? "Boş — yanlışın buraya düşer, doğru yapınca çıkar"
-                : `${tekrarSayisi} açık — buradan kapat`}
+              {tekrarSayisi > 0 ? `${tekrarSayisi} açık — buradan kapat` : "Yapamadığın sorular burada!"}
             </p>
           </div>
         </div>
@@ -1148,15 +1198,18 @@ export default function TestModul() {
         onClick={() => standartBaslat("kadin")}
         className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
       >
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-pink-500/15 text-pink-500 ring-1 ring-pink-500/25 text-base">
             🌸
           </div>
-          <div>
-            <div className="flex items-center gap-2">
-              <p className="font-serif text-sm font-bold text-card-foreground">Kadın Yazarlar</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-serif text-sm font-bold text-card-foreground">Kadın Yazarlar & Eserleri</p>
+              <span className="rounded-full bg-pink-500/15 px-2 py-0.5 text-[9px] font-bold text-pink-400 ring-1 ring-pink-500/25">
+                Özel
+              </span>
             </div>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Seçki · yazar–eser</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Sadece kadın yazar ve eserleri! 🌸</p>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
@@ -1166,13 +1219,18 @@ export default function TestModul() {
         onClick={() => standartBaslat("kahraman")}
         className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
       >
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-amber-500/15 text-amber-500 ring-1 ring-amber-500/25">
             <Users className="h-5 w-5" />
           </div>
-          <div>
-            <p className="font-serif text-sm font-bold text-card-foreground">Eser – Kahraman</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Karakter eşlemesi</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-serif text-sm font-bold text-card-foreground">Eser – Kahraman</p>
+              <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[9px] font-bold text-amber-400 ring-1 ring-amber-500/25">
+                Karakter
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Eser ↔ karakter eşleştir, bankoları ezberle! 🎭</p>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
@@ -1182,13 +1240,18 @@ export default function TestModul() {
         onClick={() => standartBaslat("akim")}
         className="flex items-center justify-between rounded-2xl bg-card border border-border p-3.5 transition hover:bg-muted/40 active:scale-[0.99] text-left shadow-sm"
       >
-        <div className="flex items-center gap-3">
-          <div className="grid h-10 w-10 place-items-center rounded-xl bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/25">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-sky-500/15 text-sky-400 ring-1 ring-sky-500/25">
             <Compass className="h-5 w-5" />
           </div>
-          <div>
-            <p className="font-serif text-sm font-bold text-card-foreground">Batı Edebi Akımlar</p>
-            <p className="text-[11px] text-muted-foreground mt-0.5">Parnasizm, sembolizm…</p>
+          <div className="min-w-0">
+            <div className="flex items-center gap-2 flex-wrap">
+              <p className="font-serif text-sm font-bold text-card-foreground">Batı Edebi Akımları</p>
+              <span className="rounded-full bg-sky-500/15 px-2 py-0.5 text-[9px] font-bold text-sky-400 ring-1 ring-sky-500/25">
+                Akım
+              </span>
+            </div>
+            <p className="text-[11px] text-muted-foreground mt-0.5">Akımları, temsilcileri ve özellikleriyle tanı! 🌐</p>
           </div>
         </div>
         <ChevronRight className="h-5 w-5 text-muted-foreground/60" />
