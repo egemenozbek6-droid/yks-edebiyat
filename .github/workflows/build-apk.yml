@@ -24,14 +24,6 @@ jobs:
           distribution: temurin
           java-version: "21"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept licenses and install SDK
-        run: |
-          yes | sdkmanager --licenses || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0"
-
       - name: Install Dependencies
         run: npm install
 
@@ -40,11 +32,16 @@ jobs:
           npm run build
           npx cap sync android
 
-      - name: Build unsigned release AAB
+      - name: Build release AAB
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_SDK_ROOT: /usr/local/lib/android/sdk
         run: |
+          echo "sdk.dir=$ANDROID_SDK_ROOT" > android/local.properties
+          echo "android.overridePathCheck=true" >> android/gradle.properties
           cd android
-          echo "android.overridePathCheck=true" >> gradle.properties
-          gradle bundleRelease -x lint -x test --stacktrace
+          chmod +x ./gradlew
+          ./gradlew bundleRelease --stacktrace
 
       - name: Upload AAB Artifact
         uses: actions/upload-artifact@v4
