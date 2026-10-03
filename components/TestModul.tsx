@@ -591,16 +591,26 @@ export default function TestModul() {
     } else if (tur === "akim") {
       const havuz = batiAkimlarData as BatiAkimItem[];
       if (!havuz.length) return;
-      const secilenler = karistir(recentFiltrele(havuz, (x) => x.id)).slice(0, Math.min(10, havuz.length));
+      // Veride 7 akım var; 10 soru için farklı tip/tekrar ile üret
       const tumIsimler = havuz.map((x) => x.name);
       const tumTemsil = Array.from(new Set(havuz.flatMap((x) => x.representatives)));
-      const tumSlogan = havuz.map((x) => x.slogan);
       const tumOzellik = havuz.flatMap((x) => x.keyFeatures);
-      hazir = secilenler.map((akim) => {
-        const tip = Math.floor(Math.random() * 4);
-        if (tip === 0) {
+      const sirali = karistir([...havuz]);
+      const hedef = 10;
+      const uretilen: StandartSoru[] = [];
+      const kullanilan = new Set<string>();
+      let i = 0;
+      while (uretilen.length < hedef && i < hedef * 6) {
+        const akim = sirali[i % sirali.length];
+        const tip = i % 4;
+        i += 1;
+        let soru: StandartSoru | null = null;
+        if (tip === 0 && akim.representatives.length) {
           const t = akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
-          return {
+          const anahtar = `t0:${t}`;
+          if (kullanilan.has(anahtar)) continue;
+          kullanilan.add(anahtar);
+          soru = {
             kategoriUst: "TEMSİLCİ → AKIM",
             vurgu: t,
             metin: "Bu sanatçı aşağıdaki akımlardan hangisinin temsilcisidir?",
@@ -609,11 +619,13 @@ export default function TestModul() {
             aciklama: akim.hint || akim.century,
             kartId: akim.id,
           };
-        }
-        if (tip === 1) {
+        } else if (tip === 1 && akim.representatives.length) {
           const t = akim.representatives[Math.floor(Math.random() * akim.representatives.length)];
           const yabanci = tumTemsil.filter((x) => !akim.representatives.includes(x));
-          return {
+          const anahtar = `t1:${akim.id}:${t}`;
+          if (kullanilan.has(anahtar)) continue;
+          kullanilan.add(anahtar);
+          soru = {
             kategoriUst: "AKIM → TEMSİLCİ",
             vurgu: akim.name,
             metin: "Bu akımın temsilcisi hangisidir?",
@@ -622,9 +634,11 @@ export default function TestModul() {
             aciklama: akim.hint || akim.century,
             kartId: akim.id,
           };
-        }
-        if (tip === 2) {
-          return {
+        } else if (tip === 2) {
+          const anahtar = `t2:${akim.id}`;
+          if (kullanilan.has(anahtar)) continue;
+          kullanilan.add(anahtar);
+          soru = {
             kategoriUst: "SLOGAN → AKIM",
             vurgu: akim.slogan,
             metin: "Bu söz hangi akımı özetler?",
@@ -633,19 +647,24 @@ export default function TestModul() {
             aciklama: akim.hint || akim.century,
             kartId: akim.id,
           };
+        } else if (akim.keyFeatures.length) {
+          const oz = akim.keyFeatures[Math.floor(Math.random() * akim.keyFeatures.length)];
+          const anahtar = `t3:${oz}`;
+          if (kullanilan.has(anahtar)) continue;
+          kullanilan.add(anahtar);
+          soru = {
+            kategoriUst: "ÖZELLİK → AKIM",
+            vurgu: oz,
+            metin: "Bu özellik hangi akıma aittir?",
+            dogru: akim.name,
+            secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
+            aciklama: akim.hint || oz,
+            kartId: akim.id,
+          };
         }
-        const oz = akim.keyFeatures[Math.floor(Math.random() * akim.keyFeatures.length)];
-        const yabanciOz = tumOzellik.filter((x) => !akim.keyFeatures.includes(x));
-        return {
-          kategoriUst: "ÖZELLİK → AKIM",
-          vurgu: oz,
-          metin: "Bu özellik hangi akıma aittir?",
-          dogru: akim.name,
-          secenekler: secenekUret(akim.name, tumIsimler, tumIsimler),
-          aciklama: akim.hint || oz,
-          kartId: akim.id,
-        };
-      });
+        if (soru) uretilen.push(soru);
+      }
+      hazir = karistir(uretilen).slice(0, hedef);
       baslik = "Batı Edebi Akımlar";
       renk = "sky";
     } else {
@@ -769,6 +788,19 @@ export default function TestModul() {
     },
   }[aksan];
 
+  const ilerlemeRenk =
+    aksan === "pink"
+      ? "bg-pink-500"
+      : aksan === "amber"
+        ? "bg-amber-500"
+        : aksan === "sky"
+          ? "bg-sky-500"
+          : aksan === "rose"
+            ? "bg-rose-500"
+            : aksan === "osym"
+              ? "bg-osym"
+              : "bg-primary";
+
   if (gorunum === "osym") {
     if (osymBitti) {
       const oran = Math.round((osymDogruSayi / Math.max(1, osymSorular.length)) * 100);
@@ -814,6 +846,7 @@ export default function TestModul() {
             toplam={osymSorular.length}
             etiket="SORU"
             sagEtiket={`${osymAktif + 1} / ${osymSorular.length} · ${osymDogruSayi} doğru`}
+            renkSinif="bg-osym"
           />
           <div className="mt-2.5 flex items-center justify-between gap-2">
             <p className="truncate text-[11px] font-semibold text-muted-foreground">ÖSYM Sever</p>
@@ -989,6 +1022,7 @@ export default function TestModul() {
             toplam={standartSorular.length}
             etiket="SORU"
             sagEtiket={`${standartIndex + 1} / ${standartSorular.length} · ${standartDogru} doğru`}
+            renkSinif={ilerlemeRenk}
           />
           <div className="mt-2.5 flex items-center justify-between gap-2">
             <p className="truncate text-[11px] font-semibold text-muted-foreground">
