@@ -3,9 +3,11 @@ type Props = {
   toplam: number
   etiket?: string
   sagEtiket?: string
+  /** Tailwind bg class for the fill bar, e.g. bg-pink-500 */
+  renkSinif?: string
 }
 
-export default function IlerlemeBari({ mevcut, toplam, etiket, sagEtiket }: Props) {
+export default function IlerlemeBari({ mevcut, toplam, etiket, sagEtiket, renkSinif = "bg-primary" }: Props) {
   const oran = toplam > 0 ? Math.min(100, Math.round((mevcut / toplam) * 100)) : 0
 
   return (
@@ -17,7 +19,7 @@ export default function IlerlemeBari({ mevcut, toplam, etiket, sagEtiket }: Prop
         <p className="text-xs font-semibold text-muted-foreground">
           {sagEtiket ?? (
             <>
-              <span className="text-primary text-sm font-bold">{mevcut}</span>
+              <span className={`text-sm font-bold ${renkSinif.replace("bg-", "text-")}`}>{mevcut}</span>
               <span> / {toplam}</span>
             </>
           )}
@@ -33,7 +35,7 @@ export default function IlerlemeBari({ mevcut, toplam, etiket, sagEtiket }: Prop
         aria-label={etiket ?? "İlerleme"}
       >
         <div
-          className="absolute inset-y-0 left-0 rounded-full bg-primary transition-[width] duration-500 ease-out"
+          className={`absolute inset-y-0 left-0 rounded-full transition-[width] duration-500 ease-out ${renkSinif}`}
           style={{ width: `${oran}%` }}
         >
           <div className="absolute inset-0 rounded-full bg-foreground/10 mix-blend-overlay" />
