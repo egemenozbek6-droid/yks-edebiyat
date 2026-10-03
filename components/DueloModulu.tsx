@@ -1778,15 +1778,15 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Skor — sabit genişlik, isimleri ezmez */}
+          {/* Skor — 3 haneli sığar, isimleri ezmez */}
           <div className="flex shrink-0 items-center gap-1 px-0.5">
-            <span className={`w-7 text-center text-xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+            <span className={`min-w-[2.25rem] text-center text-xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
               {oyuncuSkor}
             </span>
             <span className="rounded-full bg-muted px-1.5 py-0.5 text-[8px] font-bold text-muted-foreground">
               VS
             </span>
-            <span className={`w-7 text-center text-xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+            <span className={`min-w-[2.25rem] text-center text-xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
               {rakipSkor}
             </span>
           </div>
