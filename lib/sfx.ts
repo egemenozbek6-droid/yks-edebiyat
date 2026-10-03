@@ -109,12 +109,13 @@ export function sfxDefeat(): void {
   tone(261.63, 0.4, "sine", 0.1, 0.3);
 }
 
-/** Kart çevirme — yumuşak sayfa / kitap sesi */
+/** Kart çevirme — çok yumuşak sayfa hissi (punch yok) */
 export function sfxFlip(): void {
-  noiseBurst(0.09, 0.18, 1600, 0);
-  noiseBurst(0.06, 0.1, 900, 0.03);
-  tone(320, 0.07, "sine", 0.035, 0);
-  tone(240, 0.09, "sine", 0.025, 0.04);
+  // ince, kısa fısıltı + çok hafif sine whoosh
+  noiseBurst(0.055, 0.055, 2400, 0);
+  noiseBurst(0.04, 0.03, 1800, 0.02);
+  tone(520, 0.05, "sine", 0.028, 0);
+  tone(380, 0.07, "sine", 0.02, 0.025);
 }
 
 /** Sağa atma (öğrendim) — soft onay */
