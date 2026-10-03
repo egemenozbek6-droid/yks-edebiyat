@@ -31,7 +31,14 @@ jobs:
         run: |
           npm run build
           npx cap sync android
-
+      - name: Generate icon and splash
+        run: |
+          npm install -D @capacitor/assets
+          mkdir -p assets
+          cp "ChatGPT Image Oct 3, 2026, 01_59_14 PM.png" assets/icon.png
+          cp assets/icon.png assets/splash.png
+          npx capacitor-assets generate --android --iconBackgroundColor "#0B1220" --splashBackgroundColor "#0B1220"
+      
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
         with:
