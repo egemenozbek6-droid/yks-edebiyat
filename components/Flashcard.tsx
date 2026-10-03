@@ -19,6 +19,7 @@ import {
   kutuRozetBilgisi,
   type KartHafiza,
 } from "@/lib/leitner";
+import { sfxFlip, sfxSwipeLeft, sfxSwipeRight } from "@/lib/sfx";
 
 type Props = {
   item: LiteratureItem;
@@ -74,9 +75,11 @@ export default function Flashcard({
       setDx(yon === "sag" ? 520 : -520);
 
       if (yon === "sag") {
+        sfxSwipeRight();
         const yeni = kartOgrenildiKaydet(String(item.id));
         setHafiza(yeni);
       } else {
+        sfxSwipeLeft();
         const yeni = kartTekrarKaydet(String(item.id));
         setHafiza(yeni);
       }
@@ -112,9 +115,14 @@ export default function Flashcard({
     else setDx(0);
   };
 
+  const cevir = () => {
+    sfxFlip();
+    setCevrildi((v) => !v);
+  };
+
   const tikla = () => {
     if (hareket.current > 8 || ucus || intro) return;
-    setCevrildi((v) => !v);
+    cevir();
   };
 
   const osymFreqHam = item.osym_stats?.osym_freq;
@@ -144,7 +152,7 @@ export default function Flashcard({
           onKeyDown={(e) => {
             if (e.key === "Enter" || e.key === " ") {
               e.preventDefault();
-              setCevrildi((v) => !v);
+              if (!ucus && !intro) cevir();
             }
           }}
           aria-label={cevrildi ? `Cevap: ${item.author}, ${item.period}.` : `Eser: ${item.work}.`}
@@ -304,7 +312,7 @@ export default function Flashcard({
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
-          onClick={() => setCevrildi((v) => !v)}
+          onClick={() => { if (!ucus && !intro) cevir(); }}
           className="rounded-xl px-3 py-1.5 text-xs font-bold text-primary transition hover:bg-primary/10"
         >
           {cevrildi ? "Ön Yüzü Gör" : "Arka Yüzü Gör"}
