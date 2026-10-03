@@ -1587,21 +1587,21 @@ export default function DueloModulu({
           </div>
           <h2 className="font-sans text-2xl font-black tracking-tight text-card-foreground">
             {hukmenGalibiyet
-              ? "Rakip kaçtı."
+              ? "Rakip çıktı"
               : kazandi
-                ? "Ezici üstünlük."
+                ? "Bu tur senin"
                 : berabere
-                  ? "Berabere kaldınız."
-                  : "Bu sefer olmadı."}
+                  ? "Berabere"
+                  : "Bu sefer olmadı"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {hukmenGalibiyet
-              ? "Rakip oyundan çıktı. Galibiyet senin."
+              ? "Maçı bıraktı, hükmen galipsin."
               : kazandi
-                ? "Rakip utansın."
+                ? "Skor sende kapandı."
                 : berabere
-                  ? "İkiniz de aynı skoru yaptınız."
-                  : "Rövanş ister misin, yoksa kaçacak mısın?"}
+                  ? "Aynı skorla bitti."
+                  : "Rövanş duruyor."}
           </p>
 
           <div className="mt-6 grid grid-cols-2 gap-3">
@@ -1748,21 +1748,29 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* Skor barı — skor ortada büyük; rütbe kesilmez */}
-      <div className="mb-3 glass-card rounded-xl px-2.5 py-2.5 ring-1 ring-border shrink-0">
-        <div className="flex items-center gap-1.5">
+      {/* Skor barı — isim/rütbe sığar, üç nokta yok */}
+      <div className="mb-3 glass-card rounded-xl px-2 py-2 ring-1 ring-border shrink-0">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5">
           {/* Oyuncu */}
-          <div className="flex min-w-0 flex-1 items-center gap-1.5">
-            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base ring-1 ring-border">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
             </div>
             <div className="min-w-0 flex-1">
-              <p className="truncate text-[11px] font-bold leading-tight text-card-foreground">
+              <p
+                className="whitespace-nowrap font-bold leading-none text-card-foreground"
+                style={{
+                  fontSize: `${Math.max(8, Math.min(11, 118 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
+                }}
+              >
                 {kullanici.kullaniciAdi}
               </p>
               <p
-                className="mt-0.5 text-[9px] font-semibold leading-tight"
-                style={{ color: oyuncuRank.renk }}
+                className="mt-0.5 whitespace-nowrap font-semibold leading-none"
+                style={{
+                  color: oyuncuRank.renk,
+                  fontSize: `${Math.max(7, Math.min(9, 118 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
+                }}
               >
                 <span className="mr-0.5">{oyuncuRank.ikon}</span>
                 {oyuncuRank.ad}
@@ -1770,32 +1778,42 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Skorlar + VS — her zaman tam görünür */}
-          <div className="flex shrink-0 items-center gap-1.5 px-0.5">
-            <span className={`min-w-[1.75rem] text-center text-2xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+          {/* Skor — sabit genişlik, isimleri ezmez */}
+          <div className="flex shrink-0 items-center gap-1 px-0.5">
+            <span className={`w-7 text-center text-xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
               {oyuncuSkor}
             </span>
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-bold text-muted-foreground">
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[8px] font-bold text-muted-foreground">
               VS
             </span>
-            <span className={`min-w-[1.75rem] text-center text-2xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+            <span className={`w-7 text-center text-xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
               {rakipSkor}
             </span>
           </div>
 
           {/* Rakip */}
-          <div className="flex min-w-0 flex-1 items-center justify-end gap-1.5">
+          <div className="flex min-w-0 items-center justify-end gap-1.5">
             <div className="min-w-0 flex-1 text-right">
-              <p className="truncate text-[11px] font-bold leading-tight text-card-foreground">{rakip.ad}</p>
               <p
-                className="mt-0.5 text-[9px] font-semibold leading-tight"
-                style={{ color: rakipRank.renk }}
+                className="whitespace-nowrap font-bold leading-none text-card-foreground"
+                style={{
+                  fontSize: `${Math.max(8, Math.min(11, 118 / Math.max(rakip.ad.length, 1)))}px`,
+                }}
+              >
+                {rakip.ad}
+              </p>
+              <p
+                className="mt-0.5 whitespace-nowrap font-semibold leading-none"
+                style={{
+                  color: rakipRank.renk,
+                  fontSize: `${Math.max(7, Math.min(9, 118 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
+                }}
               >
                 {rakipRank.ad}
                 <span className="ml-0.5">{rakipRank.ikon}</span>
               </p>
             </div>
-            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base ring-1 ring-border">
+            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
               {avatarEmoji(rakip.avatar)}
             </div>
           </div>
@@ -1983,10 +2001,10 @@ export default function DueloModulu({
               <LogOut className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
-              Maçtan kaçacak mısın?
+              Maçı bırak
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Terk edersen maçı kaybedersin, rakibin hükmen galip sayılır. Gerçekten çıkmak istiyor musun?
+              Terk edersen bu maç kayıp yazılır, rakip hükmen alır.
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
@@ -1999,7 +2017,7 @@ export default function DueloModulu({
                 onClick={forfeitOnayla}
                 className="rounded-lg bg-destructive py-3.5 text-sm font-bold text-white shadow-md transition hover:brightness-110 active:scale-[0.98]"
               >
-                Evet, Terk Et
+                Terk Et
               </button>
             </div>
           </div>
@@ -2014,10 +2032,10 @@ export default function DueloModulu({
               <Trophy className="h-9 w-9" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
-              Rakip Düellodan Çekildi! Hükmen Kazandın! 🎉
+              Rakip çıktı
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Rakibiniz oyundan ayrıldı ve maçı hükmen kazandınız.
+              Maçı bıraktı. Hükmen kazandın.
             </p>
             <button
               onClick={() => {
