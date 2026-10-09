@@ -180,9 +180,8 @@ export default function Flashcard({
             >
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst Rozet Satırı (Eser rozeti kaldırıldı, ferah zıt köşeler) */}
-                <div className="flex items-center justify-between gap-2">
+              <div className="relative flex h-full min-h-0 flex-col gap-3 overflow-y-auto p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2">
                   <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold whitespace-nowrap ring-1 ${rozet.bg} ${rozet.renk}`}>
                     {rozet.etiket}
                   </span>
@@ -197,7 +196,10 @@ export default function Flashcard({
 
                 {/* Orta Başlık */}
                 <div className="flex flex-col items-center justify-center text-center px-2 py-4">
-                  <h2 className="font-serif text-3xl font-extrabold tracking-tight leading-tight text-balance text-card-foreground sm:text-4xl">
+                  <h2
+                    className="font-serif font-extrabold tracking-tight leading-tight text-balance text-card-foreground"
+                    style={{ fontSize: `clamp(1.15rem, ${Math.max(3.2, 18 / Math.max(item.work.length, 8))}vw, 1.85rem)` }}
+                  >
                     {item.work}
                   </h2>
                   <span className="mt-3 rounded-full bg-muted/60 px-3 py-1 text-xs font-semibold text-muted-foreground ring-1 ring-border">
@@ -225,13 +227,12 @@ export default function Flashcard({
             >
               <div className="absolute inset-y-0 left-0 w-1.5 bg-emerald-500" aria-hidden="true" />
 
-              <div className="relative flex h-full flex-col justify-between p-5 sm:p-6">
-                {/* Üst Bilgi Satırı */}
-                <div className="flex items-center justify-between">
-                  <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-bold text-emerald-500 ring-1 ring-emerald-500/25">
+              <div className="relative flex h-full min-h-0 flex-col gap-3 overflow-y-auto p-4">
+                <div className="flex flex-wrap items-center gap-1.5">
+                  <span className="inline-flex max-w-full items-center rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold leading-tight text-emerald-500 ring-1 ring-emerald-500/25">
                     {item.period}
                   </span>
-                  <span className="text-xs font-semibold text-muted-foreground">
+                  <span className="inline-flex max-w-full items-center rounded-full bg-muted/70 px-2.5 py-1 text-[11px] font-semibold leading-tight text-muted-foreground ring-1 ring-border">
                     {item.genre}
                   </span>
                 </div>
@@ -241,13 +242,16 @@ export default function Flashcard({
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Yazar
                   </p>
-                  <h2 className="mt-1 font-serif text-3xl font-extrabold leading-tight text-balance text-card-foreground sm:text-4xl">
+                  <h2
+                    className="mt-1 font-serif font-extrabold leading-tight text-balance text-card-foreground"
+                    style={{ fontSize: `clamp(1.15rem, ${Math.max(3.2, 16 / Math.max(item.author.length, 8))}vw, 1.75rem)` }}
+                  >
                     {item.author}
                   </h2>
 
                   {/* Bilgi Kutusu */}
                   {item.info && (
-                    <div className="mt-4 w-full rounded-2xl border border-border bg-muted/40 p-3.5 text-left">
+                    <div className="mt-3 w-full rounded-2xl border border-border bg-muted/40 p-3 text-left">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">
                         Eser Özeti & Bilgi
                       </p>
@@ -287,18 +291,18 @@ export default function Flashcard({
       </div>
 
       {/* Alt Aksiyon Butonları */}
-      <div className="mt-4 grid grid-cols-2 gap-3 shrink-0">
+      <div className="mt-3 grid grid-cols-2 gap-2 shrink-0">
         <button
           onClick={() => tamamla("sol")}
-          className="flex items-center justify-center gap-2 rounded-2xl border border-border bg-card py-3.5 text-sm font-bold text-muted-foreground shadow-sm transition hover:bg-muted/70 hover:text-foreground active:scale-[0.98]"
+          className="flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl border border-border bg-card px-2 py-2.5 text-xs font-bold text-muted-foreground shadow-sm transition hover:bg-muted/70 hover:text-foreground active:scale-[0.98]"
         >
-          <RotateCcw className="h-4 w-4 text-destructive" /> Tekrar Et (Kutu 1)
+          <RotateCcw className="h-3.5 w-3.5 shrink-0 text-destructive" /> Tekrar Et
         </button>
         <button
           onClick={() => tamamla("sag")}
-          className="flex items-center justify-center gap-2 rounded-2xl bg-primary py-3.5 text-sm font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
+          className="flex min-w-0 items-center justify-center gap-1.5 whitespace-nowrap rounded-2xl bg-primary px-2 py-2.5 text-xs font-bold text-primary-foreground shadow-md transition hover:brightness-110 active:scale-[0.98]"
         >
-          <Check className="h-4 w-4" /> Kaptım (+1 Kutu)
+          <Check className="h-3.5 w-3.5 shrink-0" /> Kaptım
         </button>
       </div>
 
