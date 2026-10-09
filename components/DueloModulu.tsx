@@ -899,7 +899,7 @@ export default function DueloModulu({
   // --- NICK ---
   if (adim === "nick") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full">
           <div className="mx-auto mb-5 grid h-16 w-16 place-items-center rounded-xl bg-duello/15 text-duello animate-pop ring-1 ring-duello/30">
             <Swords className="h-7 w-7" strokeWidth={1.5} />
@@ -976,7 +976,7 @@ export default function DueloModulu({
     };
 
     return (
-      <div className="flex-1 flex flex-col justify-center py-1 min-h-0">
+      <div className="min-h-0 flex-1 overflow-y-auto py-1">
         <div className="animate-rise w-full max-w-3xl mx-auto grid gap-3 md:grid-cols-2">
 
           {/* PROFİL & RANK */}
@@ -1379,7 +1379,7 @@ export default function DueloModulu({
   }
   if (adim === "aratma") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise text-center">
           <div className="mx-auto mb-5 grid h-20 w-20 place-items-center rounded-xl bg-duello/15 text-duello ring-1 ring-duello/30">
             <div className="h-9 w-9 animate-spin rounded-full border-[3px] border-duello/20 border-t-duello" />
@@ -1399,7 +1399,7 @@ export default function DueloModulu({
   // --- ODA KUR (sadece soru sayısı seçimi → oda kodu oluştur) ---
   if (adim === "oda_kur") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full ring-1 ring-border">
           <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <KeyRound className="h-6 w-6" strokeWidth={1.5} />
@@ -1449,7 +1449,7 @@ export default function DueloModulu({
   // --- ODA KATIL (4 kutulu kod girişi) ---
   if (adim === "oda_katil") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full ring-1 ring-border">
           <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <KeyRound className="h-6 w-6" strokeWidth={1.5} />
@@ -1504,7 +1504,7 @@ export default function DueloModulu({
   // --- ODA BEKLEME ---
   if (adim === "oda_bekleme") {
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise glass-card rounded-xl p-7 shadow-sm max-w-sm w-full text-center ring-1 ring-border">
           <div className="mx-auto mb-5 grid h-14 w-14 place-items-center rounded-lg bg-duello/10 text-duello ring-1 ring-duello/20">
             <div className="h-6 w-6 animate-spin rounded-full border-2 border-duello/20 border-t-duello" />
@@ -1566,7 +1566,7 @@ export default function DueloModulu({
     const kazandi = sonuc.kazandi || sonuc.hukmenGalibiyet;
     const berabere = sonuc.berabere;
     return (
-      <div className="flex-1 flex items-center justify-center">
+      <div className="min-h-0 flex-1 overflow-y-auto flex items-center justify-center py-2">
         <div className="animate-rise glass-card rounded-xl p-8 text-center shadow-sm max-w-sm w-full ring-1 ring-border">
           <div
             className={`mx-auto mb-5 grid h-20 w-20 place-items-center rounded-xl animate-pop ${
@@ -1604,18 +1604,18 @@ export default function DueloModulu({
                   : "Rövanş duruyor."}
           </p>
 
-          <div className="mt-6 grid grid-cols-2 gap-3">
-            <div className="glass-card rounded-lg p-4 ring-1 ring-border">
-              <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+          <div className="mt-5 grid grid-cols-2 gap-2">
+            <div className="min-w-0 rounded-lg bg-muted/30 p-3 ring-1 ring-border">
+              <p className="whitespace-nowrap font-semibold uppercase tracking-wide text-muted-foreground" style={{ fontSize: `${Math.max(8, Math.min(10, 90 / Math.max((kullanici?.kullaniciAdi || "").length, 1)))}px` }}>
                 {kullanici?.kullaniciAdi}
               </p>
-              <p className="mt-1 text-2xl font-bold text-duello">{sonuc.oyuncuSkor} EP</p>
+              <p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums text-duello">{sonuc.oyuncuSkor} EP</p>
             </div>
-            <div className="glass-card rounded-lg p-4 ring-1 ring-border">
-              <p className="truncate text-[10px] font-semibold uppercase tracking-wider text-muted-foreground">
+            <div className="min-w-0 rounded-lg bg-muted/30 p-3 ring-1 ring-border">
+              <p className="whitespace-nowrap font-semibold uppercase tracking-wide text-muted-foreground" style={{ fontSize: `${Math.max(8, Math.min(10, 90 / Math.max((sonuc.rakipAdi || "").length, 1)))}px` }}>
                 {sonuc.rakipAdi}
               </p>
-              <p className="mt-1 text-2xl font-bold text-foreground">{sonuc.rakipSkor} EP</p>
+              <p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums text-foreground">{sonuc.rakipSkor} EP</p>
             </div>
           </div>
 
@@ -1760,7 +1760,7 @@ export default function DueloModulu({
               <p
                 className="whitespace-nowrap font-bold leading-none text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(8, Math.min(11, 118 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
+                  fontSize: `${Math.max(8, Math.min(11, 72 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
                 }}
               >
                 {kullanici.kullaniciAdi}
@@ -1769,7 +1769,7 @@ export default function DueloModulu({
                 className="mt-0.5 whitespace-nowrap font-semibold leading-none"
                 style={{
                   color: oyuncuRank.renk,
-                  fontSize: `${Math.max(7, Math.min(9, 118 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(7, Math.min(9, 78 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 <span className="mr-0.5">{oyuncuRank.ikon}</span>
@@ -1797,7 +1797,7 @@ export default function DueloModulu({
               <p
                 className="whitespace-nowrap font-bold leading-none text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(8, Math.min(11, 118 / Math.max(rakip.ad.length, 1)))}px`,
+                  fontSize: `${Math.max(8, Math.min(11, 72 / Math.max(rakip.ad.length, 1)))}px`,
                 }}
               >
                 {rakip.ad}
@@ -1806,7 +1806,7 @@ export default function DueloModulu({
                 className="mt-0.5 whitespace-nowrap font-semibold leading-none"
                 style={{
                   color: rakipRank.renk,
-                  fontSize: `${Math.max(7, Math.min(9, 118 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(7, Math.min(9, 78 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 {rakipRank.ad}
