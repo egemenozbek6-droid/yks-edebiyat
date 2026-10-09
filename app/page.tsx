@@ -243,7 +243,7 @@ export default function Page() {
   const aktifItem = kartVerisi[aktifIndex];
 
   return (
-    <div className="h-screen overflow-hidden bg-background text-foreground font-sans flex flex-col">
+    <div className="h-dvh overflow-hidden bg-background text-foreground font-sans flex flex-col" style={{ paddingTop: "env(safe-area-inset-top)", paddingBottom: "env(safe-area-inset-bottom)" }}>
       {splashAktif && <SplashEkran />}
       {onboardingHazir && onboardingAktif && (
   <OnboardingEkran onBitti={onboardingBitir} />
@@ -312,13 +312,13 @@ export default function Page() {
       </header>
 
       {/* Ana İçerik */}
-      <main className="relative flex-1 overflow-y-auto no-scrollbar max-w-3xl mx-auto w-full px-4 py-2.5 flex flex-col">
+      <main className="relative min-h-0 flex-1 overflow-hidden max-w-3xl mx-auto w-full px-4 py-2 flex flex-col">
         {ruhHali && mod !== "duelo" && (
-          <div className="mb-2.5 flex items-start gap-3 rounded-xl glass-card p-3 ring-1 ring-border animate-rise shrink-0">
-            <span className="text-xl leading-none" aria-hidden="true">
+          <div className="mb-2 flex items-center gap-2 rounded-xl glass-card px-2.5 py-1.5 ring-1 ring-border animate-rise shrink-0">
+            <span className="text-base leading-none" aria-hidden="true">
               {ruhHali.emoji || "💬"}
             </span>
-            <p className="flex-1 text-xs font-medium leading-relaxed text-pretty text-accent-foreground">
+            <p className="min-w-0 flex-1 text-[11px] font-medium leading-snug text-accent-foreground line-clamp-2">
               {ruhHali.mesaj}
             </p>
             <button
