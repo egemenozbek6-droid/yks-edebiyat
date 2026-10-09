@@ -462,6 +462,12 @@ export default function TestModul() {
   const [standartSorular, setStandartSorular] = useState<StandartSoru[]>([]);
   const [standartIndex, setStandartIndex] = useState(0);
   const [standartSecim, setStandartSecim] = useState<string | null>(null);
+  useEffect(() => {
+    if (!standartSecim) return;
+    const el = document.getElementById("bilgi-notu");
+    el?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  }, [standartSecim]);
+
   const [standartDogru, setStandartDogru] = useState(0);
   const [standartYanlis, setStandartYanlis] = useState(0);
   const [standartBitti, setStandartBitti] = useState(false);
@@ -1136,7 +1142,7 @@ export default function TestModul() {
             </div>
 
             {standartSecim && soru.aciklama && (
-              <div className="mt-3 rounded-xl bg-amber-500/10 p-3 ring-1 ring-amber-500/25">
+              <div id="bilgi-notu" className="mt-3 scroll-mb-4 rounded-xl bg-amber-500/10 p-3 ring-1 ring-amber-500/25">
                 <p className="text-[12px] leading-relaxed text-amber-200/95">
                   <span className="font-bold text-amber-400">Bilgi notu: </span>
                   {soru.aciklama}
