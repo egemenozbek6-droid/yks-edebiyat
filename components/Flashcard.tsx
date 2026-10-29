@@ -180,8 +180,8 @@ export default function Flashcard({
             >
               <div className="absolute inset-y-0 left-0 w-1.5 bg-primary" aria-hidden="true" />
 
-              <div className="relative flex h-full min-h-0 flex-col gap-3 overflow-y-auto p-4">
-                <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="relative flex h-full min-h-0 flex-col overflow-y-auto p-4">
+                <div className="flex flex-wrap items-center justify-between gap-2 shrink-0">
                   <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-bold whitespace-nowrap ring-1 ${rozet.bg} ${rozet.renk}`}>
                     {rozet.etiket}
                   </span>
@@ -194,8 +194,8 @@ export default function Flashcard({
                   )}
                 </div>
 
-                {/* Orta Başlık */}
-                <div className="flex flex-col items-center justify-center text-center px-2 py-4">
+                {/* Orta Başlık — dikey ortalanır, alt boş kalmaz */}
+                <div className="flex min-h-0 flex-1 flex-col items-center justify-center text-center px-2 py-3">
                   <h2
                     className="font-serif font-extrabold tracking-tight leading-tight text-balance text-card-foreground"
                     style={{ fontSize: `clamp(1.15rem, ${Math.max(3.2, 18 / Math.max(item.work.length, 8))}vw, 1.85rem)` }}
@@ -208,7 +208,7 @@ export default function Flashcard({
                 </div>
 
                 {/* Alt Çevirme İpucu */}
-                <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
+                <div className="flex shrink-0 items-center justify-center text-center text-xs text-muted-foreground/70 font-medium pb-0.5">
                   <span className="inline-flex items-center gap-1.5">
                     <ArrowLeftRight className="h-3.5 w-3.5" /> Yazarı görmek için dokun
                   </span>
@@ -227,8 +227,8 @@ export default function Flashcard({
             >
               <div className="absolute inset-y-0 left-0 w-1.5 bg-emerald-500" aria-hidden="true" />
 
-              <div className="relative flex h-full min-h-0 flex-col gap-3 overflow-y-auto p-4">
-                <div className="flex flex-wrap items-center gap-1.5">
+              <div className="relative flex h-full min-h-0 flex-col overflow-y-auto p-4">
+                <div className="flex flex-wrap items-center gap-1.5 shrink-0">
                   <span className="inline-flex max-w-full items-center rounded-full bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold leading-tight text-emerald-500 ring-1 ring-emerald-500/25">
                     {item.period}
                   </span>
@@ -237,8 +237,8 @@ export default function Flashcard({
                   </span>
                 </div>
 
-                {/* Orta: Yazar */}
-                <div className="flex flex-col items-center justify-center text-center px-2">
+                {/* Orta: Yazar + özet — ortalanır, uzun metinde kayar */}
+                <div className="flex min-h-0 flex-1 flex-col items-center justify-center text-center px-2 py-3">
                   <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-muted-foreground">
                     Yazar
                   </p>
@@ -249,9 +249,8 @@ export default function Flashcard({
                     {item.author}
                   </h2>
 
-                  {/* Bilgi Kutusu */}
                   {item.info && (
-                    <div className="mt-3 w-full rounded-2xl border border-border bg-muted/40 p-3 text-left">
+                    <div className="mt-3 w-full max-h-full overflow-y-auto rounded-2xl border border-border bg-muted/40 p-3 text-left">
                       <p className="text-[10px] font-bold uppercase tracking-wider text-primary mb-1">
                         Eser Özeti & Bilgi
                       </p>
@@ -263,7 +262,7 @@ export default function Flashcard({
                 </div>
 
                 {/* Alt Çevirme İpucu */}
-                <div className="flex items-center justify-center text-center text-xs text-muted-foreground/70 font-medium">
+                <div className="flex shrink-0 items-center justify-center text-center text-xs text-muted-foreground/70 font-medium pb-0.5">
                   <span className="inline-flex items-center gap-1.5">
                     <ArrowLeftRight className="h-3.5 w-3.5" /> Eseri görmek için dokun
                   </span>
