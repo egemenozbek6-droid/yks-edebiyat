@@ -1609,13 +1609,13 @@ export default function DueloModulu({
               <p className="whitespace-nowrap font-semibold uppercase tracking-wide text-muted-foreground" style={{ fontSize: `${Math.max(8, Math.min(10, 90 / Math.max((kullanici?.kullaniciAdi || "").length, 1)))}px` }}>
                 {kullanici?.kullaniciAdi}
               </p>
-              <p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums text-duello">{sonuc.oyuncuSkor} EP</p>
+              <p className={`mt-1 whitespace-nowrap text-lg font-bold tabular-nums ${kazandi ? "text-emerald-500" : berabere ? "text-muted-foreground" : "text-destructive"}`}>{sonuc.oyuncuSkor} EP</p>
             </div>
             <div className="min-w-0 rounded-lg bg-muted/30 p-3 ring-1 ring-border">
               <p className="whitespace-nowrap font-semibold uppercase tracking-wide text-muted-foreground" style={{ fontSize: `${Math.max(8, Math.min(10, 90 / Math.max((sonuc.rakipAdi || "").length, 1)))}px` }}>
                 {sonuc.rakipAdi}
               </p>
-              <p className="mt-1 whitespace-nowrap text-lg font-bold tabular-nums text-foreground">{sonuc.rakipSkor} EP</p>
+              <p className={`mt-1 whitespace-nowrap text-lg font-bold tabular-nums ${!kazandi && !berabere ? "text-emerald-500" : berabere ? "text-muted-foreground" : "text-foreground"}`}>{sonuc.rakipSkor} EP</p>
             </div>
           </div>
 
@@ -1736,9 +1736,9 @@ export default function DueloModulu({
   const rakipRank = rankBul((rakip as { puan?: number }).puan ?? 0);
   const oyuncuOnde = oyuncuSkor > rakipSkor;
   const rakipOnde = rakipSkor > oyuncuSkor;
-  // berabere → ikisi de kırmızı
-  const oyuncuSkorRenk = oyuncuOnde ? "text-emerald-500" : "text-destructive";
-  const rakipSkorRenk = rakipOnde ? "text-emerald-500" : "text-destructive";
+  // önde yeşil, geride kırmızı, berabere gri
+  const oyuncuSkorRenk = oyuncuOnde ? "text-emerald-500" : rakipOnde ? "text-destructive" : "text-muted-foreground";
+  const rakipSkorRenk = rakipOnde ? "text-emerald-500" : oyuncuOnde ? "text-destructive" : "text-muted-foreground";
   const sureYuzde = (sure / SURE) * 100;
   const sonUcSaniye = sure <= 3 && sure > 0;
   const sureRenk = sure > 5 ? "bg-duello" : sure > 3 ? "bg-amber-500" : "bg-destructive";
