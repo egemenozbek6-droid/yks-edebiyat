@@ -198,7 +198,7 @@ export default function Flashcard({
                 <div className="flex min-h-0 flex-1 flex-col items-center justify-center text-center px-2 py-3">
                   <h2
                     className="font-serif font-extrabold tracking-tight leading-tight text-balance text-card-foreground"
-                    style={{ fontSize: `clamp(1.15rem, ${Math.max(3.2, 18 / Math.max(item.work.length, 8))}vw, 1.85rem)` }}
+                    style={{ fontSize: `clamp(1.45rem, ${Math.max(4.2, 28 / Math.max(item.work.length, 6))}vw, 2.35rem)` }}
                   >
                     {item.work}
                   </h2>
@@ -244,7 +244,7 @@ export default function Flashcard({
                   </p>
                   <h2
                     className="mt-1 font-serif font-extrabold leading-tight text-balance text-card-foreground"
-                    style={{ fontSize: `clamp(1.15rem, ${Math.max(3.2, 16 / Math.max(item.author.length, 8))}vw, 1.75rem)` }}
+                    style={{ fontSize: `clamp(1.35rem, ${Math.max(3.8, 24 / Math.max(item.author.length, 6))}vw, 2.1rem)` }}
                   >
                     {item.author}
                   </h2>
