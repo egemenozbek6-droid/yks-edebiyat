@@ -1589,19 +1589,19 @@ export default function DueloModulu({
             {hukmenGalibiyet
               ? "Rakip çıktı"
               : kazandi
-                ? "Bu tur senin"
+                ? "Zafer senin"
                 : berabere
                   ? "Berabere"
                   : "Bu sefer olmadı"}
           </h2>
           <p className="mt-2 text-sm text-muted-foreground">
             {hukmenGalibiyet
-              ? "Maçı bıraktı, hükmen galipsin."
+              ? "Terk etti, galibiyet hükmen senin."
               : kazandi
-                ? "Skor sende kapandı."
+                ? "Güzel oyundu. Rövanş ister misin?"
                 : berabere
                   ? "Aynı skorla bitti."
-                  : "Rövanş duruyor."}
+                  : "Rövanş ister misin?"}
           </p>
 
           <div className="mt-5 grid grid-cols-2 gap-2">
@@ -1748,28 +1748,28 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* Skor barı — isim/rütbe sığar, üç nokta yok */}
-      <div className="mb-3 glass-card rounded-xl px-2 py-2 ring-1 ring-border shrink-0">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5">
+      {/* Skor barı — isim/rütbe sığar, skor ortada sabit */}
+      <div className="mb-3 glass-card rounded-xl px-1.5 py-2 ring-1 ring-border shrink-0">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1">
           {/* Oyuncu */}
-          <div className="flex min-w-0 items-center gap-1.5">
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
+          <div className="flex min-w-0 items-center gap-1">
+            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
             </div>
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 overflow-hidden">
               <p
-                className="whitespace-nowrap font-bold leading-none text-card-foreground"
+                className="truncate font-bold leading-none text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(8, Math.min(11, 72 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
+                  fontSize: `${Math.max(7, Math.min(11, 58 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
                 }}
               >
                 {kullanici.kullaniciAdi}
               </p>
               <p
-                className="mt-0.5 whitespace-nowrap font-semibold leading-none"
+                className="mt-0.5 truncate font-semibold leading-none"
                 style={{
                   color: oyuncuRank.renk,
-                  fontSize: `${Math.max(7, Math.min(9, 78 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(6, Math.min(9, 62 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 <span className="mr-0.5">{oyuncuRank.ikon}</span>
@@ -1778,42 +1778,42 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Skor — 3 haneli sığar, isimleri ezmez */}
-          <div className="flex shrink-0 items-center gap-1 px-0.5">
-            <span className={`min-w-[2.25rem] text-center text-xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+          {/* Skor */}
+          <div className="flex shrink-0 items-center gap-0.5 px-0.5">
+            <span className={`w-8 text-center text-lg font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
               {oyuncuSkor}
             </span>
-            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[8px] font-bold text-muted-foreground">
+            <span className="rounded-full bg-muted px-1 py-0.5 text-[7px] font-bold text-muted-foreground">
               VS
             </span>
-            <span className={`min-w-[2.25rem] text-center text-xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+            <span className={`w-8 text-center text-lg font-black tabular-nums leading-none ${rakipSkorRenk}`}>
               {rakipSkor}
             </span>
           </div>
 
           {/* Rakip */}
-          <div className="flex min-w-0 items-center justify-end gap-1.5">
-            <div className="min-w-0 flex-1 text-right">
+          <div className="flex min-w-0 items-center justify-end gap-1">
+            <div className="min-w-0 flex-1 overflow-hidden text-right">
               <p
-                className="whitespace-nowrap font-bold leading-none text-card-foreground"
+                className="truncate font-bold leading-none text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(8, Math.min(11, 72 / Math.max(rakip.ad.length, 1)))}px`,
+                  fontSize: `${Math.max(7, Math.min(11, 58 / Math.max(rakip.ad.length, 1)))}px`,
                 }}
               >
                 {rakip.ad}
               </p>
               <p
-                className="mt-0.5 whitespace-nowrap font-semibold leading-none"
+                className="mt-0.5 truncate font-semibold leading-none"
                 style={{
                   color: rakipRank.renk,
-                  fontSize: `${Math.max(7, Math.min(9, 78 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(6, Math.min(9, 62 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 {rakipRank.ad}
                 <span className="ml-0.5">{rakipRank.ikon}</span>
               </p>
             </div>
-            <div className="grid h-8 w-8 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
+            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
               {avatarEmoji(rakip.avatar)}
             </div>
           </div>
@@ -2001,10 +2001,10 @@ export default function DueloModulu({
               <LogOut className="h-7 w-7" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-xl font-bold tracking-tight text-card-foreground">
-              Maçı bırak
+              Maçtan çıkmak mı istiyorsun?
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Terk edersen bu maç kayıp yazılır, rakip hükmen alır.
+              Terk edersen maç kayıp yazılır, rakip hükmen alır. Emin misin?
             </p>
             <div className="mt-6 grid grid-cols-2 gap-3">
               <button
@@ -2032,10 +2032,10 @@ export default function DueloModulu({
               <Trophy className="h-9 w-9" strokeWidth={1.5} />
             </div>
             <h2 className="font-serif text-2xl font-bold tracking-tight text-card-foreground">
-              Rakip çıktı
+              Rakip maçı terk etti
             </h2>
             <p className="mt-2 text-sm text-pretty text-muted-foreground">
-              Maçı bıraktı. Hükmen kazandın.
+              Oyundan ayrıldı, galibiyet hükmen senin.
             </p>
             <button
               onClick={() => {
