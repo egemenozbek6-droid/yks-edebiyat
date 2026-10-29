@@ -1748,28 +1748,28 @@ export default function DueloModulu({
 
   return (
     <div className="flex flex-col flex-1 min-h-0 animate-rise">
-      {/* Skor barı — isim/rütbe sığar, skor ortada sabit */}
-      <div className="mb-3 glass-card rounded-xl px-1.5 py-2 ring-1 ring-border shrink-0">
-        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1">
+      {/* Skor barı — isim/rütbe dinamik, 3 haneli skor sığar */}
+      <div className="mb-3 glass-card rounded-xl px-2 py-2.5 ring-1 ring-border shrink-0">
+        <div className="grid grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)] items-center gap-x-1.5">
           {/* Oyuncu */}
-          <div className="flex min-w-0 items-center gap-1">
-            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
+          <div className="flex min-w-0 items-center gap-1.5">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base ring-1 ring-border">
               {avatarEmoji(kullanici.avatar)}
             </div>
             <div className="min-w-0 flex-1 overflow-hidden">
               <p
-                className="truncate font-bold leading-none text-card-foreground"
+                className="truncate font-bold leading-tight text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(7, Math.min(11, 58 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
+                  fontSize: `${Math.max(11, Math.min(14, 140 / Math.max(kullanici.kullaniciAdi.length, 1)))}px`,
                 }}
               >
                 {kullanici.kullaniciAdi}
               </p>
               <p
-                className="mt-0.5 truncate font-semibold leading-none"
+                className="mt-0.5 truncate font-semibold leading-tight"
                 style={{
                   color: oyuncuRank.renk,
-                  fontSize: `${Math.max(6, Math.min(9, 62 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(10, Math.min(12, 130 / Math.max(oyuncuRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 <span className="mr-0.5">{oyuncuRank.ikon}</span>
@@ -1778,47 +1778,48 @@ export default function DueloModulu({
             </div>
           </div>
 
-          {/* Skor */}
-          <div className="flex shrink-0 items-center gap-0.5 px-0.5">
-            <span className={`w-8 text-center text-lg font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
+          {/* Skor — 3 hane rahat */}
+          <div className="flex shrink-0 items-center gap-1 px-0.5">
+            <span className={`min-w-[2.5rem] text-center text-2xl font-black tabular-nums leading-none ${oyuncuSkorRenk}`}>
               {oyuncuSkor}
             </span>
-            <span className="rounded-full bg-muted px-1 py-0.5 text-[7px] font-bold text-muted-foreground">
+            <span className="rounded-full bg-muted px-1.5 py-0.5 text-[9px] font-bold text-muted-foreground">
               VS
             </span>
-            <span className={`w-8 text-center text-lg font-black tabular-nums leading-none ${rakipSkorRenk}`}>
+            <span className={`min-w-[2.5rem] text-center text-2xl font-black tabular-nums leading-none ${rakipSkorRenk}`}>
               {rakipSkor}
             </span>
           </div>
 
           {/* Rakip */}
-          <div className="flex min-w-0 items-center justify-end gap-1">
+          <div className="flex min-w-0 items-center justify-end gap-1.5">
             <div className="min-w-0 flex-1 overflow-hidden text-right">
               <p
-                className="truncate font-bold leading-none text-card-foreground"
+                className="truncate font-bold leading-tight text-card-foreground"
                 style={{
-                  fontSize: `${Math.max(7, Math.min(11, 58 / Math.max(rakip.ad.length, 1)))}px`,
+                  fontSize: `${Math.max(11, Math.min(14, 140 / Math.max(rakip.ad.length, 1)))}px`,
                 }}
               >
                 {rakip.ad}
               </p>
               <p
-                className="mt-0.5 truncate font-semibold leading-none"
+                className="mt-0.5 truncate font-semibold leading-tight"
                 style={{
                   color: rakipRank.renk,
-                  fontSize: `${Math.max(6, Math.min(9, 62 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
+                  fontSize: `${Math.max(10, Math.min(12, 130 / Math.max(rakipRank.ad.length + 2, 1)))}px`,
                 }}
               >
                 {rakipRank.ad}
                 <span className="ml-0.5">{rakipRank.ikon}</span>
               </p>
             </div>
-            <div className="grid h-7 w-7 shrink-0 place-items-center rounded-full bg-muted text-sm ring-1 ring-border">
+            <div className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-muted text-base ring-1 ring-border">
               {avatarEmoji(rakip.avatar)}
             </div>
           </div>
         </div>
       </div>
+
 
       {/* Süre + soru sayacı */}
       <div className="mb-3 shrink-0">
