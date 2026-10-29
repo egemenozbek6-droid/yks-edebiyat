@@ -25,6 +25,8 @@ import kadinYazarlarData from "@/src/data/kadin_yazarlar_test.json";
 import { kartTekrarGerekiyorMu, kartHafizaGetir } from "@/lib/leitner";
 import { useKartSeviyeleri } from "@/lib/useKartSeviyeleri";
 import { sfxMuted, sfxMuteToggle } from "@/lib/sfx";
+import { App as CapApp } from "@capacitor/app";
+import { Capacitor } from "@capacitor/core";
 
 const APP_NAME = "EdebiKart";
 const APP_SUBTITLE = "YKS Yazar Eser & Düello";
@@ -60,6 +62,9 @@ export default function Page() {
   const [cikisOnayAcik, setCikisOnayAcik] = useState(false);
   const [cikisMesaj, setCikisMesaj] = useState("");
   const cikisOnayCallback = useRef<(() => void) | null>(null);
+  const sonGeriBasim = useRef(0);
+  const [cikisToast, setCikisToast] = useState(false);
+  const cikisToastTimer = useRef<number | null>(null);
 
   const [splashAktif, setSplashAktif] = useState(true);
 
@@ -139,6 +144,57 @@ export default function Page() {
     setCikisOnayAcik(false);
     cikisOnayCallback.current = null;
   }, []);
+
+  // Android geri tuşu: modal kapat / kartlara dön / çift basışta çık
+  useEffect(() => {
+    if (!Capacitor.isNativePlatform()) return;
+
+    const sub = CapApp.addListener("backButton", () => {
+      if (infoAcik) {
+        setInfoAcik(false);
+        return;
+      }
+      if (profilAcik) {
+        setProfilAcik(false);
+        return;
+      }
+      if (cikisOnayAcik) {
+        cikisReddet();
+        return;
+      }
+
+      if (dueloAktif) {
+        cikisOnayGerekir(
+          "Düellodan ayrılırsanız maçı kaybetmiş sayılacaksınız!",
+          () => {
+            setDueloAktif(false);
+            setMod("kart");
+          },
+        );
+        return;
+      }
+
+      if (mod !== "kart") {
+        setMod("kart");
+        return;
+      }
+
+      const simdi = Date.now();
+      if (simdi - sonGeriBasim.current < 2000) {
+        CapApp.exitApp();
+        return;
+      }
+      sonGeriBasim.current = simdi;
+      setCikisToast(true);
+      if (cikisToastTimer.current) window.clearTimeout(cikisToastTimer.current);
+      cikisToastTimer.current = window.setTimeout(() => setCikisToast(false), 2000);
+    });
+
+    return () => {
+      sub.then((s) => s.remove());
+      if (cikisToastTimer.current) window.clearTimeout(cikisToastTimer.current);
+    };
+  }, [infoAcik, profilAcik, cikisOnayAcik, dueloAktif, mod, cikisOnayGerekir, cikisReddet]);
 
   const modDegistir = useCallback(
     (yeniMod: Mod) => {
@@ -526,6 +582,14 @@ export default function Page() {
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {cikisToast && (
+        <div className="pointer-events-none fixed inset-x-0 bottom-8 z-[100] flex justify-center px-4">
+          <div className="rounded-full bg-foreground/90 px-4 py-2 text-xs font-semibold text-background shadow-lg">
+            Çıkmak için tekrar basın
           </div>
         </div>
       )}
